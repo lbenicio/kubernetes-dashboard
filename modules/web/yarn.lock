@@ -15213,7 +15213,7 @@ __metadata:
     minimatch: 10.0.1
     minimist: 1.2.8
     ng-extract-i18n-merge: 2.14.3
-    ngx-cookie-service: 19.1.2
+    ngx-cookie-service: 22.0.0
     ngx-pipes: 3.2.2
     node-gyp: 11.2.0
     normalize.css: 8.0.1
@@ -16414,15 +16414,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ngx-cookie-service@npm:19.1.2":
-  version: 19.1.2
-  resolution: "ngx-cookie-service@npm:19.1.2"
+"ngx-cookie-service@npm:22.0.0":
+  version: 22.0.0
+  resolution: "ngx-cookie-service@npm:22.0.0"
   dependencies:
-    tslib: ^2.8.0
+    tslib: ^2.8.1
   peerDependencies:
-    "@angular/common": ^19.0.0
-    "@angular/core": ^19.0.0
-  checksum: 75bc5bf9d3e514fa9a844bd7b24a28f14c397028030d5d7a4ed2881c3bff043b3dbcdb1a3720da12bd052444ba32faa85f1a2b7de9610b6beedefd26bd69a2a6
+    "@angular/common": ^22.0.0
+    "@angular/core": ^22.0.0
+  checksum: dda79e9cd2ef4a7fb3e620744214241f476578005941429422249df489d24eb8fc40a75108cab6699c387790f5df99ab67d34e01f150d07ffa14642deea799a0
   languageName: node
   linkType: hard
 
@@ -20342,7 +20342,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:2.8.1, tslib@npm:^2.3.1, tslib@npm:^2.8.0, tslib@npm:^2.8.1":
+"tslib@npm:2.8.1, tslib@npm:^2.3.1, tslib@npm:^2.8.1":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: e4aba30e632b8c8902b47587fd13345e2827fa639e7c3121074d5ee0880723282411a8838f830b55100cbe4517672f84a2472667d355b81e8af165a55dc6203a
