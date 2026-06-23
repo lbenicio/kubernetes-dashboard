@@ -15221,7 +15221,7 @@ __metadata:
     q: 1.5.1
     raw-loader: 4.0.2
     roboto-fontface: 0.10.0
-    run-node: 2.0.0
+    run-node: 3.0.0
     rxjs: 7.8.2
     rxjs-compat: 6.6.7
     sass: 1.90.0
@@ -18459,12 +18459,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"run-node@npm:2.0.0":
-  version: 2.0.0
-  resolution: "run-node@npm:2.0.0"
+"run-node@npm:3.0.0":
+  version: 3.0.0
+  resolution: "run-node@npm:3.0.0"
   bin:
     run-node: run-node
-  checksum: 4eea7eb4814bba7b7d11633bc4059bba3685553e0ccc82c8fe5f0edefc9b68bd977b0cff0c25bf1d9c316aaafcebce530e48679b7dd19d48d749de36cf4b111f
+    run-npx: run-npx
+  checksum: 3b0d99556f0b9caa29c38ded3704ee69a50fb3a6e2634698e267942dcb2034a70f5e3ade4d2559aa5bb5bd8a053b8fedb1f4b634598f5fe9b74ee7e226736ee3
   languageName: node
   linkType: hard
 
