@@ -32,52 +32,44 @@ limitations under the License.
     </div>
     <div content>
       <!-- OIDC Login Section -->
-      <div *ngIf="isOIDCEnabled_ && !isTokenMode_">
-        <div class="kd-login-mode-description" fxFlex fxLayout="column">
-          <div class="kd-equivalent-block kd-bg-card-dark" fxLayoutAlign=" center">
-            <mat-icon>lock</mat-icon>
-            <div>
-              <span>Sign in using your identity provider to access the dashboard.</span>
-            </div>
-          </div>
+      <div
+        *ngIf="isOIDCEnabled_ && !isTokenMode_"
+        fxLayout="column"
+        fxLayoutAlign="center center"
+        class="kd-oidc-section"
+      >
+        <div class="kd-oidc-info kd-bg-card-dark">
+          <mat-icon class="kd-oidc-info-icon">lock</mat-icon>
+          <span>Sign in using your identity provider to access the dashboard.</span>
         </div>
 
-        <div
-          fxLayout="row"
-          fxLayoutAlign="center center"
-          style="margin: 24px 0;"
+        <button
+          mat-raised-button
+          color="primary"
+          class="kd-oidc-button"
+          (click)="loginWithOIDC()"
+          [disabled]="isOIDCLoading_"
         >
-          <button
-            mat-raised-button
-            color="primary"
-            class="kd-login-button kd-oidc-button"
-            (click)="loginWithOIDC()"
-            [disabled]="isOIDCLoading_"
-          >
-            <mat-icon *ngIf="!isOIDCLoading_" style="margin-right: 8px;">login</mat-icon>
-            <mat-spinner *ngIf="isOIDCLoading_" diameter="20" style="margin-right: 8px;"></mat-spinner>
-            Sign in with OIDC Provider
-          </button>
-        </div>
+          <mat-icon *ngIf="!isOIDCLoading_" class="kd-oidc-btn-icon">login</mat-icon>
+          <mat-spinner *ngIf="isOIDCLoading_" diameter="20" class="kd-oidc-btn-icon"></mat-spinner>
+          {{ signInLabel }}
+        </button>
 
         <mat-error
           *ngFor="let error of errors"
-          class="kd-login-input kd-error kd-error-text"
+          class="kd-error-text"
         >
           {{ error.status }} ({{ error.code }}): {{ error.message }}
         </mat-error>
 
-        <div class="kd-login-mode-description" fxFlex fxLayout="column">
-          <div fxLayoutAlign="center center" style="margin-top: 16px;">
-            <button
-              mat-button
-              color="accent"
-              (click)="showTokenLogin()"
-            >
-              Sign in with a token instead
-            </button>
-          </div>
-        </div>
+        <button
+          mat-button
+          color="accent"
+          class="kd-oidc-alt-link"
+          (click)="showTokenLogin()"
+        >
+          Sign in with a token instead
+        </button>
       </div>
 
       <!-- Token Login Section -->
@@ -138,6 +130,7 @@ limitations under the License.
               *ngIf="isOIDCEnabled_ && isTokenMode_"
               mat-button
               type="button"
+              class="kd-oidc-alt-link"
               (click)="hideTokenLogin()"
             >
               Back to OIDC login

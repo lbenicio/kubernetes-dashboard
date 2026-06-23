@@ -35,6 +35,7 @@ export class LoginComponent implements OnInit {
   isOIDCEnabled_ = false;
   isOIDCLoading_ = false;
   isTokenMode_ = false;
+  providerName_ = '';
 
   constructor(
     private readonly authService_: AuthService,
@@ -54,22 +55,22 @@ export class LoginComponent implements OnInit {
     // Check if OIDC is configured
     this.authService_.getOIDCConfig().subscribe(config => {
       this.isOIDCEnabled_ = config.enabled;
+      this.providerName_ = config.providerName || '';
     });
 
     // Check if we're returning from an OIDC callback
-    // The callback sets the token cookie and redirects to /
-    // If we're at /login with a token cookie, redirect to main page
     if (this.authService_.hasTokenCookie()) {
       this.authService_.loginWithOIDC().subscribe({
-        error: () => {}, // Ignore errors, token might already be valid
+        error: () => {},
       });
       this.ngZone_.run(() => this.historyService_.goToPreviousState('workloads'));
     }
   }
 
-  /**
-   * Initiates OIDC login by redirecting to the OIDC provider.
-   */
+  get signInLabel(): string {
+    return this.providerName_ ? `Sign in with ${this.providerName_}` : 'Sign in with OIDC Provider';
+  }
+
   loginWithOIDC(): void {
     this.isOIDCLoading_ = true;
     this.errors = [];
@@ -77,7 +78,6 @@ export class LoginComponent implements OnInit {
     this.authService_.loginWithOIDC().subscribe({
       next: response => {
         if (response.redirectUrl) {
-          // Redirect the browser to the OIDC provider
           window.location.href = response.redirectUrl;
         }
       },
@@ -88,23 +88,14 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  /**
-   * Switches to token-based login mode.
-   */
   showTokenLogin(): void {
     this.isTokenMode_ = true;
   }
 
-  /**
-   * Switches back to OIDC login mode.
-   */
   hideTokenLogin(): void {
     this.isTokenMode_ = false;
   }
 
-  /**
-   * Performs token-based login.
-   */
   login(): void {
     this.authService_.login(this.getLoginSpec_()).subscribe({
       next: () => this.ngZone_.run(() => this.historyService_.goToPreviousState('workloads')),

@@ -31,6 +31,42 @@
   text-align: left;
 }
 
+// OIDC login section — vertically centered, consistent spacing
+.kd-oidc-section {
+  padding: (2 * $baseline-grid) (3.5 * $baseline-grid) (3 * $baseline-grid);
+  gap: (2 * $baseline-grid);
+}
+
+.kd-oidc-info {
+  display: flex;
+  align-items: center;
+  gap: $baseline-grid;
+  padding: $baseline-grid (2 * $baseline-grid);
+  border-radius: 4px;
+  width: 100%;
+  font-size: $body-font-size-base;
+}
+
+.kd-oidc-info-icon {
+  flex-shrink: 0;
+}
+
+.kd-oidc-button {
+  min-width: 240px;
+  padding: 0 (2 * $baseline-grid);
+  height: 48px;
+  font-size: $body-font-size-base;
+}
+
+.kd-oidc-btn-icon {
+  margin-right: $baseline-grid;
+}
+
+.kd-oidc-alt-link {
+  font-size: $caption-font-size-base;
+  text-transform: none;
+}
+
 :host {
   height: 100vh;
 }
