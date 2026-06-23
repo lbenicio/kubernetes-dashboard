@@ -137,11 +137,14 @@ export abstract class ResourceListBase<T extends ResourceList, R extends Resourc
       });
   }
 
-  getDetailsHref(resourceName: string, namespace?: string): string {
-    return this.stateName_ ? this.kdState_.href(this.stateName_, resourceName, namespace) : '';
-  }
+  	getDetailsHref(resourceName: string, namespace?: string): string {
+  		return this.stateName_ ? this.kdState_.href(this.stateName_, resourceName, namespace) : '';
+  	}
 
-  getData(): DataSource<R> {
+  	/** Hook called after data is loaded. Override in subclasses to apply filters. */
+  	protected onDataLoaded_(_resources: R[]): void {}
+
+  	getData(): DataSource<R> {
     return this.data_;
   }
 

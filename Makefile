@@ -175,6 +175,111 @@ helm-release: --ensure-kind-cluster --ensure-kind-ingress-nginx --ensure-helm-de
 		--set app.ingress.ingressClassName=nginx \
 		charts/kubernetes-dashboard
 
+# Tags and pushes locally built Docker images to a container registry.
+#
+# Version numbers are read from versions.env. Use 'make bump' to update them.
+#
+# Usage:
+#   make bump LEVEL=patch                   # bump all modules
+#   make bump LEVEL=minor MODULE=auth       # bump only auth module
+#   make release                            # build + tag + push
+#   make release DRY_RUN=1                  # preview without executing
+#   make release REGISTRY=docker.io/myorg   # custom registry
+#   make release VERSION_SUFFIX=-rc1        # add suffix to versions
+#
+# Variables:
+#   REGISTRY       - Container registry prefix (default: docker.io/lbenicio)
+#   VERSION_SUFFIX - Optional suffix appended to all versions (e.g., -rc1, -oidc)
+#   DRY_RUN        - Set to 1 to preview commands without executing
+#   LEVEL          - Bump level for 'make bump': patch | minor | major (default: patch)
+#   MODULE         - Module for 'make bump': auth | api | web | scraper | all (default: all)
+
+REGISTRY ?= docker.io/lbenicio
+VERSION_SUFFIX ?=
+DRY_RUN ?= 0
+LEVEL ?= patch
+MODULE ?= all
+
+# Auto-detect host architecture for the web builder
+ARCH ?= $(shell uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+
+# Load versions from the versions tracking file
+-include $(ROOT_DIRECTORY)/versions.env
+
+# Fallback defaults if versions.env is missing
+AUTH_VERSION ?= 1.4.1
+API_VERSION ?= 1.14.1
+WEB_VERSION ?= 1.7.1
+SCRAPER_VERSION ?= 1.2.2
+
+.PHONY: bump
+bump: ## Bump module versions (LEVEL=patch|minor|major, MODULE=auth|api|web|scraper|all)
+	@./hack/scripts/bump-version.sh $(LEVEL) $(MODULE)
+
+.PHONY: bump-show
+bump-show: ## Show current versions from versions.env
+	@echo "Current versions:"
+	@grep -E '^(AUTH|API|WEB|SCRAPER)_VERSION=' $(ROOT_DIRECTORY)/versions.env 2>/dev/null || echo "  (no versions.env found — using Makefile defaults)"
+	@echo ""
+	@echo "  AUTH_VERSION   = $(AUTH_VERSION)"
+	@echo "  API_VERSION    = $(API_VERSION)"
+	@echo "  WEB_VERSION    = $(WEB_VERSION)"
+	@echo "  SCRAPER_VERSION = $(SCRAPER_VERSION)"
+
+.PHONY: release
+release: image ## Build, tag and push all Docker images
+ifeq ($(DRY_RUN),1)
+	@echo "[DRY RUN] Registry: $(REGISTRY)"
+	@echo "[DRY RUN] Versions:"
+	@echo "  auth:    $(AUTH_VERSION)$(VERSION_SUFFIX)"
+	@echo "  api:     $(API_VERSION)$(VERSION_SUFFIX)"
+	@echo "  web:     $(WEB_VERSION)$(VERSION_SUFFIX)"
+	@echo "  scraper: $(SCRAPER_VERSION)$(VERSION_SUFFIX)"
+	@echo ""
+	@echo "[DRY RUN] Would execute:"
+	@echo "  docker tag dashboard-auth:latest $(REGISTRY)/kubernetes-dashboard-auth:$(AUTH_VERSION)$(VERSION_SUFFIX)"
+	@echo "  docker tag dashboard-auth:latest $(REGISTRY)/kubernetes-dashboard-auth:latest"
+	@echo "  docker tag dashboard-api:latest $(REGISTRY)/kubernetes-dashboard-api:$(API_VERSION)$(VERSION_SUFFIX)"
+	@echo "  docker tag dashboard-api:latest $(REGISTRY)/kubernetes-dashboard-api:latest"
+	@echo "  docker tag dashboard-web:latest $(REGISTRY)/kubernetes-dashboard-web:$(WEB_VERSION)$(VERSION_SUFFIX)"
+	@echo "  docker tag dashboard-web:latest $(REGISTRY)/kubernetes-dashboard-web:latest"
+	@echo "  docker tag dashboard-scraper:latest $(REGISTRY)/kubernetes-dashboard-scraper:$(SCRAPER_VERSION)$(VERSION_SUFFIX)"
+	@echo "  docker tag dashboard-scraper:latest $(REGISTRY)/kubernetes-dashboard-scraper:latest"
+	@echo "  docker push $(REGISTRY)/kubernetes-dashboard-auth:$(AUTH_VERSION)$(VERSION_SUFFIX)"
+	@echo "  docker push $(REGISTRY)/kubernetes-dashboard-auth:latest"
+	@echo "  docker push $(REGISTRY)/kubernetes-dashboard-api:$(API_VERSION)$(VERSION_SUFFIX)"
+	@echo "  docker push $(REGISTRY)/kubernetes-dashboard-api:latest"
+	@echo "  docker push $(REGISTRY)/kubernetes-dashboard-web:$(WEB_VERSION)$(VERSION_SUFFIX)"
+	@echo "  docker push $(REGISTRY)/kubernetes-dashboard-web:latest"
+	@echo "  docker push $(REGISTRY)/kubernetes-dashboard-scraper:$(SCRAPER_VERSION)$(VERSION_SUFFIX)"
+	@echo "  docker push $(REGISTRY)/kubernetes-dashboard-scraper:latest"
+else
+	@echo "[release] Versions:"
+	@echo "  auth:    $(AUTH_VERSION)$(VERSION_SUFFIX)"
+	@echo "  api:     $(API_VERSION)$(VERSION_SUFFIX)"
+	@echo "  web:     $(WEB_VERSION)$(VERSION_SUFFIX)"
+	@echo "  scraper: $(SCRAPER_VERSION)$(VERSION_SUFFIX)"
+	@echo "[release] Tagging images..."
+	docker tag dashboard-auth:latest $(REGISTRY)/kubernetes-dashboard-auth:$(AUTH_VERSION)$(VERSION_SUFFIX)
+	docker tag dashboard-auth:latest $(REGISTRY)/kubernetes-dashboard-auth:latest
+	docker tag dashboard-api:latest $(REGISTRY)/kubernetes-dashboard-api:$(API_VERSION)$(VERSION_SUFFIX)
+	docker tag dashboard-api:latest $(REGISTRY)/kubernetes-dashboard-api:latest
+	docker tag dashboard-web:latest $(REGISTRY)/kubernetes-dashboard-web:$(WEB_VERSION)$(VERSION_SUFFIX)
+	docker tag dashboard-web:latest $(REGISTRY)/kubernetes-dashboard-web:latest
+	docker tag dashboard-scraper:latest $(REGISTRY)/kubernetes-dashboard-scraper:$(SCRAPER_VERSION)$(VERSION_SUFFIX)
+	docker tag dashboard-scraper:latest $(REGISTRY)/kubernetes-dashboard-scraper:latest
+	@echo "[release] Pushing images..."
+	docker push $(REGISTRY)/kubernetes-dashboard-auth:$(AUTH_VERSION)$(VERSION_SUFFIX)
+	docker push $(REGISTRY)/kubernetes-dashboard-auth:latest
+	docker push $(REGISTRY)/kubernetes-dashboard-api:$(API_VERSION)$(VERSION_SUFFIX)
+	docker push $(REGISTRY)/kubernetes-dashboard-api:latest
+	docker push $(REGISTRY)/kubernetes-dashboard-web:$(WEB_VERSION)$(VERSION_SUFFIX)
+	docker push $(REGISTRY)/kubernetes-dashboard-web:latest
+	docker push $(REGISTRY)/kubernetes-dashboard-scraper:$(SCRAPER_VERSION)$(VERSION_SUFFIX)
+	docker push $(REGISTRY)/kubernetes-dashboard-scraper:latest
+	@echo "[release] Done!"
+endif
+
 # To serve Dashboard under a different path than root (/) use:
 #		--set app.ingress.path=/dashboard \
 
