@@ -1320,6 +1320,9 @@ export interface OIDCLoginResponse {
 export interface OIDCUserInfo {
   username: string;
   groups: string[];
+  displayName?: string;
+  email?: string;
+  avatarUrl?: string;
 }
 
 export interface OIDCSession {

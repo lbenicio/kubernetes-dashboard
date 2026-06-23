@@ -133,24 +133,24 @@ func extractUserInfo(claims jwt.MapClaims, config *Config) *OIDCUserInfo {
 		Groups: []string{},
 	}
 
+	// Extract display fields from standard OIDC claims
+	userInfo.DisplayName = getStringClaim(claims, "name")
+	userInfo.Email = getStringClaim(claims, "email")
+	userInfo.AvatarURL = getStringClaim(claims, "picture")
+
 	// Determine username from claims
 	// Priority: "email" > "name" > "sub" (sub is always present and unique)
-	username := getStringClaim(claims, "email")
+	username := userInfo.Email
 	if username == "" {
-		username = getStringClaim(claims, "name")
+		username = userInfo.DisplayName
 	}
 	if username == "" {
 		username = getStringClaim(claims, "sub")
 	}
-	// Sanitize username for Kubernetes (replace @ with - for email-based usernames)
 	userInfo.Username = sanitizeUsername(username)
 
 	// Extract groups from claims
-	// OIDC providers typically return groups as either:
-	// - "groups": ["group1", "group2"]
-	// - "groups": "group1,group2"
-	groups := extractGroups(claims)
-	userInfo.Groups = groups
+	userInfo.Groups = extractGroups(claims)
 
 	klog.V(4).InfoS("Extracted user info from OIDC token",
 		"username", userInfo.Username,
@@ -224,6 +224,9 @@ func sanitizeUsername(username string) string {
 // OIDCUserInfo holds the extracted OIDC user identity.
 // Placed here to avoid circular imports.
 type OIDCUserInfo struct {
-	Username string   `json:"username"`
-	Groups   []string `json:"groups,omitempty"`
+	Username    string   `json:"username"`
+	Groups      []string `json:"groups,omitempty"`
+	DisplayName string   `json:"displayName,omitempty"`
+	Email       string   `json:"email,omitempty"`
+	AvatarURL   string   `json:"avatarUrl,omitempty"`
 }

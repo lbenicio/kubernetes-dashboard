@@ -160,8 +160,11 @@ func HandleSessionInfo(provider *oidcpkg.Provider) http.HandlerFunc {
 		}
 
 		userInfo := &v1.OIDCUserInfo{
-			Username: sessionData.Username,
-			Groups:   sessionData.Groups,
+			Username:    sessionData.Username,
+			Groups:      sessionData.Groups,
+			DisplayName: sessionData.DisplayName,
+			Email:       sessionData.Email,
+			AvatarURL:   sessionData.AvatarURL,
 		}
 
 		writeJSON(w, http.StatusOK, &v1.OIDCSession{
@@ -209,6 +212,9 @@ func HandleRefresh(provider *oidcpkg.Provider) http.HandlerFunc {
 			Expiry:       newToken.Expiry,
 			Username:     userInfo.Username,
 			Groups:       userInfo.Groups,
+			DisplayName:  userInfo.DisplayName,
+			Email:        userInfo.Email,
+			AvatarURL:    userInfo.AvatarURL,
 		}
 
 		if err := provider.Session().SetSessionCookie(w, sessionData); err != nil {
@@ -221,8 +227,11 @@ func HandleRefresh(provider *oidcpkg.Provider) http.HandlerFunc {
 		writeJSON(w, http.StatusOK, &v1.OIDCSession{
 			Token: idToken,
 			User: v1.OIDCUserInfo{
-				Username: userInfo.Username,
-				Groups:   userInfo.Groups,
+				Username:    userInfo.Username,
+				Groups:      userInfo.Groups,
+				DisplayName: userInfo.DisplayName,
+				Email:       userInfo.Email,
+				AvatarURL:   userInfo.AvatarURL,
 			},
 		})
 	}

@@ -59,6 +59,12 @@ type SessionData struct {
 	Username string `json:"username,omitempty"`
 	// Groups are the extracted groups for K8s impersonation.
 	Groups []string `json:"groups,omitempty"`
+	// DisplayName is the user's display name from the OIDC "name" claim.
+	DisplayName string `json:"displayName,omitempty"`
+	// Email is the user's email from the OIDC "email" claim.
+	Email string `json:"email,omitempty"`
+	// AvatarURL is the user's avatar URL from the OIDC "picture" claim.
+	AvatarURL string `json:"avatarUrl,omitempty"`
 }
 
 // SessionManager handles OIDC session persistence via cookies.

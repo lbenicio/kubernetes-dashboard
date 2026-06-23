@@ -26,23 +26,34 @@ limitations under the License.
       fxFlex
       fxLayout="row"
     >
+      <!-- Avatar -->
+      <div
+        *ngIf="isOIDC && hasAvatar"
+        class="kd-user-avatar"
+        fxFlexAlign="center"
+      >
+        <img
+          [src]="avatarUrl"
+          alt="User avatar"
+          class="kd-avatar-img"
+        />
+      </div>
+
       <div
         fxFlex
         fxFlexAlign=" center"
         fxLayout="column"
         class="method kd-muted-light"
       >
-        <ng-container
-          *ngIf="hasAuthHeader()"
-          i18n
-          >Logged in with auth header
+        <ng-container *ngIf="isOIDC">
+          <ng-container *ngIf="displayName" class="kd-display-name">{{ displayName }}</ng-container>
+          <ng-container *ngIf="email" class="kd-email">{{ email }}</ng-container>
         </ng-container>
-        <ng-container
-          *ngIf="hasTokenCookie()"
-          i18n
-          >Logged in with token
+        <ng-container *ngIf="!isOIDC">
+          <ng-container *ngIf="hasAuthHeader()" i18n>Logged in with auth header</ng-container>
+          <ng-container *ngIf="hasTokenCookie()" i18n>Logged in with token</ng-container>
+          <span class="username kd-muted">{{ username }}</span>
         </ng-container>
-        <span class="username kd-muted">{{ username }}</span>
       </div>
 
       <button
@@ -80,7 +91,17 @@ limitations under the License.
   [matMenuTriggerFor]="actions"
   (click)="$event.stopPropagation()"
 >
-  <mat-icon class="kd-user-panel-icon kd-primary-toolbar-icon">account_circle</mat-icon>
+  <!-- Show avatar image if available, otherwise fallback to account_circle icon -->
+  <img
+    *ngIf="isOIDC && hasAvatar"
+    [src]="avatarUrl"
+    alt="User avatar"
+    class="kd-toolbar-avatar"
+  />
+  <mat-icon
+    *ngIf="!(isOIDC && hasAvatar)"
+    class="kd-user-panel-icon kd-primary-toolbar-icon"
+  >account_circle</mat-icon>
   <svg
     class="kd-cross-style"
     *ngIf="!isAuthenticated()"

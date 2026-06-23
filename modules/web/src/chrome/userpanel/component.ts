@@ -22,7 +22,7 @@ import {MeService} from '@common/services/global/me';
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
 })
-export class UserPanelComponent /* implements OnInit */ {
+export class UserPanelComponent {
   @ViewChild(MatMenuTrigger)
   private readonly trigger_: MatMenuTrigger;
 
@@ -33,6 +33,26 @@ export class UserPanelComponent /* implements OnInit */ {
 
   get username(): string {
     return this._meService.getUserName();
+  }
+
+  get displayName(): string {
+    return this.authService_.getDisplayName();
+  }
+
+  get email(): string {
+    return this.authService_.getEmail();
+  }
+
+  get avatarUrl(): string {
+    return this.authService_.getAvatarURL();
+  }
+
+  get hasAvatar(): boolean {
+    return !!this.avatarUrl;
+  }
+
+  get isOIDC(): boolean {
+    return this.authService_.isOIDCEnabled();
   }
 
   hasAuthHeader(): boolean {
@@ -48,7 +68,7 @@ export class UserPanelComponent /* implements OnInit */ {
   }
 
   logout(): void {
-    this.authService_.logout();
+    this.authService_.fullLogout();
   }
 
   close(): void {

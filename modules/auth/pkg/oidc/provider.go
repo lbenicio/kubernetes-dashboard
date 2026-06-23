@@ -226,6 +226,9 @@ func (p *Provider) CreateSession(w http.ResponseWriter, r *http.Request, token *
 		State:        state,
 		Username:     userInfo.Username,
 		Groups:       userInfo.Groups,
+		DisplayName:  userInfo.DisplayName,
+		Email:        userInfo.Email,
+		AvatarURL:    userInfo.AvatarURL,
 	}
 
 	// Store encrypted session (contains refresh token, user info, HttpOnly)

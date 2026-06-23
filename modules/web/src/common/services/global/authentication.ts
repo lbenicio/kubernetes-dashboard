@@ -89,6 +89,39 @@ export class AuthService {
   }
 
   /**
+   * Returns the user's display name for the current auth mode.
+   */
+  getDisplayName(): string {
+    if (this.isOIDCEnabled()) {
+      const info = this.getOIDCUserInfo();
+      return info?.displayName || info?.username || '';
+    }
+    return this._meService.getUserName() || '';
+  }
+
+  /**
+   * Returns the user's email for the current auth mode.
+   */
+  getEmail(): string {
+    if (this.isOIDCEnabled()) {
+      const info = this.getOIDCUserInfo();
+      return info?.email || '';
+    }
+    return '';
+  }
+
+  /**
+   * Returns the user's avatar URL for the current auth mode.
+   */
+  getAvatarURL(): string {
+    if (this.isOIDCEnabled()) {
+      const info = this.getOIDCUserInfo();
+      return info?.avatarUrl || '';
+    }
+    return '';
+  }
+
+  /**
    * Initiates the OIDC login flow.
    * Returns a login response that may contain a redirect URL.
    */

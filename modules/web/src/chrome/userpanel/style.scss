@@ -46,6 +46,34 @@
   margin-top: 0.5 * $baseline-grid;
 }
 
+.kd-display-name {
+  font-size: $body-font-size-base;
+  font-weight: 500;
+}
+
+.kd-email {
+  font-size: $caption-font-size-base;
+  margin-top: 0.25 * $baseline-grid;
+}
+
+.kd-user-avatar {
+  margin-right: 2 * $baseline-grid;
+}
+
+.kd-avatar-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.kd-toolbar-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .method {
   font-size: $body-font-size-base;
   margin-right: 2 * $baseline-grid;
