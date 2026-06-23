@@ -56,10 +56,14 @@
   padding: 0 (2 * $baseline-grid);
   height: 48px;
   font-size: $body-font-size-base;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $baseline-grid;
 }
 
 .kd-oidc-btn-icon {
-  margin-right: $baseline-grid;
+  flex-shrink: 0;
 }
 
 .kd-oidc-alt-link {
