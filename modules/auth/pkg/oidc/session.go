@@ -186,7 +186,7 @@ func (m *SessionManager) SetSessionCookie(w http.ResponseWriter, data *SessionDa
 		MaxAge:   maxAge,
 		HttpOnly: true,
 		Secure:   isSecureRequest(w),
-		SameSite: http.SameSiteStrictMode,
+		SameSite: http.SameSiteLaxMode,
 	}
 	http.SetCookie(w, cookie)
 	return nil

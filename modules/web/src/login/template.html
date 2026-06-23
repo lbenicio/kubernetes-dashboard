@@ -50,8 +50,7 @@ limitations under the License.
           (click)="loginWithOIDC()"
           [disabled]="isOIDCLoading_"
         >
-          <mat-icon *ngIf="!isOIDCLoading_" class="kd-oidc-btn-icon">login</mat-icon>
-          <mat-spinner *ngIf="isOIDCLoading_" diameter="20" class="kd-oidc-btn-icon"></mat-spinner>
+          <mat-spinner *ngIf="isOIDCLoading_" diameter="20" class="kd-oidc-spinner"></mat-spinner>
           {{ signInLabel }}
         </button>
 

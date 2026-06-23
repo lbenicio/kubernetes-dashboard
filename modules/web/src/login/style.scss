@@ -53,17 +53,16 @@
 
 .kd-oidc-button {
   min-width: 240px;
-  padding: 0 (2 * $baseline-grid);
+  padding: 0 (3 * $baseline-grid);
   height: 48px;
   font-size: $body-font-size-base;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: $baseline-grid;
+  line-height: 48px;
 }
 
-.kd-oidc-btn-icon {
-  flex-shrink: 0;
+.kd-oidc-spinner {
+  display: inline-block;
+  margin-right: $baseline-grid;
+  vertical-align: middle;
 }
 
 .kd-oidc-alt-link {
