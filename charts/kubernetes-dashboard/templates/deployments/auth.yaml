@@ -76,6 +76,9 @@ spec:
             {{- if .Values.auth.oidc.cookieSecret }}
             - --oidc-cookie-secret={{ .Values.auth.oidc.cookieSecret }}
             {{- end }}
+            {{- if .Values.auth.oidc.skipTlsVerify }}
+            - --oidc-skip-tls-verify
+            {{- end }}
           {{- end }}
 
           env:

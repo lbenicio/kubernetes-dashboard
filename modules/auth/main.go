@@ -62,8 +62,10 @@ func initOIDC() {
 		ClientSecret: args.OIDCClientSecret(),
 		RedirectURL:  args.OIDCRedirectURL(),
 		Scopes:       args.OIDCScopes(),
-		CookieSecret: args.OIDCCookieSecret(),
-		ProviderName: args.OIDCProviderName(),
+		CookieSecret:        args.OIDCCookieSecret(),
+		ProviderName:        args.OIDCProviderName(),
+		InsecureSkipVerify:  args.OIDCSkipTLSVerify(),
+		CABundle:            args.OIDCCABundle(),
 	}
 
 	if !oidcConfig.IsEnabled() {

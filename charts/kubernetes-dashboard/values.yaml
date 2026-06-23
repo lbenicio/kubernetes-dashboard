@@ -198,6 +198,9 @@ auth:
     # Secret key used to encrypt OIDC session cookies. Must be at least 32 bytes.
     # If empty, a default key is used (not recommended for production).
     cookieSecret: ""
+    # Set to true to skip TLS certificate verification for OIDC provider connections.
+    # Required if your OIDC provider uses self-signed certificates.
+    skipTlsVerify: false
   # Labels & annotations for Auth related resources
   labels: {}
   annotations: {}

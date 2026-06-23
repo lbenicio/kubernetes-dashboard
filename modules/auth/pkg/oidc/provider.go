@@ -16,9 +16,12 @@ package oidc
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -77,6 +80,9 @@ func (p *Provider) Initialize(ctx context.Context) error {
 			TokenURL: metadata.TokenURL,
 		},
 	}
+
+	// Use the TLS-configured HTTP client for OAuth2 token exchange
+	ctx = context.WithValue(ctx, oauth2.HTTPClient, p.httpClient())
 
 	// Pre-fetch JWKS keys for ID token validation
 	if metadata.JWKSURL != "" {
@@ -294,8 +300,7 @@ func (p *Provider) fetchJWKS(ctx context.Context) error {
 		return err
 	}
 
-	client := &http.Client{Timeout: 10 * time.Second}
-	resp, err := client.Do(req)
+	resp, err := p.httpClient().Do(req)
 	if err != nil {
 		return fmt.Errorf("failed to fetch JWKS: %w", err)
 	}
@@ -324,6 +329,32 @@ func (p *Provider) fetchJWKS(ctx context.Context) error {
 	return nil
 }
 
+// httpClient returns an HTTP client configured with the OIDC TLS settings.
+func (p *Provider) httpClient() *http.Client {
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: p.config.InsecureSkipVerify,
+		},
+	}
+
+	// Load custom CA bundle if configured
+	if p.config.CABundle != "" {
+		caCert, err := os.ReadFile(p.config.CABundle)
+		if err != nil {
+			klog.Warningf("Failed to read OIDC CA bundle %s: %v", p.config.CABundle, err)
+		} else {
+			caCertPool := x509.NewCertPool()
+			caCertPool.AppendCertsFromPEM(caCert)
+			transport.TLSClientConfig.RootCAs = caCertPool
+		}
+	}
+
+	return &http.Client{
+		Transport: transport,
+		Timeout:   10 * time.Second,
+	}
+}
+
 // discover performs OIDC discovery from the issuer URL.
 func (p *Provider) discover(ctx context.Context) (*ProviderMetadata, error) {
 	wellKnown := strings.TrimRight(p.config.IssuerURL, "/") + "/.well-known/openid-configuration"
@@ -333,8 +364,7 @@ func (p *Provider) discover(ctx context.Context) (*ProviderMetadata, error) {
 		return nil, err
 	}
 
-	client := &http.Client{Timeout: 10 * time.Second}
-	resp, err := client.Do(req)
+	resp, err := p.httpClient().Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch OIDC discovery URL %s: %w", wellKnown, err)
 	}

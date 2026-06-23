@@ -30,6 +30,10 @@ type Config struct {
 	CookieSecret string
 	// ProviderName is a human-readable name for the OIDC provider.
 	ProviderName string
+	// InsecureSkipVerify skips TLS certificate verification for the OIDC provider.
+	InsecureSkipVerify bool
+	// CABundle is a path to a CA bundle for OIDC provider TLS verification.
+	CABundle string
 }
 
 // IsEnabled returns true if the OIDC provider is configured.

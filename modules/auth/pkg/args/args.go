@@ -42,6 +42,8 @@ var (
 	argOIDCScopes       = pflag.String("oidc-scopes", "openid profile email groups", "The OIDC scopes to request (space-separated).")
 	argOIDCCookieSecret = pflag.String("oidc-cookie-secret", "", "A secret key used to encrypt OIDC session cookies. Must be at least 32 bytes. Auto-generated if empty.")
 	argOIDCProviderName = pflag.String("oidc-provider-name", "", "A human-readable name for the OIDC provider displayed on the login page.")
+	argOIDCSkipTLSVerify = pflag.Bool("oidc-skip-tls-verify", false, "Skip TLS certificate verification for OIDC provider connections.")
+	argOIDCCABundle     = pflag.String("oidc-ca-bundle", "", "Path to a CA bundle file for OIDC provider TLS verification.")
 )
 
 func init() {
@@ -109,4 +111,12 @@ func OIDCCookieSecret() string {
 
 func OIDCProviderName() string {
 	return *argOIDCProviderName
+}
+
+func OIDCSkipTLSVerify() bool {
+	return *argOIDCSkipTLSVerify
+}
+
+func OIDCCABundle() string {
+	return *argOIDCCABundle
 }
