@@ -32,6 +32,10 @@ import {CONFIG_DI_TOKEN} from '../index.config';
 export class LoginComponent implements OnInit {
   errors: KdError[] = [];
   private token_: string;
+  isOIDCEnabled_ = false;
+  isOIDCLoading_ = false;
+  isTokenMode_ = false;
+
   constructor(
     private readonly authService_: AuthService,
     private readonly ngZone_: NgZone,
@@ -46,8 +50,61 @@ export class LoginComponent implements OnInit {
         this.errors = [state.error];
       }
     });
+
+    // Check if OIDC is configured
+    this.authService_.getOIDCConfig().subscribe(config => {
+      this.isOIDCEnabled_ = config.enabled;
+    });
+
+    // Check if we're returning from an OIDC callback
+    // The callback sets the token cookie and redirects to /
+    // If we're at /login with a token cookie, redirect to main page
+    if (this.authService_.hasTokenCookie()) {
+      this.authService_.loginWithOIDC().subscribe({
+        error: () => {}, // Ignore errors, token might already be valid
+      });
+      this.ngZone_.run(() => this.historyService_.goToPreviousState('workloads'));
+    }
   }
 
+  /**
+   * Initiates OIDC login by redirecting to the OIDC provider.
+   */
+  loginWithOIDC(): void {
+    this.isOIDCLoading_ = true;
+    this.errors = [];
+
+    this.authService_.loginWithOIDC().subscribe({
+      next: response => {
+        if (response.redirectUrl) {
+          // Redirect the browser to the OIDC provider
+          window.location.href = response.redirectUrl;
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        this.isOIDCLoading_ = false;
+        this.errors = [AsKdError(err)];
+      },
+    });
+  }
+
+  /**
+   * Switches to token-based login mode.
+   */
+  showTokenLogin(): void {
+    this.isTokenMode_ = true;
+  }
+
+  /**
+   * Switches back to OIDC login mode.
+   */
+  hideTokenLogin(): void {
+    this.isTokenMode_ = false;
+  }
+
+  /**
+   * Performs token-based login.
+   */
   login(): void {
     this.authService_.login(this.getLoginSpec_()).subscribe({
       next: () => this.ngZone_.run(() => this.historyService_.goToPreviousState('workloads')),

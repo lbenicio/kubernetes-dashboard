@@ -15,12 +15,15 @@
 package main
 
 import (
+	"context"
 	"os"
+	"time"
 
 	"k8s.io/klog/v2"
 
 	"k8s.io/dashboard/auth/pkg/args"
 	"k8s.io/dashboard/auth/pkg/environment"
+	"k8s.io/dashboard/auth/pkg/oidc"
 	"k8s.io/dashboard/auth/pkg/router"
 	"k8s.io/dashboard/client"
 
@@ -28,6 +31,7 @@ import (
 	_ "k8s.io/dashboard/auth/pkg/routes/csrftoken"
 	_ "k8s.io/dashboard/auth/pkg/routes/login"
 	_ "k8s.io/dashboard/auth/pkg/routes/me"
+	oidcRoutes "k8s.io/dashboard/auth/pkg/routes/oidc"
 )
 
 func main() {
@@ -41,9 +45,44 @@ func main() {
 		client.WithCaBundle(args.ApiServerCaBundle()),
 	)
 
+	// Initialize OIDC provider if configured
+	initOIDC()
+
 	klog.V(1).InfoS("Listening and serving insecurely on", "address", args.Address())
 	if err := router.Router().Run(args.Address()); err != nil {
 		klog.ErrorS(err, "Router error")
 		os.Exit(1)
 	}
+}
+
+func initOIDC() {
+	oidcConfig := &oidc.Config{
+		IssuerURL:    args.OIDCIssuerURL(),
+		ClientID:     args.OIDCClientID(),
+		ClientSecret: args.OIDCClientSecret(),
+		RedirectURL:  args.OIDCRedirectURL(),
+		Scopes:       args.OIDCScopes(),
+		CookieSecret: args.OIDCCookieSecret(),
+		ProviderName: args.OIDCProviderName(),
+	}
+
+	if !oidcConfig.IsEnabled() {
+		klog.InfoS("OIDC is not configured. Token-based authentication will be used.")
+		return
+	}
+
+	provider := oidc.NewProvider(oidcConfig)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	if err := provider.Initialize(ctx); err != nil {
+		klog.ErrorS(err, "Failed to initialize OIDC provider. OIDC authentication will be disabled.")
+		return
+	}
+
+	// Set the global provider for routes to use
+	oidcRoutes.Provider = provider
+
+	klog.InfoS("OIDC authentication enabled", "provider", oidcConfig.ProviderName)
 }

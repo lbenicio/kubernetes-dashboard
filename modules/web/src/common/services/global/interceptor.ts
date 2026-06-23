@@ -31,18 +31,41 @@ export class AuthInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    // If user is authenticated via auth header (not cookie), pass through unchanged
     if (this._authService.isAuthenticated() && !this._authService.hasTokenCookie()) {
       return next.handle(req);
     }
 
+    // OIDC mode: use impersonation headers instead of bearer token
+    // This avoids needing OIDC configuration on the Kubernetes API server.
+    // The API/web modules detect impersonation headers and use their in-cluster
+    // service account tokens for authentication.
+    if (this._authService.isOIDCEnabled()) {
+      const userInfo = this._authService.getOIDCUserInfo();
+      if (userInfo && userInfo.username) {
+        let authReq = req.clone({
+          headers: req.headers.set('Impersonate-User', userInfo.username),
+        });
+
+        // Add group impersonation headers
+        if (userInfo.groups && userInfo.groups.length > 0) {
+          userInfo.groups.forEach(group => {
+            authReq = authReq.clone({
+              headers: authReq.headers.append('Impersonate-Group', group),
+            });
+          });
+        }
+
+        return next.handle(authReq);
+      }
+    }
+
+    // Token-based auth: read the bearer token from cookie and add Authorization header
     const token = this.cookies_.get(this.appConfig_.authTokenCookieName);
-    // Filter requests made to our backend starting with 'api/v1' and append request header
-    // with token stored in a cookie.
     if ((req.url.startsWith('api/v1') || req.url.startsWith('settings')) && !!token) {
       const authReq = req.clone({
         headers: req.headers.set(this.appConfig_.authTokenHeaderName, `Bearer ${token}`),
       });
-
       return next.handle(authReq);
     }
 

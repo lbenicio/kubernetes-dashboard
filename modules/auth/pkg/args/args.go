@@ -18,6 +18,7 @@ import (
 	"flag"
 	"fmt"
 	"net"
+	"os"
 
 	"github.com/spf13/pflag"
 	"k8s.io/klog/v2"
@@ -31,7 +32,16 @@ var (
 	argKubeconfig             = pflag.String("kubeconfig", "", "path to kubeconfig file")
 	argApiServerHost          = pflag.String("apiserver-host", "", "address of the Kubernetes API server to connect to in the format of protocol://address:port, leave it empty if the binary runs inside cluster for local discovery attempt")
 	argApiServerSkipTLSVerify = pflag.Bool("apiserver-skip-tls-verify", false, "enable if connection with remote Kubernetes API server should skip TLS verify")
-	argApiServerCaBundle				 = pflag.String("apiserver-ca-bundle", "", "file containing the x509 certificates used for HTTPS connection to the API Server")
+	argApiServerCaBundle      = pflag.String("apiserver-ca-bundle", "", "file containing the x509 certificates used for HTTPS connection to the API Server")
+
+	// OIDC configuration flags
+	argOIDCIssuerURL    = pflag.String("oidc-issuer-url", "", "The URL of the OIDC provider (e.g., https://accounts.google.com). Enables OIDC authentication when set.")
+	argOIDCClientID     = pflag.String("oidc-client-id", "", "The OIDC client ID registered with the provider.")
+	argOIDCClientSecret = pflag.String("oidc-client-secret", "", "The OIDC client secret registered with the provider.")
+	argOIDCRedirectURL  = pflag.String("oidc-redirect-url", "", "The OIDC redirect/callback URL. If empty, it is auto-generated from the request.")
+	argOIDCScopes       = pflag.String("oidc-scopes", "openid profile email groups", "The OIDC scopes to request (space-separated).")
+	argOIDCCookieSecret = pflag.String("oidc-cookie-secret", "", "A secret key used to encrypt OIDC session cookies. Must be at least 32 bytes. Auto-generated if empty.")
+	argOIDCProviderName = pflag.String("oidc-provider-name", "", "A human-readable name for the OIDC provider displayed on the login page.")
 )
 
 func init() {
@@ -66,4 +76,37 @@ func ApiServerCaBundle() string {
 
 func Address() string {
 	return fmt.Sprintf("%s:%d", *argAddress, *argPort)
+}
+
+// OIDC configuration getters
+
+func OIDCIssuerURL() string {
+	return *argOIDCIssuerURL
+}
+
+func OIDCClientID() string {
+	return *argOIDCClientID
+}
+
+func OIDCClientSecret() string {
+	if secret := os.Getenv("OIDC_CLIENT_SECRET"); secret != "" {
+		return secret
+	}
+	return *argOIDCClientSecret
+}
+
+func OIDCRedirectURL() string {
+	return *argOIDCRedirectURL
+}
+
+func OIDCScopes() string {
+	return *argOIDCScopes
+}
+
+func OIDCCookieSecret() string {
+	return *argOIDCCookieSecret
+}
+
+func OIDCProviderName() string {
+	return *argOIDCProviderName
 }

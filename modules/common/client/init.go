@@ -171,17 +171,29 @@ func buildConfigFromAuthInfo(authInfo *api.AuthInfo) (*rest.Config, error) {
 }
 
 func buildAuthInfo(request *http.Request) (*api.AuthInfo, error) {
+	authInfo := &api.AuthInfo{
+		ImpersonateUserExtra: make(map[string][]string),
+	}
+
+	// Check for impersonation headers first.
+	// When impersonation is active, we use the in-cluster service account token
+	// for authentication instead of requiring a bearer token. This enables
+	// OIDC-based authentication without configuring the Kubernetes API server
+	// for OIDC - the dashboard's service account impersonates the OIDC user.
+	handleImpersonation(authInfo, request)
+
+	if authInfo.Impersonate != "" {
+		// Use the in-cluster SA token from baseConfig for authentication
+		authInfo.Token = baseConfig.BearerToken
+		return authInfo, nil
+	}
+
+	// Fall back to bearer token authentication (existing behavior)
 	if !HasAuthorizationHeader(request) {
 		return nil, errors.NewUnauthorized(errors.MsgLoginUnauthorizedError)
 	}
 
-	token := GetBearerToken(request)
-	authInfo := &api.AuthInfo{
-		Token:                token,
-		ImpersonateUserExtra: make(map[string][]string),
-	}
-
-	handleImpersonation(authInfo, request)
+	authInfo.Token = GetBearerToken(request)
 	return authInfo, nil
 }
 

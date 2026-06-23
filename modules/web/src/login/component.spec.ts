@@ -64,6 +64,22 @@ class MockAuthService {
     return of(errors);
   }
 
+  getOIDCConfig(): Observable<any> {
+    return of({enabled: false});
+  }
+
+  loginWithOIDC(): Observable<any> {
+    return of({});
+  }
+
+  hasTokenCookie(): boolean {
+    return false;
+  }
+
+  isOIDCEnabled(): boolean {
+    return false;
+  }
+
   skipLoginPage(): void {}
 
   isLoginEnabled(): boolean {

@@ -43,6 +43,10 @@ data:
             paths:
               - /api/v1/me
             strip_path: false
+          - name: authOIDC
+            paths:
+              - /api/v1/oidc
+            strip_path: false
       - name: api
         host: {{ template "kubernetes-dashboard.fullname" . }}-{{ .Values.api.role }}
         port: 8000

@@ -1304,6 +1304,29 @@ export interface SJSMessageEvent extends SockJSSimpleEvent {
   data: string;
 }
 
+export interface OIDCConfig {
+  enabled: boolean;
+  providerName?: string;
+  providerUrl?: string;
+  clientId?: string;
+  scopes?: string;
+}
+
+export interface OIDCLoginResponse {
+  redirectUrl?: string;
+  token?: string;
+}
+
+export interface OIDCUserInfo {
+  username: string;
+  groups: string[];
+}
+
+export interface OIDCSession {
+  token?: string;
+  user: OIDCUserInfo;
+}
+
 export interface User {
   name: string;
   authenticated: boolean;

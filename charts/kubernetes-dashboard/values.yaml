@@ -176,6 +176,28 @@ auth:
     - name: tmp-volume
       emptyDir: {}
   nodeSelector: {}
+  # OIDC authentication configuration
+  oidc:
+    # Enable OIDC authentication. When enabled, users can sign in through an OIDC provider.
+    enabled: false
+    # The URL of the OIDC provider's issuer (e.g., https://accounts.google.com).
+    issuerUrl: ""
+    # The OIDC client ID registered with the provider.
+    clientId: ""
+    # The OIDC client secret. It's recommended to use an existing secret and reference it via existingSecret.
+    clientSecret: ""
+    # Name of an existing Kubernetes secret containing the OIDC client secret.
+    # The secret must have a key named 'clientSecret'.
+    existingSecret: ""
+    # The OIDC redirect/callback URL. If empty, it is auto-generated from the request.
+    redirectUrl: ""
+    # The OIDC scopes to request (space-separated). Defaults to "openid profile email groups".
+    scopes: "openid profile email groups"
+    # A human-readable name for the OIDC provider displayed on the login page.
+    providerName: ""
+    # Secret key used to encrypt OIDC session cookies. Must be at least 32 bytes.
+    # If empty, a default key is used (not recommended for production).
+    cookieSecret: ""
   # Labels & annotations for Auth related resources
   labels: {}
   annotations: {}

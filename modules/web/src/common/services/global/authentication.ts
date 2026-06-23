@@ -18,8 +18,8 @@ import {Router} from '@angular/router';
 import {IConfig} from '@api/root.ui';
 import {CookieService} from 'ngx-cookie-service';
 import {Observable} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
-import {AuthResponse, CsrfToken, LoginSpec, User} from 'typings/root.api';
+import {switchMap, tap} from 'rxjs/operators';
+import {AuthResponse, CsrfToken, LoginSpec, OIDCConfig, OIDCLoginResponse, OIDCSession, OIDCUserInfo, User} from 'typings/root.api';
 import {CONFIG_DI_TOKEN} from '../../../index.config';
 import {CsrfTokenService} from './csrftoken';
 import {KdStateService} from './state';
@@ -29,6 +29,7 @@ import {MeService} from '@common/services/global/me';
 @Injectable()
 export class AuthService {
   private _hasAuthHeader = false;
+  private _oidcConfig: OIDCConfig | null = null;
 
   constructor(
     private readonly cookies_: CookieService,
@@ -40,6 +41,73 @@ export class AuthService {
     @Inject(CONFIG_DI_TOKEN) private readonly config_: IConfig
   ) {
     this.stateService_.onBefore.subscribe(_ => this.refreshToken());
+  }
+
+  /**
+   * Fetches the OIDC configuration from the backend.
+   */
+  getOIDCConfig(): Observable<OIDCConfig> {
+    return this.http_.get<OIDCConfig>('api/v1/oidc/config').pipe(
+      tap(config => (this._oidcConfig = config))
+    );
+  }
+
+  /**
+   * Returns the cached OIDC configuration.
+   */
+  oidcConfig(): OIDCConfig | null {
+    return this._oidcConfig;
+  }
+
+  /**
+   * Whether OIDC is enabled and available for login.
+   */
+  isOIDCEnabled(): boolean {
+    return this._oidcConfig?.enabled ?? false;
+  }
+
+  /**
+   * Fetches the current OIDC session info from the server.
+   * Returns user info needed for impersonation-based K8s API access.
+   */
+  getOIDCSession(): Observable<OIDCSession> {
+    return this.http_.get<OIDCSession>('api/v1/oidc/session');
+  }
+
+  /**
+   * Returns the OIDC user info stored in the oidc-user cookie, or null.
+   */
+  getOIDCUserInfo(): OIDCUserInfo | null {
+    try {
+      const cookieValue = this.cookies_.get('oidc-user');
+      if (!cookieValue) return null;
+      const decoded = atob(cookieValue);
+      return JSON.parse(decoded) as OIDCUserInfo;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Initiates the OIDC login flow.
+   * Returns a login response that may contain a redirect URL.
+   */
+  loginWithOIDC(): Observable<OIDCLoginResponse> {
+    return this.http_.get<OIDCLoginResponse>('api/v1/oidc/login');
+  }
+
+  /**
+   * Refreshes the OIDC token using the refresh token.
+   */
+  refreshOIDCToken(): Observable<OIDCLoginResponse> {
+    return this.http_.post<OIDCLoginResponse>('api/v1/oidc/refresh', {});
+  }
+
+  /**
+   * Logs out from OIDC, clearing the session on both client and server.
+   */
+  logoutOIDC(): Observable<any> {
+    return this.http_.post<any>('api/v1/oidc/logout', {});
   }
 
   /**
@@ -67,6 +135,26 @@ export class AuthService {
   }
 
   logout(): void {
+    this.removeTokenCookie();
+    this._meService.reset();
+    this.router_.navigate(['login']);
+  }
+
+  /**
+   * Performs a full logout including OIDC if configured.
+   */
+  fullLogout(): void {
+    if (this.isOIDCEnabled()) {
+      this.logoutOIDC().subscribe({
+        next: () => this.completeLogout_(),
+        error: () => this.completeLogout_(),
+      });
+    } else {
+      this.completeLogout_();
+    }
+  }
+
+  private completeLogout_(): void {
     this.removeTokenCookie();
     this._meService.reset();
     this.router_.navigate(['login']);
