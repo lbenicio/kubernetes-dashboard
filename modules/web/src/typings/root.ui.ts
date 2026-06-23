@@ -100,6 +100,7 @@ export interface SemverInfoOptions {
 export interface RatioItem {
   name: string;
   value: number;
+  status?: string; // 'running', 'failed', 'pending', 'succeeded', 'suspended'
 }
 
 export interface ResourcesRatio {

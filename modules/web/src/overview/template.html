@@ -24,42 +24,60 @@ limitations under the License.
 <div>
   <kd-graph-metrics [metrics]="cumulativeMetrics"></kd-graph-metrics>
 
-  <kd-workload-statuses
-    *ngIf="showWorkloadStatuses()"
-    [resourcesRatio]="resourcesRatio"
-  ></kd-workload-statuses>
+  	<kd-workload-statuses
+  		*ngIf="showWorkloadStatuses()"
+  		[resourcesRatio]="resourcesRatio"
+  		(filterByStatus)="onStatusFilterChange($event)"
+  	></kd-workload-statuses>
+
+  	<!-- Status filter indicator -->
+  	<div *ngIf="statusFilter" class="kd-status-filter-bar" fxLayout="row" fxLayoutAlign="start center">
+  		<mat-icon class="kd-muted">filter_alt</mat-icon>
+  		<span class="kd-muted">
+  			Showing {{ statusFilter }} resources —
+  			<button mat-button color="primary" (click)="statusFilter = ''">Clear filter</button>
+  		</span>
+  	</div>
 
   <kd-cron-job-list
     (onchange)="onListUpdate($event)"
     [hideable]="true"
+    [statusFilter]="statusFilter"
   ></kd-cron-job-list>
   <kd-daemon-set-list
     (onchange)="onListUpdate($event)"
     [hideable]="true"
+    [statusFilter]="statusFilter"
   ></kd-daemon-set-list>
   <kd-deployment-list
     (onchange)="onListUpdate($event)"
     [hideable]="true"
+    [statusFilter]="statusFilter"
   ></kd-deployment-list>
   <kd-job-list
     (onchange)="onListUpdate($event)"
     [hideable]="true"
+    [statusFilter]="statusFilter"
   ></kd-job-list>
   <kd-pod-list
     (onchange)="onListUpdate($event)"
     [hideable]="true"
+    [statusFilter]="statusFilter"
   ></kd-pod-list>
   <kd-replica-set-list
     (onchange)="onListUpdate($event)"
     [hideable]="true"
+    [statusFilter]="statusFilter"
   ></kd-replica-set-list>
   <kd-replication-controller-list
     (onchange)="onListUpdate($event)"
     [hideable]="true"
+    [statusFilter]="statusFilter"
   ></kd-replication-controller-list>
   <kd-stateful-set-list
     (onchange)="onListUpdate($event)"
     [hideable]="true"
+    [statusFilter]="statusFilter"
   ></kd-stateful-set-list>
 </div>
 

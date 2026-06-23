@@ -41,6 +41,7 @@ limitations under the License.
           [animations]="animations"
           [labels]="labels"
           [trimLabels]="trimLabels"
+          (select)="onPieSelect($event, 'cronJobRatio')"
         >
           <ng-template
             #tooltipTemplate
@@ -73,6 +74,7 @@ limitations under the License.
           [animations]="animations"
           [labels]="labels"
           [trimLabels]="trimLabels"
+          (select)="onPieSelect($event, 'daemonSetRatio')"
         >
           <ng-template
             #tooltipTemplate
@@ -105,6 +107,7 @@ limitations under the License.
           [animations]="animations"
           [labels]="labels"
           [trimLabels]="trimLabels"
+          (select)="onPieSelect($event, 'deploymentRatio')"
         >
           <ng-template
             #tooltipTemplate
@@ -137,6 +140,7 @@ limitations under the License.
           [animations]="animations"
           [labels]="labels"
           [trimLabels]="trimLabels"
+          (select)="onPieSelect($event, 'jobRatio')"
         >
           <ng-template
             #tooltipTemplate
@@ -169,7 +173,7 @@ limitations under the License.
           [animations]="animations"
           [labels]="labels"
           [trimLabels]="trimLabels"
-          id="kd-graph-pods"
+          (select)="onPieSelect($event, 'podRatio')"
         >
           <ng-template
             #tooltipTemplate
@@ -202,6 +206,7 @@ limitations under the License.
           [animations]="animations"
           [labels]="labels"
           [trimLabels]="trimLabels"
+          (select)="onPieSelect($event, 'replicaSetRatio')"
         >
           <ng-template
             #tooltipTemplate
@@ -234,6 +239,7 @@ limitations under the License.
           [animations]="animations"
           [labels]="labels"
           [trimLabels]="trimLabels"
+          (select)="onPieSelect($event, 'replicationControllerRatio')"
         >
           <ng-template
             #tooltipTemplate
@@ -266,6 +272,7 @@ limitations under the License.
           [animations]="animations"
           [labels]="labels"
           [trimLabels]="trimLabels"
+          (select)="onPieSelect($event, 'statefulSetRatio')"
         >
           <ng-template
             #tooltipTemplate

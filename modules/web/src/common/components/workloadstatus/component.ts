@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {ResourcesRatio} from '@api/root.ui';
 
 export const emptyResourcesRatio: ResourcesRatio = {
@@ -26,6 +26,18 @@ export const emptyResourcesRatio: ResourcesRatio = {
   statefulSetRatio: [],
 };
 
+/** Maps a resource ratio key to its resource list route. */
+const RESOURCE_ROUTES: Record<string, string> = {
+  cronJobRatio: 'cronjob',
+  daemonSetRatio: 'daemonset',
+  deploymentRatio: 'deployment',
+  jobRatio: 'job',
+  podRatio: 'pod',
+  replicaSetRatio: 'replicaset',
+  replicationControllerRatio: 'replicationcontroller',
+  statefulSetRatio: 'statefulset',
+};
+
 @Component({
   selector: 'kd-workload-statuses',
   templateUrl: './template.html',
@@ -33,6 +45,8 @@ export const emptyResourcesRatio: ResourcesRatio = {
 })
 export class WorkloadStatusComponent {
   @Input() resourcesRatio = emptyResourcesRatio;
+  @Output() filterByStatus = new EventEmitter<{resource: string; status: string}>();
+
   colors: string[] = [];
   animations = false;
   labels = true;
@@ -50,5 +64,22 @@ export class WorkloadStatusComponent {
       return '#f00';
     }
     return '';
+  }
+
+  /**
+   * Handles clicks on pizza chart slices.
+   * Emits a filter event to show only resources with the selected status.
+   */
+  onPieSelect(event: {name: string; status?: string}, resourceKey: string): void {
+    if (!event) return;
+
+    const resource = RESOURCE_ROUTES[resourceKey];
+    if (!resource) return;
+
+    // Use the status field from the RatioItem if available
+    const status = event.status || '';
+    if (!status) return;
+
+    this.filterByStatus.emit({resource, status});
   }
 }

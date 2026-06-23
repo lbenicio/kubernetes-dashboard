@@ -27,10 +27,11 @@ export class Helper {
       return [];
     }
 
-    let items = [
+    let items: RatioItem[] = [
       {
         name: $localize`Running: ${status.running}`,
         value: (status.running / totalItems) * 100,
+        status: 'running',
       },
     ];
 
@@ -39,6 +40,7 @@ export class Helper {
         items.push({
           name: $localize`Suspended: ${status.failed}`,
           value: (status.failed / totalItems) * 100,
+          status: 'suspended',
         });
         break;
       case ResourceRatioModes.Completable:
@@ -46,14 +48,17 @@ export class Helper {
           {
             name: $localize`Failed: ${status.failed}`,
             value: (status.failed / totalItems) * 100,
+            status: 'failed',
           },
           {
             name: $localize`Pending: ${status.pending}`,
             value: (status.pending / totalItems) * 100,
+            status: 'pending',
           },
           {
             name: $localize`Succeeded: ${status.succeeded}`,
             value: (status.succeeded / totalItems) * 100,
+            status: 'succeeded',
           },
         ]);
         break;
@@ -62,10 +67,12 @@ export class Helper {
           {
             name: $localize`Failed: ${status.failed}`,
             value: (status.failed / totalItems) * 100,
+            status: 'failed',
           },
           {
             name: $localize`Pending: ${status.pending}`,
             value: (status.pending / totalItems) * 100,
+            status: 'pending',
           },
         ]);
         break;

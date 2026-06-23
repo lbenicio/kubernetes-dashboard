@@ -22,6 +22,9 @@ import {GroupedResourceList} from '@common/resources/groupedlist';
   templateUrl: './template.html',
 })
 export class OverviewComponent extends GroupedResourceList {
+  /** The currently active status filter for all resource lists. */
+  statusFilter = '';
+
   hasCluster(): boolean {
     return this.isGroupVisible(ListGroupIdentifier.cluster);
   }
@@ -40,5 +43,19 @@ export class OverviewComponent extends GroupedResourceList {
 
   showWorkloadStatuses(): boolean {
     return Object.values(this.resourcesRatio).reduce((sum, ratioItems) => sum + ratioItems.length, 0) !== 0;
+  }
+
+  /**
+   * Handles clicks on pizza chart slices.
+   * Filters all resource lists to show only resources with the given status.
+   * Clicking the same status again clears the filter.
+   */
+  onStatusFilterChange(event: {resource: string; status: string}): void {
+    if (this.statusFilter === event.status) {
+      // Toggle off
+      this.statusFilter = '';
+    } else {
+      this.statusFilter = event.status;
+    }
   }
 }

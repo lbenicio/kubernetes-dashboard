@@ -66,9 +66,9 @@ export abstract class ResourceListBase<T extends ResourceList, R extends Resourc
   protected readonly settingsService_: GlobalSettingsService;
   protected readonly namespaceService_: NamespaceService;
   // Base properties
-  private readonly actionColumns_: Array<ActionColumnDef<ActionColumn>> = [];
-  private readonly data_ = new MatTableDataSource<R>();
-  private stateName_ = '';
+  	private readonly actionColumns_: Array<ActionColumnDef<ActionColumn>> = [];
+  	protected readonly data_ = new MatTableDataSource<R>();
+  	private stateName_ = '';
   private listUpdates_ = new Subject<void>();
   private loaded_ = false;
   private readonly dynamicColumns_: ColumnWhenCondition[] = [];
@@ -122,13 +122,14 @@ export abstract class ResourceListBase<T extends ResourceList, R extends Resourc
       .pipe(tap(_ => (this.isLoading = true)))
       .pipe(switchMap(() => this.getResourceObservable(this.getDataSelectParams_())))
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((data: T) => {
-        this.notifications_.pushErrors(data.errors);
-        this.totalItems = data.listMeta.totalItems;
-        this.data_.data = this.map(data);
-        this.isLoading = false;
-        this.loaded_ = true;
-        this.onListChange_(data);
+	      .subscribe((data: T) => {
+	        this.notifications_.pushErrors(data.errors);
+	        this.totalItems = data.listMeta.totalItems;
+	        this.data_.data = this.map(data);
+	        this.onDataLoaded_(this.data_.data);
+	        this.isLoading = false;
+	        this.loaded_ = true;
+	        this.onListChange_(data);
 
         if (this.cdr_) {
           this.cdr_.markForCheck();
@@ -362,6 +363,15 @@ export abstract class ResourceListWithStatuses<T extends ResourceList, R extends
 > {
   expandedRowKey: string = undefined;
   hoveredRowKey: string = undefined;
+  @Input() set statusFilter(value: string) {
+    this._statusFilter = value;
+    this.applyStatusFilter_();
+  }
+  get statusFilter(): string {
+    return this._statusFilter;
+  }
+  private _statusFilter = '';
+  private _allResources: R[] = [];
   protected icon = IconName;
   private readonly bindings_: {[hash: number]: StateBinding<R>} = {};
   private lastHash_: number;
@@ -447,10 +457,50 @@ export abstract class ResourceListWithStatuses<T extends ResourceList, R extends
     return false;
   }
 
-  protected registerBinding(iconClass: string, callbackFunction: StatusCheckCallback<R>, status = ''): void {
-    const icon = new Icon(IconName.circle, iconClass, status);
-    this.bindings_[icon.hash()] = {icon, callbackFunction};
-  }
+  	protected registerBinding(iconClass: string, callbackFunction: StatusCheckCallback<R>, status = ''): void {
+  		const icon = new Icon(IconName.circle, iconClass, status);
+  		this.bindings_[icon.hash()] = {icon, callbackFunction};
+  	}
+
+  	/** Stores unfiltered data and applies the current status filter. */
+  	protected onDataLoaded_(resources: R[]): void {
+  		this._allResources = resources;
+  		this.applyStatusFilter_();
+  	}
+
+  	/** Applies the status filter to show only resources matching the filter. */
+  	private applyStatusFilter_(): void {
+  		if (!this._statusFilter || !this._allResources.length) {
+  			this.data_.data = this._allResources;
+  			return;
+  		}
+
+  		switch (this._statusFilter) {
+  			case 'failed':
+  				this.data_.data = this._allResources.filter(r => this.hasErrors(r));
+  				break;
+  			case 'pending':
+  				this.data_.data = this._allResources.filter(r => !this.hasErrors(r) && this.isPending(r));
+  				break;
+  			case 'running':
+  				this.data_.data = this._allResources.filter(r => !this.hasErrors(r) && !this.isPending(r));
+  				break;
+  			default:
+  				this.data_.data = this._allResources;
+  		}
+
+  		if (this.cdr_) {
+  			this.cdr_.markForCheck();
+  		}
+  	}
+
+  	/**
+  	 * Returns true if the resource is in a pending/non-ready state.
+  	 * Override in child classes that have pending status detection.
+  	 */
+  	protected isPending(_resource: R): boolean {
+  		return false;
+  	}
 
   private getStatusObject_(stateBinding: StateBinding<R>): StatusIcon {
     return {
