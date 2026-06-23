@@ -61,7 +61,7 @@ export const CONFIG: IConfig = {
   authTokenCookieName: 'token',
   authTokenHeaderName: 'Authorization',
   csrfHeaderName: 'X-CSRF-TOKEN',
-  defaultNamespace: 'default',
+  defaultNamespace: '_all',
   supportedLanguages: supportedLanguages,
   defaultLanguage: 'en',
   languageCookieName: 'lang',

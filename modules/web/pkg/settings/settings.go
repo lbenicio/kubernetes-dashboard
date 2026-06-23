@@ -29,7 +29,7 @@ var defaultSettings = Settings{
 	ResourceAutoRefreshTimeInterval:  lo.ToPtr(10),
 	DisableAccessDeniedNotifications: lo.ToPtr(false),
 	HideAllNamespaces:                lo.ToPtr(false),
-	DefaultNamespace:                 lo.ToPtr("default"),
+	DefaultNamespace:                 lo.ToPtr("_all"),
 	NamespaceFallbackList:            []string{"default"},
 }
 

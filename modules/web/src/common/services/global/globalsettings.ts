@@ -30,7 +30,7 @@ export const DEFAULT_SETTINGS: GlobalSettings = {
   resourceAutoRefreshTimeInterval: 5,
   disableAccessDeniedNotifications: false,
   hideAllNamespaces: false,
-  defaultNamespace: 'default',
+  defaultNamespace: '_all',
   namespaceFallbackList: ['default'],
 };
 

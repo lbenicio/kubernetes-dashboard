@@ -33,6 +33,9 @@ import {ResourceService} from '../../services/resource/resource';
 import {NamespaceChangeDialogComponent} from './changedialog/dialog';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
+/** Namespaces that are always hidden from the UI. */
+const HIDDEN_NAMESPACES = new Set(['kube-node-lease', 'kube-public']);
+
 @Component({
   selector: 'kd-namespace-selector',
   templateUrl: './template.html',
@@ -172,7 +175,9 @@ export class NamespaceSelectorComponent implements OnInit {
       .subscribe({
         next: namespaceList => {
           this.usingFallbackNamespaces = false;
-          this.namespaces = namespaceList.namespaces.map(n => n.objectMeta.name);
+          this.namespaces = namespaceList.namespaces
+            .map(n => n.objectMeta.name)
+            .filter(ns => !HIDDEN_NAMESPACES.has(ns));
 
           if (!this.namespaces || this.namespaces.length === 0) {
             this.usingFallbackNamespaces = true;
