@@ -81,9 +81,6 @@ func (p *Provider) Initialize(ctx context.Context) error {
 		},
 	}
 
-	// Use the TLS-configured HTTP client for OAuth2 token exchange
-	ctx = context.WithValue(ctx, oauth2.HTTPClient, p.httpClient())
-
 	// Pre-fetch JWKS keys for ID token validation
 	if metadata.JWKSURL != "" {
 		if err := p.fetchJWKS(ctx); err != nil {
@@ -149,6 +146,9 @@ func (p *Provider) Exchange(ctx context.Context, code string, verifier string) (
 	opts := []oauth2.AuthCodeOption{
 		oauth2.VerifierOption(verifier),
 	}
+
+	// Use the TLS-configured HTTP client for token exchange
+	ctx = context.WithValue(ctx, oauth2.HTTPClient, p.httpClient())
 
 	token, err := p.oauth2Cfg.Exchange(ctx, code, opts...)
 	if err != nil {
