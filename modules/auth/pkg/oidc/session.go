@@ -134,7 +134,7 @@ func (m *SessionManager) SetTokenCookie(w http.ResponseWriter, token string, exp
 		MaxAge:   maxAge,
 		HttpOnly: false, // Frontend needs to read this for the Authorization header
 		Secure:   isSecureRequest(w),
-		SameSite: http.SameSiteStrictMode,
+		SameSite: http.SameSiteLaxMode,
 	}
 	http.SetCookie(w, cookie)
 }
@@ -162,7 +162,7 @@ func (m *SessionManager) SetUserInfoCookie(w http.ResponseWriter, userInfo *OIDC
 		MaxAge:   maxAge,
 		HttpOnly: false, // Frontend needs to read this for impersonation headers
 		Secure:   isSecureRequest(w),
-		SameSite: http.SameSiteStrictMode,
+		SameSite: http.SameSiteLaxMode,
 	}
 	http.SetCookie(w, cookie)
 }
