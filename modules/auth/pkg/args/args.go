@@ -44,6 +44,12 @@ var (
 	argOIDCProviderName = pflag.String("oidc-provider-name", "", "A human-readable name for the OIDC provider displayed on the login page.")
 	argOIDCSkipTLSVerify = pflag.Bool("oidc-skip-tls-verify", false, "Skip TLS certificate verification for OIDC provider connections.")
 	argOIDCCABundle     = pflag.String("oidc-ca-bundle", "", "Path to a CA bundle file for OIDC provider TLS verification.")
+	argOIDCUsernameClaim = pflag.String("oidc-username-claim", "email", "The OIDC claim to use as the Kubernetes username (e.g., email, sub, name).")
+	argOIDCGroupsClaim   = pflag.String("oidc-groups-claim", "groups", "The OIDC claim to use for Kubernetes groups.")
+	argOIDCAvatarClaim   = pflag.String("oidc-avatar-claim", "picture", "The OIDC claim to use for the user avatar URL.")
+	argOIDCNameClaim     = pflag.String("oidc-name-claim", "name", "The OIDC claim to use for the display name.")
+	argOIDCEmailClaim    = pflag.String("oidc-email-claim", "email", "The OIDC claim to use for the email address.")
+	argOIDCAllowedGroup  = pflag.String("oidc-allowed-group", "", "If set, only users in this group are allowed to access the dashboard.")
 )
 
 func init() {
@@ -119,4 +125,28 @@ func OIDCSkipTLSVerify() bool {
 
 func OIDCCABundle() string {
 	return *argOIDCCABundle
+}
+
+func OIDCUsernameClaim() string {
+	return *argOIDCUsernameClaim
+}
+
+func OIDCGroupsClaim() string {
+	return *argOIDCGroupsClaim
+}
+
+func OIDCAvatarClaim() string {
+	return *argOIDCAvatarClaim
+}
+
+func OIDCNameClaim() string {
+	return *argOIDCNameClaim
+}
+
+func OIDCEmailClaim() string {
+	return *argOIDCEmailClaim
+}
+
+func OIDCAllowedGroup() string {
+	return *argOIDCAllowedGroup
 }

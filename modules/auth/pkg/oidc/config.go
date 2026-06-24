@@ -34,6 +34,18 @@ type Config struct {
 	InsecureSkipVerify bool
 	// CABundle is a path to a CA bundle for OIDC provider TLS verification.
 	CABundle string
+	// UsernameClaim is the OIDC claim used for the Kubernetes username (default: "email").
+	UsernameClaim string
+	// GroupsClaim is the OIDC claim used for Kubernetes groups (default: "groups").
+	GroupsClaim string
+	// AvatarClaim is the OIDC claim used for the avatar URL (default: "picture").
+	AvatarClaim string
+	// NameClaim is the OIDC claim used for the display name (default: "name").
+	NameClaim string
+	// EmailClaim is the OIDC claim used for the email address (default: "email").
+	EmailClaim string
+	// AllowedGroup is an optional group required for access. If empty, all authenticated users are allowed.
+	AllowedGroup string
 }
 
 // IsEnabled returns true if the OIDC provider is configured.
@@ -47,4 +59,39 @@ func (c *Config) DefaultScopes() string {
 		return "openid profile email groups"
 	}
 	return c.Scopes
+}
+
+func (c *Config) usernameClaim() string {
+	if c.UsernameClaim != "" {
+		return c.UsernameClaim
+	}
+	return "email"
+}
+
+func (c *Config) groupsClaim() string {
+	if c.GroupsClaim != "" {
+		return c.GroupsClaim
+	}
+	return "groups"
+}
+
+func (c *Config) avatarClaim() string {
+	if c.AvatarClaim != "" {
+		return c.AvatarClaim
+	}
+	return "picture"
+}
+
+func (c *Config) nameClaim() string {
+	if c.NameClaim != "" {
+		return c.NameClaim
+	}
+	return "name"
+}
+
+func (c *Config) emailClaim() string {
+	if c.EmailClaim != "" {
+		return c.EmailClaim
+	}
+	return "email"
 }

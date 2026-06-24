@@ -196,6 +196,9 @@ func (p *Provider) ValidateAndExtractUser(ctx context.Context, idToken string) (
 
 	// Extract user identity for impersonation
 	userInfo := extractUserInfo(claims, p.config)
+	if userInfo == nil {
+		return nil, fmt.Errorf("user not authorized: must be in group %q", p.config.AllowedGroup)
+	}
 
 	klog.InfoS("OIDC user authenticated",
 		"username", userInfo.Username,

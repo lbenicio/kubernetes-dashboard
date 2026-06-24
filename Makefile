@@ -112,7 +112,6 @@ run: $(PRE) --ensure-kind-cluster --ensure-metrics-server ## Starts production v
 .PHONY: image
 image:
 ifndef NO_BUILD
-ifeq ($(APP),all)
 			@KUBECONFIG=$(KIND_CLUSTER_INTERNAL_KUBECONFIG_PATH) \
 			SYSTEM_BANNER=$(SYSTEM_BANNER) \
 			SYSTEM_BANNER_SEVERITY=$(SYSTEM_BANNER_SEVERITY) \
@@ -120,17 +119,7 @@ ifeq ($(APP),all)
 			VERSION="v0.0.0-prod" \
 			WEB_BUILDER_ARCH=$(ARCH) \
 			docker compose -f $(DOCKER_COMPOSE_PATH) --project-name=$(PROJECT_NAME) build \
-			--no-cache
-else
-			@KUBECONFIG=$(KIND_CLUSTER_INTERNAL_KUBECONFIG_PATH) \
-			SYSTEM_BANNER=$(SYSTEM_BANNER) \
-			SYSTEM_BANNER_SEVERITY=$(SYSTEM_BANNER_SEVERITY) \
-			SIDECAR_HOST=$(SIDECAR_HOST) \
-			VERSION="v0.0.0-prod" \
-			WEB_BUILDER_ARCH=$(ARCH) \
-			docker compose -f $(DOCKER_COMPOSE_PATH) --project-name=$(PROJECT_NAME) build \
-			--no-cache $(APP)
-endif
+			--no-cache $$(if [ "$(APP)" != "all" ]; then echo "$(APP)"; fi)
 endif
 
 # Prepares and installs local dev version of Kubernetes Dashboard in our dedicated kind cluster.

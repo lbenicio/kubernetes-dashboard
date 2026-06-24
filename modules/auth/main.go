@@ -66,6 +66,12 @@ func initOIDC() {
 		ProviderName:        args.OIDCProviderName(),
 		InsecureSkipVerify:  args.OIDCSkipTLSVerify(),
 		CABundle:            args.OIDCCABundle(),
+		UsernameClaim:       args.OIDCUsernameClaim(),
+		GroupsClaim:         args.OIDCGroupsClaim(),
+		AvatarClaim:         args.OIDCAvatarClaim(),
+		NameClaim:           args.OIDCNameClaim(),
+		EmailClaim:          args.OIDCEmailClaim(),
+		AllowedGroup:        args.OIDCAllowedGroup(),
 	}
 
 	if !oidcConfig.IsEnabled() {

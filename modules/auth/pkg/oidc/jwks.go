@@ -127,30 +127,34 @@ func parseECKey(key jwksKey) (interface{}, error) {
 }
 
 // extractUserInfo extracts the user identity from JWT claims for K8s impersonation.
-// It looks for standard OIDC claims and maps them to Kubernetes user fields.
+// Uses configurable claim names from the provider configuration.
 func extractUserInfo(claims jwt.MapClaims, config *Config) *OIDCUserInfo {
 	userInfo := &OIDCUserInfo{
 		Groups: []string{},
 	}
 
-	// Extract display fields from standard OIDC claims
-	userInfo.DisplayName = getStringClaim(claims, "name")
-	userInfo.Email = getStringClaim(claims, "email")
-	userInfo.AvatarURL = getStringClaim(claims, "picture")
+	// Extract display fields using configured claim names
+	userInfo.DisplayName = getClaimString(claims, config.nameClaim())
+	userInfo.Email = getClaimString(claims, config.emailClaim())
+	userInfo.AvatarURL = getClaimString(claims, config.avatarClaim())
 
-	// Determine username from claims
-	// Priority: "email" > "name" > "sub" (sub is always present and unique)
-	username := userInfo.Email
+	// Determine username from the configured claim, fall back to sub
+	username := getClaimString(claims, config.usernameClaim())
 	if username == "" {
-		username = userInfo.DisplayName
-	}
-	if username == "" {
-		username = getStringClaim(claims, "sub")
+		username = getClaimString(claims, "sub")
 	}
 	userInfo.Username = sanitizeUsername(username)
 
-	// Extract groups from claims
-	userInfo.Groups = extractGroups(claims)
+	// Extract groups from the configured claim
+	userInfo.Groups = extractGroupsFromClaim(claims, config.groupsClaim())
+
+	// Check allowed group if configured
+	if config.AllowedGroup != "" {
+		if !containsGroup(userInfo.Groups, config.AllowedGroup) {
+			klog.Warningf("User %s is not in allowed group %q", userInfo.Username, config.AllowedGroup)
+			return nil
+		}
+	}
 
 	klog.V(4).InfoS("Extracted user info from OIDC token",
 		"username", userInfo.Username,
@@ -161,8 +165,8 @@ func extractUserInfo(claims jwt.MapClaims, config *Config) *OIDCUserInfo {
 	return userInfo
 }
 
-// getStringClaim extracts a string claim from the JWT claims.
-func getStringClaim(claims jwt.MapClaims, key string) string {
+// getClaimString extracts a string claim from the JWT claims.
+func getClaimString(claims jwt.MapClaims, key string) string {
 	val, ok := claims[key]
 	if !ok {
 		return ""
@@ -178,9 +182,9 @@ func getStringClaim(claims jwt.MapClaims, key string) string {
 	}
 }
 
-// extractGroups extracts group claims from JWT.
-func extractGroups(claims jwt.MapClaims) []string {
-	val, ok := claims["groups"]
+// extractGroupsFromClaim extracts group claims from JWT using the configured claim name.
+func extractGroupsFromClaim(claims jwt.MapClaims, claimName string) []string {
+	val, ok := claims[claimName]
 	if !ok {
 		return []string{}
 	}
@@ -211,14 +215,20 @@ func extractGroups(claims jwt.MapClaims) []string {
 
 // sanitizeUsername replaces characters that are problematic for Kubernetes usernames.
 func sanitizeUsername(username string) string {
-	// Replace @ with - for email-style usernames
 	username = strings.ReplaceAll(username, "@", "-")
-	// Kubernetes usernames must be valid DNS subdomain labels
-	// Keep it simple: lowercase, replace invalid chars
 	username = strings.ToLower(username)
-	// Remove any trailing dots or dashes
 	username = strings.TrimRight(username, ".-")
 	return username
+}
+
+// containsGroup checks if a group is present in the list.
+func containsGroup(groups []string, target string) bool {
+	for _, g := range groups {
+		if strings.EqualFold(g, target) {
+			return true
+		}
+	}
+	return false
 }
 
 // OIDCUserInfo holds the extracted OIDC user identity.
