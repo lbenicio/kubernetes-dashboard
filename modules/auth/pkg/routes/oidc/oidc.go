@@ -17,8 +17,10 @@ package oidc
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	v1 "k8s.io/dashboard/auth/api/v1"
@@ -30,36 +32,31 @@ import (
 func HandleGetConfig(provider *oidcpkg.Provider) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cfg := provider.GetConfig()
-
-		enabled := cfg.IsEnabled()
 		response := &v1.OIDCConfig{
-			Enabled:      enabled,
+			Enabled:      cfg.IsEnabled(),
 			ProviderName: cfg.ProviderName,
 			ProviderURL:  cfg.IssuerURL,
 			ClientID:     cfg.ClientID,
 			Scopes:       cfg.DefaultScopes(),
 		}
-
 		writeJSON(w, http.StatusOK, response)
 	}
 }
 
 // HandleLogin initiates the OIDC authorization code flow.
-// It generates the authorization URL and returns it to the frontend.
 func HandleLogin(provider *oidcpkg.Provider) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		redirectURL, verifier, state, err := provider.AuthCodeURL()
+		redirectURL, verifier, state, nonce, err := provider.AuthCodeURL()
 		if err != nil {
 			klog.ErrorS(err, "Failed to generate OIDC auth URL")
 			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
 			return
 		}
 
-		// Store the PKCE verifier and state in an encrypted session cookie
-		// for retrieval during the callback.
+		// Store PKCE verifier, nonce, and state in encrypted session cookie
 		sessionData := &oidcpkg.SessionData{
 			State:  state,
-			Nonce:  verifier,
+			Nonce:  fmt.Sprintf("%s|%s", verifier, nonce), // store both for callback
 			Expiry: time.Now().Add(10 * time.Minute),
 		}
 		if err := provider.Session().SetSessionCookie(w, sessionData); err != nil {
@@ -68,7 +65,6 @@ func HandleLogin(provider *oidcpkg.Provider) http.HandlerFunc {
 			return
 		}
 
-		// Also set the state in a plain cookie for CSRF check
 		provider.Session().SetStateCookie(w, state)
 
 		writeJSON(w, http.StatusOK, &v1.OIDCLoginResponse{
@@ -84,31 +80,20 @@ func HandleCallback(provider *oidcpkg.Provider) http.HandlerFunc {
 		state := r.URL.Query().Get("state")
 
 		if code == "" {
-			errMsg := r.URL.Query().Get("error")
-			errDesc := r.URL.Query().Get("error_description")
-			klog.ErrorS(nil, "OIDC callback error", "error", errMsg, "description", errDesc)
 			writeJSON(w, http.StatusBadRequest, map[string]string{
-				"error":             errMsg,
-				"error_description": errDesc,
+				"error":             r.URL.Query().Get("error"),
+				"error_description": r.URL.Query().Get("error_description"),
 			})
 			return
 		}
 
-		// Validate state parameter against the cookie
 		cookieState, err := provider.Session().GetStateCookie(r)
-		if err != nil {
+		if err != nil || state != cookieState {
 			klog.ErrorS(err, "State cookie validation failed")
 			writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid state"})
 			return
 		}
 
-		if state != cookieState {
-			klog.ErrorS(nil, "OIDC state mismatch", "expected", cookieState, "got", state)
-			writeJSON(w, http.StatusBadRequest, map[string]string{"error": "state mismatch"})
-			return
-		}
-
-		// Retrieve the PKCE verifier from the session cookie
 		sessionData, err := provider.Session().GetSessionCookie(r)
 		if err != nil {
 			klog.ErrorS(err, "Failed to get OIDC session cookie")
@@ -116,9 +101,14 @@ func HandleCallback(provider *oidcpkg.Provider) http.HandlerFunc {
 			return
 		}
 
-		verifier := sessionData.Nonce
+		// Parse verifier and nonce from session
+		parts := strings.SplitN(sessionData.Nonce, "|", 2)
+		verifier := parts[0]
+		nonce := ""
+		if len(parts) > 1 {
+			nonce = parts[1]
+		}
 
-		// Exchange the authorization code for tokens
 		ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
 		defer cancel()
 
@@ -129,25 +119,20 @@ func HandleCallback(provider *oidcpkg.Provider) http.HandlerFunc {
 			return
 		}
 
-		// Create session and set cookies (includes JWKS validation + user extraction)
-		userInfo, err := provider.CreateSession(w, r, token, state)
+		userInfo, err := provider.CreateSession(w, r, token, nonce, state)
 		if err != nil {
 			klog.ErrorS(err, "Failed to create OIDC session")
 			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
 			return
 		}
 
-		// Set a cookie with user info for the frontend (non-HttpOnly so JS can read it)
 		provider.Session().SetUserInfoCookie(w, userInfo, token.Expiry)
 
-		// Redirect browser back to the dashboard root
-		redirectPath := getRedirectPath(r)
-		http.Redirect(w, r, redirectPath, http.StatusFound)
+		http.Redirect(w, r, "/", http.StatusFound)
 	}
 }
 
-// HandleSessionInfo returns the current session's user info for the frontend.
-// This is called by the frontend to retrieve impersonation info after page load.
+// HandleSessionInfo returns the current session's user info.
 func HandleSessionInfo(provider *oidcpkg.Provider) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		sessionData, err := provider.Session().GetSessionCookie(r)
@@ -159,54 +144,49 @@ func HandleSessionInfo(provider *oidcpkg.Provider) http.HandlerFunc {
 			return
 		}
 
-		userInfo := &v1.OIDCUserInfo{
-			Username:    sessionData.Username,
-			Groups:      sessionData.Groups,
-			DisplayName: sessionData.DisplayName,
-			Email:       sessionData.Email,
-			AvatarURL:   sessionData.AvatarURL,
-		}
-
 		writeJSON(w, http.StatusOK, &v1.OIDCSession{
 			Token: sessionData.IDToken,
-			User:  *userInfo,
+			User: v1.OIDCUserInfo{
+				Username:    sessionData.Username,
+				Groups:      sessionData.Groups,
+				DisplayName: sessionData.DisplayName,
+				Email:       sessionData.Email,
+				AvatarURL:   sessionData.AvatarURL,
+			},
 		})
 	}
 }
 
-// HandleRefresh refreshes the OIDC tokens using the refresh token from the session.
+// HandleRefresh refreshes the OIDC tokens.
 func HandleRefresh(provider *oidcpkg.Provider) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tokenSource, err := provider.Session().SessionTokenSource(r)
 		if err != nil {
-			klog.ErrorS(err, "Failed to get token source")
 			writeJSON(w, http.StatusUnauthorized, map[string]string{"error": "no valid session"})
 			return
 		}
 
 		newToken, err := tokenSource.Token()
 		if err != nil {
-			klog.ErrorS(err, "Token refresh failed")
 			writeJSON(w, http.StatusUnauthorized, map[string]string{"error": "token refresh failed"})
 			return
 		}
 
-		idToken, err := provider.ExtractIDToken(newToken)
+		rawIDToken, err := provider.ExtractIDToken(newToken)
 		if err != nil {
-			idToken = newToken.AccessToken
+			rawIDToken = newToken.AccessToken
 		}
 
-		// Re-validate and extract user info from new ID token
-		userInfo, err := provider.ValidateAndExtractUser(r.Context(), idToken)
+		// Re-validate without nonce (already authenticated session)
+		userInfo, err := provider.ValidateAndExtractUser(r.Context(), rawIDToken, "")
 		if err != nil {
 			klog.ErrorS(err, "Failed to validate refreshed ID token")
 			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "token validation failed"})
 			return
 		}
 
-		// Update session cookies
 		sessionData := &oidcpkg.SessionData{
-			IDToken:      idToken,
+			IDToken:      rawIDToken,
 			AccessToken:  newToken.AccessToken,
 			RefreshToken: newToken.RefreshToken,
 			Expiry:       newToken.Expiry,
@@ -217,15 +197,12 @@ func HandleRefresh(provider *oidcpkg.Provider) http.HandlerFunc {
 			AvatarURL:    userInfo.AvatarURL,
 		}
 
-		if err := provider.Session().SetSessionCookie(w, sessionData); err != nil {
-			klog.ErrorS(err, "Failed to update session cookie")
-		}
-
-		provider.Session().SetTokenCookie(w, idToken, newToken.Expiry)
+		provider.Session().SetSessionCookie(w, sessionData)
+		provider.Session().SetTokenCookie(w, rawIDToken, newToken.Expiry)
 		provider.Session().SetUserInfoCookie(w, userInfo, newToken.Expiry)
 
 		writeJSON(w, http.StatusOK, &v1.OIDCSession{
-			Token: idToken,
+			Token: rawIDToken,
 			User: v1.OIDCUserInfo{
 				Username:    userInfo.Username,
 				Groups:      userInfo.Groups,
@@ -255,24 +232,13 @@ func getRedirectPath(r *http.Request) string {
 	if host == "" {
 		host = r.Host
 	}
-
-	redirectURL := url.URL{
-		Scheme: proto,
-		Host:   host,
-		Path:   "/",
-	}
-	return redirectURL.String()
+	return (&url.URL{Scheme: proto, Host: host, Path: "/"}).String()
 }
 
-// writeJSON writes a JSON response with the given status code.
 func writeJSON(w http.ResponseWriter, status int, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
-
-	resp, err := json.Marshal(data)
-	if err != nil {
-		klog.ErrorS(err, "Failed to marshal JSON response")
-		return
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		klog.ErrorS(err, "Failed to write JSON response")
 	}
-	_, _ = w.Write(resp)
 }

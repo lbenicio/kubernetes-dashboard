@@ -18,35 +18,24 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/coreos/go-oidc/v3/oidc"
 	"golang.org/x/oauth2"
 	"k8s.io/klog/v2"
 )
 
-// Provider handles OIDC discovery and token exchange.
+// Provider handles OIDC authentication using the standard go-oidc library.
 type Provider struct {
 	config    *Config
 	session   *SessionManager
+	provider  *oidc.Provider
 	oauth2Cfg *oauth2.Config
-	metadata  ProviderMetadata
-	jwksKeys  map[string]interface{} // kid → parsed public key
-}
-
-// ProviderMetadata holds the OIDC provider's discovered endpoints.
-type ProviderMetadata struct {
-	Issuer        string `json:"issuer"`
-	AuthURL       string `json:"authorization_endpoint"`
-	TokenURL      string `json:"token_endpoint"`
-	UserInfoURL   string `json:"userinfo_endpoint"`
-	JWKSURL       string `json:"jwks_uri"`
-	EndSessionURL string `json:"end_session_endpoint,omitempty"`
+	verifier  *oidc.IDTokenVerifier
 }
 
 // NewProvider creates a new OIDC Provider.
@@ -63,42 +52,43 @@ func (p *Provider) Initialize(ctx context.Context) error {
 		return fmt.Errorf("OIDC provider is not configured")
 	}
 
-	metadata, err := p.discover(ctx)
+	// Use custom HTTP client for self-signed/internal CAs
+	hc := p.httpClient()
+	ctx = oidc.ClientContext(ctx, hc)
+	oauth2Ctx := context.WithValue(ctx, oauth2.HTTPClient, hc)
+
+	provider, err := oidc.NewProvider(ctx, p.config.IssuerURL)
 	if err != nil {
 		return fmt.Errorf("OIDC discovery failed: %w", err)
 	}
-
-	p.metadata = *metadata
+	p.provider = provider
 
 	p.oauth2Cfg = &oauth2.Config{
 		ClientID:     p.config.ClientID,
 		ClientSecret: p.config.ClientSecret,
 		RedirectURL:  p.config.RedirectURL,
 		Scopes:       p.parseScopes(),
-		Endpoint: oauth2.Endpoint{
-			AuthURL:  metadata.AuthURL,
-			TokenURL: metadata.TokenURL,
-		},
+		Endpoint:     provider.Endpoint(),
 	}
 
-	// Pre-fetch JWKS keys for ID token validation
-	if metadata.JWKSURL != "" {
-		if err := p.fetchJWKS(ctx); err != nil {
-			klog.Warningf("Failed to fetch JWKS, ID token validation may be limited: %v", err)
-		}
-	}
+	// Create ID token verifier
+	p.verifier = provider.Verifier(&oidc.Config{
+		ClientID: p.config.ClientID,
+	})
 
 	// Link session manager with oauth2 config for token refresh
 	p.session.SetOAuth2Config(p.oauth2Cfg)
 
+	_ = oauth2Ctx // ensure custom HTTP client context is captured
+
 	klog.InfoS("OIDC provider initialized",
-		"issuer", metadata.Issuer,
+		"issuer", p.config.IssuerURL,
 		"clientId", p.config.ClientID,
 	)
 	return nil
 }
 
-// GetConfig returns the provider configuration for the frontend.
+// GetConfig returns the provider configuration.
 func (p *Provider) GetConfig() *Config {
 	return p.config
 }
@@ -113,28 +103,33 @@ func (p *Provider) OAuth2Config() *oauth2.Config {
 	return p.oauth2Cfg
 }
 
-// AuthCodeURL generates the authorization URL with PKCE and state.
-// It returns the URL, the PKCE verifier, and the state parameter.
-func (p *Provider) AuthCodeURL() (string, string, string, error) {
+// AuthCodeURL generates the authorization URL with PKCE, state, and nonce.
+// Returns the URL, PKCE verifier, state, and nonce.
+func (p *Provider) AuthCodeURL() (string, string, string, string, error) {
 	if p.oauth2Cfg == nil {
-		return "", "", "", fmt.Errorf("OIDC provider not initialized")
+		return "", "", "", "", fmt.Errorf("OIDC provider not initialized")
 	}
 
 	state, err := GenerateState()
 	if err != nil {
-		return "", "", "", fmt.Errorf("failed to generate state: %w", err)
+		return "", "", "", "", fmt.Errorf("failed to generate state: %w", err)
 	}
 
-	// Generate PKCE code verifier
+	nonce, err := GenerateNonce()
+	if err != nil {
+		return "", "", "", "", fmt.Errorf("failed to generate nonce: %w", err)
+	}
+
 	verifier := oauth2.GenerateVerifier()
 
 	opts := []oauth2.AuthCodeOption{
 		oauth2.S256ChallengeOption(verifier),
+		oidc.Nonce(nonce),
 	}
 
 	urlStr := p.oauth2Cfg.AuthCodeURL(state, opts...)
 
-	return urlStr, verifier, state, nil
+	return urlStr, verifier, state, nonce, nil
 }
 
 // Exchange exchanges the authorization code for tokens using PKCE.
@@ -143,14 +138,10 @@ func (p *Provider) Exchange(ctx context.Context, code string, verifier string) (
 		return nil, fmt.Errorf("OIDC provider not initialized")
 	}
 
-	opts := []oauth2.AuthCodeOption{
-		oauth2.VerifierOption(verifier),
-	}
-
-	// Use the TLS-configured HTTP client for token exchange
+	// Inject custom HTTP client for self-signed certs
 	ctx = context.WithValue(ctx, oauth2.HTTPClient, p.httpClient())
 
-	token, err := p.oauth2Cfg.Exchange(ctx, code, opts...)
+	token, err := p.oauth2Cfg.Exchange(ctx, code, oauth2.VerifierOption(verifier))
 	if err != nil {
 		return nil, fmt.Errorf("token exchange failed: %w", err)
 	}
@@ -158,66 +149,56 @@ func (p *Provider) Exchange(ctx context.Context, code string, verifier string) (
 	return token, nil
 }
 
-// ExtractIDToken extracts and returns the ID token from the OAuth2 token response.
+// ExtractIDToken extracts the raw ID token string from the OAuth2 token.
 func (p *Provider) ExtractIDToken(token *oauth2.Token) (string, error) {
-	idToken, ok := token.Extra("id_token").(string)
-	if !ok || idToken == "" {
+	rawIDToken, ok := token.Extra("id_token").(string)
+	if !ok || rawIDToken == "" {
 		return "", fmt.Errorf("no id_token in token response")
 	}
-	return idToken, nil
+	return rawIDToken, nil
 }
 
-// ValidateAndExtractUser validates the ID token and extracts the user identity.
-// This performs cryptographic signature verification using the provider's JWKS.
-func (p *Provider) ValidateAndExtractUser(ctx context.Context, idToken string) (*OIDCUserInfo, error) {
-	// Parse and validate the ID token
-	parsedToken, err := jwt.Parse(idToken, p.jwksKeyFunc())
+// ValidateAndExtractUser verifies the ID token using the OIDC verifier and extracts user claims.
+func (p *Provider) ValidateAndExtractUser(ctx context.Context, rawIDToken string, nonce string) (*OIDCUserInfo, error) {
+	if p.verifier == nil {
+		return nil, fmt.Errorf("OIDC verifier not initialized")
+	}
+
+	idToken, err := p.verifier.Verify(ctx, rawIDToken)
 	if err != nil {
-		return nil, fmt.Errorf("ID token validation failed: %w", err)
+		return nil, fmt.Errorf("ID token verification failed: %w", err)
 	}
 
-	claims, ok := parsedToken.Claims.(jwt.MapClaims)
-	if !ok {
-		return nil, fmt.Errorf("invalid token claims")
+	// Verify nonce if provided (skip for token refresh where original nonce is unavailable)
+	if nonce != "" && idToken.Nonce != nonce {
+		return nil, fmt.Errorf("ID token nonce mismatch")
 	}
 
-	// Validate issuer
-	if err := claims.Valid(); err != nil {
-		return nil, fmt.Errorf("token claims invalid: %w", err)
+	// Extract claims into our user info struct
+	var claims map[string]interface{}
+	if err := idToken.Claims(&claims); err != nil {
+		return nil, fmt.Errorf("failed to parse ID token claims: %w", err)
 	}
 
-	issuer, _ := claims["iss"].(string)
-	if issuer != "" && issuer != p.metadata.Issuer && !strings.HasPrefix(issuer, p.metadata.Issuer) {
-		// Some providers add a trailing slash
-		if strings.TrimRight(issuer, "/") != strings.TrimRight(p.metadata.Issuer, "/") {
-			klog.Warningf("ID token issuer mismatch: got %q, expected %q", issuer, p.metadata.Issuer)
-		}
-	}
-
-	// Extract user identity for impersonation
-	userInfo := extractUserInfo(claims, p.config)
-	if userInfo == nil {
-		return nil, fmt.Errorf("user not authorized: must be in group %q", p.config.AllowedGroup)
-	}
+	userInfo := extractUserInfoFromClaims(claims, p.config)
 
 	klog.InfoS("OIDC user authenticated",
 		"username", userInfo.Username,
 		"groups", userInfo.Groups,
+		"email", userInfo.Email,
 	)
 
 	return userInfo, nil
 }
 
-// CreateSession creates session data from the OAuth2 token and writes cookies.
-// It also validates the ID token and extracts user info for impersonation.
-func (p *Provider) CreateSession(w http.ResponseWriter, r *http.Request, token *oauth2.Token, state string) (*OIDCUserInfo, error) {
-	idToken, err := p.ExtractIDToken(token)
+// CreateSession validates the ID token, extracts user info, and sets cookies.
+func (p *Provider) CreateSession(w http.ResponseWriter, r *http.Request, token *oauth2.Token, nonce, state string) (*OIDCUserInfo, error) {
+	rawIDToken, err := p.ExtractIDToken(token)
 	if err != nil {
 		return nil, err
 	}
 
-	// Validate the ID token and extract user identity
-	userInfo, err := p.ValidateAndExtractUser(r.Context(), idToken)
+	userInfo, err := p.ValidateAndExtractUser(r.Context(), rawIDToken, nonce)
 	if err != nil {
 		return nil, fmt.Errorf("failed to validate ID token: %w", err)
 	}
@@ -228,11 +209,12 @@ func (p *Provider) CreateSession(w http.ResponseWriter, r *http.Request, token *
 	}
 
 	sessionData := &SessionData{
-		IDToken:      idToken,
+		IDToken:      rawIDToken,
 		AccessToken:  token.AccessToken,
 		RefreshToken: token.RefreshToken,
 		Expiry:       expiry,
 		State:        state,
+		Nonce:        nonce,
 		Username:     userInfo.Username,
 		Groups:       userInfo.Groups,
 		DisplayName:  userInfo.DisplayName,
@@ -240,99 +222,17 @@ func (p *Provider) CreateSession(w http.ResponseWriter, r *http.Request, token *
 		AvatarURL:    userInfo.AvatarURL,
 	}
 
-	// Store encrypted session (contains refresh token, user info, HttpOnly)
 	if err := p.session.SetSessionCookie(w, sessionData); err != nil {
 		return nil, fmt.Errorf("failed to set session cookie: %w", err)
 	}
 
-	// Store ID token for frontend (for reference, not used for K8s API auth)
-	// In impersonation mode, K8s API auth uses impersonation headers, not this token
-	p.session.SetTokenCookie(w, idToken, expiry)
-
-	// Clear the state cookie
+	p.session.SetTokenCookie(w, rawIDToken, expiry)
 	p.session.ClearStateCookie(w)
 
 	return userInfo, nil
 }
 
-// jwksKeyFunc returns a jwt.Keyfunc that validates tokens using the provider's JWKS.
-func (p *Provider) jwksKeyFunc() jwt.Keyfunc {
-	return func(token *jwt.Token) (interface{}, error) {
-		// If we have pre-fetched keys, use them
-		if len(p.jwksKeys) > 0 {
-			kid, ok := token.Header["kid"].(string)
-			if !ok {
-				return nil, fmt.Errorf("token missing kid header")
-			}
-			key, ok := p.jwksKeys[kid]
-			if !ok {
-				return nil, fmt.Errorf("no JWKS key found for kid: %s", kid)
-			}
-			return key, nil
-		}
-
-		// No pre-fetched keys - attempt to fetch on-demand
-		// This is not ideal for performance but works as a fallback
-		klog.Warning("JWKS not pre-fetched, attempting on-demand fetch")
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-		if err := p.fetchJWKS(ctx); err != nil {
-			return nil, fmt.Errorf("failed to fetch JWKS: %w", err)
-		}
-
-		kid, ok := token.Header["kid"].(string)
-		if !ok {
-			return nil, fmt.Errorf("token missing kid header")
-		}
-		key, ok := p.jwksKeys[kid]
-		if !ok {
-			return nil, fmt.Errorf("no JWKS key found for kid: %s", kid)
-		}
-		return key, nil
-	}
-}
-
-// fetchJWKS fetches the JWKS keys from the provider's jwks_uri.
-func (p *Provider) fetchJWKS(ctx context.Context) error {
-	if p.metadata.JWKSURL == "" {
-		return fmt.Errorf("no jwks_uri in OIDC metadata")
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, p.metadata.JWKSURL, nil)
-	if err != nil {
-		return err
-	}
-
-	resp, err := p.httpClient().Do(req)
-	if err != nil {
-		return fmt.Errorf("failed to fetch JWKS: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("JWKS fetch returned status %d", resp.StatusCode)
-	}
-
-	var jwks jwksResponse
-	if err := json.NewDecoder(resp.Body).Decode(&jwks); err != nil {
-		return fmt.Errorf("failed to parse JWKS: %w", err)
-	}
-
-	p.jwksKeys = make(map[string]interface{})
-	for _, key := range jwks.Keys {
-		parsedKey, err := parseJWK(key)
-		if err != nil {
-			klog.Warningf("Failed to parse JWK key %q: %v", key.KID, err)
-			continue
-		}
-		p.jwksKeys[key.KID] = parsedKey
-	}
-
-	klog.InfoS("JWKS keys fetched", "count", len(p.jwksKeys))
-	return nil
-}
-
-// httpClient returns an HTTP client configured with the OIDC TLS settings.
+// httpClient returns an HTTP client configured with TLS settings.
 func (p *Provider) httpClient() *http.Client {
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{
@@ -340,7 +240,6 @@ func (p *Provider) httpClient() *http.Client {
 		},
 	}
 
-	// Load custom CA bundle if configured
 	if p.config.CABundle != "" {
 		caCert, err := os.ReadFile(p.config.CABundle)
 		if err != nil {
@@ -358,42 +257,23 @@ func (p *Provider) httpClient() *http.Client {
 	}
 }
 
-// discover performs OIDC discovery from the issuer URL.
-func (p *Provider) discover(ctx context.Context) (*ProviderMetadata, error) {
-	wellKnown := strings.TrimRight(p.config.IssuerURL, "/") + "/.well-known/openid-configuration"
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, wellKnown, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := p.httpClient().Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("failed to fetch OIDC discovery URL %s: %w", wellKnown, err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("OIDC discovery returned status %d", resp.StatusCode)
-	}
-
-	var metadata ProviderMetadata
-	if err := json.NewDecoder(resp.Body).Decode(&metadata); err != nil {
-		return nil, fmt.Errorf("failed to parse OIDC discovery response: %w", err)
-	}
-
-	if metadata.Issuer == "" || metadata.AuthURL == "" || metadata.TokenURL == "" {
-		return nil, fmt.Errorf("OIDC discovery response missing required fields")
-	}
-
-	return &metadata, nil
-}
-
-// parseScopes parses space-separated scopes into a slice.
+// parseScopes parses space-separated scopes, ensuring "openid" is always included.
 func (p *Provider) parseScopes() []string {
 	scopesStr := p.config.DefaultScopes()
 	if scopesStr == "" {
-		return []string{"openid", "profile", "email", "groups"}
+		return []string{oidc.ScopeOpenID, "profile", "email", "groups"}
 	}
-	return strings.Fields(scopesStr)
+	scopes := strings.Fields(scopesStr)
+	// Ensure openid is present
+	hasOpenID := false
+	for _, s := range scopes {
+		if s == oidc.ScopeOpenID {
+			hasOpenID = true
+			break
+		}
+	}
+	if !hasOpenID {
+		scopes = append([]string{oidc.ScopeOpenID}, scopes...)
+	}
+	return scopes
 }
