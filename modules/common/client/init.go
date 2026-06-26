@@ -208,9 +208,18 @@ func handleImpersonation(authInfo *api.AuthInfo, request *http.Request) {
 	// Impersonate user
 	authInfo.Impersonate = user
 
-	// Impersonate groups if available
+	// Impersonate groups if available.
+	// Proxies like Kong may combine multiple headers into comma-separated values.
 	if len(groups) > 0 {
-		authInfo.ImpersonateGroups = groups
+		flatGroups := make([]string, 0, len(groups))
+		for _, g := range groups {
+			for _, part := range strings.Split(g, ",") {
+				if trimmed := strings.TrimSpace(part); trimmed != "" {
+					flatGroups = append(flatGroups, trimmed)
+				}
+			}
+		}
+		authInfo.ImpersonateGroups = flatGroups
 	}
 
 	// Add extra impersonation fields if available

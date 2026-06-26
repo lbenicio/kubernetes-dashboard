@@ -64,10 +64,15 @@ func Client(request *http.Request) (client.Interface, error) {
 	}
 
 	if args.CacheEnabled() {
+		token := GetBearerToken(request)
+		// When impersonation is active, use the in-cluster SA token for the cache.
+		if token == "" && request.Header.Get(ImpersonateUserHeader) != "" {
+			token = baseConfig.BearerToken
+		}
 		return cacheclient.New(
 			config,
 			common.CachedClientOptions{
-				Token: GetBearerToken(request),
+				Token: token,
 				RequestGetter: func() *http.Request {
 					return request
 				},
@@ -94,11 +99,15 @@ func APIExtensionsClient(request *http.Request) (apiextensionsclientset.Interfac
 	}
 
 	if args.CacheEnabled() {
+		token := GetBearerToken(request)
+		if token == "" && request.Header.Get(ImpersonateUserHeader) != "" {
+			token = baseConfig.BearerToken
+		}
 		return cacheclient.NewCachedExtensionsClient(
 			config,
 			kubeClient.AuthorizationV1(),
 			common.CachedClientOptions{
-				Token: GetBearerToken(request),
+				Token: token,
 				RequestGetter: func() *http.Request {
 					return request
 				},
