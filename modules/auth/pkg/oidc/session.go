@@ -26,6 +26,7 @@ import (
 	"net/http"
 	"time"
 
+	"golang.org/x/net/xsrftoken"
 	"golang.org/x/oauth2"
 	"k8s.io/klog/v2"
 )
@@ -39,6 +40,10 @@ const (
 	stateCookieName = "oidc-state"
 	// userInfoCookieName is the name of the cookie holding serialized user info for the frontend.
 	userInfoCookieName = "oidc-user"
+	// csrfCookieName is the name of the cookie holding the CSRF token for the frontend.
+	// Set server-side during OIDC callback to avoid client-side document.cookie writes
+	// which may be blocked by Safari's Intelligent Tracking Prevention (ITP).
+	csrfCookieName = "csrf-token"
 )
 
 // SessionData holds the OIDC session information.
@@ -71,11 +76,17 @@ type SessionData struct {
 type SessionManager struct {
 	config       *Config
 	oauth2Config *oauth2.Config
+	csrfKey      string
 }
 
 // NewSessionManager creates a new SessionManager.
 func NewSessionManager(config *Config) *SessionManager {
 	return &SessionManager{config: config}
+}
+
+// SetCSRFKey sets the CSRF key for generating CSRF tokens.
+func (m *SessionManager) SetCSRFKey(key string) {
+	m.csrfKey = key
 }
 
 // SetOAuth2Config stores the oauth2 config for use in token refresh.
@@ -167,6 +178,32 @@ func (m *SessionManager) SetUserInfoCookie(w http.ResponseWriter, userInfo *OIDC
 	http.SetCookie(w, cookie)
 }
 
+// SetCSRFCookie sets a CSRF token cookie that the frontend can read and use
+// as the X-CSRF-TOKEN header for POST requests. This is set server-side during
+// the OIDC callback to avoid client-side document.cookie writes which may be
+// blocked by Safari's Intelligent Tracking Prevention (ITP) after cross-domain redirects.
+func (m *SessionManager) SetCSRFCookie(w http.ResponseWriter) {
+	if m.csrfKey == "" {
+		klog.Warning("CSRF key not set, skipping CSRF cookie")
+		return
+	}
+
+	// Generate a CSRF token for generic API actions.
+	// The middleware validates against action "api" as the default.
+	token := xsrftoken.Generate(m.csrfKey, "none", "api")
+
+	cookie := &http.Cookie{
+		Name:     csrfCookieName,
+		Value:    token,
+		Path:     "/",
+		MaxAge:   86400, // 24 hours
+		HttpOnly: false, // Frontend needs to read this for the X-CSRF-TOKEN header
+		Secure:   isSecureRequest(w),
+		SameSite: http.SameSiteLaxMode,
+	}
+	http.SetCookie(w, cookie)
+}
+
 // SetSessionCookie stores an encrypted session cookie for server-side session data.
 func (m *SessionManager) SetSessionCookie(w http.ResponseWriter, data *SessionData) error {
 	encrypted, err := m.encryptSession(data)
@@ -201,9 +238,9 @@ func (m *SessionManager) GetSessionCookie(r *http.Request) (*SessionData, error)
 	return m.decryptSession(cookie.Value)
 }
 
-// ClearSessionCookies removes both the session and token cookies.
+// ClearSessionCookies removes session, token, user info, and CSRF cookies.
 func (m *SessionManager) ClearSessionCookies(w http.ResponseWriter) {
-	for _, name := range []string{sessionCookieName, tokenCookieName, userInfoCookieName} {
+	for _, name := range []string{sessionCookieName, tokenCookieName, userInfoCookieName, csrfCookieName} {
 		http.SetCookie(w, &http.Cookie{
 			Name:     name,
 			Value:    "",

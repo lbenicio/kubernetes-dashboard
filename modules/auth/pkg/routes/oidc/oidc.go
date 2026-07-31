@@ -127,6 +127,7 @@ func HandleCallback(provider *oidcpkg.Provider) http.HandlerFunc {
 		}
 
 		provider.Session().SetUserInfoCookie(w, userInfo, token.Expiry)
+		provider.Session().SetCSRFCookie(w)
 
 		http.Redirect(w, r, "/", http.StatusFound)
 	}
@@ -200,6 +201,7 @@ func HandleRefresh(provider *oidcpkg.Provider) http.HandlerFunc {
 		provider.Session().SetSessionCookie(w, sessionData)
 		provider.Session().SetTokenCookie(w, rawIDToken, newToken.Expiry)
 		provider.Session().SetUserInfoCookie(w, userInfo, newToken.Expiry)
+		provider.Session().SetCSRFCookie(w)
 
 		writeJSON(w, http.StatusOK, &v1.OIDCSession{
 			Token: rawIDToken,

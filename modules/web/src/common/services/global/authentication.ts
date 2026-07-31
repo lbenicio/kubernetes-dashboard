@@ -41,6 +41,10 @@ export class AuthService {
     @Inject(CONFIG_DI_TOKEN) private readonly config_: IConfig
   ) {
     this.stateService_.onBefore.subscribe(_ => this.refreshToken());
+    // Initialize CSRF token from server-set cookie into sessionStorage.
+    // This avoids relying on client-side document.cookie writes which may be
+    // blocked by Safari's Intelligent Tracking Prevention (ITP).
+    this.csrfTokenService_.initializeToken();
   }
 
   /**
@@ -57,6 +61,14 @@ export class AuthService {
    */
   oidcConfig(): OIDCConfig | null {
     return this._oidcConfig;
+  }
+
+  /**
+   * Initialize the CSRF token from server-set cookie into sessionStorage.
+   * Call this after a successful OIDC callback to ensure the token is available.
+   */
+  initializeCsrfToken(): void {
+    this.csrfTokenService_.initializeToken();
   }
 
   /**

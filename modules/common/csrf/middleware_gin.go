@@ -88,7 +88,18 @@ func (in *GinCSRFMiddleware) build() gin.HandlerFunc {
 		}
 
 		klog.V(4).InfoS("[GinCSRFMiddleware] Got request", "path", c.Request.URL.Path, "actionID", actionID)
-		if actionID == nil || !xsrftoken.Valid(c.Request.Header.Get(csrfTokenHeader), Key(), "none", *actionID) {
+
+		// Try header first, then fall back to cookie (set server-side during OIDC callback).
+		// The cookie approach avoids client-side document.cookie writes which may be blocked
+		// by Safari's Intelligent Tracking Prevention (ITP) after cross-domain redirects.
+		token := c.Request.Header.Get(csrfTokenHeader)
+		if token == "" {
+			if cookie, err := c.Request.Cookie(CSRFTokenCookieName); err == nil {
+				token = cookie.Value
+			}
+		}
+
+		if actionID == nil || token == "" || !xsrftoken.Valid(token, Key(), "none", *actionID) {
 			klog.Errorf("CSRF validation failed, actionID: %s", *actionID)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, errors.NewCSRFValidationFailed())
 			return

@@ -16,4 +16,8 @@ package csrf
 
 const (
 	csrfTokenHeader = "X-CSRF-TOKEN"
+	// csrfTokenCookieName is the name of the cookie holding the CSRF token.
+	// Set server-side during OIDC callback to avoid client-side cookie writes
+	// which may be blocked by ITP (Intelligent Tracking Prevention).
+	CSRFTokenCookieName = "csrf-token"
 )

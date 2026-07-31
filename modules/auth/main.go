@@ -26,6 +26,7 @@ import (
 	"k8s.io/dashboard/auth/pkg/oidc"
 	"k8s.io/dashboard/auth/pkg/router"
 	"k8s.io/dashboard/client"
+	"k8s.io/dashboard/csrf"
 
 	// Importing route packages forces route registration
 	_ "k8s.io/dashboard/auth/pkg/routes/csrftoken"
@@ -80,6 +81,10 @@ func initOIDC() {
 	}
 
 	provider := oidc.NewProvider(oidcConfig)
+
+	// Set the CSRF key on the session manager so it can generate CSRF tokens
+	// for server-side cookie setting during OIDC callback.
+	provider.Session().SetCSRFKey(csrf.Key())
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
