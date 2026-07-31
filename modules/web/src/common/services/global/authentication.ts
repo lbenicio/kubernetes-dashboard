@@ -19,7 +19,16 @@ import {IConfig} from '@api/root.ui';
 import {CookieService} from 'ngx-cookie-service';
 import {interval, Observable} from 'rxjs';
 import {switchMap, take, tap} from 'rxjs/operators';
-import {AuthResponse, CsrfToken, LoginSpec, OIDCConfig, OIDCLoginResponse, OIDCSession, OIDCUserInfo, User} from 'typings/root.api';
+import {
+  AuthResponse,
+  CsrfToken,
+  LoginSpec,
+  OIDCConfig,
+  OIDCLoginResponse,
+  OIDCSession,
+  OIDCUserInfo,
+  User,
+} from 'typings/root.api';
 import {CONFIG_DI_TOKEN} from '../../../index.config';
 import {CsrfTokenService} from './csrftoken';
 import {KdStateService} from './state';
@@ -62,9 +71,7 @@ export class AuthService {
    * Fetches the OIDC configuration from the backend.
    */
   getOIDCConfig(): Observable<OIDCConfig> {
-    return this.http_.get<OIDCConfig>('api/v1/oidc/config').pipe(
-      tap(config => (this._oidcConfig = config))
-    );
+    return this.http_.get<OIDCConfig>('api/v1/oidc/config').pipe(tap(config => (this._oidcConfig = config)));
   }
 
   /**

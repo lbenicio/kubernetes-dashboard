@@ -61,7 +61,8 @@ export class GlobalErrorHandler implements ErrorHandler {
         // even if the access/ID token has expired.
         if (this.auth_.isOIDCEnabled() && !this._redirectingToLogin) {
           this._redirectingToLogin = true;
-          this.auth_.refreshOIDCToken()
+          this.auth_
+            .refreshOIDCToken()
             .pipe(take(1))
             .subscribe({
               next: () => {

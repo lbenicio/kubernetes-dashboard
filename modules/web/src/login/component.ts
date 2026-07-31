@@ -61,7 +61,7 @@ export class LoginComponent implements OnInit {
     // Check if we're returning from an OIDC callback.
     // The auth service sets the 'oidc-user' cookie server-side during callback.
     // We check both oidc-user (OIDC mode) and token (legacy token mode).
-    if (this.authService_.hasTokenCookie() || this.authService_.getOIDCUserInfo() != null) {
+    if (this.authService_.hasTokenCookie() || this.authService_.getOIDCUserInfo() !== null) {
       // Initialize CSRF token from the server-set cookie into sessionStorage
       this.authService_.initializeCsrfToken();
       this.ngZone_.run(() => this.historyService_.goToPreviousState('workloads'));
