@@ -17,8 +17,8 @@ import {Inject, Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {IConfig} from '@api/root.ui';
 import {CookieService} from 'ngx-cookie-service';
-import {Observable} from 'rxjs';
-import {switchMap, tap} from 'rxjs/operators';
+import {interval, Observable} from 'rxjs';
+import {switchMap, take, tap} from 'rxjs/operators';
 import {AuthResponse, CsrfToken, LoginSpec, OIDCConfig, OIDCLoginResponse, OIDCSession, OIDCUserInfo, User} from 'typings/root.api';
 import {CONFIG_DI_TOKEN} from '../../../index.config';
 import {CsrfTokenService} from './csrftoken';
@@ -26,10 +26,16 @@ import {KdStateService} from './state';
 import isEmpty from 'lodash-es/isEmpty';
 import {MeService} from '@common/services/global/me';
 
+// Refresh OIDC token every 10 minutes to keep the session alive.
+// OIDC ID tokens typically expire after 1 hour, so refreshing at half that
+// interval ensures the user never sees a 401 due to token expiry.
+const OIDC_REFRESH_INTERVAL_MS = 10 * 60 * 1000;
+
 @Injectable()
 export class AuthService {
   private _hasAuthHeader = false;
   private _oidcConfig: OIDCConfig | null = null;
+  private _refreshInProgress = false;
 
   constructor(
     private readonly cookies_: CookieService,
@@ -40,7 +46,12 @@ export class AuthService {
     private readonly _meService: MeService,
     @Inject(CONFIG_DI_TOKEN) private readonly config_: IConfig
   ) {
+    // Refresh token on every navigation to keep the session alive
     this.stateService_.onBefore.subscribe(_ => this.refreshToken());
+
+    // Periodic OIDC token refresh (every 10 minutes)
+    interval(OIDC_REFRESH_INTERVAL_MS).subscribe(() => this.refreshToken());
+
     // Initialize CSRF token from server-set cookie into sessionStorage.
     // This avoids relying on client-side document.cookie writes which may be
     // blocked by Safari's Intelligent Tracking Prevention (ITP).
@@ -142,7 +153,8 @@ export class AuthService {
   }
 
   /**
-   * Refreshes the OIDC token using the refresh token.
+   * Refreshes the OIDC token using the refresh token stored in the encrypted
+   * session cookie. Returns an observable that completes when the refresh is done.
    */
   refreshOIDCToken(): Observable<OIDCLoginResponse> {
     return this.http_.post<OIDCLoginResponse>('api/v1/oidc/refresh', {});
@@ -206,31 +218,38 @@ export class AuthService {
   }
 
   /**
-   * Sends a token refresh request to the backend. In case a user is not logged in with token, nothing will happen.
+   * Refreshes the authentication token. For OIDC mode, this uses the refresh
+   * token stored in the server-side encrypted session cookie to obtain new
+   * tokens. For token mode, this is a no-op (token-based auth doesn't auto-refresh).
+   *
+   * Called on every navigation and every 10 minutes via interval.
    */
   refreshToken(): void {
-    // const token = this.getTokenCookie_();
-    // if (token.length === 0) return;
-    //
-    // this.csrfTokenService_
-    //   .getTokenForAction('token')
-    //   .pipe(
-    //     switchMap(csrfToken => {
-    //       return this.http_.post<AuthResponse>(
-    //         'api/v1/token/refresh',
-    //         {jweToken: token},
-    //         {
-    //           headers: new HttpHeaders().set(this.config_.csrfHeaderName, csrfToken.token),
-    //         }
-    //       );
-    //     })
-    //   )
-    //   .pipe(take(1))
-    //   .subscribe((authResponse: AuthResponse) => {
-    //     if (authResponse.token.length !== 0) {
-    //       this.setTokenCookie_(authResponse.token);
-    //     }
-    //   });
+    // Only refresh in OIDC mode and when already authenticated
+    if (!this.isOIDCEnabled()) return;
+    if (!this.hasTokenCookie() && !this.getOIDCUserInfo()) return;
+
+    // Prevent concurrent refresh attempts
+    if (this._refreshInProgress) return;
+    this._refreshInProgress = true;
+
+    this.refreshOIDCToken()
+      .pipe(take(1))
+      .subscribe({
+        next: () => {
+          // Refresh succeeded — the server updated all cookies (session, token,
+          // oidc-user, csrf-token). Re-initialize the CSRF token from the
+          // updated cookie into sessionStorage.
+          this.initializeCsrfToken();
+        },
+        error: () => {
+          // Refresh failed — the session may have expired. The next API call
+          // will return 401 and the GlobalErrorHandler will redirect to login.
+        },
+      })
+      .add(() => {
+        this._refreshInProgress = false;
+      });
   }
 
   isAuthenticated(): boolean {

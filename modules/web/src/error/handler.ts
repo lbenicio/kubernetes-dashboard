@@ -16,6 +16,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {ErrorHandler, Injectable, Injector, NgZone} from '@angular/core';
 import {Router} from '@angular/router';
 import {StateError} from '@api/root.ui';
+import {take} from 'rxjs/operators';
 
 import {ApiError, AsKdError, KdError} from '@common/errors/errors';
 import {AuthService} from '@common/services/global/authentication';
@@ -23,6 +24,8 @@ import {YAMLException} from 'js-yaml';
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
+  private _redirectingToLogin = false;
+
   constructor(
     private readonly injector_: Injector,
     private readonly ngZone_: NgZone
@@ -53,10 +56,30 @@ export class GlobalErrorHandler implements ErrorHandler {
   private handleHTTPError_(error: HttpErrorResponse): void {
     this.ngZone_.run(() => {
       if (KdError.isError(error, ApiError.unauthorized)) {
-        this.auth_.removeTokenCookie();
-        this.router_.navigate(['login'], {
-          state: {error: AsKdError(error)} as StateError,
-        });
+        // For OIDC mode, attempt a token refresh before redirecting to login.
+        // The refresh token in the encrypted session cookie may still be valid
+        // even if the access/ID token has expired.
+        if (this.auth_.isOIDCEnabled() && !this._redirectingToLogin) {
+          this._redirectingToLogin = true;
+          this.auth_.refreshOIDCToken()
+            .pipe(take(1))
+            .subscribe({
+              next: () => {
+                // Refresh succeeded — session cookies updated. Reload the page
+                // so the interceptor picks up the fresh impersonation headers.
+                this._redirectingToLogin = false;
+                window.location.reload();
+              },
+              error: () => {
+                // Refresh failed — session truly expired, redirect to login.
+                this._redirectingToLogin = false;
+                this.redirectToLogin_(error);
+              },
+            });
+          return;
+        }
+
+        this.redirectToLogin_(error);
         return;
       }
 
@@ -67,6 +90,13 @@ export class GlobalErrorHandler implements ErrorHandler {
           state: {error: AsKdError(error)} as StateError,
         });
       }
+    });
+  }
+
+  private redirectToLogin_(error: HttpErrorResponse): void {
+    this.auth_.removeTokenCookie();
+    this.router_.navigate(['login'], {
+      state: {error: AsKdError(error)} as StateError,
     });
   }
 }
