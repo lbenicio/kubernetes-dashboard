@@ -42,7 +42,8 @@ const miniName = 'my-mini-ingress';
 const maxiName = 'my-maxi-ingress';
 const MOCK_CONFIG_DI_TOKEN = new InjectionToken<IConfig>('kd.config');
 
-@Component({selector: 'test', templateUrl: './template.html'})
+@Component({
+  standalone: false,selector: 'test', templateUrl: './template.html'})
 class MiniTestComponent {
   isInitialized = true;
   ingress: IngressDetail = {
@@ -99,7 +100,8 @@ class MiniTestComponent {
   };
 }
 
-@Component({selector: 'test', templateUrl: './template.html'})
+@Component({
+  standalone: false,selector: 'test', templateUrl: './template.html'})
 class MaxiTestComponent {
   isInitialized = true;
   ingress: IngressDetail = {

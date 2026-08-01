@@ -20,6 +20,7 @@ import {ParamsService} from '@common/services/global/params';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
+  standalone: false,
   selector: 'kd-search',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

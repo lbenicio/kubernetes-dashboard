@@ -15,6 +15,7 @@
 import {Component} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-ingress-list-state',
   template: '<kd-ingress-list></kd-ingress-list>',
 })

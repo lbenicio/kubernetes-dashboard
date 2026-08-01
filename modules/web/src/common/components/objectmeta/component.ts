@@ -18,6 +18,7 @@ import {KdStateService} from '@common/services/global/state';
 import {Resource} from '@common/services/resource/endpoint';
 
 @Component({
+  standalone: false,
   selector: 'kd-object-meta',
   templateUrl: './template.html',
 })

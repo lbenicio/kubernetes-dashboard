@@ -19,6 +19,7 @@ import {KdStateService} from '../../services/global/state';
 import {Resource} from '../../services/resource/endpoint';
 
 @Component({
+  standalone: false,
   selector: 'kd-subject-list',
   templateUrl: './template.html',
 })

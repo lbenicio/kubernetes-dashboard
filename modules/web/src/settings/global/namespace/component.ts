@@ -48,6 +48,7 @@ interface NamespaceSettings {
 }
 
 @Component({
+  standalone: false,
   selector: 'kd-namespace-settings',
   templateUrl: './template.html',
   styleUrls: ['style.scss'],

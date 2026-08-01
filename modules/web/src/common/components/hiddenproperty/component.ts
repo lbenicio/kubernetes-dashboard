@@ -21,6 +21,7 @@ export enum HiddenPropertyMode {
 }
 
 @Component({
+  standalone: false,
   selector: 'kd-hidden-property',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

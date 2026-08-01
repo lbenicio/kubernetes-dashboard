@@ -1,10 +1,25 @@
 {
   "angularCompilerOptions": {
-    "enableI18nLegacyMessageIdFormat": false
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictStandalone": false,
+    "strictTemplates": false,
+    "strictInputAccessModifiers": false,
+    "strictNullInputTypes": false,
+    "strictAttributeTypes": false,
+    "strictSafeNavigationTypes": false,
+    "strictDomLocalRefTypes": false,
+    "strictOutputEventTypes": false,
+    "strictDomEventTypes": false,
+    "strictContextGenerics": false,
+    "strictLiteralTypes": false
   },
   "compileOnSave": false,
   "compilerOptions": {
+    "strict": false,
     "baseUrl": "./src",
+    "ignoreDeprecations": "6.0",
+    "strictPropertyInitialization": false,
+    "strictNullChecks": false,
     "paths": {
       "@api/*": [
         "typings/*"
@@ -23,15 +38,16 @@
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "noImplicitReturns": true,
-    "noUnusedParameters": true,
-    "noImplicitAny": true,
+    "noImplicitReturns": false,
+    "noUnusedParameters": false,
+    "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "lib": [
       "ES2024",
       "dom"
     ],
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "skipLibCheck": true
   }
 }

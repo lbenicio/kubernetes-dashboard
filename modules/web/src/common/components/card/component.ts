@@ -18,6 +18,7 @@ import {MESSAGES_DI_TOKEN} from '../../../index.messages';
 import {Animations} from '../../animations/animations';
 
 @Component({
+  standalone: false,
   selector: 'kd-card',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

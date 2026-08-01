@@ -17,6 +17,7 @@ import {ResourceOwner} from '@api/root.api';
 import {KdStateService} from '../../services/global/state';
 
 @Component({
+  standalone: false,
   selector: 'kd-creator-card',
   templateUrl: './template.html',
 })

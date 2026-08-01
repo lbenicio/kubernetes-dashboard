@@ -15,6 +15,7 @@
 import {Component} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-replication-controller-list-state',
   template: '<kd-replication-controller-list [showMetrics]="true"></kd-replication-controller-list>',
 })

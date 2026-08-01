@@ -16,6 +16,7 @@ import {Component} from '@angular/core';
 import {NavService} from '@common/services/nav/service';
 
 @Component({
+  standalone: false,
   selector: 'kd-nav-hamburger',
   templateUrl: 'template.html',
 })

@@ -14,7 +14,6 @@
 
 import {
   Component,
-  ComponentFactoryResolver,
   ComponentRef,
   Input,
   OnChanges,
@@ -27,6 +26,7 @@ import {ActionColumn} from '@api/root.ui';
 import {CRDDetail, Resource} from 'typings/root.api';
 
 @Component({
+  standalone: false,
   selector: 'kd-dynamic-cell',
   templateUrl: './template.html',
 })
@@ -36,7 +36,7 @@ export class ColumnComponent<T extends ActionColumn> implements OnChanges {
   @ViewChild('target', {read: ViewContainerRef, static: true}) target: ViewContainerRef;
   private componentRef_: ComponentRef<T> = undefined;
 
-  constructor(private readonly resolver_: ComponentFactoryResolver) {}
+  constructor(private readonly vcr_: ViewContainerRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.componentRef_ && changes.component) {
@@ -45,8 +45,7 @@ export class ColumnComponent<T extends ActionColumn> implements OnChanges {
     }
 
     if (!this.componentRef_) {
-      const factory = this.resolver_.resolveComponentFactory(this.component);
-      this.componentRef_ = this.target.createComponent(factory);
+      this.componentRef_ = this.target.createComponent(this.component);
     }
 
     this.componentRef_.instance.setObjectMeta(this.resource.objectMeta);

@@ -46,6 +46,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 const APP_LABEL_KEY = 'k8s-app';
 
 @Component({
+  standalone: false,
   selector: 'kd-create-from-form',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

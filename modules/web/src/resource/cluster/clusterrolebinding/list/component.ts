@@ -15,6 +15,7 @@
 import {Component} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-cluster-role-binding-list-state',
   template: '<kd-cluster-role-binding-list></kd-cluster-role-binding-list>',
 })

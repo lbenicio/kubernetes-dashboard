@@ -44,6 +44,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
  *
  */
 @Component({
+  standalone: false,
   selector: 'kd-date',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

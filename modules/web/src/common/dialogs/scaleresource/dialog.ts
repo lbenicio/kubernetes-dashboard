@@ -20,6 +20,7 @@ import {ReplicaCounts} from '@api/root.api';
 import {ResourceMeta} from '../../services/global/actionbar';
 
 @Component({
+  standalone: false,
   selector: 'kd-delete-resource-dialog',
   templateUrl: 'template.html',
 })

@@ -18,6 +18,7 @@ import {ListGroupIdentifier} from '@common/components/resourcelist/groupids';
 import {GroupedResourceList} from '@common/resources/groupedlist';
 
 @Component({
+  standalone: false,
   selector: 'kd-workloads',
   templateUrl: './template.html',
 })

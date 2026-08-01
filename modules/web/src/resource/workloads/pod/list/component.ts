@@ -15,6 +15,7 @@
 import {Component} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-pod-list-state',
   template: '<kd-pod-list [showMetrics]="true"></kd-pod-list>',
 })

@@ -24,6 +24,7 @@ import {HistoryService} from '@common/services/global/history';
 import {NamespaceService} from '@common/services/global/namespace';
 
 @Component({
+  standalone: false,
   selector: 'kd-create-from-file',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

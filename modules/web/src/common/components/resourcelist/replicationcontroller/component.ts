@@ -26,6 +26,7 @@ import {ListGroupIdentifier, ListIdentifier} from '../groupids';
 import {Status} from '../statuses';
 
 @Component({
+  standalone: false,
   selector: 'kd-replication-controller-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

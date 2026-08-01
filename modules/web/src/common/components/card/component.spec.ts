@@ -25,6 +25,7 @@ import {MESSAGES, MESSAGES_DI_TOKEN} from '../../../index.messages';
 import {CardComponent} from './component';
 
 @Component({
+  standalone: false,
   selector: 'test',
   template: `
     <link

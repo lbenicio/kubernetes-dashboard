@@ -25,6 +25,7 @@ export interface PreviewDeploymentDialogData {
 }
 
 @Component({
+  standalone: false,
   selector: 'kd-preview-deploy-dialog',
   templateUrl: 'template.html',
 })

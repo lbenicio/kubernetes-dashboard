@@ -18,6 +18,7 @@ import {MatDrawer} from '@angular/material/sidenav';
 import {NavService} from '@common/services/nav/service';
 
 @Component({
+  standalone: false,
   selector: 'kd-nav',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

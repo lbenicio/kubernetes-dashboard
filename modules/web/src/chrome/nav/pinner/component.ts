@@ -17,6 +17,7 @@ import {PinnedResource} from '@api/root.api';
 import {PinnerService} from '@common/services/global/pinner';
 
 @Component({
+  standalone: false,
   selector: 'kd-pinner-nav',
   templateUrl: './template.html',
   styleUrls: ['../style.scss'],

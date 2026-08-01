@@ -23,6 +23,7 @@ import {NamespacedResourceService} from '@common/services/resource/resource';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
+  standalone: false,
   selector: 'kd-daemon-set-detail',
   templateUrl: './template.html',
 })

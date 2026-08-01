@@ -18,7 +18,8 @@ import {SafeHtml} from '@angular/platform-browser';
 /**
  * Replaces all whitespace characters with the non-breaking unicode space to keep i.e. indent
  */
-@Pipe({name: 'kdUntrim'})
+@Pipe({
+  standalone: false,name: 'kdUntrim'})
 export class UntrimPipe implements PipeTransform {
   private readonly _nonBreakingSpace = 160;
 

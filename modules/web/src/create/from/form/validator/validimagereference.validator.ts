@@ -25,6 +25,7 @@ export const uniqueNameValidationKey = 'validImageReference';
  * If the name exists, error with name `uniqueName` will be added to errors.
  */
 @Directive({
+  standalone: false,
   selector: '[kdValidImageReference]',
   providers: [
     {

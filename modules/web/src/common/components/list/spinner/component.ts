@@ -15,6 +15,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: '[kdLoadingSpinner]',
   templateUrl: './template.html',
   host: {

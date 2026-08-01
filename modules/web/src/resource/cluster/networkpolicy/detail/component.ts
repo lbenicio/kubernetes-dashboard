@@ -24,6 +24,7 @@ import {NamespacedResourceService} from '@common/services/resource/resource';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
+  standalone: false,
   selector: 'kd-network-policy-detail',
   templateUrl: './template.html',
 })

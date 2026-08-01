@@ -20,6 +20,7 @@ import {take} from 'rxjs/operators';
 import {VerberService} from '@common/services/global/verber';
 
 @Component({
+  standalone: false,
   selector: 'kd-actionbar-detail-delete',
   templateUrl: './template.html',
 })

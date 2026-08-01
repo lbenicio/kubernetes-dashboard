@@ -25,6 +25,7 @@ export const validProtocolValidationKey = 'validProtocol';
  * If the name exists, error with name `uniqueName` will be added to errors.
  */
 @Directive({
+  standalone: false,
   selector: '[kdValidProtocol]',
   providers: [
     {

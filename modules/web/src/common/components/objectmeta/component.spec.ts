@@ -35,7 +35,8 @@ import {ObjectMetaComponent} from './component';
 
 const miniName = 'my-mini-meta-name';
 
-@Component({selector: 'test', templateUrl: './template.html'})
+@Component({
+  standalone: false,selector: 'test', templateUrl: './template.html'})
 class TestComponent {
   initialized = true;
   objectMeta: ObjectMeta = {

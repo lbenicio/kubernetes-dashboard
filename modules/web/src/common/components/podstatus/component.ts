@@ -16,6 +16,7 @@ import {Component, Input} from '@angular/core';
 import {PodInfo} from '@api/root.api';
 
 @Component({
+  standalone: false,
   selector: 'kd-pod-status-card',
   templateUrl: './template.html',
 })

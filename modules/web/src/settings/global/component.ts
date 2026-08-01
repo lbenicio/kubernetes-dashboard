@@ -43,6 +43,7 @@ enum Controls {
 }
 
 @Component({
+  standalone: false,
   selector: 'kd-global-settings',
   templateUrl: './template.html',
   styleUrls: ['style.scss'],

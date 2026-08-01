@@ -27,6 +27,7 @@ export interface CreateSecretDialogMeta {
 }
 
 @Component({
+  standalone: false,
   selector: 'kd-create-secret-dialog',
   templateUrl: 'template.html',
 })

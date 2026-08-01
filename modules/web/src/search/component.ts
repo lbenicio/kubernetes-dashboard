@@ -16,7 +16,8 @@ import {Component} from '@angular/core';
 import {ListGroupIdentifier} from '@common/components/resourcelist/groupids';
 import {GroupedResourceList} from '@common/resources/groupedlist';
 
-@Component({selector: 'kd-search', templateUrl: './template.html'})
+@Component({
+  standalone: false,selector: 'kd-search', templateUrl: './template.html'})
 export class SearchComponent extends GroupedResourceList {
   hasCluster(): boolean {
     return this.isGroupVisible(ListGroupIdentifier.cluster);

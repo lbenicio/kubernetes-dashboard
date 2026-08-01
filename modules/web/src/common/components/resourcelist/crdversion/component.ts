@@ -17,6 +17,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {CRDVersion} from '@api/root.api';
 
 @Component({
+  standalone: false,
   selector: 'kd-crd-versions-list',
   templateUrl: './template.html',
 })

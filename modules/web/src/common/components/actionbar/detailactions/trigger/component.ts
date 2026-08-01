@@ -18,6 +18,7 @@ import {ObjectMeta, TypeMeta} from '@api/root.api';
 import {VerberService} from '@common/services/global/verber';
 
 @Component({
+  standalone: false,
   selector: 'kd-actionbar-detail-trigger',
   templateUrl: './template.html',
 })

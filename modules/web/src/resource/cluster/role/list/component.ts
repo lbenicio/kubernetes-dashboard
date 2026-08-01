@@ -15,6 +15,7 @@
 import {Component} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-role-list-state',
   template: '<kd-role-list></kd-role-list>',
 })

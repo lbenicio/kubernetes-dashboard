@@ -56,7 +56,8 @@ const mockCronJobsData: CronJobList = {
   errors: [],
 };
 
-@Component({selector: 'kd-daemon-set-list', template: ''})
+@Component({
+  standalone: false,selector: 'kd-daemon-set-list', template: ''})
 class MockDaemonSetListComponent {}
 
 describe('OverviewComponent', () => {

@@ -15,6 +15,7 @@
 import {Component, ContentChild, TemplateRef} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-list-zero-state',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

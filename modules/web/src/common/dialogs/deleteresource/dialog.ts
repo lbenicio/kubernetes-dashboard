@@ -28,6 +28,7 @@ export interface DeleteOptions {
 }
 
 @Component({
+  standalone: false,
   selector: 'kd-delete-resource-dialog',
   templateUrl: 'template.html',
   styleUrls: ['./styles.scss'],

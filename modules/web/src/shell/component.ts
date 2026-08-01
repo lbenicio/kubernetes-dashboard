@@ -38,6 +38,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 declare let SockJS: any;
 
 @Component({
+  standalone: false,
   selector: 'kd-shell',
   templateUrl: './template.html',
   styleUrls: ['./styles.scss'],

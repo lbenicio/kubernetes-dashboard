@@ -25,6 +25,7 @@ import {Subscription} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
+  standalone: false,
   selector: 'kd-cluster-role-binding-detail',
   templateUrl: './template.html',
 })

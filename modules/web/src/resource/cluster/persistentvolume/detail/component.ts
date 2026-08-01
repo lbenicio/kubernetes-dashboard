@@ -26,6 +26,7 @@ import {GlobalServicesModule} from '@common/services/global/module';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
+  standalone: false,
   selector: 'kd-persistent-volume-detail',
   templateUrl: './template.html',
 })

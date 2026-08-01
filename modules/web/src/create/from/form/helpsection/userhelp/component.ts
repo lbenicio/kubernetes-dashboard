@@ -15,6 +15,7 @@
 import {Component} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-user-help',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

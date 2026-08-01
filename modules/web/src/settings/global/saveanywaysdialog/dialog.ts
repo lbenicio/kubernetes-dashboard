@@ -16,6 +16,7 @@ import {Component} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 
 @Component({
+  standalone: false,
   selector: 'kd-settings-save-anyway-dialog',
   templateUrl: 'template.html',
 })

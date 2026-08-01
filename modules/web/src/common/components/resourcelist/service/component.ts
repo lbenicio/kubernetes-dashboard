@@ -26,6 +26,7 @@ import {ListGroupIdentifier, ListIdentifier} from '../groupids';
 import {Status, StatusClass} from '../statuses';
 
 @Component({
+  standalone: false,
   selector: 'kd-service-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

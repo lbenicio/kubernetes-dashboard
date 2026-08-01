@@ -15,6 +15,7 @@
 import {Component, Input} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-property',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

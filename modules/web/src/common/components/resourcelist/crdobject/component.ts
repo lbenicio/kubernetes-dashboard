@@ -27,6 +27,7 @@ import {ListGroupIdentifier, ListIdentifier} from '../groupids';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
+  standalone: false,
   selector: 'kd-crd-object-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

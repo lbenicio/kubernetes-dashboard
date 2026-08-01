@@ -17,6 +17,7 @@ import {Metric} from '@api/root.api';
 import {GraphType} from '../graph/component';
 
 @Component({
+  standalone: false,
   selector: 'kd-graph-metrics',
   templateUrl: './template.html',
 })

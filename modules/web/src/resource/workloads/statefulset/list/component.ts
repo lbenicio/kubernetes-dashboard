@@ -15,6 +15,7 @@
 import {Component} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-stateful-set-state',
   template: '<kd-stateful-set-list [showMetrics]="true"></kd-stateful-set-list>',
 })

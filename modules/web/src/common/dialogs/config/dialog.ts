@@ -21,6 +21,7 @@ export interface ConfirmDialogConfig {
 }
 
 @Component({
+  standalone: false,
   selector: 'kd-confirm-dialog',
   templateUrl: 'template.html',
 })

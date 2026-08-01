@@ -31,6 +31,7 @@ const i18n = {
 };
 
 @Component({
+  standalone: false,
   selector: 'kd-logs',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

@@ -15,6 +15,7 @@
 import {Component} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-replica-set-list-state',
   template: '<kd-replica-set-list [showMetrics]="true"></kd-replica-set-list>',
 })

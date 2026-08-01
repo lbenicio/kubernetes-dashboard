@@ -35,6 +35,7 @@ const executableResources: string[] = [Resource.pod];
 const triggerableResources: string[] = [Resource.cronJob];
 
 @Component({
+  standalone: false,
   selector: 'kd-resource-context-menu',
   templateUrl: './template.html',
 })

@@ -22,6 +22,7 @@ import {MatDialogConfig, MatDialog} from '@angular/material/dialog';
 import {encode} from 'js-base64';
 
 @Component({
+  standalone: false,
   selector: 'kd-secret-detail-edit',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

@@ -28,6 +28,7 @@ export interface LogsDownloadDialogMeta {
 }
 
 @Component({
+  standalone: false,
   selector: 'kd-logs-download-dialog',
   templateUrl: 'template.html',
   styleUrls: ['style.scss'],

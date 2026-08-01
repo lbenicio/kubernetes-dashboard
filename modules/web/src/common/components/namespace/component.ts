@@ -37,6 +37,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 const HIDDEN_NAMESPACES = new Set(['kube-node-lease', 'kube-public']);
 
 @Component({
+  standalone: false,
   selector: 'kd-namespace-selector',
   templateUrl: './template.html',
   styleUrls: ['style.scss'],

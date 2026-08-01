@@ -14,19 +14,22 @@
 
 @use 'sass:map';
 @use 'sass:color';
-@use '@angular/material/theming';
+@use '@angular/material' as mat;
 @use 'variables' as *;
 
+@function _safe-color($theme, $role) {
+  $result: mat.get-theme-color($theme, $role);
+  @return $result;
+}
+
 @mixin kd-theme($theme, $colors) {
-  $foreground-palette: map.get($theme, foreground);
-  $background-palette: map.get($theme, background);
-  $background: theming.mat-color($background-palette, background);
-  $card-background: theming.mat-color($background-palette, card);
+  $background: _safe-color($theme, surface) or #1d1d1d;
+  $card-background: _safe-color($theme, surface-container) or #2d2d2d;
   $card-background-dark: color.adjust($card-background, $lightness: -5%);
-  $muted: theming.mat-color($foreground-palette, secondary-text);
-  $muted-light: theming.mat-color($foreground-palette, disabled);
-  $muted-xlight: theming.mat-color($foreground-palette, disabled-button);
-  $border: theming.mat-color($foreground-palette, divider);
+  $muted: _safe-color($theme, on-surface-variant) or #777;
+  $muted-light: _safe-color($theme, outline-variant) or #aaa;
+  $muted-xlight: _safe-color($theme, outline) or #ccc;
+  $border: _safe-color($theme, outline-variant) or #444;
   $box-shadow-1: rgb(0 0 0 / 0.2);
   $box-shadow-2: rgb(0 0 0 / 0.14);
   $box-shadow-3: rgb(0 0 0 / 0.12);
@@ -36,11 +39,8 @@
     0 1px 5px 0 $box-shadow-3;
   $white: #fff;
 
-  // Global style overrides.
-
   a {
     color: map.get($colors, primary);
-
     &:hover {
       color: map.get($colors, primary-hover);
     }
@@ -54,8 +54,6 @@
     &::-webkit-scrollbar-thumb {
       background-color: map.get($colors, scrollbar);
     }
-
-    // Only show the scrollbar on hover, but always enable scrolling.
     .kd-nav {
       & > *:not(:hover) {
         &::-webkit-scrollbar-thumb {
@@ -65,101 +63,29 @@
     }
   }
 
-  // Universal application styles.
-
-  .kd-primary {
-    color: map.get($colors, primary);
-  }
-
-  .kd-bg-primary {
-    background-color: map.get($colors, primary);
-  }
-
-  .kd-accent {
-    color: map.get($colors, accent);
-  }
-
-  .kd-success {
-    color: map.get($colors, indicator-success);
-  }
-
-  .kd-bg-success {
-    background-color: map.get($colors, indicator-success);
-  }
-
-  .kd-bg-success-light {
-    background-color: color.adjust(map.get($colors, indicator-success), $lightness: 15%);
-  }
-
-  .kd-warning {
-    color: map.get($colors, indicator-warning);
-  }
-
-  .kd-bg-warning {
-    background-color: map.get($colors, indicator-warning);
-  }
-
-  .kd-bg-warning-light {
-    background-color: color.adjust(map.get($colors, indicator-warning), $lightness: 20%);
-  }
-
-  .kd-error {
-    color: map.get($colors, indicator-error);
-  }
-
-  .kd-bg-error {
-    background-color: map.get($colors, indicator-error);
-  }
-
-  .kd-bg-error-light {
-    background-color: color.adjust(map.get($colors, indicator-error), $lightness: 33%);
-  }
-
-  .kd-help {
-    color: $muted;
-  }
-
-  .kd-muted {
-    color: $muted;
-  }
-
-  .kd-muted-light {
-    color: $muted-light;
-  }
-
-  .kd-muted-xlight {
-    color: $muted-xlight;
-  }
-
-  .kd-chart-green {
-    color: map.get($colors, chart-green);
-  }
-
-  .kd-chart-blue {
-    color: map.get($colors, chart-blue);
-  }
-
-  .kd-bg-background {
-    background-color: $background;
-  }
-
-  .kd-loading-shade {
-    background: $border;
-  }
-
-  .kd-bg-card-dark {
-    background-color: $card-background-dark;
-  }
-
-  .kd-border {
-    border: 1px solid $border;
-  }
-
-  .kd-white {
-    color: $white;
-  }
-
-  // Component-level styles
+  .kd-primary { color: map.get($colors, primary); }
+  .kd-bg-primary { background-color: map.get($colors, primary); }
+  .kd-accent { color: map.get($colors, accent); }
+  .kd-success { color: map.get($colors, indicator-success); }
+  .kd-bg-success { background-color: map.get($colors, indicator-success); }
+  .kd-bg-success-light { background-color: color.adjust(map.get($colors, indicator-success), $lightness: 15%); }
+  .kd-warning { color: map.get($colors, indicator-warning); }
+  .kd-bg-warning { background-color: map.get($colors, indicator-warning); }
+  .kd-bg-warning-light { background-color: color.adjust(map.get($colors, indicator-warning), $lightness: 20%); }
+  .kd-error { color: map.get($colors, indicator-error); }
+  .kd-bg-error { background-color: map.get($colors, indicator-error); }
+  .kd-bg-error-light { background-color: color.adjust(map.get($colors, indicator-error), $lightness: 33%); }
+  .kd-help { color: $muted; }
+  .kd-muted { color: $muted; }
+  .kd-muted-light { color: $muted-light; }
+  .kd-muted-xlight { color: $muted-xlight; }
+  .kd-chart-green { color: map.get($colors, chart-green); }
+  .kd-chart-blue { color: map.get($colors, chart-blue); }
+  .kd-bg-background { background-color: $background; }
+  .kd-loading-shade { background: $border; }
+  .kd-bg-card-dark { background-color: $card-background-dark; }
+  .kd-border { border: 1px solid $border; }
+  .kd-white { color: $white; }
 
   .kd-notifications-panel {
     background-color: $card-background;
@@ -170,187 +96,102 @@
     background-color: color.adjust($background, $lightness: -2.5%);
   }
 
-  .kd-code-block {
-    background-color: $border;
-  }
+  .kd-code-block { background-color: $border; }
 
   .kd-chips-show-button {
     color: map.get($colors, primary);
-
-    &:hover {
-      color: map.get($colors, primary-hover);
-    }
+    &:hover { color: map.get($colors, primary-hover); }
   }
 
-  .kd-minimized-card-header:hover {
-    background: $border;
-  }
+  .kd-minimized-card-header:hover { background: $border; }
 
   .kd-search {
     background-color: color.adjust($background, $lightness: -2.5%);
-
-    input {
-      color: theming.mat-color($foreground-palette, base);
-    }
+    input { color: _safe-color($theme, on-surface) or #fff; }
   }
 
-  .kd-nav-item-button {
-    color: map.get($colors, toolbar-button);
-  }
+  .kd-nav-item-button { color: map.get($colors, toolbar-button); }
 
   .kd-nav-item-button-active {
-    background-color: theming.mat-color($background-palette, selected-button);
+    background-color: _safe-color($theme, secondary-container) or #444;
     color: map.get($colors, primary);
   }
 
   .kd-search-input {
     background: $card-background;
     border-bottom-color: $border;
-    color: theming.mat-color($foreground-palette, text);
+    color: _safe-color($theme, on-surface) or #fff;
   }
 
   .kd-graph-legend-entry {
-    &:not(:last-child) {
-      border-bottom: 1px solid $border;
-    }
+    &:not(:last-child) { border-bottom: 1px solid $border; }
   }
 
-  .mat-chip.mat-standard-chip {
-    background: $card-background-dark;
-  }
-
-  .mat-active,
-  .mat-selected {
-    color: map.get($colors, primary) !important;
-  }
+  .mat-chip.mat-standard-chip { background: $card-background-dark; }
+  .mat-active, .mat-selected { color: map.get($colors, primary) !important; }
 
   kd-namespace-selector {
     border: 1px solid $border;
-
-    .kd-namespace-select {
-      color: theming.mat-color($foreground-palette, secondary-text);
-    }
-
-    .kd-namespace-select-input-container {
-      .mat-form-field-underline {
-        display: none;
-      }
-
-      .mat-select-arrow {
-        color: $muted-light !important;
-      }
-    }
+    .kd-namespace-select { color: _safe-color($theme, on-surface-variant) or $muted; }
   }
 
   .kd-namespace-select-input {
     background: $card-background;
-    color: theming.mat-color($foreground-palette, secondary-text);
+    color: _safe-color($theme, on-surface-variant) or $muted;
   }
 
   .kd-namespaced-item {
     background: $border;
-    color: theming.mat-color($foreground-palette, secondary-text);
+    color: _safe-color($theme, on-surface-variant) or $muted;
   }
 
   .kd-namespace-select-input-border,
   .kd-shell-toolbar-select,
-  .kd-dialog-propagation-select {
-    border-bottom: 1px solid $border !important;
-  }
+  .kd-dialog-propagation-select { border-bottom: 1px solid $border !important; }
 
-  .kd-cross-line-primary {
-    stroke: map.get($colors, primary);
-  }
-
-  .kd-cross-outline {
-    stroke: $background;
-  }
-
-  .mat-button-toggle-group {
-    border: 1px solid $border;
-  }
-
-  .mat-button-toggle-checked {
-    background-color: $card-background-dark;
-  }
+  .kd-cross-line-primary { stroke: map.get($colors, primary); }
+  .kd-cross-outline { stroke: $background; }
+  .mat-button-toggle-group { border: 1px solid $border; }
+  .mat-button-toggle-checked { background-color: $card-background-dark; }
 
   .kd-user-help {
     color: $muted;
-
-    .material-icons {
-      color: map.get($colors, primary);
-    }
+    .material-icons { color: map.get($colors, primary); }
   }
 
-  .mat-drawer-side {
-    border-right: 0;
-  }
-
-  .mat-icon-button:hover:not([disabled]) {
-    background-color: $border !important;
-  }
+  .mat-drawer-side { border-right: 0; }
+  .mat-icon-button:hover:not([disabled]) { background-color: $border !important; }
 
   .ngx-charts {
-    text {
-      fill: theming.mat-color($foreground-palette, text) !important;
-    }
+    text { fill: _safe-color($theme, on-surface) or #fff !important; }
   }
 
   .kd-secret-detail-text {
-    .mat-form-field-infix {
-      border-top: 0;
-    }
-
+    .mat-form-field-infix { border-top: 0; }
     .mat-form-field-underline {
       background: none;
-
-      .mat-form-field-ripple {
-        background: none;
-      }
+      .mat-form-field-ripple { background: none; }
     }
-
-    textarea {
-      background-color: $border;
-      border: 0;
-    }
+    textarea { background-color: $border; border: 0; }
   }
 
-  .kd-edit-active {
-    color: map.get($colors, primary);
-  }
-
-  .kd-volume-mounts {
-    border: 1px solid $border;
-  }
-
-  .mat-list {
-    border: 1px solid $border;
-  }
+  .kd-edit-active { color: map.get($colors, primary); }
+  .kd-volume-mounts { border: 1px solid $border; }
+  .mat-list { border: 1px solid $border; }
 
   kd-logs {
     .kd-card-content {
       border-bottom: 1px solid color.adjust(map.get($colors, log-viewer-bg), $lightness: 75%);
       border-top: 1px solid color.adjust(map.get($colors, log-viewer-bg), $lightness: 75%);
     }
-
     .kd-log-line-container {
       background-color: map.get($colors, log-viewer-bg);
       color: map.get($colors, log-viewer-text);
-
-      &::-webkit-scrollbar-thumb {
-        background-color: map.get($colors, log-viewer-scrollbar);
+      &::-webkit-scrollbar-thumb { background-color: map.get($colors, log-viewer-scrollbar); }
+      .kd-logs-element, .kd-logs-element-compact {
+        &:hover { background: color.adjust(map.get($colors, log-viewer-bg), $lightness: 20%); }
       }
-
-      .kd-logs-element,
-      .kd-logs-element-compact {
-        &:hover {
-          background: color.adjust(map.get($colors, log-viewer-bg), $lightness: 20%);
-        }
-      }
-
-      &.kd-logs-text-color-invert {
-        filter: invert(100%);
-      }
+      &.kd-logs-text-color-invert { filter: invert(100%); }
     }
   }
 }

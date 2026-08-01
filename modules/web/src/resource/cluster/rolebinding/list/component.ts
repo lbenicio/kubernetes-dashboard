@@ -15,6 +15,7 @@
 import {Component} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-role-binding-list-state',
   template: '<kd-role-binding-list></kd-role-binding-list>',
 })

@@ -18,6 +18,7 @@ import {AssetsService} from '@common/services/global/assets';
 import {ConfigService} from '@common/services/global/config';
 
 @Component({
+  standalone: false,
   selector: 'kd-footer',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

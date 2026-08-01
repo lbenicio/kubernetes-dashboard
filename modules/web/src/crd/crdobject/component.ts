@@ -26,7 +26,8 @@ import {NotificationsService} from '@common/services/global/notifications';
 import {RawResource} from '@common/resources/rawresource';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
-@Component({selector: 'kd-crd-object-detail', templateUrl: './template.html'})
+@Component({
+  standalone: false,selector: 'kd-crd-object-detail', templateUrl: './template.html'})
 export class CRDObjectDetailComponent implements OnInit, OnDestroy {
   @ViewChild('group', {static: true}) buttonToggleGroup: MatButtonToggleGroup;
   @ViewChild('code', {static: true}) codeRef: ElementRef;

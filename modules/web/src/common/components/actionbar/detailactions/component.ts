@@ -16,6 +16,7 @@ import {Component, Input} from '@angular/core';
 import {ObjectMeta, TypeMeta} from '@api/root.api';
 
 @Component({
+  standalone: false,
   selector: 'kd-actionbar-detail-actions',
   templateUrl: './template.html',
 })

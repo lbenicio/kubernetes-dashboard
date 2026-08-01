@@ -23,6 +23,7 @@ import {NamespacedResourceService} from '@common/services/resource/resource';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
+  standalone: false,
   selector: 'kd-cron-job-detail',
   templateUrl: './template.html',
 })

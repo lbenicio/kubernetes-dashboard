@@ -15,6 +15,7 @@
 import {Component} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-deployment-list-state',
   template: '<kd-deployment-list [showMetrics]="true"></kd-deployment-list>',
 })

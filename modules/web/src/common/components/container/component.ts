@@ -20,6 +20,7 @@ import {KdStateService} from '@common/services/global/state';
 import isEmpty from 'lodash-es/isEmpty';
 
 @Component({
+  standalone: false,
   selector: 'kd-container-card',
   templateUrl: './template.html',
   styleUrls: ['style.scss'],

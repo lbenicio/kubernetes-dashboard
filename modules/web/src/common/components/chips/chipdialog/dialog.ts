@@ -17,6 +17,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Chip} from '../component';
 
 @Component({
+  standalone: false,
   selector: 'kd-chip-dialog',
   templateUrl: 'template.html',
 })

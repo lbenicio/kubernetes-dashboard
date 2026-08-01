@@ -22,6 +22,7 @@ import {HistoryService} from '@common/services/global/history';
 import {NamespaceService} from '@common/services/global/namespace';
 
 @Component({
+  standalone: false,
   selector: 'kd-create-from-input',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

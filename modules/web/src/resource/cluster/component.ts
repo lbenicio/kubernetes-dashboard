@@ -16,6 +16,7 @@ import {Component} from '@angular/core';
 import {GroupedResourceList} from '@common/resources/groupedlist';
 
 @Component({
+  standalone: false,
   selector: 'kd-cluster',
   templateUrl: './template.html',
 })

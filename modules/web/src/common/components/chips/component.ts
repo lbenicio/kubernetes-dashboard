@@ -23,7 +23,6 @@ import {
 } from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {StringMap} from '@api/root.shared';
-// @ts-expect-error as crop-url uses old style module declaration
 import cropUrl from 'crop-url';
 
 import {GlobalSettingsService} from '../../services/global/globalsettings';
@@ -52,6 +51,7 @@ const URL_REGEXP = new RegExp(
 const MAX_CHIP_VALUE_LENGTH = 63;
 
 @Component({
+  standalone: false,
   selector: 'kd-chips',
   styleUrls: ['./style.scss'],
   templateUrl: './template.html',

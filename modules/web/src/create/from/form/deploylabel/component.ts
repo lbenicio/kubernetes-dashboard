@@ -33,6 +33,7 @@ interface DeployLabelI {
 }
 
 @Component({
+  standalone: false,
   selector: 'kd-deploy-label',
   templateUrl: './template.html',
   providers: [

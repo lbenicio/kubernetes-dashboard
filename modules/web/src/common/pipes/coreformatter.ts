@@ -18,7 +18,8 @@ import {Pipe, PipeTransform} from '@angular/core';
 /**
  * Formats cores usage in millicores to a decimal prefix format, e.g. 321,20 kCPU.
  */
-@Pipe({name: 'kdCores'})
+@Pipe({
+  standalone: false,name: 'kdCores'})
 export class CoreFormatter implements PipeTransform {
   readonly base = 1000;
   readonly powerSuffixes = ['m', '', 'k', 'M', 'G', 'T'];

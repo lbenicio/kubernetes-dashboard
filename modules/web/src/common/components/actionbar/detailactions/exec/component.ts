@@ -17,6 +17,7 @@ import {ObjectMeta} from '@api/root.api';
 import {KdStateService} from '@common/services/global/state';
 
 @Component({
+  standalone: false,
   selector: 'kd-actionbar-detail-exec',
   templateUrl: './template.html',
 })

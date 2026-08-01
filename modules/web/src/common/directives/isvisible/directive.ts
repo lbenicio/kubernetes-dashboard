@@ -15,6 +15,7 @@
 import {AfterViewInit, Directive, EventEmitter, Output, ViewContainerRef} from '@angular/core';
 
 @Directive({
+  standalone: false,
   selector: '[kdIsVisible]',
 })
 export class IsVisibleDirective implements AfterViewInit {

@@ -17,6 +17,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {LimitRange} from 'typings/root.api';
 
 @Component({
+  standalone: false,
   selector: 'kd-resource-limit-list',
   templateUrl: './template.html',
 })

@@ -15,6 +15,7 @@
 import {Component} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-settings',
   template: '<kd-global-settings></kd-global-settings>' + '<kd-local-settings></kd-local-settings>',
 })

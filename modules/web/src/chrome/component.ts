@@ -26,6 +26,7 @@ class SystemBanner {
 }
 
 @Component({
+  standalone: false,
   selector: 'kd-chrome',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

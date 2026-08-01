@@ -17,6 +17,7 @@ import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {ResourceMeta} from '../../services/global/actionbar';
 
 @Component({
+  standalone: false,
   selector: 'kd-restart-resource-dialog',
   templateUrl: 'template.html',
 })

@@ -47,6 +47,7 @@ const rollInOut = trigger('rollInOut', [
 ]);
 
 @Component({
+  standalone: false,
   selector: 'kd-nav-item',
   templateUrl: 'template.html',
   styleUrls: ['style.scss'],

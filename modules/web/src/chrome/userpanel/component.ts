@@ -18,6 +18,7 @@ import {AuthService} from '@common/services/global/authentication';
 import {MeService} from '@common/services/global/me';
 
 @Component({
+  standalone: false,
   selector: 'kd-user-panel',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

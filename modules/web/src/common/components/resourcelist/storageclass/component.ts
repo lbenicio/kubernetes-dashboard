@@ -25,6 +25,7 @@ import {MenuComponent} from '../../list/column/menu/component';
 import {ListGroupIdentifier, ListIdentifier} from '../groupids';
 
 @Component({
+  standalone: false,
   selector: 'kd-storage-class-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

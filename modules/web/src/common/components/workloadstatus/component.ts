@@ -39,6 +39,7 @@ const RESOURCE_ROUTES: Record<string, string> = {
 };
 
 @Component({
+  standalone: false,
   selector: 'kd-workload-statuses',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

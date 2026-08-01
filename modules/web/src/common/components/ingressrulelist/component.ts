@@ -32,6 +32,7 @@ interface IngressSpecTLSFlat {
 }
 
 @Component({
+  standalone: false,
   selector: 'kd-ingressruleflat-card-list',
   templateUrl: './template.html',
 })

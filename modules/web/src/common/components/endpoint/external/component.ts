@@ -20,6 +20,7 @@ import {Endpoint} from '@api/root.api';
  * from the outside of the cluster.
  */
 @Component({
+  standalone: false,
   selector: 'kd-external-endpoint',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

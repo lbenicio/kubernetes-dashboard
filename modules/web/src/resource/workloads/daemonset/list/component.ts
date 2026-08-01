@@ -15,6 +15,7 @@
 import {Component} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-daemon-set-list-state',
   template: '<kd-daemon-set-list [showMetrics]="true"></kd-daemon-set-list>',
 })

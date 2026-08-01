@@ -25,6 +25,7 @@ import {ResourceService} from '@common/services/resource/resource';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
+  standalone: false,
   selector: 'kd-node-detail',
   templateUrl: './template.html',
 })

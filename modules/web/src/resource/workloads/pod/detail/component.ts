@@ -24,6 +24,7 @@ import isEmpty from 'lodash-es/isEmpty';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
+  standalone: false,
   selector: 'kd-pod-detail',
   templateUrl: './template.html',
   styleUrls: ['style.scss'],

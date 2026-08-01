@@ -24,6 +24,7 @@ import {KdStateService} from '@common/services/global/state';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
+  standalone: false,
   selector: 'kd-role-detail',
   templateUrl: './template.html',
 })

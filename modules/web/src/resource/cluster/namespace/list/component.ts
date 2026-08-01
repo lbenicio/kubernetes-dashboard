@@ -15,6 +15,7 @@
 import {Component} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-namespace-list-view',
   template: '<kd-namespace-list></kd-namespace-list>',
 })

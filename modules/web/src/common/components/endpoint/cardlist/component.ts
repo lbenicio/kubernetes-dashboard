@@ -17,6 +17,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {Endpoint} from '@api/root.api';
 
 @Component({
+  standalone: false,
   selector: 'kd-endpoint-card-list',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

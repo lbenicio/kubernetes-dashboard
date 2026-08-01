@@ -16,6 +16,7 @@ import {Component, Input} from '@angular/core';
 import {Probe} from '@api/root.api';
 
 @Component({
+  standalone: false,
   selector: 'kd-probe-card',
   templateUrl: './template.html',
 })

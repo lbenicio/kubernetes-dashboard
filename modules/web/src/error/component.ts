@@ -20,6 +20,7 @@ import {map} from 'rxjs/operators';
 import {KdError} from '@common/errors/errors';
 
 @Component({
+  standalone: false,
   selector: 'kd-error',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

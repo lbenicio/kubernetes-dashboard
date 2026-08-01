@@ -16,6 +16,7 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {Event} from 'typings/root.api';
 
 @Component({
+  standalone: false,
   selector: 'kd-row-detail',
   templateUrl: 'template.html',
   styleUrls: ['style.scss'],

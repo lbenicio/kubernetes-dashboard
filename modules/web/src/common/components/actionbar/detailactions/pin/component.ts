@@ -19,6 +19,7 @@ import {PinnerService} from '@common/services/global/pinner';
 import {MESSAGES_DI_TOKEN} from '../../../../../index.messages';
 
 @Component({
+  standalone: false,
   selector: 'kd-actionbar-detail-pin',
   templateUrl: './template.html',
 })

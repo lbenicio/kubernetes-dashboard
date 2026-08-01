@@ -27,6 +27,7 @@ import {
 import {EnvironmentVariable} from '@api/root.api';
 
 @Component({
+  standalone: false,
   selector: 'kd-environment-variables',
   templateUrl: './template.html',
   providers: [

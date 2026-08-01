@@ -18,6 +18,7 @@ import {ResourceMeta} from '@common/services/global/actionbar';
 import {KdStateService} from '@common/services/global/state';
 
 @Component({
+  standalone: false,
   selector: 'kd-actionbar-detail-logs',
   templateUrl: './template.html',
 })

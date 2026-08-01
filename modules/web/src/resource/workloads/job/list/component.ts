@@ -15,6 +15,7 @@
 import {Component} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-job-list-state',
   template: '<kd-job-list [showMetrics]="true"></kd-job-list>',
 })

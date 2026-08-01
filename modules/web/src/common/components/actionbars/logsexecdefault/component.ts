@@ -17,6 +17,7 @@ import {ActionbarService, ResourceMeta} from '@common/services/global/actionbar'
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
+  standalone: false,
   selector: '',
   templateUrl: './template.html',
 })

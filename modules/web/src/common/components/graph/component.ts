@@ -30,7 +30,8 @@ enum TimeScale {
   Days,
 }
 
-@Component({selector: 'kd-graph', templateUrl: './template.html', styleUrls: ['./style.scss']})
+@Component({
+  standalone: false,selector: 'kd-graph', templateUrl: './template.html', styleUrls: ['./style.scss']})
 export class GraphComponent implements OnInit, OnChanges {
   @Input() metric: Metric;
   @Input() id: string;

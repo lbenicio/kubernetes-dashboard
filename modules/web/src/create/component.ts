@@ -19,6 +19,7 @@ import {CreateFromFormComponent} from './from/form/component';
 import {CreateFromInputComponent} from './from/input/component';
 
 @Component({
+  standalone: false,
   selector: 'kd-create',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

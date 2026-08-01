@@ -20,6 +20,7 @@ export interface EditFallbackNamespaceDialogData {
 }
 
 @Component({
+  standalone: false,
   selector: 'kd-namespace-settings-edit-dialog',
   templateUrl: 'template.html',
 })

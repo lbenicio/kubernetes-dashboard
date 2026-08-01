@@ -25,6 +25,7 @@ import {ListGroupIdentifier, ListIdentifier} from '../groupids';
 import {Observable} from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'kd-role-binding-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

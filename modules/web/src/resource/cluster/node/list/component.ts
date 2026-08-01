@@ -15,6 +15,7 @@
 import {Component} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-node-list-state',
   template: '<kd-node-list [showMetrics]="true"></kd-node-list>',
 })

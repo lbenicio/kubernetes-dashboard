@@ -15,6 +15,7 @@
 import {Component} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-config-map-list-state',
   template: '<kd-config-map-list></kd-config-map-list>',
 })

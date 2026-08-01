@@ -58,6 +58,7 @@ const EXT_SERVICE: ServiceType = {
 };
 
 @Component({
+  standalone: false,
   selector: 'kd-port-mappings',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

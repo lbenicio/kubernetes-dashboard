@@ -23,7 +23,8 @@ import {ResourceService} from '@common/services/resource/resource';
 import {EndpointManager, Resource} from '@common/services/resource/endpoint';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
-@Component({selector: 'kd-crd-detail', templateUrl: './template.html'})
+@Component({
+  standalone: false,selector: 'kd-crd-detail', templateUrl: './template.html'})
 export class CRDDetailComponent implements OnInit, OnDestroy {
   crd: CRDDetail;
   crdName: string;

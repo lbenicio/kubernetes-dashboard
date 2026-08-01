@@ -18,6 +18,7 @@ import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
+  standalone: false,
   selector: 'kd-card-list-filter',
   templateUrl: './template.html',
   styleUrls: ['style.scss'],

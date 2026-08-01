@@ -24,6 +24,7 @@ import {CookieService} from 'ngx-cookie-service';
 import {CONFIG_DI_TOKEN} from '../../index.config';
 
 @Component({
+  standalone: false,
   selector: 'kd-local-settings',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

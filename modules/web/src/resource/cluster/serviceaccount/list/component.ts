@@ -15,6 +15,7 @@
 import {Component} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-service-account-list-state',
   template: '<kd-service-account-list></kd-service-account-list>',
 })

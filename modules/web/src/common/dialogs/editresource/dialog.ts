@@ -24,6 +24,7 @@ import {ResourceMeta} from '../../services/global/actionbar';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
+  standalone: false,
   selector: 'kd-delete-resource-dialog',
   templateUrl: 'template.html',
 })

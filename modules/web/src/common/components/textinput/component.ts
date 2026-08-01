@@ -38,6 +38,7 @@ export enum EditorMode {
 }
 
 @Component({
+  standalone: false,
   selector: 'kd-text-input',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

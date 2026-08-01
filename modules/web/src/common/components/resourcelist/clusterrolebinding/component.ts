@@ -25,6 +25,7 @@ import {ListGroupIdentifier, ListIdentifier} from '../groupids';
 import {ClusterRoleBinding, ClusterRoleBindingList} from '@api/root.api';
 
 @Component({
+  standalone: false,
   selector: 'kd-cluster-role-binding-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

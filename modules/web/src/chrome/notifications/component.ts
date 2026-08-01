@@ -20,6 +20,7 @@ import {Notification, NotificationsService} from '@common/services/global/notifi
 import {MESSAGES_DI_TOKEN} from '../../index.messages';
 
 @Component({
+  standalone: false,
   selector: 'kd-notifications',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
@@ -36,7 +37,7 @@ export class NotificationsComponent {
   ) {}
 
   @HostListener('document:click', ['$event'])
-  private onOutsideClick_(event: Event): void {
+  onOutsideClick_(event: Event): void {
     if (!this.element_.nativeElement.contains(event.target) && this.isOpen()) {
       this.close_();
     }

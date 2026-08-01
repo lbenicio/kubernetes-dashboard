@@ -25,6 +25,7 @@ import {ListGroupIdentifier, ListIdentifier} from '../groupids';
 import {Status} from '../statuses';
 
 @Component({
+  standalone: false,
   selector: 'kd-stateful-set-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

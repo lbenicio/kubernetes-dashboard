@@ -18,6 +18,7 @@ import {HTMLInputEvent, KdFile} from '@api/root.ui';
 import {AlertDialogComponent, AlertDialogConfig} from 'common/dialogs/alert/dialog';
 
 @Component({
+  standalone: false,
   selector: 'kd-upload-file',
   templateUrl: 'template.html',
   styleUrls: ['style.scss'],

@@ -40,7 +40,8 @@ import {IConfig} from '@api/root.ui';
 const maxiName = 'my-maxi-service';
 const MOCK_CONFIG_DI_TOKEN = new InjectionToken<IConfig>('kd.config');
 
-@Component({selector: 'test', templateUrl: './template.html'})
+@Component({
+  standalone: false,selector: 'test', templateUrl: './template.html'})
 class MaxiTestComponent {
   isInitialized = true;
   service: ServiceDetail = {

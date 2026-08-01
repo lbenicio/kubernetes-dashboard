@@ -15,6 +15,7 @@
 import {Component} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-zero-state',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],

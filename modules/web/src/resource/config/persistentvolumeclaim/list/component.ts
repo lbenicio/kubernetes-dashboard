@@ -15,6 +15,7 @@
 import {Component} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'kd-persistent-volume-claim-list-state',
   template: '<kd-persistent-volume-claim-list></kd-persistent-volume-claim-list>',
 })

@@ -25,6 +25,7 @@ import {MenuComponent} from '../../list/column/menu/component';
 import {ListGroupIdentifier, ListIdentifier} from '../groupids';
 
 @Component({
+  standalone: false,
   selector: 'kd-ingress-list',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
