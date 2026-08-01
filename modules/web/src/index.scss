@@ -461,12 +461,19 @@ kd-logs {
   }
 }
 
-// Override M3 table cell padding (Material uses .mdc-data-table__cell)
-.mdc-data-table__cell {
-  &:last-child { padding-right: 16px !important; }
-  &:first-child { padding-left: 16px !important; }
+
+// M3: Status icon column needs no extra padding (Material already adds 16px)
+.mat-mdc-column-statusicon,
+.mat-column-statusicon {
+  padding: 0 4px !important;
+  flex: 0 0 36px !important;
 }
-.mdc-data-table__header-cell {
-  &:last-child { padding-right: 16px !important; }
-  &:first-child { padding-left: 16px !important; }
+
+// M3: Action menu column needs room for 48px icon button
+[class^='mat-mdc-column-action'],
+[class*='mat-mdc-column-action'],
+[class^='mat-column-action'],
+[class*='mat-column-action'] {
+  flex: 0 0 52px !important;
+  padding: 0 4px !important;
 }

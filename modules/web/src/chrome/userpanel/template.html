@@ -14,40 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<mat-menu
-  #actions="matMenu"
-  [classList]="'kd-user-panel'"
->
-  <div
-    class="kd-auth-status kd-muted"
-    [ngClass]="hasAuthHeader() ? 'kd-auth-header' : ''"
-  >
-    <div
-      fxFlex
-      fxLayout="row"
-    >
+<mat-menu #actions="matMenu" [classList]="'kd-user-panel'">
+  <div class="kd-auth-status kd-muted" [ngClass]="hasAuthHeader() ? 'kd-auth-header' : ''">
+    <div fxFlex fxLayout="row">
       <!-- Avatar -->
-      <div
-        *ngIf="isOIDC && hasAvatar"
-        class="kd-user-avatar"
-        fxFlexAlign="center"
-      >
-        <img
-          [src]="avatarUrl"
-          alt="User avatar"
-          class="kd-avatar-img"
-        />
+      <div *ngIf="isOIDC && hasAvatar" class="kd-user-avatar" fxFlexAlign="center">
+        <img [src]="avatarUrl" alt="User avatar" class="kd-avatar-img" />
       </div>
 
-      <div
-        fxFlex
-        fxFlexAlign=" center"
-        fxLayout="column"
-        class="method kd-muted-light"
-      >
+      <div fxFlex fxFlexAlign="center" fxLayout="column" class="method kd-muted-light">
         <ng-container *ngIf="isOIDC">
-          <ng-container *ngIf="displayName" class="kd-display-name">{{ displayName }}</ng-container>
-          <ng-container *ngIf="email" class="kd-email">{{ email }}</ng-container>
+          <span *ngIf="displayName" class="kd-display-name">{{ displayName }}</span>
+          <span *ngIf="email" class="kd-email">{{ email }}</span>
+          <span class="username kd-muted">{{ username }}</span>
         </ng-container>
         <ng-container *ngIf="!isOIDC">
           <ng-container *ngIf="hasAuthHeader()">Logged in with auth header</ng-container>
@@ -56,72 +35,21 @@ limitations under the License.
         </ng-container>
       </div>
 
-      <button
-        mat-icon-button
-        matTooltip="Close"
-        i18n-matTooltip
-        (click)="close()"
-      >
+      <button mat-icon-button matTooltip="Close" i18n-matTooltip (click)="close()">
         <mat-icon class="kd-muted">arrow_drop_up</mat-icon>
       </button>
     </div>
   </div>
   <mat-divider *ngIf="!hasAuthHeader()"></mat-divider>
-  <button
-    mat-menu-item
-    *ngIf="!isAuthenticated()"
-    (click)="logout()"
-    i18n
-  >
-    Sign in
-  </button>
-  <button
-    mat-menu-item
-    *ngIf="isAuthenticated() && !hasAuthHeader()"
-    (click)="logout()"
-    i18n
-  >
-    Sign out
-  </button>
+  <button mat-menu-item *ngIf="!isAuthenticated()" (click)="logout()" i18n>Sign in</button>
+  <button mat-menu-item *ngIf="isAuthenticated() && !hasAuthHeader()" (click)="logout()" i18n>Sign out</button>
 </mat-menu>
 
-<button
-  mat-icon-button
-  color="primary"
-  [matMenuTriggerFor]="actions"
-  (click)="$event.stopPropagation()"
->
-  <!-- Show avatar image if available, otherwise fallback to account_circle icon -->
-  <img
-    *ngIf="isOIDC && hasAvatar"
-    [src]="avatarUrl"
-    alt="User avatar"
-    class="kd-toolbar-avatar"
-  />
-  <mat-icon
-    *ngIf="!(isOIDC && hasAvatar)"
-    class="kd-user-panel-icon kd-primary-toolbar-icon"
-  >account_circle</mat-icon>
-  <svg
-    class="kd-cross-style"
-    *ngIf="!isAuthenticated()"
-    width="40px"
-    height="40px"
-    viewBox="0 0 40 40"
-  >
-    <line
-      class="kd-cross-outline"
-      x1="10"
-      x2="30"
-      y1="10"
-      y2="30"
-    />
-    <line
-      class="kd-cross-line-primary"
-      x1="10"
-      x2="30"
-      y1="10"
-      y2="30"
-    />
+<button mat-icon-button color="primary" [matMenuTriggerFor]="actions" (click)="$event.stopPropagation()">
+  <img *ngIf="isOIDC && hasAvatar" [src]="avatarUrl" alt="User avatar" class="kd-toolbar-avatar" />
+  <mat-icon *ngIf="!(isOIDC && hasAvatar)" class="kd-user-panel-icon kd-primary-toolbar-icon">account_circle</mat-icon>
+  <svg class="kd-cross-style" *ngIf="!isAuthenticated()" width="40px" height="40px" viewBox="0 0 40 40">
+    <line class="kd-cross-outline" x1="10" x2="30" y1="10" y2="30" />
+    <line class="kd-cross-line-primary" x1="10" x2="30" y1="10" y2="30" />
   </svg>
 </button>

@@ -33,6 +33,9 @@ export class UserPanelComponent {
   ) {}
 
   get username(): string {
+    if (this.isOIDC) {
+      return this.authService_.getOIDCUserInfo()?.username || '';
+    }
     return this._meService.getUserName();
   }
 

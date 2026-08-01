@@ -23,14 +23,8 @@
 
   ::ng-deep {
     .mat-mdc-text-field-wrapper {
-      background-color: transparent !important;
-      height: 4.75 * $baseline-grid;
-      padding: 0;
-    }
-
-    .mat-mdc-form-field-flex {
-      background-color: transparent !important;
-      height: 4.75 * $baseline-grid;
+      background-color: rgba(255, 255, 255, 0.15);
+      border-radius: $baseline-grid * 0.25;
     }
 
     .mat-mdc-form-field-infix {
@@ -38,7 +32,6 @@
       padding: 0;
       width: 18 * $baseline-grid;
       min-height: unset;
-      height: 4.75 * $baseline-grid;
     }
 
     .mat-mdc-form-field-subscript-wrapper {
