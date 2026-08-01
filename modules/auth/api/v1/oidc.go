@@ -26,7 +26,6 @@ type OIDCConfig struct {
 // OIDCLoginResponse is sent after initiating the OIDC login flow.
 type OIDCLoginResponse struct {
 	RedirectURL string `json:"redirectUrl,omitempty"`
-	State       string `json:"state,omitempty"`
 	Token       string `json:"token,omitempty"`
 }
 

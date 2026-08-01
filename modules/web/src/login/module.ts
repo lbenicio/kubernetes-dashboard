@@ -17,10 +17,9 @@ import {NgModule} from '@angular/core';
 import {ComponentsModule} from '@common/components/module';
 import {SharedModule} from '../shared.module';
 import {LoginComponent} from './component';
-import {OIDCCallbackComponent} from './oidc-callback.component';
 
 @NgModule({
-  declarations: [LoginComponent, OIDCCallbackComponent],
+  declarations: [LoginComponent],
   imports: [SharedModule, ComponentsModule],
 })
 export class LoginModule {}

@@ -119,20 +119,6 @@ export class AuthService {
   }
 
   /**
-   * Returns OIDC user info from sessionStorage (ITP-safe fallback).
-   * Populated by the exchangeOIDCCode() call after the SPA-based callback.
-   */
-  getOIDCUserFromStorage(): OIDCUserInfo | null {
-    try {
-      const stored = sessionStorage.getItem('kd-oidc-user');
-      if (!stored) return null;
-      return JSON.parse(stored) as OIDCUserInfo;
-    } catch {
-      return null;
-    }
-  }
-
-  /**
    * Returns the user's display name for the current auth mode.
    */
   getDisplayName(): string {
@@ -170,42 +156,7 @@ export class AuthService {
    * Returns a login response that may contain a redirect URL.
    */
   loginWithOIDC(): Observable<OIDCLoginResponse> {
-    return this.http_.get<OIDCLoginResponse>('api/v1/oidc/login').pipe(
-      tap(response => {
-        // Store the state in sessionStorage so the callback component can
-        // verify it matches (defense in depth — the server also validates).
-        if (response.state) {
-          try {
-            sessionStorage.setItem('kd-oidc-state', response.state);
-          } catch {}
-        }
-      })
-    );
-  }
-
-  /**
-   * Exchanges an OIDC authorization code for tokens via same-site XHR.
-   * This is the ITP-safe flow: the code is obtained from the redirect URL
-   * (not cookies), and the exchange happens via same-site XHR where
-   * cookies are NOT blocked by Safari's Intelligent Tracking Prevention.
-   */
-  exchangeOIDCCode(code: string, state: string): Observable<OIDCSession> {
-    return this.http_.post<OIDCSession>('api/v1/oidc/exchange', {
-      code,
-      state,
-    }).pipe(
-      tap(session => {
-        // Store user info in sessionStorage so the interceptor can use it
-        // without reading cookies (which ITP may have blocked).
-        if (session?.user) {
-          try {
-            sessionStorage.setItem('kd-oidc-user', JSON.stringify(session.user));
-          } catch {}
-        }
-        // Initialize CSRF token from the server-set cookie
-        this.initializeCsrfToken();
-      })
-    );
+    return this.http_.get<OIDCLoginResponse>('api/v1/oidc/login');
   }
 
   /**

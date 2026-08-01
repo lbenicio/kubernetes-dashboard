@@ -37,11 +37,8 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     // OIDC mode: check the oidc-user cookie directly — avoids racing with config fetch.
-    // Also check sessionStorage as a fallback for Safari ITP where cookies may be blocked.
-    let userInfo = this._authService.getOIDCUserInfo();
-    if (!userInfo) {
-      userInfo = this._authService.getOIDCUserFromStorage();
-    }
+    // This cookie is set by the auth module after successful OIDC callback.
+    const userInfo = this._authService.getOIDCUserInfo();
     if (userInfo && userInfo.username) {
       let authReq = req.clone({
         headers: req.headers.set('Impersonate-User', userInfo.username),

@@ -15,11 +15,9 @@
 import {Routes} from '@angular/router';
 import {LoginGuard} from '@common/services/guard/login';
 import {LoginComponent} from './login/component';
-import {OIDCCallbackComponent} from './login/oidc-callback.component';
 
 export const routes: Routes = [
   {path: 'login', component: LoginComponent, canActivate: [LoginGuard]},
-  {path: 'oidc-callback', component: OIDCCallbackComponent},
   {path: '', redirectTo: '/workloads', pathMatch: 'full'},
   {path: '**', redirectTo: '/workloads'},
 ];

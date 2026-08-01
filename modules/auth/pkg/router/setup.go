@@ -23,9 +23,8 @@ import (
 )
 
 var (
-	router   *gin.Engine
-	v1       *gin.RouterGroup
-	v1NoCSRF *gin.RouterGroup
+	router *gin.Engine
+	v1     *gin.RouterGroup
 )
 
 func init() {
@@ -36,25 +35,14 @@ func init() {
 	router = gin.New()
 	router.Use(gin.Recovery())
 	_ = router.SetTrustedProxies(nil)
-
-	// Routes under this group have CSRF protection.
 	v1 = router.Group("/api/v1")
 	v1.Use(csrf.Gin().CSRF(
 		csrf.Gin().WithCSRFActionGetter(helpers.GetResourceFromPath),
 	))
-
-	// Routes under this group skip CSRF (e.g., OIDC exchange for unauthenticated users).
-	v1NoCSRF = router.Group("/api/v1")
 }
 
 func V1() *gin.RouterGroup {
 	return v1
-}
-
-// V1NoCSRF returns a route group without CSRF protection.
-// Use for endpoints that must be accessible to unauthenticated users.
-func V1NoCSRF() *gin.RouterGroup {
-	return v1NoCSRF
 }
 
 func Router() *gin.Engine {

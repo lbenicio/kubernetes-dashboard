@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {HttpErrorResponse} from '@angular/common/http';
-import {Component, Inject, NgZone, OnInit, ChangeDetectorRef} from '@angular/core';
+import {Component, Inject, NgZone, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {LoginSpec} from '@api/root.api';
 import {KdError} from '@api/root.shared';
@@ -25,7 +25,6 @@ import {map} from 'rxjs/operators';
 import {CONFIG_DI_TOKEN} from '../index.config';
 
 @Component({
-  standalone: false,
   selector: 'kd-login',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
@@ -43,7 +42,6 @@ export class LoginComponent implements OnInit {
     private readonly ngZone_: NgZone,
     private readonly route_: ActivatedRoute,
     private readonly historyService_: HistoryService,
-    private readonly cdr_: ChangeDetectorRef,
     @Inject(CONFIG_DI_TOKEN) private readonly CONFIG: IConfig
   ) {}
 
@@ -58,7 +56,6 @@ export class LoginComponent implements OnInit {
     this.authService_.getOIDCConfig().subscribe(config => {
       this.isOIDCEnabled_ = config.enabled;
       this.providerName_ = config.providerName || '';
-      this.cdr_.detectChanges();
     });
 
     // Check if we're returning from an OIDC callback.

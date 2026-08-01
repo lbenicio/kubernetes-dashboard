@@ -30,9 +30,6 @@ func init() {
 	router.V1().GET("/oidc/config", handleGetConfig)
 	router.V1().GET("/oidc/login", handleLogin)
 	router.V1().GET("/oidc/callback", handleCallback)
-	// Exchange is on the no-CSRF group because the user hasn't authenticated yet
-	// and doesn't have a CSRF token. The OIDC state parameter provides CSRF protection.
-	router.V1NoCSRF().POST("/oidc/exchange", handleExchange)
 	router.V1().GET("/oidc/session", handleSessionInfo)
 	router.V1().POST("/oidc/refresh", handleRefresh)
 	router.V1().POST("/oidc/logout", handleLogout)
@@ -84,12 +81,4 @@ func handleLogout(c *gin.Context) {
 		return
 	}
 	HandleLogout(Provider)(c.Writer, c.Request)
-}
-
-func handleExchange(c *gin.Context) {
-	if Provider == nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "OIDC not configured"})
-		return
-	}
-	HandleExchange(Provider)(c.Writer, c.Request)
 }
