@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {MatMenuTrigger} from '@angular/material/menu';
 import {AuthService} from '@common/services/global/authentication';
 import {MeService} from '@common/services/global/me';
@@ -29,12 +29,13 @@ export class UserPanelComponent implements OnInit {
 
   constructor(
     private readonly authService_: AuthService,
-    private readonly _meService: MeService
+    private readonly _meService: MeService,
+    private readonly cdr_: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    // Fetch OIDC config so isOIDCEnabled() returns correct value after page refresh
-    this.authService_.getOIDCConfig().subscribe();
+    // Fetch OIDC config — triggers change detection so toolbar icon updates
+    this.authService_.getOIDCConfig().subscribe(() => this.cdr_.markForCheck());
   }
 
   get username(): string {

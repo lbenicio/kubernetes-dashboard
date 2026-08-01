@@ -37,15 +37,32 @@
 
     .mat-mdc-form-field-flex {
       height: 100%;
+      align-items: center;
     }
 
     .mat-mdc-form-field-infix {
       border: 0;
-      padding: 0;
+      padding: 0 !important;
       width: 18 * $baseline-grid;
       min-height: unset;
       display: flex;
       align-items: center;
+    }
+
+    .mat-mdc-select-trigger {
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+
+    .mat-mdc-select-value {
+      display: flex;
+      align-items: center;
+    }
+
+    .mat-mdc-select-value-text {
+      color: #fff;
+      line-height: normal;
     }
 
     .mat-mdc-form-field-subscript-wrapper {
@@ -58,16 +75,14 @@
 
     .mat-mdc-select-arrow {
       color: #fff !important;
-    }
-
-    .mat-mdc-select-value-text {
-      color: #fff;
+      display: flex;
+      align-items: center;
     }
 
     .kd-namespace-select {
       font-family: $font-family-sans;
       font-size: $subhead-font-size-base;
-      line-height: 4.5 * $baseline-grid;
+      line-height: normal;
       margin-left: 2 * $baseline-grid;
       color: #fff;
     }
