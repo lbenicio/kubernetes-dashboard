@@ -15,7 +15,7 @@ limitations under the License.
 -->
 
 <mat-form-field class="kd-namespace-select-input-container">
-  <mat-select
+  <mat-select panelClass="kd-namespace-panel"
     (openedChange)="onNamespaceToggle($event)"
     class="kd-namespace-select"
     [(ngModel)]="selectedNamespace"

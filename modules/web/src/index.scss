@@ -477,3 +477,9 @@ kd-logs {
   flex: 0 0 52px !important;
   padding: 0 4px !important;
 }
+
+// Namespace dropdown panel — match trigger width
+.kd-namespace-panel {
+  min-width: unset !important;
+  width: 220px;
+}
