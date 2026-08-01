@@ -8,7 +8,7 @@ require (
 	github.com/emicklei/go-restful/v3 v3.13.0
 	github.com/go-openapi/spec v0.21.0
 	github.com/prometheus/client_golang v1.23.0
-	github.com/samber/lo v1.51.0
+	github.com/samber/lo v1.53.0
 	github.com/spf13/pflag v1.0.10
 	golang.org/x/net v0.46.0
 	gopkg.in/igm/sockjs-go.v2 v2.1.0
