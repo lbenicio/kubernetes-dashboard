@@ -25,6 +25,7 @@ import {map} from 'rxjs/operators';
 import {CONFIG_DI_TOKEN} from '../index.config';
 
 @Component({
+  standalone: false,
   selector: 'kd-login',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
