@@ -17,7 +17,12 @@
 @use './mixins' as *;
 @use './dark';
 @use './light';
-@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+// Base dark theme on html — prevents unstyled components before
+// the Angular theme class is applied to kd-root.
+html {
+  @include dark.kd-dark-base();
+}
 
 html,
 body {
@@ -52,8 +57,8 @@ code {
   }
 }
 
-.mat-cell,
-.mat-header-cell {
+.mat-cell, .mat-mdc-cell,
+.mat-header-cell, .mat-mdc-header-cell {
   @for $i from 30 through 150 {
     &.col-min-#{$i} {
       min-width: #{$i}#{'px'};
@@ -88,8 +93,9 @@ code {
     margin-bottom: $baseline-grid;
   }
 
-  .mat-card-content {
-    padding-top: 2 * $baseline-grid;
+  .kd-card-content {
+    margin: 0;
+    padding: 16px;
   }
 }
 
@@ -113,8 +119,8 @@ code {
   }
 }
 
-.mat-header-row,
-.mat-row {
+.mat-header-row, .mat-mdc-header-row,
+.mat-row, .mat-mdc-row {
   min-height: (5 * $baseline-grid) !important;
   padding: 0 (2 * $baseline-grid) !important;
 
@@ -123,23 +129,23 @@ code {
     min-height: 0 !important;
     padding: 0 !important;
 
-    .mat-cell {
+    .mat-cell, .mat-mdc-cell {
       margin: 0 !important;
     }
   }
 }
 
-.mat-header-cell {
+.mat-header-cell, .mat-mdc-header-cell {
   font-size: $body-font-size-base;
   padding: 0 ($baseline-grid * 0.5);
 
   &:first-child,
   &:last-child {
-    padding: 0 !important;
+    padding: 0 12px !important;
   }
 }
 
-.mat-cell {
+.mat-cell, .mat-mdc-cell {
   margin: (0.5 * $baseline-grid) 0 !important;
 
   &:not(:first-child) {
@@ -149,15 +155,15 @@ code {
   }
 
   &:last-child {
-    padding-right: 0 !important;
+    padding-right: 12px !important;
   }
 
   &:first-child {
-    padding-left: 0 !important;
+    padding-left: 12px !important;
   }
 }
 
-.mat-column-statusicon {
+.mat-column-statusicon, .mat-mdc-column-statusicon {
   flex: 0 0 ($baseline-grid * 5);
 
   .mat-icon {
@@ -372,7 +378,7 @@ router-outlet::after {
   display: none !important;
 }
 
-.mat-row:last-of-type {
+.mat-row, .mat-mdc-row:last-of-type {
   border-bottom: 0;
 }
 
@@ -453,4 +459,14 @@ kd-logs {
   &.kd-user-panel {
     min-width: 15 * $baseline-grid;
   }
+}
+
+// Override M3 table cell padding (Material uses .mdc-data-table__cell)
+.mdc-data-table__cell {
+  &:last-child { padding-right: 16px !important; }
+  &:first-child { padding-left: 16px !important; }
+}
+.mdc-data-table__header-cell {
+  &:last-child { padding-right: 16px !important; }
+  &:first-child { padding-left: 16px !important; }
 }

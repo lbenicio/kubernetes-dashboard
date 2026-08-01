@@ -22,14 +22,35 @@
   padding-right: 3.5 * $baseline-grid;
 
   ::ng-deep {
-    .mat-form-field-infix {
+    .mat-mdc-text-field-wrapper {
+      background-color: transparent !important;
+      height: 4.75 * $baseline-grid;
+      padding: 0;
+    }
+
+    .mat-mdc-form-field-flex {
+      background-color: transparent !important;
+      height: 4.75 * $baseline-grid;
+    }
+
+    .mat-mdc-form-field-infix {
       border: 0;
       padding: 0;
       width: 18 * $baseline-grid;
+      min-height: unset;
+      height: 4.75 * $baseline-grid;
     }
 
-    .mat-form-field-wrapper {
-      padding: 0;
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+
+    .mdc-line-ripple {
+      display: none;
+    }
+
+    .mat-mdc-select-arrow {
+      color: #fff !important;
     }
 
     .kd-namespace-select {
@@ -37,6 +58,7 @@
       font-size: $subhead-font-size-base;
       line-height: 4.5 * $baseline-grid;
       margin-left: 2 * $baseline-grid;
+      color: #fff;
     }
   }
 }

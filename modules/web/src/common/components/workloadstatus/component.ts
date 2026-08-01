@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {ResourcesRatio} from '@api/root.ui';
 
 export const emptyResourcesRatio: ResourcesRatio = {
@@ -26,7 +26,6 @@ export const emptyResourcesRatio: ResourcesRatio = {
   statefulSetRatio: [],
 };
 
-/** Maps a resource ratio key to its resource list route. */
 const RESOURCE_ROUTES: Record<string, string> = {
   cronJobRatio: 'cronjob',
   daemonSetRatio: 'daemonset',
@@ -44,7 +43,7 @@ const RESOURCE_ROUTES: Record<string, string> = {
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
 })
-export class WorkloadStatusComponent {
+export class WorkloadStatusComponent implements OnChanges {
   @Input() resourcesRatio = emptyResourcesRatio;
   @Output() filterByStatus = new EventEmitter<{resource: string; status: string}>();
 
@@ -53,34 +52,38 @@ export class WorkloadStatusComponent {
   labels = true;
   trimLabels = false;
   size = [350, 250];
+  chartReady = false;
+
+  constructor(private cdr: ChangeDetectorRef) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['resourcesRatio']) {
+      const hasData = Object.values(this.resourcesRatio).some(arr => arr.length > 0);
+      if (hasData && !this.chartReady) {
+        this.chartReady = true;
+        this.cdr.detectChanges();
+        // Staggered resize events to catch flex-wrapped rows
+        [100, 250, 500, 1000].forEach(d =>
+          setTimeout(() => window.dispatchEvent(new Event('resize')), d),
+        );
+      }
+    }
+  }
 
   getCustomColor(label: string): string {
-    if (label.includes($localize`Running: ${''}`)) {
-      return '#00c752';
-    } else if (label.includes($localize`Succeeded: ${''}`)) {
-      return '#006028';
-    } else if (label.includes($localize`Pending: ${''}`)) {
-      return '#ffad20';
-    } else if (label.includes($localize`Failed: ${''}`)) {
-      return '#f00';
-    }
+    if (label.includes($localize`Running: ${''}`)) return '#00c752';
+    if (label.includes($localize`Succeeded: ${''}`)) return '#006028';
+    if (label.includes($localize`Pending: ${''}`)) return '#ffad20';
+    if (label.includes($localize`Failed: ${''}`)) return '#f00';
     return '';
   }
 
-  /**
-   * Handles clicks on pizza chart slices.
-   * Emits a filter event to show only resources with the selected status.
-   */
   onPieSelect(event: {name: string; status?: string}, resourceKey: string): void {
     if (!event) return;
-
     const resource = RESOURCE_ROUTES[resourceKey];
     if (!resource) return;
-
-    // Use the status field from the RatioItem if available
     const status = event.status || '';
     if (!status) return;
-
     this.filterByStatus.emit({resource, status});
   }
 }

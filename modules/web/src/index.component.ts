@@ -40,6 +40,9 @@ export class RootComponent implements OnInit {
     if (localSettings && localSettings.theme) {
       this._theme = localSettings.theme;
       this._themeService.theme = localSettings.theme;
+    } else {
+      // Resolve system theme to actual CSS class when no saved preference exists
+      this._theme = this._themeService.isThemeDark() ? 'kd-dark-theme' : 'kd-light-theme';
     }
 
     this.applyOverlayContainerTheme_('', this._theme);

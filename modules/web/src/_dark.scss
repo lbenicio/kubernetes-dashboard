@@ -1,55 +1,67 @@
-// Copyright 2017 The Kubernetes Authors.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 @use 'sass:map';
 @use '@angular/material' as mat;
 @use './theming';
 
 $colors-dark: (
-  primary: #327df4,
-  primary-hover: #3e94ee,
-  accent: #fff,
-  indicator-success: #008000,
-  indicator-warning: #ffad20,
-  indicator-error: #ff481b,
-  chart-blue: #327df4,
-  chart-green: #00c752,
-  toolbar-button: #fff,
-  log-viewer-bg: #000,
-  log-viewer-text: #fff,
-  log-viewer-scrollbar: rgb(200 200 200 / 0.66),
-  scrollbar: rgb(100 100 100 / 0.33),
+  primary: #327df4, primary-hover: #3e94ee, accent: #fff,
+  indicator-success: #008000, indicator-warning: #ffad20, indicator-error: #ff481b,
+  chart-blue: #327df4, chart-green: #00c752, toolbar-button: #fff,
+  log-viewer-bg: #000, log-viewer-text: #fff,
+  log-viewer-scrollbar: rgb(200 200 200 / 0.66), scrollbar: rgb(100 100 100 / 0.33),
 );
 
 $theme-dark: mat.define-theme((
   color: (
     theme-type: dark,
     primary: mat.$blue-palette,
+    tertiary: mat.$blue-palette,
   ),
+  density: (scale: 0),
 ));
 
+@mixin kd-dark-base() {
+  @include mat.all-component-colors($theme-dark);
+  color-scheme: dark;
+  color: #fff;
+}
+
 .kd-dark-theme {
-  @include mat.all-component-themes($theme-dark);
-  @include theming.kd-theme($theme-dark, $colors-dark);
+  @include mat.all-component-colors($theme-dark);
+  @include theming.kd-theme($colors-dark);
+  color-scheme: dark;
+  color: #fff;
 
-  .kd-toolbar-logo-text,
-  .kd-primary-toolbar-icon,
-  .kd-toolbar-action .mat-icon {
-    color: #fff;
+  // Force exact #327df4 blue on primary buttons
+  .mat-mdc-button.mat-primary,
+  .mat-mdc-unelevated-button.mat-primary,
+  .mat-mdc-raised-button.mat-primary,
+  .mat-mdc-outlined-button.mat-primary {
+    --mat-button-filled-container-color: #327df4;
+    --mat-button-protected-container-color: #327df4;
   }
 
-  .kd-cross-line-primary {
-    stroke: #fff;
+  // Force white text on accent buttons
+  .mat-mdc-button.mat-accent,
+  .mat-mdc-unelevated-button.mat-accent,
+  .mat-mdc-raised-button.mat-accent,
+  .mat-mdc-outlined-button.mat-accent {
+    --mat-button-text-label-text-color: #fff;
+    --mat-button-outlined-label-text-color: #fff;
   }
+
+  // Nav menu — white text, blue active
+  .kd-nav-item-button { color: #fff !important; }
+  .kd-nav-item-button-active { color: #327df4 !important; }
+  .mat-active, .mat-selected { color: #327df4 !important; }
+
+  // Namespace selector — transparent background, white text/arrow
+  kd-namespace-selector {
+    .mat-mdc-form-field-flex { background-color: transparent !important; }
+    .mdc-line-ripple { display: none !important; }
+    .mat-mdc-select-arrow { color: #fff !important; }
+    .kd-namespace-select { color: #fff !important; }
+  }
+
+  .kd-toolbar-logo-text, .kd-primary-toolbar-icon, .kd-toolbar-action .mat-icon { color: #fff; }
+  .kd-cross-line-primary { stroke: #fff; }
 }

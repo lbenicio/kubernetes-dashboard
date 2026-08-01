@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component} from '@angular/core';
+import {Component, AfterViewInit} from '@angular/core';
 
 import {ListGroupIdentifier} from '@common/components/resourcelist/groupids';
 import {GroupedResourceList} from '@common/resources/groupedlist';
@@ -22,7 +22,7 @@ import {GroupedResourceList} from '@common/resources/groupedlist';
   selector: 'kd-overview',
   templateUrl: './template.html',
 })
-export class OverviewComponent extends GroupedResourceList {
+export class OverviewComponent extends GroupedResourceList implements AfterViewInit {
   /** The currently active status filter for all resource lists. */
   statusFilter = '';
 
@@ -40,6 +40,16 @@ export class OverviewComponent extends GroupedResourceList {
 
   hasConfig(): boolean {
     return this.isGroupVisible(ListGroupIdentifier.config);
+  }
+
+  ngAfterViewInit(): void {
+    // ngx-charts pie charts may not render on initial load because
+    // flex layout hasn't resolved container dimensions. We dispatch
+    // resize events at multiple intervals to ensure charts pick up
+    // their container sizes once layout has settled.
+    [100, 300, 600].forEach(delay => {
+      setTimeout(() => window.dispatchEvent(new Event('resize')), delay);
+    });
   }
 
   showWorkloadStatuses(): boolean {

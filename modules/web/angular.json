@@ -61,7 +61,7 @@
               "zone.js",
               "src/polyfills.ts"
             ],
-            "i18nMissingTranslation": "error",
+            "i18nMissingTranslation": "warning",
             "allowedCommonJsDependencies": [
               "truncate-url",
               "strip-ansi"

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, AfterViewInit, SimpleChanges} from '@angular/core';
 import {DataPoint, Metric} from '@api/root.api';
 import {curveMonotoneX} from 'd3-shape';
 import {timeFormat} from 'd3-time-format';
@@ -32,7 +32,7 @@ enum TimeScale {
 
 @Component({
   standalone: false,selector: 'kd-graph', templateUrl: './template.html', styleUrls: ['./style.scss']})
-export class GraphComponent implements OnInit, OnChanges {
+export class GraphComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() metric: Metric;
   @Input() id: string;
   @Input() graphType: GraphType = GraphType.CPU;
@@ -61,6 +61,12 @@ export class GraphComponent implements OnInit, OnChanges {
     this.series = this._generateSeries();
     this.customColors = this._getColor();
     this.yAxisLabel = this.graphType === GraphType.CPU ? 'CPU (cores)' : 'Memory (bytes)';
+  }
+
+  ngAfterViewInit(): void {
+    // Trigger chart resize after view init. In Angular 22, ngx-charts
+    // may initialize before flex layout resolves container dimensions.
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
   }
 
   ngOnChanges(_: SimpleChanges): void {

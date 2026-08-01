@@ -81,6 +81,7 @@
 }
 
 .kd-chrome-container {
+  overflow-x: hidden;
   // Set overflow property to disable margin-collapse, which in turn
   // prevents scrollbar from being always visible.
   overflow-x: hidden;
