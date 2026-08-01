@@ -86,7 +86,7 @@ code {
   margin: 0 auto;
 }
 
-.mat-card {
+.mat-card { width: 100%;
   margin: $content-padding;
 
   .mat-card-title {
@@ -246,7 +246,7 @@ router-outlet::after {
   margin: 0 (2.5 * $baseline-grid);
   outline: none;
 
-  &.mat-card {
+  &.mat-card { width: 100%;
     border-radius: 0;
   }
 }
