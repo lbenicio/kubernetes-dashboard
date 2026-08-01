@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatMenuTrigger} from '@angular/material/menu';
 import {AuthService} from '@common/services/global/authentication';
 import {MeService} from '@common/services/global/me';
@@ -23,7 +23,7 @@ import {MeService} from '@common/services/global/me';
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
 })
-export class UserPanelComponent {
+export class UserPanelComponent implements OnInit {
   @ViewChild(MatMenuTrigger)
   private readonly trigger_: MatMenuTrigger;
 
@@ -31,6 +31,11 @@ export class UserPanelComponent {
     private readonly authService_: AuthService,
     private readonly _meService: MeService
   ) {}
+
+  ngOnInit(): void {
+    // Fetch OIDC config so isOIDCEnabled() returns correct value after page refresh
+    this.authService_.getOIDCConfig().subscribe();
+  }
 
   get username(): string {
     if (this.isOIDC) {
