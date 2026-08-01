@@ -1314,6 +1314,7 @@ export interface OIDCConfig {
 
 export interface OIDCLoginResponse {
   redirectUrl?: string;
+  state?: string;
   token?: string;
 }
 

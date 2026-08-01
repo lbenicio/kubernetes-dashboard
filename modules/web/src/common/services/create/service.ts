@@ -80,7 +80,7 @@ export class CreateService {
         this.reportError_(i18n.MSG_DEPLOY_DIALOG_PARTIAL_COMPLETED, response.error);
       }
     } catch (err) {
-      error = err;
+      error = err as HttpErrorResponse;
     }
     this.isDeployInProgress_ = false;
 
@@ -105,7 +105,7 @@ export class CreateService {
         })
         .toPromise();
     } catch (err) {
-      error = err;
+      error = err as HttpErrorResponse;
     }
     this.isDeployInProgress_ = false;
 

@@ -33,6 +33,7 @@ import (
 type Provider struct {
 	config    *Config
 	session   *SessionManager
+	pkceStore *PKCEStore
 	provider  *oidc.Provider
 	oauth2Cfg *oauth2.Config
 	verifier  *oidc.IDTokenVerifier
@@ -41,8 +42,9 @@ type Provider struct {
 // NewProvider creates a new OIDC Provider.
 func NewProvider(config *Config) *Provider {
 	return &Provider{
-		config:  config,
-		session: NewSessionManager(config),
+		config:    config,
+		session:   NewSessionManager(config),
+		pkceStore: NewPKCEStore(),
 	}
 }
 
@@ -96,6 +98,11 @@ func (p *Provider) GetConfig() *Config {
 // Session returns the session manager.
 func (p *Provider) Session() *SessionManager {
 	return p.session
+}
+
+// PKCEStore returns the PKCE in-memory store.
+func (p *Provider) PKCEStore() *PKCEStore {
+	return p.pkceStore
 }
 
 // OAuth2Config returns the oauth2 config.
