@@ -1,6 +1,6 @@
 module k8s.io/dashboard/errors
 
-go 1.24.0
+go 1.27.3
 
 require (
 	github.com/emicklei/go-restful/v3 v3.13.0
