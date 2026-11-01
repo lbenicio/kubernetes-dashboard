@@ -33,3 +33,8 @@ charts/kubernetes-dashboard/charts
 
 # Cypress
 screenshots
+
+# AI editor instructions
+AGENTS.md
+.agents/
+CLAUDE.md
