@@ -14,19 +14,19 @@
 
 @use 'sass:map';
 @use 'sass:color';
-@use '@angular/material/theming';
+@use '@angular/material' as theming;
 @use 'variables' as *;
 
 @mixin kd-theme($theme, $colors) {
   $foreground-palette: map.get($theme, foreground);
   $background-palette: map.get($theme, background);
-  $background: theming.mat-color($background-palette, background);
-  $card-background: theming.mat-color($background-palette, card);
+  $background: theming.get-color-from-palette($background-palette, background);
+  $card-background: theming.get-color-from-palette($background-palette, card);
   $card-background-dark: color.adjust($card-background, $lightness: -5%);
-  $muted: theming.mat-color($foreground-palette, secondary-text);
-  $muted-light: theming.mat-color($foreground-palette, disabled);
-  $muted-xlight: theming.mat-color($foreground-palette, disabled-button);
-  $border: theming.mat-color($foreground-palette, divider);
+  $muted: theming.get-color-from-palette($foreground-palette, secondary-text);
+  $muted-light: theming.get-color-from-palette($foreground-palette, disabled);
+  $muted-xlight: theming.get-color-from-palette($foreground-palette, disabled-button);
+  $border: theming.get-color-from-palette($foreground-palette, divider);
   $box-shadow-1: rgb(0 0 0 / 0.2);
   $box-shadow-2: rgb(0 0 0 / 0.14);
   $box-shadow-3: rgb(0 0 0 / 0.12);
@@ -190,7 +190,7 @@
     background-color: color.adjust($background, $lightness: -2.5%);
 
     input {
-      color: theming.mat-color($foreground-palette, base);
+      color: theming.get-color-from-palette($foreground-palette, base);
     }
   }
 
@@ -199,14 +199,14 @@
   }
 
   .kd-nav-item-button-active {
-    background-color: theming.mat-color($background-palette, selected-button);
+    background-color: theming.get-color-from-palette($background-palette, selected-button);
     color: map.get($colors, primary);
   }
 
   .kd-search-input {
     background: $card-background;
     border-bottom-color: $border;
-    color: theming.mat-color($foreground-palette, text);
+    color: theming.get-color-from-palette($foreground-palette, text);
   }
 
   .kd-graph-legend-entry {
@@ -215,12 +215,12 @@
     }
   }
 
-  .mat-chip.mat-standard-chip {
+  .mat-mdc-chip.mat-mdc-standard-chip {
     background: $card-background-dark;
   }
 
   .mat-active,
-  .mat-selected {
+  .mat-mdc-selected {
     color: map.get($colors, primary) !important;
   }
 
@@ -228,14 +228,16 @@
     border: 1px solid $border;
 
     .kd-namespace-select {
-      color: theming.mat-color($foreground-palette, secondary-text);
+      color: theming.get-color-from-palette($foreground-palette, secondary-text);
     }
 
     .kd-namespace-select-input-container {
+      /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
       .mat-form-field-underline {
         display: none;
       }
 
+      /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
       .mat-select-arrow {
         color: $muted-light !important;
       }
@@ -244,12 +246,12 @@
 
   .kd-namespace-select-input {
     background: $card-background;
-    color: theming.mat-color($foreground-palette, secondary-text);
+    color: theming.get-color-from-palette($foreground-palette, secondary-text);
   }
 
   .kd-namespaced-item {
     background: $border;
-    color: theming.mat-color($foreground-palette, secondary-text);
+    color: theming.get-color-from-palette($foreground-palette, secondary-text);
   }
 
   .kd-namespace-select-input-border,
@@ -266,10 +268,12 @@
     stroke: $background;
   }
 
+  /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
   .mat-button-toggle-group {
     border: 1px solid $border;
   }
 
+  /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
   .mat-button-toggle-checked {
     background-color: $card-background-dark;
   }
@@ -286,24 +290,29 @@
     border-right: 0;
   }
 
-  .mat-icon-button:hover:not([disabled]) {
+  .mat-mdc-icon-button:hover:not([disabled]) {
     background-color: $border !important;
   }
 
   .ngx-charts {
     text {
-      fill: theming.mat-color($foreground-palette, text) !important;
+      fill: theming.get-color-from-palette($foreground-palette, text) !important;
     }
   }
 
   .kd-secret-detail-text {
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
     .mat-form-field-infix {
       border-top: 0;
     }
 
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
     .mat-form-field-underline {
       background: none;
 
+      /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
       .mat-form-field-ripple {
         background: none;
       }
@@ -323,7 +332,7 @@
     border: 1px solid $border;
   }
 
-  .mat-list {
+  .mat-mdc-list {
     border: 1px solid $border;
   }
 
