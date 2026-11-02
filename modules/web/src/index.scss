@@ -392,6 +392,10 @@ router-outlet::after {
   border-bottom: 0;
 }
 
+.kd-card-content-table:has(.kd-detail-row.kd-hidden:last-of-type) {
+  padding-bottom: $content-padding;
+}
+
 // Override Arial font type
 .nvtooltip {
   font-family: Roboto, sans-serif;
