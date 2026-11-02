@@ -246,6 +246,10 @@ $kd-typography: mat.define-typography-config(
 
   kd-namespace-selector {
     border: 1px solid $border;
+    &:hover,
+    &:focus-within {
+      background-color: $border;
+    }
 
     .kd-namespace-select {
       color: mat.get-color-from-palette($foreground-palette, secondary-text);

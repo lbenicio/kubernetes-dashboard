@@ -15,28 +15,41 @@
 @use '../../../variables' as *;
 
 :host {
+  align-items: center;
+  box-sizing: border-box;
   border-radius: $baseline-grid * 0.25;
+  display: flex;
   height: 4.75 * $baseline-grid;
   line-height: 4.5 * $baseline-grid;
   margin-right: 2 * $baseline-grid;
-  padding-right: 3.5 * $baseline-grid;
 
   ::ng-deep {
+    .kd-namespace-select-input-container {
+      height: 4.5 * $baseline-grid;
+    }
+
     .mat-mdc-text-field-wrapper {
       background: transparent;
+      height: 4.5 * $baseline-grid;
       padding: 0;
     }
 
     .mat-mdc-form-field-flex {
       min-height: 4.5 * $baseline-grid;
+      height: 4.5 * $baseline-grid;
+      align-items: center;
       padding: 0;
     }
 
     .mat-mdc-form-field-infix {
+      align-items: center;
       border: 0;
+      box-sizing: border-box;
+      display: flex;
+      height: 4.5 * $baseline-grid;
       min-height: 4.5 * $baseline-grid;
-      padding: 0;
-      width: 18 * $baseline-grid;
+      padding: 0 0 0 (2 * $baseline-grid);
+      width: 20 * $baseline-grid;
     }
 
     .mat-mdc-form-field-subscript-wrapper,
@@ -45,10 +58,19 @@
     }
 
     .kd-namespace-select {
+      align-items: center;
+      display: flex;
       font-family: $font-family-sans;
       font-size: $body-font-size-base;
+      height: 100%;
       line-height: 4.5 * $baseline-grid;
-      margin-left: 2 * $baseline-grid;
+      margin: 0;
+      width: 100%;
+    }
+
+    .mat-mdc-select-trigger {
+      align-items: center;
+      height: 100%;
     }
   }
 }
