@@ -28,20 +28,6 @@ export interface Chip {
   value: string;
 }
 
-/**
- * Regular expression for URL validation created by @dperini.
- * https://gist.github.com/dperini/729294
- */
-const URL_REGEXP = new RegExp(
-  '^(?:(?:https?|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?!(?:10|127)(?:\\.\\d{1,3}){3})(?!' +
-    '(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1' +
-    ',3}){2})(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])' +
-    '){2}(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*' +
-    '[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]' +
-    '+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))\\.?)(?::\\d{2,5})?(?:[/?#]\\S*)?$',
-  'i'
-);
-
 const MAX_CHIP_VALUE_LENGTH = 63;
 
 @Component({
@@ -97,7 +83,73 @@ export class ChipsComponent implements OnInit, OnChanges {
   }
 
   isHref(value: string): boolean {
-    return URL_REGEXP.test(value.trim());
+    const trimmedValue = value.trim();
+    if (/\s/.test(trimmedValue)) {
+      return false;
+    }
+
+    let url: URL;
+    try {
+      url = new URL(trimmedValue);
+    } catch {
+      return false;
+    }
+
+    if (!['http:', 'https:', 'ftp:'].includes(url.protocol) || !this.isAllowedHostname(url.hostname)) {
+      return false;
+    }
+
+    const schemeEnd = trimmedValue.indexOf('://');
+    const authorityStart = schemeEnd + 3;
+    let authorityEnd = trimmedValue.length;
+    for (const delimiter of ['/', '?', '#']) {
+      const delimiterIndex = trimmedValue.indexOf(delimiter, authorityStart);
+      if (delimiterIndex >= 0 && delimiterIndex < authorityEnd) {
+        authorityEnd = delimiterIndex;
+      }
+    }
+
+    const authority = trimmedValue.slice(authorityStart, authorityEnd);
+    const hostAndPort = authority.slice(authority.lastIndexOf('@') + 1);
+    const portSeparator = hostAndPort.lastIndexOf(':');
+    if (portSeparator >= 0 && !/^\d{2,5}$/.test(hostAndPort.slice(portSeparator + 1))) {
+      return false;
+    }
+
+    return true;
+  }
+
+  private isAllowedHostname(hostname: string): boolean {
+    const normalizedHostname = hostname.endsWith('.') ? hostname.slice(0, -1) : hostname;
+    const labels = normalizedHostname.split('.');
+
+    if (labels.length === 4 && labels.every(label => /^\d+$/.test(label))) {
+      const octets = labels.map(Number);
+      const [first, second, , last] = octets;
+
+      return (
+        octets.every(octet => octet >= 0 && octet <= 255) &&
+        first >= 1 &&
+        first <= 223 &&
+        first !== 10 &&
+        first !== 127 &&
+        !(first === 169 && second === 254) &&
+        !(first === 192 && second === 168) &&
+        !(first === 172 && second >= 16 && second <= 31) &&
+        last >= 1 &&
+        last <= 254
+      );
+    }
+
+    if (/^[\d.]+$/.test(normalizedHostname) || labels.length < 2) {
+      return false;
+    }
+
+    const topLevelDomain = labels[labels.length - 1];
+    return (
+      labels.every(label => /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i.test(label)) &&
+      (/^[a-z]{2,}$/i.test(topLevelDomain) || /^xn--[a-z0-9-]{2,}$/i.test(topLevelDomain))
+    );
   }
 
   isSerializedRef(value: string): boolean {

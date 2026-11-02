@@ -366,9 +366,9 @@
         <source>Service</source>
         <target>Service</target>
       </trans-unit>
-      <trans-unit id="4335281277764237619" datatype="html">
-        <source> <x id="INTERPOLATION" equiv-text="{{ userAgent }}"/> © <x id="INTERPOLATION_1" equiv-text="{{ copyrightYear }}"/> The Kubernetes Authors </source>
-        <target state="new"> <x id="INTERPOLATION" equiv-text="{{ userAgent }}"/> © <x id="INTERPOLATION_1" equiv-text="{{ copyrightYear }}"/> The Kubernetes Authors </target>
+      <trans-unit id="3872974541270426706" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{ userAgent }}"/> © <x id="INTERPOLATION_1" equiv-text="{{ copyrightYear }}"/> The Kubernetes Authors</source>
+        <target state="new"><x id="INTERPOLATION" equiv-text="{{ userAgent }}"/> © <x id="INTERPOLATION_1" equiv-text="{{ copyrightYear }}"/> The Kubernetes Authors</target>
       </trans-unit>
       <trans-unit id="2235593604907350097" datatype="html">
         <source>Resource Names</source>
