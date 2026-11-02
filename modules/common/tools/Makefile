@@ -1,16 +1,14 @@
 NODE_BINARY := $(shell which node)
-NODE_MAJOR_VERSION = $(shell node --version | cut -d'.' -f1 | cut -d'v' -f2 )
-NODE_MINOR_VERSION = $(shell node --version | cut -d'.' -f2)
-MIN_NODE_MAJOR_VERSION = 18
-MIN_NODE_MINOR_VERSION = 14
 
 YARN_BINARY := $(shell which yarn)
 
 GO_BINARY := $(shell which go)
 GO_MAJOR_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f1)
 GO_MINOR_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f2)
+GO_PATCH_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f3)
 MIN_GO_MAJOR_VERSION = 1
-MIN_GO_MINOR_VERSION = 20
+MIN_GO_MINOR_VERSION = 27
+MIN_GO_PATCH_VERSION = 3
 
 LICENSE_EYE_BINARY := $(shell which license-eye)
 AIR_BINARY := $(shell which air)
@@ -26,18 +24,7 @@ ensure-node:
 ifndef NODE_BINARY
 	$(error "Cannot find node binary")
 endif
-	@if [ $(NODE_MAJOR_VERSION) -gt $(MIN_NODE_MAJOR_VERSION) ]; then \
-		echo "[tools] node version requirements met"; \
-		exit 0 ;\
-	elif [ $(NODE_MAJOR_VERSION) -lt $(MIN_NODE_MAJOR_VERSION) ]; then \
-		echo "[tools] node version older than required v$(MIN_NODE_MAJOR_VERSION).$(MIN_NODE_MINOR_VERSION).0+"; \
-		exit 1; \
-	elif [ $(NODE_MINOR_VERSION) -lt $(NODE_MINOR_VERSION) ] ; then \
-		echo "[tools] node version older than required v$(MIN_NODE_MAJOR_VERSION).$(MIN_NODE_MINOR_VERSION).0+"; \
-		exit 1; \
-	else \
-		echo "[tools] node version requirements met"; \
-	fi
+	@node -e 'const [major, minor, patch] = process.versions.node.split(".").map(Number); const supported = (major === 22 && (minor > 22 || (minor === 22 && patch >= 3))) || (major === 24 && minor >= 15) || major === 26; if (!supported) { console.error("Unsupported Node.js " + process.versions.node + "; use ^22.22.3, ^24.15.0, or ^26.0.0."); process.exit(1); } console.log("[tools] node version requirements met");'
 
 .PHONY: ensure-yarn
 ensure-yarn:
@@ -53,16 +40,13 @@ ensure-go:
 ifndef GO_BINARY
 	$(error "Cannot find go binary")
 endif
-	@if [ $(GO_MAJOR_VERSION) -gt $(MIN_GO_MAJOR_VERSION) ]; then \
-		exit 0 ;\
-	elif [ $(GO_MAJOR_VERSION) -lt $(MIN_GO_MAJOR_VERSION) ]; then \
-		echo "[tools] go version older than required v$(MIN_GO_MAJOR_VERSION).$(MIN_GO_MINOR_VERSION).0+"; \
-		exit 1; \
-	elif [ $(GO_MINOR_VERSION) -lt $(MIN_GO_MINOR_VERSION) ] ; then \
-		echo "[tools] go version older than required v$(MIN_GO_MAJOR_VERSION).$(MIN_GO_MINOR_VERSION).0+"; \
-		exit 1; \
+	@if [ $(GO_MAJOR_VERSION) -gt $(MIN_GO_MAJOR_VERSION) ] || \
+		{ [ $(GO_MAJOR_VERSION) -eq $(MIN_GO_MAJOR_VERSION) ] && [ $(GO_MINOR_VERSION) -gt $(MIN_GO_MINOR_VERSION) ]; } || \
+		{ [ $(GO_MAJOR_VERSION) -eq $(MIN_GO_MAJOR_VERSION) ] && [ $(GO_MINOR_VERSION) -eq $(MIN_GO_MINOR_VERSION) ] && [ $(GO_PATCH_VERSION) -ge $(MIN_GO_PATCH_VERSION) ]; }; then \
+		echo "[tools] go version requirements met"; \
 	else \
-		echo "[tools] golang version requirements met"; \
+		echo "[tools] go version older than required v$(MIN_GO_MAJOR_VERSION).$(MIN_GO_MINOR_VERSION).$(MIN_GO_PATCH_VERSION)+"; \
+		exit 1; \
 	fi
 
 .PHONY: install-license-eye

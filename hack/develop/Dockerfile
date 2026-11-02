@@ -16,9 +16,8 @@
 # It installs all deps in the container and adds the dashboard source
 # This way it abstracts all required build tools away
 
-# golang is based on debian:jessie
-# Specify version to clarify which version we use.
-FROM golang:1.20-bullseye
+# Keep the standalone development container on the same Go release as the modules.
+FROM golang:1.27.3-bookworm
 
 # Install Node.js. Go is already installed.
 # A small tweak, apt-get update is already run by the nodejs setup script,
@@ -27,7 +26,7 @@ RUN apt-get update && apt-get install -y ca-certificates --no-install-recommends
 RUN mkdir -p /etc/apt/keyrings
 RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | \
   gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-ENV NODE_MAJOR=18
+ENV NODE_MAJOR=24
 RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | \
   tee /etc/apt/sources.list.d/nodesource.list
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -44,6 +43,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	libgtk-3-0 \
 	libgconf-2-4 \
 	bzip2 \
+	xz-utils \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& apt-get clean
 
@@ -52,11 +52,12 @@ RUN npm install -g yarn
 
 ENV GIT_EDITOR=nano
 
-# Install firefox from Mozilla binaries
-RUN mkdir -p /usr/local/lib/firefox
-RUN wget "https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=en-US" -O /tmp/firefox.tar.bz2
-RUN tar -xjf /tmp/firefox.tar.bz2 -C /usr/local/lib
-RUN ln -s /usr/local/lib/firefox/firefox /usr/local/bin/firefox
+# Install Firefox from Mozilla binaries and discard the archive in the same layer.
+RUN mkdir -p /usr/local/lib/firefox && \
+  wget "https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=en-US" -O /tmp/firefox.tar.xz && \
+  tar -xJf /tmp/firefox.tar.xz -C /usr/local/lib && \
+  rm /tmp/firefox.tar.xz && \
+  ln -s /usr/local/lib/firefox/firefox /usr/local/bin/firefox
 
 # Set environment variable for JavaScript tests.
 ENV CHROME_BIN=/usr/bin/chromium
@@ -91,18 +92,16 @@ RUN curl -LO https://dl.k8s.io/release/$(curl -sL https://dl.k8s.io/release/stab
 RUN chmod +x ./kubectl
 RUN mv ./kubectl /usr/local/bin/kubectl
 
-# Install golangci for ckecking or fixing go format.
-# `npm ci` installs golangci, but this installation is needed
-# for running `npm run check` singlely, like
-# `hack/develop/run-dev-container.sh run check`.
-RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
-  sh -s -- -b $(go env GOPATH)/bin v1.52.2
+# Install golangci for checking or fixing Go code.
+# The version matches modules/common/tools/go.mod and is built with this Go toolchain.
+# This install is also needed when running checks directly inside the container.
+RUN go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.15.0
 
 # Enable go mod.
 ENV GO111MODULE=on
 
 # Install delve for debuging go files.
-RUN go install github.com/go-delve/delve/cmd/dlv@v1.7.1
+RUN go install github.com/go-delve/delve/cmd/dlv@v1.27.2
 
 # Set GOPROXY to ensure download modules
 ENV GOPROXY=https://proxy.golang.org
@@ -124,4 +123,4 @@ RUN mkdir -p /home/user/.kube
 WORKDIR /go/src/github.com/kubernetes/dashboard
 
 # Run gosu command in container.
-CMD ./hack/develop/gosu-command.sh
+CMD ["./hack/develop/gosu-command.sh"]
