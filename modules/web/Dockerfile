@@ -14,7 +14,7 @@
 
 ARG WEB_BUILDER_ARCH=amd64
 
-FROM alpine:3.21 AS user
+FROM alpine:3.24 AS user
 
 ENV USER=nonroot
 ENV UID=10001
@@ -29,7 +29,7 @@ RUN adduser \
     --uid "${UID}" \
     "${USER}"
 
-FROM --platform=linux/${WEB_BUILDER_ARCH} node:24-alpine3.23 AS web-builder
+FROM --platform=linux/${WEB_BUILDER_ARCH} node:26-alpine3.24 AS web-builder
 
 RUN apk add --no-cache \
     make \
@@ -46,14 +46,15 @@ COPY /modules/web /workspace/modules/web
 WORKDIR /workspace/modules/web
 
 # Setup yarn and install web dependencies
-RUN yarn set version 3.3.0
-RUN yarn plugin import workspace-tools
-RUN SKIP_POSTINSTALL=true yarn workspaces focus
+RUN npm install --global corepack@0.36.0 && corepack enable
+RUN corepack yarn set version 3.3.0
+RUN corepack yarn plugin import workspace-tools
+RUN SKIP_POSTINSTALL=true corepack yarn workspaces focus
 
 # Build prod version of web app
 RUN make build-frontend
 
-FROM golang:1.27.3-alpine3.23 AS go-builder
+FROM golang:1.27.3-alpine3.24 AS go-builder
 
 ARG TARGETARCH
 ARG TARGETOS

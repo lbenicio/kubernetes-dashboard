@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM node:24-alpine3.23
+FROM node:26-alpine3.24
+
+RUN npm install --global corepack@0.36.0 && corepack enable
 
 WORKDIR /workspace
 
