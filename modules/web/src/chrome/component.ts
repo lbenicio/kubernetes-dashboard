@@ -29,6 +29,7 @@ class SystemBanner {
   selector: 'kd-chrome',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class ChromeComponent implements OnInit {
   private static readonly systemBannerEndpoint = 'systembanner';

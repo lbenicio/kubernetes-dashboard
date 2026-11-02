@@ -21,6 +21,7 @@ import {ConfigService} from '@common/services/global/config';
   selector: 'kd-footer',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class FooterComponent {
   copyrightYear: number;

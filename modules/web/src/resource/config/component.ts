@@ -18,5 +18,6 @@ import {GroupedResourceList} from '@common/resources/groupedlist';
 @Component({
   selector: 'kd-config',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class ConfigComponent extends GroupedResourceList {}

@@ -20,6 +20,7 @@ import {Endpoint} from '@api/root.api';
   selector: 'kd-endpoint-card-list',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class EndpointListComponent {
   @Input() initialized: boolean;

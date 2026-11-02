@@ -23,6 +23,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
   selector: 'kd-search',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class SearchComponent implements OnInit {
   query: string;

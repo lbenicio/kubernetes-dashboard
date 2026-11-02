@@ -51,6 +51,7 @@ const rollInOut = trigger('rollInOut', [
   templateUrl: 'template.html',
   styleUrls: ['style.scss'],
   animations: [rollInOut],
+  standalone: false,
 })
 export class NavItemComponent implements OnInit {
   @Input() state: string;

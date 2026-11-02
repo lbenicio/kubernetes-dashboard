@@ -31,6 +31,7 @@ export interface DeleteOptions {
   selector: 'kd-delete-resource-dialog',
   templateUrl: 'template.html',
   styleUrls: ['./styles.scss'],
+  standalone: false,
 })
 export class DeleteResourceDialogComponent {
   options: DeleteOptions;

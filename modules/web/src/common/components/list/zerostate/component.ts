@@ -18,6 +18,7 @@ import {Component, ContentChild, TemplateRef} from '@angular/core';
   selector: 'kd-list-zero-state',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class ListZeroStateComponent {
   @ContentChild('textTemplate', {read: TemplateRef}) textTemplate: TemplateRef<any>;

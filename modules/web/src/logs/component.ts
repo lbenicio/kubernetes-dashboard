@@ -34,6 +34,7 @@ const i18n = {
   selector: 'kd-logs',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class LogsComponent implements OnDestroy {
   @ViewChild('logViewContainer', {static: true}) logViewContainer_: ElementRef;

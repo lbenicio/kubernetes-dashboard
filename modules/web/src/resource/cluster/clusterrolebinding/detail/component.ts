@@ -27,6 +27,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 @Component({
   selector: 'kd-cluster-role-binding-detail',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class ClusterRoleBindingDetailComponent implements OnInit, OnDestroy {
   private clusterRoleSubscription_: Subscription;

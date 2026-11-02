@@ -22,6 +22,7 @@ import {Animations} from '../../animations/animations';
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   animations: [Animations.expandInOut],
+  standalone: false,
 })
 export class CardComponent {
   @Input() initialized = true;

@@ -28,6 +28,7 @@ import {CONFIG_DI_TOKEN} from '../index.config';
   selector: 'kd-login',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class LoginComponent implements OnInit {
   errors: KdError[] = [];

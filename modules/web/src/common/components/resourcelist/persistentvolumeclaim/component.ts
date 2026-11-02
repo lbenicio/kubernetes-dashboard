@@ -29,6 +29,7 @@ import {Status} from '../statuses';
   selector: 'kd-persistent-volume-claim-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class PersistentVolumeClaimListComponent extends ResourceListWithStatuses<
   PersistentVolumeClaimList,

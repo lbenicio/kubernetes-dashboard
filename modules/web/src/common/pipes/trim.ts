@@ -14,7 +14,10 @@
 
 import {Pipe, PipeTransform} from '@angular/core';
 
-@Pipe({name: 'trim'})
+@Pipe({
+  name: 'trim',
+  standalone: false,
+})
 export class TrimPipe implements PipeTransform {
   transform(value: string): string {
     if (!value) {

@@ -27,6 +27,7 @@ import {ListGroupIdentifier, ListIdentifier} from '../groupids';
   selector: 'kd-crd-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class CRDListComponent extends ResourceListWithStatuses<CRDList, CRD> {
   @Input() endpoint = EndpointManager.resource(Resource.crd).list();

@@ -56,6 +56,7 @@ const MAX_CHIP_VALUE_LENGTH = 63;
   styleUrls: ['./style.scss'],
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class ChipsComponent implements OnInit, OnChanges {
   @Input() map: StringMap | string[] | number[];

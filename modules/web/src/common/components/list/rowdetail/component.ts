@@ -20,6 +20,7 @@ import {Event} from 'typings/root.api';
   templateUrl: 'template.html',
   styleUrls: ['style.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class RowDetailComponent {
   @Input() events: Event[] = [];

@@ -21,6 +21,7 @@ import {StringMap} from '@api/root.shared';
   selector: 'kd-persistent-volume-source',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class PersistentVolumeSourceComponent {
   @Input() source: PersistentVolumeSource;

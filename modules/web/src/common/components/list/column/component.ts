@@ -29,6 +29,7 @@ import {CRDDetail, Resource} from 'typings/root.api';
 @Component({
   selector: 'kd-dynamic-cell',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class ColumnComponent<T extends ActionColumn> implements OnChanges {
   @Input() component: Type<T>;

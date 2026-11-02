@@ -28,6 +28,7 @@ import {Status} from '../statuses';
   selector: 'kd-stateful-set-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class StatefulSetListComponent extends ResourceListWithStatuses<StatefulSetList, StatefulSet> {
   @Input() endpoint = EndpointManager.resource(Resource.statefulSet, true).list();

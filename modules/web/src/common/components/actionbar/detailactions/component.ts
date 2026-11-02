@@ -18,6 +18,7 @@ import {ObjectMeta, TypeMeta} from '@api/root.api';
 @Component({
   selector: 'kd-actionbar-detail-actions',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class ActionbarDetailActionsComponent {
   @Input() objectMeta: ObjectMeta;

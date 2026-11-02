@@ -19,6 +19,7 @@ import {ResourceMeta} from '../../services/global/actionbar';
 @Component({
   selector: 'kd-restart-resource-dialog',
   templateUrl: 'template.html',
+  standalone: false,
 })
 export class RestartResourceDialogComponent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: ResourceMeta) {}

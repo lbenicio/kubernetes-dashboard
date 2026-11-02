@@ -20,6 +20,7 @@ import {GroupedResourceList} from '@common/resources/groupedlist';
 @Component({
   selector: 'kd-overview',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class OverviewComponent extends GroupedResourceList {
   hasCluster(): boolean {

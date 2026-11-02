@@ -20,6 +20,7 @@ import {Resource} from '@common/services/resource/endpoint';
 @Component({
   selector: 'kd-object-meta',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class ObjectMetaComponent {
   @Input() initialized = false;

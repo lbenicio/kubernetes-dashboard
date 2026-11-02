@@ -28,6 +28,7 @@ import {ListGroupIdentifier, ListIdentifier} from '../groupids';
   selector: 'kd-role-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class RoleListComponent extends ResourceListBase<RoleList, Role> {
   @Input() endpoint = EndpointManager.resource(Resource.role, true).list();

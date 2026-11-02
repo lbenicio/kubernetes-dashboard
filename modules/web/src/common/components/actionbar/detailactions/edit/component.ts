@@ -20,6 +20,7 @@ import {VerberService} from '@common/services/global/verber';
 @Component({
   selector: 'kd-actionbar-detail-edit',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class ActionbarDetailEditComponent {
   @Input() objectMeta: ObjectMeta;

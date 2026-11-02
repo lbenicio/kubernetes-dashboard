@@ -19,6 +19,7 @@ import {PolicyRule} from 'typings/root.api';
 @Component({
   selector: 'kd-policy-rule-list',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class PolicyRuleListComponent implements OnInit {
   @Input() initialized: boolean;

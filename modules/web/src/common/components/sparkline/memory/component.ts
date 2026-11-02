@@ -19,5 +19,6 @@ import {Sparkline} from '../sparkline';
   selector: 'kd-memory-sparkline',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class MemorySparklineComponent extends Sparkline {}

@@ -28,6 +28,7 @@ import {Status} from '../statuses';
   selector: 'kd-event-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class EventListComponent extends ResourceListWithStatuses<EventList, Event> implements OnInit {
   @Input() endpoint: string;

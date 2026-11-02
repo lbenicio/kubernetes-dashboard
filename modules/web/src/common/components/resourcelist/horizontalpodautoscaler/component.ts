@@ -27,6 +27,7 @@ import {ListGroupIdentifier, ListIdentifier} from '../groupids';
   selector: 'kd-horizontal-pod-autoscaler-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class HorizontalPodAutoscalerListComponent extends ResourceListWithStatuses<
   HorizontalPodAutoscalerList,

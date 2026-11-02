@@ -27,6 +27,7 @@ import {NamespaceService} from '@common/services/global/namespace';
   selector: 'kd-create-from-file',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class CreateFromFileComponent extends ICanDeactivate {
   file: KdFile;

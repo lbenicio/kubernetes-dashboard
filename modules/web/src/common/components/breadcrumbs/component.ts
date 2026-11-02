@@ -30,6 +30,7 @@ export const SEARCH_BREADCRUMB_PLACEHOLDER = '___SEARCH_BREADCRUMB_PLACEHOLDER__
   selector: 'kd-breadcrumbs',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class BreadcrumbsComponent implements OnInit {
   breadcrumbs: Breadcrumb[];

@@ -29,6 +29,7 @@ import {Status, StatusClass} from '../statuses';
   selector: 'kd-service-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class ServiceListComponent extends ResourceListWithStatuses<ServiceList, Service> {
   @Input() endpoint = EndpointManager.resource(Resource.service, true).list();

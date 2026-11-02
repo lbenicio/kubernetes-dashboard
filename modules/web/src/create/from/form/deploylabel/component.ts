@@ -47,6 +47,7 @@ interface DeployLabelI {
       multi: true,
     },
   ],
+  standalone: false,
 })
 export class DeployLabelComponent implements OnInit, ControlValueAccessor {
   @Input() labelArr: DeployLabel[];

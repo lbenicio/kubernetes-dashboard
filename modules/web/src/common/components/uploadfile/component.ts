@@ -21,6 +21,7 @@ import {AlertDialogComponent, AlertDialogConfig} from 'common/dialogs/alert/dial
   selector: 'kd-upload-file',
   templateUrl: 'template.html',
   styleUrls: ['style.scss'],
+  standalone: false,
 })
 export class UploadFileComponent {
   @Input() label: string;

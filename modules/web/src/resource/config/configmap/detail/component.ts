@@ -25,6 +25,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 @Component({
   selector: 'kd-config-map-detail',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class ConfigMapDetailComponent implements OnInit, OnDestroy {
   private endpoint_ = EndpointManager.resource(Resource.configMap, true);

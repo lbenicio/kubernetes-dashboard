@@ -48,6 +48,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class DateComponent implements OnChanges {
   @Input() date: string;

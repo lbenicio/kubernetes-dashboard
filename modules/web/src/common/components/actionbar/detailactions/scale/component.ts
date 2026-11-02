@@ -20,6 +20,7 @@ import {VerberService} from '@common/services/global/verber';
 @Component({
   selector: 'kd-actionbar-detail-scale',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class ActionbarDetailScaleComponent {
   @Input() objectMeta: ObjectMeta;

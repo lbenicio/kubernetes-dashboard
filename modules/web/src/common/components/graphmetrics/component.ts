@@ -19,6 +19,7 @@ import {GraphType} from '../graph/component';
 @Component({
   selector: 'kd-graph-metrics',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class GraphMetricsComponent {
   @Input() metrics: Metric[];

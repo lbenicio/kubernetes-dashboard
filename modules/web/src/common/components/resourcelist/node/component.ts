@@ -28,6 +28,7 @@ import {Status} from '../statuses';
   selector: 'kd-node-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class NodeListComponent extends ResourceListWithStatuses<NodeList, Node> {
   @Input() endpoint = EndpointManager.resource(Resource.node).list();

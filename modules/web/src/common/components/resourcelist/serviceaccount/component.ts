@@ -28,6 +28,7 @@ import {ListGroupIdentifier, ListIdentifier} from '../groupids';
   selector: 'kd-service-account-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class ServiceAccountListComponent extends ResourceListBase<ServiceAccountList, ServiceAccount> {
   @Input() endpoint = EndpointManager.resource(Resource.serviceAccount, true).list();

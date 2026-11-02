@@ -25,6 +25,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 @Component({
   selector: 'kd-service-account-detail',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class ServiceAccountDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.serviceAccount, true);

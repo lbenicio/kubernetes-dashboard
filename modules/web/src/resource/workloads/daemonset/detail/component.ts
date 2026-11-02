@@ -25,6 +25,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 @Component({
   selector: 'kd-daemon-set-detail',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class DaemonSetDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.daemonSet, true);

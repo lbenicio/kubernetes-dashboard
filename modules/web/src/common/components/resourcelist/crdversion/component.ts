@@ -19,6 +19,7 @@ import {CRDVersion} from '@api/root.api';
 @Component({
   selector: 'kd-crd-versions-list',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class CRDVersionListComponent {
   @Input() versions: CRDVersion[];

@@ -27,6 +27,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 @Component({
   selector: 'kd-persistent-volume-claim-detail',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class PersistentVolumeClaimDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.persistentVolumeClaim, true);

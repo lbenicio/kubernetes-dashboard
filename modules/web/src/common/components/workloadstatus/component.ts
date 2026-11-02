@@ -30,6 +30,7 @@ export const emptyResourcesRatio: ResourcesRatio = {
   selector: 'kd-workload-statuses',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class WorkloadStatusComponent {
   @Input() resourcesRatio = emptyResourcesRatio;

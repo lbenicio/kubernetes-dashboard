@@ -29,6 +29,7 @@ import {Status} from '../statuses';
   selector: 'kd-replication-controller-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class ReplicationControllerListComponent extends ResourceListWithStatuses<
   ReplicationControllerList,

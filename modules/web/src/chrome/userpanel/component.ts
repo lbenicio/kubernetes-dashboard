@@ -21,6 +21,7 @@ import {MeService} from '@common/services/global/me';
   selector: 'kd-user-panel',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class UserPanelComponent /* implements OnInit */ {
   @ViewChild(MatMenuTrigger)

@@ -17,5 +17,6 @@ import {Component} from '@angular/core';
 @Component({
   selector: 'kd-network-policy-list-state',
   template: '<kd-network-policy-list></kd-network-policy-list>',
+  standalone: false,
 })
 export class NetworkPolicyListComponent {}

@@ -43,6 +43,7 @@ import {AbstractControl, NG_VALIDATORS, Validator} from '@angular/forms';
       multi: true,
     },
   ],
+  standalone: false,
 })
 export class WarnThresholdValidator implements Validator {
   @Input() kdWarnThreshold: number;

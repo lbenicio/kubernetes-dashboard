@@ -23,6 +23,7 @@ import isEmpty from 'lodash-es/isEmpty';
   selector: 'kd-container-card',
   templateUrl: './template.html',
   styleUrls: ['style.scss'],
+  standalone: false,
 })
 export class ContainerCardComponent implements OnChanges {
   @Input() container: Container;

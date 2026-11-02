@@ -25,6 +25,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 @Component({
   selector: 'kd-role-detail',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class RoleDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.role, true);

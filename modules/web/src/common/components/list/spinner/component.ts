@@ -21,6 +21,7 @@ import {Component, Input, OnInit} from '@angular/core';
     // kd-loading-share class is defined globally in index.scss file.
     '[class.kd-loading-shade]': 'isLoading',
   },
+  standalone: false,
 })
 export class LoadingSpinnerComponent implements OnInit {
   @Input() isLoading: boolean;

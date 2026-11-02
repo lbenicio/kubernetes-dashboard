@@ -25,6 +25,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 @Component({
   selector: 'kd-ingress-detail',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class IngressDetailComponent implements OnInit, OnDestroy {
   ingress: IngressDetail;

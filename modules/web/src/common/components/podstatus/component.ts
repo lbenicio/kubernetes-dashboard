@@ -18,6 +18,7 @@ import {PodInfo} from '@api/root.api';
 @Component({
   selector: 'kd-pod-status-card',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class PodStatusCardComponent {
   @Input() podInfo: PodInfo;

@@ -26,6 +26,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 @Component({
   selector: 'kd-deployment-detail',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class DeploymentDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.deployment, true);

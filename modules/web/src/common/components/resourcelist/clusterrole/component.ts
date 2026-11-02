@@ -28,6 +28,7 @@ import {ListGroupIdentifier, ListIdentifier} from '../groupids';
   selector: 'kd-cluster-role-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class ClusterRoleListComponent extends ResourceListBase<ClusterRoleList, ClusterRole> {
   @Input() endpoint = EndpointManager.resource(Resource.clusterRole).list();

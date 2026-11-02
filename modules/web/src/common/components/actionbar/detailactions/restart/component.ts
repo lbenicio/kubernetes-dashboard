@@ -20,6 +20,7 @@ import {VerberService} from '@common/services/global/verber';
 @Component({
   selector: 'kd-actionbar-detail-restart',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class ActionbarDetailRestartComponent {
   @Input() objectMeta: ObjectMeta;

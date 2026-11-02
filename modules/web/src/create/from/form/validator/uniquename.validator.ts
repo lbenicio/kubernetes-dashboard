@@ -33,6 +33,7 @@ export const uniqueNameValidationKey = 'uniqueName';
       multi: true,
     },
   ],
+  standalone: false,
 })
 export class UniqueNameValidator implements AsyncValidator {
   @Input() namespace: string;

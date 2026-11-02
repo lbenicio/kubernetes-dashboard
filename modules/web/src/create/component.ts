@@ -22,6 +22,7 @@ import {CreateFromInputComponent} from './from/input/component';
   selector: 'kd-create',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class CreateComponent extends ICanDeactivate {
   @ViewChild(CreateFromInputComponent) fromInput: CreateFromInputComponent;

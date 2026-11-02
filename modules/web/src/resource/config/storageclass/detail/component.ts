@@ -26,6 +26,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
   selector: 'kd-storage-class-detail',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class StorageClassDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.storageClass);

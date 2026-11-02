@@ -25,6 +25,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 @Component({
   selector: 'kd-replica-set-detail',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class ReplicaSetDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.replicaSet, true);

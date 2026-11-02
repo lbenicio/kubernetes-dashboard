@@ -29,6 +29,7 @@ import {Status} from '../statuses';
   selector: 'kd-namespace-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class NamespaceListComponent extends ResourceListWithStatuses<NamespaceList, Namespace> {
   @Input() endpoint = EndpointManager.resource(Resource.namespace).list();

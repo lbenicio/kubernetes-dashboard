@@ -20,6 +20,7 @@ import {GroupedResourceList} from '@common/resources/groupedlist';
 @Component({
   selector: 'kd-workloads',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class WorkloadsComponent extends GroupedResourceList {
   hasWorkloads(): boolean {

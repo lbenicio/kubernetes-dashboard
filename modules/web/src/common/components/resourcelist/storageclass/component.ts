@@ -28,6 +28,7 @@ import {ListGroupIdentifier, ListIdentifier} from '../groupids';
   selector: 'kd-storage-class-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class StorageClassListComponent extends ResourceListBase<StorageClassList, StorageClass> {
   @Input() endpoint = EndpointManager.resource(Resource.storageClass).list();

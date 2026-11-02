@@ -27,6 +27,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 @Component({
   selector: 'kd-node-detail',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class NodeDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.node);

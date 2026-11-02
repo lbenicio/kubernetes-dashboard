@@ -58,6 +58,7 @@ interface NamespaceSettings {
       multi: true,
     },
   ],
+  standalone: false,
 })
 export class NamespaceSettingsComponent implements OnInit, ControlValueAccessor {
   readonly Controls = Controls;

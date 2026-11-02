@@ -25,6 +25,7 @@ import {NamespaceService} from '@common/services/global/namespace';
   selector: 'kd-create-from-input',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class CreateFromInputComponent extends ICanDeactivate {
   inputData = '';

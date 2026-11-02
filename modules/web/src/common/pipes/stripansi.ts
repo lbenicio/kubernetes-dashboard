@@ -19,7 +19,10 @@ import stripAnsi from 'strip-ansi';
 /**
  * Strips ANSI codes from string.
  */
-@Pipe({name: 'kdStripAnsi'})
+@Pipe({
+  name: 'kdStripAnsi',
+  standalone: false,
+})
 export class StripAnsiPipe implements PipeTransform {
   transform(value: string): SafeHtml {
     return stripAnsi(value);

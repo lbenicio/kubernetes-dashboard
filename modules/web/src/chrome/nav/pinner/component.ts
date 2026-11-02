@@ -20,6 +20,7 @@ import {PinnerService} from '@common/services/global/pinner';
   selector: 'kd-pinner-nav',
   templateUrl: './template.html',
   styleUrls: ['../style.scss'],
+  standalone: false,
 })
 export class PinnerNavComponent {
   @Input() kind: string;

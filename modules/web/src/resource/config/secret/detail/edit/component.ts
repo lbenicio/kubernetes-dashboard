@@ -25,6 +25,7 @@ import {encode} from 'js-base64';
   selector: 'kd-secret-detail-edit',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class SecretDetailEditComponent implements OnInit {
   @Output() closeEvent = new EventEmitter<boolean>();

@@ -24,6 +24,7 @@ import {MESSAGES_DI_TOKEN} from '../../index.messages';
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   animations: [Animations.easeOut],
+  standalone: false,
 })
 export class NotificationsComponent {
   isOpen_ = false;

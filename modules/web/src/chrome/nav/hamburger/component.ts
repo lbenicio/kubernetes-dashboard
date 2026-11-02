@@ -18,6 +18,7 @@ import {NavService} from '@common/services/nav/service';
 @Component({
   selector: 'kd-nav-hamburger',
   templateUrl: 'template.html',
+  standalone: false,
 })
 export class HamburgerComponent {
   constructor(private readonly navService_: NavService) {}

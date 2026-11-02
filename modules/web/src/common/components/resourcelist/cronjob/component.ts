@@ -28,6 +28,7 @@ import {Status} from '../statuses';
   selector: 'kd-cron-job-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class CronJobListComponent extends ResourceListWithStatuses<CronJobList, CronJob> {
   @Input() endpoint = EndpointManager.resource(Resource.cronJob, true).list();

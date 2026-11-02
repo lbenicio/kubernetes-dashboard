@@ -46,6 +46,7 @@ enum Controls {
   selector: 'kd-global-settings',
   templateUrl: './template.html',
   styleUrls: ['style.scss'],
+  standalone: false,
 })
 export class GlobalSettingsComponent implements OnInit {
   readonly Controls = Controls;

@@ -18,6 +18,7 @@ import {Probe} from '@api/root.api';
 @Component({
   selector: 'kd-probe-card',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class ProbeComponent {
   @Input() initialized: boolean;

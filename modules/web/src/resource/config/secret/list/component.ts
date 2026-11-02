@@ -17,5 +17,6 @@ import {Component} from '@angular/core';
 @Component({
   selector: 'kd-secret-list-state',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class SecretListComponent {}

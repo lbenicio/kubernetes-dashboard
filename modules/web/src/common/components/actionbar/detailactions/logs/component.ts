@@ -20,6 +20,7 @@ import {KdStateService} from '@common/services/global/state';
 @Component({
   selector: 'kd-actionbar-detail-logs',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class ActionbarDetailLogsComponent {
   @Input() resourceMeta: ResourceMeta;

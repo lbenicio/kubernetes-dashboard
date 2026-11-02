@@ -27,6 +27,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
   selector: 'kd-pod-detail',
   templateUrl: './template.html',
   styleUrls: ['style.scss'],
+  standalone: false,
 })
 export class PodDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.pod, true);

@@ -47,6 +47,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
   selector: 'kd-namespace-selector',
   templateUrl: './template.html',
   styleUrls: ['style.scss'],
+  standalone: false,
 })
 export class NamespaceSelectorComponent implements OnInit {
   namespaces: string[] = [];

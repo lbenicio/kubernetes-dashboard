@@ -21,6 +21,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
   selector: 'kd-card-list-filter',
   templateUrl: './template.html',
   styleUrls: ['style.scss'],
+  standalone: false,
 })
 export class CardListFilterComponent implements OnInit {
   query = '';

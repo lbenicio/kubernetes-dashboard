@@ -29,6 +29,7 @@ import {Status} from '../statuses';
   selector: 'kd-daemon-set-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class DaemonSetListComponent extends ResourceListWithStatuses<DaemonSetList, DaemonSet> {
   @Input() endpoint = EndpointManager.resource(Resource.daemonSet, true).list();

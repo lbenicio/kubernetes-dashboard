@@ -19,6 +19,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 @Component({
   selector: '',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class TriggerDefaultActionbarComponent implements OnInit {
   isInitialized = false;

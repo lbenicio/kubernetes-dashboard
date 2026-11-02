@@ -29,6 +29,7 @@ import {Status} from '../statuses';
   selector: 'kd-persistent-volume-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class PersistentVolumeListComponent extends ResourceListWithStatuses<PersistentVolumeList, PersistentVolume> {
   @Input() endpoint = EndpointManager.resource(Resource.persistentVolume).list();

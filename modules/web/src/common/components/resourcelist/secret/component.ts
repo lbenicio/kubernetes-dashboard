@@ -27,6 +27,7 @@ import {ListGroupIdentifier, ListIdentifier} from '../groupids';
   selector: 'kd-secret-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SecretListComponent extends ResourceListBase<SecretList, Secret> {
   @Input() title = 'Secrets';

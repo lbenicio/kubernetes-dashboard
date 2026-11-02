@@ -23,6 +23,7 @@ import {Endpoint} from '@api/root.api';
   selector: 'kd-internal-endpoint',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class InternalEndpointComponent {
   @Input() endpoints: Endpoint[];

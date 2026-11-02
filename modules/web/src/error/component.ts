@@ -23,6 +23,7 @@ import {KdError} from '@common/errors/errors';
   selector: 'kd-error',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class ErrorComponent implements OnInit {
   private error_: KdError;

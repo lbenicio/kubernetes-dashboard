@@ -25,6 +25,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 @Component({
   selector: 'kd-cluster-role-detail',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class ClusterRoleDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.clusterRole);

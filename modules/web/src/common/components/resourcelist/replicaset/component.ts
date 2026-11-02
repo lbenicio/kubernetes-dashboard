@@ -30,6 +30,7 @@ import {Status} from '../statuses';
   selector: 'kd-replica-set-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class ReplicaSetListComponent extends ResourceListWithStatuses<ReplicaSetList, ReplicaSet> {
   @Input() title: string;

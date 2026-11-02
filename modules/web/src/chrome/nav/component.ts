@@ -21,6 +21,7 @@ import {NavService} from '@common/services/nav/service';
   selector: 'kd-nav',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class NavComponent implements OnInit {
   @ViewChild(MatDrawer, {static: true}) private readonly nav_: MatDrawer;

@@ -26,6 +26,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 @Component({
   selector: 'kd-delete-resource-dialog',
   templateUrl: 'template.html',
+  standalone: false,
 })
 export class EditResourceDialogComponent implements OnInit {
   selectedMode = EditorMode.YAML;

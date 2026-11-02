@@ -29,6 +29,7 @@ import {Status} from '../statuses';
   selector: 'kd-job-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class JobListComponent extends ResourceListWithStatuses<JobList, Job> {
   @Input() title: string;

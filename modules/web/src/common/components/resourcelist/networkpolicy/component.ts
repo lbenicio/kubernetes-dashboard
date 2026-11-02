@@ -28,6 +28,7 @@ import {ListGroupIdentifier, ListIdentifier} from '../groupids';
   selector: 'kd-network-policy-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class NetworkPolicyListComponent extends ResourceListBase<NetworkPolicyList, NetworkPolicy> {
   @Input() endpoint = EndpointManager.resource(Resource.networkPolicy, true).list();

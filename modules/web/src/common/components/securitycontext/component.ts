@@ -19,6 +19,7 @@ import {ContainerSecurityContext, PodSecurityContext, Sysctl} from '@api/root.ap
 @Component({
   selector: 'kd-security-context',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class SecurityContextComponent {
   @Input() initialized: boolean;

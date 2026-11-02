@@ -16,6 +16,7 @@ import {AfterViewInit, Directive, EventEmitter, Output, ViewContainerRef} from '
 
 @Directive({
   selector: '[kdIsVisible]',
+  standalone: false,
 })
 export class IsVisibleDirective implements AfterViewInit {
   @Output() visibilityChange: EventEmitter<boolean> = new EventEmitter<boolean>();

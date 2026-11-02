@@ -18,6 +18,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 @Component({
   selector: 'kd-namespace-change-dialog',
   templateUrl: 'template.html',
+  standalone: false,
 })
 export class NamespaceChangeDialogComponent {
   namespace: string;

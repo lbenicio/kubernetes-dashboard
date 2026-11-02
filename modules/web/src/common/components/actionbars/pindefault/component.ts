@@ -21,6 +21,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 @Component({
   selector: '',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class PinDefaultActionbarComponent implements OnInit {
   isInitialized = false;

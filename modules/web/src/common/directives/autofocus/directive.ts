@@ -17,6 +17,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Directive({
   selector: '[kdAutofocus]',
+  standalone: false,
 })
 export class AutofocusDirective implements AfterViewInit {
   @Input() opened: Observable<boolean>;

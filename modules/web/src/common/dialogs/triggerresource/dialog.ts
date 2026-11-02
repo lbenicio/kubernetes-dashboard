@@ -19,6 +19,7 @@ import {ResourceMeta} from '../../services/global/actionbar';
 @Component({
   selector: 'kd-trigger-resource-dialog',
   templateUrl: 'template.html',
+  standalone: false,
 })
 export class TriggerResourceDialogComponent {
   constructor(

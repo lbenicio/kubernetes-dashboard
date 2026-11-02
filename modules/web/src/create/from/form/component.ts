@@ -49,6 +49,7 @@ const APP_LABEL_KEY = 'k8s-app';
   selector: 'kd-create-from-form',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class CreateFromFormComponent extends ICanDeactivate implements OnInit {
   showMoreOptions_ = false;

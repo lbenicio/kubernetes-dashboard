@@ -19,6 +19,7 @@ import {Chip} from '../component';
 @Component({
   selector: 'kd-chip-dialog',
   templateUrl: 'template.html',
+  standalone: false,
 })
 export class ChipDialogComponent {
   constructor(

@@ -31,6 +31,7 @@ export interface LogsDownloadDialogMeta {
   selector: 'kd-logs-download-dialog',
   templateUrl: 'template.html',
   styleUrls: ['style.scss'],
+  standalone: false,
 })
 export class LogsDownloadDialogComponent {
   loaded = 0;

@@ -16,7 +16,11 @@ import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {Metric} from '@api/root.api';
 import {GraphType} from '../graph/component';
 
-@Component({selector: 'kd-graph-card', templateUrl: './template.html'})
+@Component({
+  selector: 'kd-graph-card',
+  templateUrl: './template.html',
+  standalone: false,
+})
 export class GraphCardComponent implements OnChanges {
   @Input() graphTitle: string;
   @Input() graphInfo: string;

@@ -73,6 +73,7 @@ const EXT_SERVICE: ServiceType = {
       multi: true,
     },
   ],
+  standalone: false,
 })
 export class PortMappingsComponent implements OnInit, ControlValueAccessor {
   @Input() protocols: string[];

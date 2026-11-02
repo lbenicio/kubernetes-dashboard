@@ -24,6 +24,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 @Component({
   selector: 'kd-service-detail',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class ServiceDetailComponent implements OnInit, OnDestroy {
   service: ServiceDetail;

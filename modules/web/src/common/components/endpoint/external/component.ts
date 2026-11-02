@@ -23,6 +23,7 @@ import {Endpoint} from '@api/root.api';
   selector: 'kd-external-endpoint',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  standalone: false,
 })
 export class ExternalEndpointComponent implements OnInit {
   @Input() endpoints: Endpoint[];

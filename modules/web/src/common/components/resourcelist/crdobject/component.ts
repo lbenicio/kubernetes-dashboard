@@ -30,6 +30,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
   selector: 'kd-crd-object-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class CRDObjectListComponent extends ResourceListBase<CRDObjectList, CRDObject> {
   @Input() endpoint: string;

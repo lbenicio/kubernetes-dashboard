@@ -21,6 +21,7 @@ import {MESSAGES_DI_TOKEN} from '../../../../../index.messages';
 @Component({
   selector: 'kd-actionbar-detail-pin',
   templateUrl: './template.html',
+  standalone: false,
 })
 export class ActionbarDetailPinComponent {
   @Input() objectMeta: ObjectMeta;

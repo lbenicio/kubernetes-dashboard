@@ -24,6 +24,7 @@ export interface AlertDialogConfig {
 @Component({
   selector: 'kd-alert-dialog',
   templateUrl: 'template.html',
+  standalone: false,
 })
 export class AlertDialogComponent {
   constructor(

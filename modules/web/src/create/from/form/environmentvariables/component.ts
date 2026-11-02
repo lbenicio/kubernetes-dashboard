@@ -41,6 +41,7 @@ import {EnvironmentVariable} from '@api/root.api';
       multi: true,
     },
   ],
+  standalone: false,
 })
 export class EnvironmentVariablesComponent implements OnInit, ControlValueAccessor {
   form: UntypedFormGroup;
