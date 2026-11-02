@@ -109,7 +109,7 @@
     "@types/node": "22.15.3",
     "@typescript-eslint/eslint-plugin": "8.39.0",
     "@typescript-eslint/parser": "8.39.0",
-    "@typescript-eslint/utils": "8.39.0",
+    "@typescript-eslint/utils": "8.72.1",
     "concurrently": "9.1.2",
     "cypress": "14.5.3",
     "cypress-fail-fast": "7.1.1",
