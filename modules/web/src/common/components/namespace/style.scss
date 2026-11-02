@@ -48,7 +48,7 @@
       display: flex;
       height: 4.5 * $baseline-grid;
       min-height: 4.5 * $baseline-grid;
-      padding: 0 0 0 (2 * $baseline-grid);
+      padding: 0 $baseline-grid 0 (2 * $baseline-grid);
       width: 20 * $baseline-grid;
     }
 
@@ -71,6 +71,10 @@
     .mat-mdc-select-trigger {
       align-items: center;
       height: 100%;
+    }
+
+    .mat-mdc-select-value {
+      transform: translateY(1px);
     }
   }
 }
