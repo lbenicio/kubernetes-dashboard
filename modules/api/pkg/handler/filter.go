@@ -31,12 +31,6 @@ import (
 	"k8s.io/dashboard/helpers"
 )
 
-const (
-	originalForwardedForHeader = "X-Original-Forwarded-For"
-	forwardedForHeader         = "X-Forwarded-For"
-	realIPHeader               = "X-Real-Ip"
-)
-
 // InstallFilters installs defined filter for given web service
 func InstallFilters(ws *restful.WebService) {
 	ws.Filter(requestAndResponseLogger)
@@ -155,22 +149,5 @@ func getRemoteAddr(r *http.Request) string {
 		return "{ content hidden }"
 	}
 
-	if ip := getRemoteIPFromForwardHeader(r, originalForwardedForHeader); ip != "" {
-		return ip
-	}
-
-	if ip := getRemoteIPFromForwardHeader(r, forwardedForHeader); ip != "" {
-		return ip
-	}
-
-	if realIP := strings.TrimSpace(r.Header.Get(realIPHeader)); realIP != "" {
-		return realIP
-	}
-
 	return r.RemoteAddr
-}
-
-func getRemoteIPFromForwardHeader(r *http.Request, header string) string {
-	ips := strings.Split(r.Header.Get(header), ",")
-	return strings.TrimSpace(ips[0])
 }
