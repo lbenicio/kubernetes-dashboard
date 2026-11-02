@@ -12,7 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, DestroyRef, ElementRef, inject, Inject, OnInit, ViewChild} from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  HostBinding,
+  inject,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import {MatOptionSelectionChange} from '@angular/material/core';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSelect} from '@angular/material/select';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
@@ -46,10 +56,13 @@ export class NamespaceSelectorComponent implements OnInit {
   resourceNamespaceParam: string;
   usingFallbackNamespaces = false;
 
+  @HostBinding('class.kd-namespace-open') namespaceSelectorOpen = false;
+
   private readonly namespaceUpdate_ = new Subject<void>();
   private readonly endpoint_ = EndpointManager.resource(Resource.namespace);
 
   @ViewChild(MatSelect, {static: true}) private readonly select_: MatSelect;
+  @ViewChild(MatSelect, {static: true, read: ElementRef}) private readonly selectElement_: ElementRef<HTMLElement>;
   @ViewChild('namespaceInput', {static: true}) private readonly namespaceInputEl_: ElementRef;
 
   private destroyRef = inject(DestroyRef);
@@ -118,6 +131,8 @@ export class NamespaceSelectorComponent implements OnInit {
   }
 
   onNamespaceToggle(opened: boolean): void {
+    this.namespaceSelectorOpen = opened;
+
     if (opened) {
       this.namespaceUpdate_.next();
       this.focusNamespaceInput_();
@@ -125,6 +140,14 @@ export class NamespaceSelectorComponent implements OnInit {
     }
 
     this.changeNamespace_(this.selectedNamespace);
+  }
+
+  onNamespaceOptionSelection(event: MatOptionSelectionChange): void {
+    if (event.isUserInput && event.source.value === this.selectedNamespace) {
+      this.select_.close();
+      this.namespaceSelectorOpen = false;
+      Promise.resolve().then(() => this.selectElement_.nativeElement.blur());
+    }
   }
 
   formatNamespaceName(namespace: string): string {

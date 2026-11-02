@@ -37,6 +37,7 @@ limitations under the License.
     <mat-option
       *ngIf="showAllNamespaces() && namespaces.length && !usingFallbackNamespaces"
       [value]="allNamespacesKey"
+      (onSelectionChange)="onNamespaceOptionSelection($event)"
       i18n
       >All namespaces</mat-option
     >
@@ -48,6 +49,7 @@ limitations under the License.
       <mat-option
         *ngFor="let namespace of namespaces | kdFilterBy: selectNamespaceInput"
         [value]="namespace"
+        (onSelectionChange)="onNamespaceOptionSelection($event)"
       >
         {{ namespace }}
       </mat-option>
