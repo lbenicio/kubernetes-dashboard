@@ -4,15 +4,6 @@
 [![Coverage Status](https://codecov.io/github/lbenicio/kubernetes-dashboard/coverage.svg?branch=main)](https://codecov.io/github/lbenicio/kubernetes-dashboard?branch=main)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/kubernetes/dashboard/blob/master/LICENSE)
 
-## IMPORTANT
-
-**This project is now archived and no longer maintained due to lack of active maintainers and contributors.**
-
-Thank you to everyone who used, starred, or contributed to this project! Feel free to fork this repository if you want to continue development yourself.
-
-Please consider using **[Headlamp](https://github.com/kubernetes-sigs/headlamp)** instead. It was recently moved under the sig-ui. From the creators:
-> Headlamp is an easy-to-use and extensible Kubernetes web UI.
-
 ## Introduction
 
 Kubernetes Dashboard is a general purpose, web-based UI for Kubernetes clusters. It allows users to manage applications running in the cluster and troubleshoot them, as well as manage the cluster itself.
