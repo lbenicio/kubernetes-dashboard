@@ -22,12 +22,8 @@ limitations under the License.
     class="kd-auth-status kd-muted"
     [ngClass]="hasAuthHeader() ? 'kd-auth-header' : ''"
   >
-    <div
-      class="kd-auth-status-row"
-    >
-      <div
-        class="kd-auth-status-method method kd-muted-light"
-      >
+    <div class="kd-auth-status-row">
+      <div class="kd-auth-status-method method kd-muted-light">
         @if (hasAuthHeader()) {
         <ng-container i18n>Logged in with auth header </ng-container>
         } @if (hasTokenCookie()) {

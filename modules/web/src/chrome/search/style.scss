@@ -20,10 +20,10 @@
 }
 
 .kd-search {
+  border-radius: $baseline-grid * 0.25;
   box-sizing: border-box;
   flex: 1 1 auto;
   min-width: 0;
-  border-radius: $baseline-grid * 0.25;
   padding-left: $baseline-grid;
 
   input {

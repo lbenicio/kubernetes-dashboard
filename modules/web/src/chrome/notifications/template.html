@@ -33,9 +33,7 @@ limitations under the License.
     }
   </button>
   @if (isOpen()) {
-  <div
-    class="kd-notifications-panel"
-  >
+  <div class="kd-notifications-panel">
     <div class="kd-notifications-content">
       @for (notification of notifications; track notification; let last = $last; let index = $index) {
       <div
