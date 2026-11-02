@@ -54,7 +54,7 @@ limitations under the License.
         fxFlex="100"
         fxLayout="row"
       >
-        <mat-chip-list
+        <mat-chip-set
           [formArrayName]="Controls.FallbackList"
           fxFlex="80"
           fxLayoutAlign=" center"
@@ -64,8 +64,6 @@ limitations under the License.
             *ngFor="let namespace of form.get(Controls.FallbackList).value | slice: 0:visibleNamespaces"
             style="max-width: 100px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; display: block"
             [matTooltip]="namespace"
-            [selectable]="false"
-            [removable]="false"
           >
             {{ namespace }}
           </mat-chip>
@@ -82,7 +80,7 @@ limitations under the License.
             fxLayoutAlign=" center"
             >+ {{ invisibleCount }}</mat-chip
           >
-        </mat-chip-list>
+        </mat-chip-set>
         <div
           fxFlex="20"
           fxLayoutAlign="end"

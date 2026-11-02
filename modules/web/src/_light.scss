@@ -13,7 +13,7 @@
 // limitations under the License.
 
 @use 'sass:map';
-@use '@angular/material/theming' as mat-theming;
+@use '@angular/material' as mat;
 @use './theming';
 
 $colors-light: (
@@ -31,25 +31,30 @@ $colors-light: (
   log-viewer-scrollbar: rgb(200 200 200 / 0.66),
   scrollbar: rgb(100 100 100 / 0.33),
 );
-$kd-blue: map_merge(
-  mat-theming.$mat-blue,
+$kd-blue: map.merge(
+  mat.$blue-palette,
   (
     500: #326de6,
   )
 );
-$theme-light: mat-theming.mat-light-theme(
-  mat-theming.mat-palette($kd-blue),
-  mat-theming.mat-palette($kd-blue),
-  mat-theming.mat-palette($kd-blue)
+$theme-light: mat.define-light-theme(
+  (
+    color: (
+      primary: mat.define-palette($kd-blue),
+      accent: mat.define-palette($kd-blue),
+      warn: mat.define-palette(mat.$red-palette),
+    ),
+    density: -2,
+  )
 );
 $background: map.get($theme-light, background);
-$background: map_merge(
+$background: map.merge(
   $background,
   (
     background: #edeff0,
   )
 );
-$theme-light: map_merge(
+$theme-light: map.merge(
   $theme-light,
   (
     background: $background,
@@ -57,8 +62,13 @@ $theme-light: map_merge(
 );
 
 .kd-light-theme {
-  @include mat-theming.angular-material-theme($theme-light);
+  @include mat.all-component-themes($theme-light);
   @include theming.kd-theme($theme-light, $colors-light);
+
+  --mat-app-background-color: #{map.get($background, background)};
+  --mat-sidenav-content-background-color: #{map.get($background, background)};
+  --mdc-filled-text-field-container-color: transparent;
+  --mdc-filled-text-field-disabled-container-color: transparent;
 
   .kd-toolbar-logo-text,
   .kd-primary-toolbar-icon {

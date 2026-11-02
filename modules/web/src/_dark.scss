@@ -13,7 +13,7 @@
 // limitations under the License.
 
 @use 'sass:map';
-@use '@angular/material/theming' as mat-theming;
+@use '@angular/material' as mat;
 @use './theming';
 
 $colors-dark: (
@@ -31,31 +31,36 @@ $colors-dark: (
   log-viewer-scrollbar: rgb(200 200 200 / 0.66),
   scrollbar: rgb(100 100 100 / 0.33),
 );
-$kd-blue: map_merge(
-  mat-theming.$mat-blue,
+$kd-blue: map.merge(
+  mat.$blue-palette,
   (
     500: #327df4,
   )
 );
-$theme-dark: mat-theming.mat-dark-theme(
-  mat-theming.mat-palette($kd-blue),
-  mat-theming.mat-palette($kd-blue),
-  mat-theming.mat-palette($kd-blue)
+$theme-dark: mat.define-dark-theme(
+  (
+    color: (
+      primary: mat.define-palette($kd-blue),
+      accent: mat.define-palette($kd-blue),
+      warn: mat.define-palette(mat.$red-palette),
+    ),
+    density: -2,
+  )
 );
 $background: map.get($theme-dark, background);
-$background: map_merge(
+$background: map.merge(
   $background,
   (
     background: #1d1d1d,
   )
 );
-$background: map_merge(
+$background: map.merge(
   $background,
   (
     app-bar: #1d1d1d,
   )
 );
-$background: map_merge(
+$background: map.merge(
   $background,
   (
     card: #2d2d2d,
@@ -67,7 +72,7 @@ $background: map_merge(
     dialog: #2d2d2d,
   )
 );
-$theme-dark: map_merge(
+$theme-dark: map.merge(
   $theme-dark,
   (
     background: $background,
@@ -75,8 +80,26 @@ $theme-dark: map_merge(
 );
 
 .kd-dark-theme {
-  @include mat-theming.angular-material-theme($theme-dark);
+  @include mat.all-component-themes($theme-dark);
   @include theming.kd-theme($theme-dark, $colors-dark);
+
+  --mat-app-background-color: #{map.get($background, background)};
+  --mat-sidenav-content-background-color: #{map.get($background, background)};
+  --mdc-elevated-card-container-color: #{map.get($background, card)};
+  --mdc-outlined-card-container-color: #{map.get($background, card)};
+  --mdc-dialog-container-color: #{map.get($background, dialog)};
+  --mat-menu-container-color: #{map.get($background, card)};
+  --mat-select-panel-background-color: #{map.get($background, card)};
+  --mat-autocomplete-background-color: #{map.get($background, card)};
+  --mat-table-background-color: #{map.get($background, card)};
+  --mat-bottom-sheet-container-background-color: #{map.get($background, dialog)};
+  --mat-datepicker-calendar-container-background-color: #{map.get($background, dialog)};
+  --mat-expansion-container-background-color: #{map.get($background, card)};
+  --mat-sidenav-container-background-color: #{map.get($background, card)};
+  --mat-stepper-container-color: #{map.get($background, card)};
+  --mat-tree-container-background-color: #{map.get($background, card)};
+  --mdc-filled-text-field-container-color: transparent;
+  --mdc-filled-text-field-disabled-container-color: transparent;
 
   .kd-toolbar-logo-text,
   .kd-primary-toolbar-icon,

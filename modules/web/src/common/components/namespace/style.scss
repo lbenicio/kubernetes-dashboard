@@ -22,14 +22,24 @@
   padding-right: 3.5 * $baseline-grid;
 
   ::ng-deep {
-    .mat-form-field-infix {
+    .mat-mdc-text-field-wrapper {
+      background: transparent;
+      padding: 0;
+    }
+
+    .mat-mdc-form-field-flex {
+      padding: 0;
+    }
+
+    .mat-mdc-form-field-infix {
       border: 0;
       padding: 0;
       width: 18 * $baseline-grid;
     }
 
-    .mat-form-field-wrapper {
-      padding: 0;
+    .mat-mdc-form-field-subscript-wrapper,
+    .mdc-line-ripple {
+      display: none;
     }
 
     .kd-namespace-select {
