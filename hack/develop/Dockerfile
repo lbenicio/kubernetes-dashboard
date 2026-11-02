@@ -75,7 +75,7 @@ ENV NG_CLI_ANALYTICS=false
 # Keep kubectl aligned with the Kubernetes version used by the local Kind cluster.
 ARG DOCKER_CLI_VERSION=29.9.2
 ARG DOCKER_COMPOSE_VERSION=v5.7.0
-ARG KUBECTL_VERSION=v1.35.8
+ARG KUBECTL_VERSION=v1.37.0
 RUN set -eu; \
   case "$(dpkg --print-architecture)" in \
     amd64) DOCKER_ARCH=x86_64; COMPOSE_ARCH=x86_64; KUBECTL_ARCH=amd64 ;; \

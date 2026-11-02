@@ -27,7 +27,7 @@ ARCH=$(uname | awk '{print tolower($0)}')
 
 # Local cluster configuration (check start-cluster.sh script for more details).
 KIND_VERSION="v0.33.0"
-K8S_VERSION="v1.35.8"
+K8S_VERSION="v1.37.0"
 KIND_BIN=${CACHE_DIR}/kind-${KIND_VERSION}
 
 function ensure-cache {

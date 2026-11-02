@@ -3,7 +3,7 @@ module k8s.io/dashboard/certificates
 go 1.27.3
 
 require (
-	k8s.io/api v0.35.9
+	k8s.io/api v0.37.2
 	k8s.io/apimachinery v0.37.2
 )
 
