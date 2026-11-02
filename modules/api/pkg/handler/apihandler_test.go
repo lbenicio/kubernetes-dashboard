@@ -131,3 +131,21 @@ func TestFormatRequestLog(t *testing.T) {
 		}
 	}
 }
+
+func TestGetRemoteAddrDoesNotLogForwardedHeaders(t *testing.T) {
+	apiLogLevel := args.LogLevelDebug
+	_ = pflag.Set("v", apiLogLevel.String())
+
+	req, err := http.NewRequest(http.MethodGet, "/", nil)
+	if err != nil {
+		t.Fatal("Cannot mockup request")
+	}
+	req.RemoteAddr = "10.0.0.1:1234"
+	req.Header.Set("X-Forwarded-For", "192.0.2.1")
+	req.Header.Set("X-Original-Forwarded-For", "198.51.100.1")
+	req.Header.Set("X-Real-Ip", "203.0.113.1")
+
+	if actual := getRemoteAddr(req); actual != req.RemoteAddr {
+		t.Errorf("getRemoteAddr() returns %#v, expected %#v", actual, req.RemoteAddr)
+	}
+}
