@@ -69,7 +69,7 @@ $shell-background-color: #000;
 .kd-shell-toolbar-select {
   width: 180px;
 
-  .md-select-value {
+  ::ng-deep .mat-mdc-select-value {
     font-size: $title-font-size-base;
     min-width: 20 * $baseline-grid;
   }

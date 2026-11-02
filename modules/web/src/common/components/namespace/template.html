@@ -18,6 +18,8 @@ limitations under the License.
   <mat-select
     (openedChange)="onNamespaceToggle($event)"
     class="kd-namespace-select"
+    panelClass="kd-namespace-panel"
+    panelWidth=""
     [(ngModel)]="selectedNamespace"
   >
     <div [ngClass]="{'kd-namespace-select-input-border': namespaces.length > 0}">

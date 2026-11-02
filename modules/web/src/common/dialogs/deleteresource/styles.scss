@@ -31,7 +31,7 @@
   margin-left: $baseline-grid;
   width: fit-content;
 
-  .md-select-value {
+  ::ng-deep .mat-mdc-select-value {
     font-size: $title-font-size-base;
     min-width: 20 * $baseline-grid;
   }

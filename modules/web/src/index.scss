@@ -13,11 +13,15 @@
 // limitations under the License.
 
 @use 'sass:map';
+@use '@angular/material' as mat;
 @use './variables' as *;
 @use './mixins' as *;
+@use './theming';
 @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 @import './dark';
 @import './light';
+
+@include mat.all-component-typographies(theming.$kd-typography);
 
 html,
 body {
@@ -81,6 +85,12 @@ code {
   margin: 0 auto;
 }
 
+.mat-mdc-option .mdc-list-item__primary-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .mat-mdc-card {
   margin: $content-padding;
 
@@ -115,11 +125,14 @@ code {
 
 .mat-mdc-header-row,
 .mat-mdc-row {
+  box-sizing: border-box;
+  height: auto !important;
   min-height: (5 * $baseline-grid) !important;
   padding: 0 (2 * $baseline-grid) !important;
 
   // Remove margin and padding on detail rows/cells
   &.kd-detail-row {
+    height: auto !important;
     min-height: 0 !important;
     padding: 0 !important;
 
@@ -130,6 +143,7 @@ code {
 }
 
 .mat-mdc-header-cell {
+  box-sizing: border-box;
   font-size: $body-font-size-base;
   padding: 0 ($baseline-grid * 0.5);
 
@@ -140,7 +154,9 @@ code {
 }
 
 .mat-mdc-cell {
+  box-sizing: border-box;
   margin: (0.5 * $baseline-grid) 0 !important;
+  min-width: 0;
 
   &:not(:first-child) {
     &:not(:last-child) {
@@ -169,7 +185,7 @@ code {
 
 [class^='mat-column-action'],
 [class*='mat-column-action'] {
-  flex: 0 0 ($baseline-grid * 5) !important;
+  flex: 0 0 ($baseline-grid * 6) !important;
 }
 
 .mat-sort-header-arrow {

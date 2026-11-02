@@ -44,7 +44,6 @@ $theme-light: mat.define-light-theme(
       accent: mat.define-palette($kd-blue),
       warn: mat.define-palette(mat.$red-palette),
     ),
-    density: -2,
   )
 );
 $background: map.get($theme-light, background);
@@ -67,6 +66,7 @@ $theme-light: map.merge(
 
   --mat-app-background-color: #{map.get($background, background)};
   --mat-sidenav-content-background-color: #{map.get($background, background)};
+  --mat-toolbar-container-background-color: #fafafa;
   --mdc-filled-text-field-container-color: transparent;
   --mdc-filled-text-field-disabled-container-color: transparent;
 

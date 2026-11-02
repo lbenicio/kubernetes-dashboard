@@ -44,7 +44,6 @@ $theme-dark: mat.define-dark-theme(
       accent: mat.define-palette($kd-blue),
       warn: mat.define-palette(mat.$red-palette),
     ),
-    density: -2,
   )
 );
 $background: map.get($theme-dark, background);
@@ -66,7 +65,7 @@ $background: map.merge(
     card: #2d2d2d,
   )
 );
-$background: map_merge(
+$background: map.merge(
   $background,
   (
     dialog: #2d2d2d,
@@ -85,6 +84,7 @@ $theme-dark: map.merge(
 
   --mat-app-background-color: #{map.get($background, background)};
   --mat-sidenav-content-background-color: #{map.get($background, background)};
+  --mat-toolbar-container-background-color: #{map.get($background, app-bar)};
   --mdc-elevated-card-container-color: #{map.get($background, card)};
   --mdc-outlined-card-container-color: #{map.get($background, card)};
   --mdc-dialog-container-color: #{map.get($background, dialog)};

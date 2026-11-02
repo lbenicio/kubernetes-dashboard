@@ -28,11 +28,13 @@
     }
 
     .mat-mdc-form-field-flex {
+      min-height: 4.5 * $baseline-grid;
       padding: 0;
     }
 
     .mat-mdc-form-field-infix {
       border: 0;
+      min-height: 4.5 * $baseline-grid;
       padding: 0;
       width: 18 * $baseline-grid;
     }
@@ -44,7 +46,7 @@
 
     .kd-namespace-select {
       font-family: $font-family-sans;
-      font-size: $subhead-font-size-base;
+      font-size: $body-font-size-base;
       line-height: 4.5 * $baseline-grid;
       margin-left: 2 * $baseline-grid;
     }
@@ -54,6 +56,7 @@
 .kd-namespace-select-input {
   border: 0;
   height: 3 * $baseline-grid;
+  font-size: $body-font-size-base;
   outline: none;
   padding: (2 * $baseline-grid) 0 (2 * $baseline-grid) (2 * $baseline-grid);
 }

@@ -17,9 +17,20 @@
 @use '@angular/material' as mat;
 @use 'variables' as *;
 
+$kd-typography: mat.define-typography-config(
+  $font-family: $font-family-sans,
+  $body-1: mat.define-typography-level($body-font-size-base, 20px, $regular-font-weight),
+  $body-2: mat.define-typography-level($body-font-size-base, 20px, $regular-font-weight),
+  $subtitle-1: mat.define-typography-level($subhead-font-size-base, 24px, $regular-font-weight),
+  $subtitle-2: mat.define-typography-level($body-font-size-base, 20px, $bold-font-weight),
+  $caption: mat.define-typography-level($caption-font-size-base, 20px, $regular-font-weight),
+  $button: mat.define-typography-level($body-font-size-base, 20px, $bold-font-weight)
+);
+
 @mixin kd-theme($theme, $colors) {
   $foreground-palette: map.get($theme, foreground);
   $background-palette: map.get($theme, background);
+  color: mat.get-color-from-palette($foreground-palette, text);
   $background: mat.get-color-from-palette($background-palette, background);
   $card-background: mat.get-color-from-palette($background-palette, card);
   $card-background-dark: color.adjust($card-background, $lightness: -5%);
@@ -219,9 +230,18 @@
     background: $card-background-dark;
   }
 
-  .mat-active,
+  .mat-mdc-card {
+    color: mat.get-color-from-palette($foreground-palette, text);
+  }
+
+  .mat-mdc-option-active,
   .mat-mdc-option.mdc-list-item--selected {
     color: map.get($colors, primary) !important;
+  }
+
+  .kd-namespace-panel {
+    background-color: $card-background;
+    --mat-option-label-text-color: #{mat.get-color-from-palette($foreground-palette, text)};
   }
 
   kd-namespace-selector {
