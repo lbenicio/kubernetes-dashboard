@@ -26,7 +26,7 @@ import 'web-animations-js';
 // Zone JS is required by default for Angular itself.
 import 'zone.js';
 
-// Load `$localize` onto the global scope - used if i18n tags appear in Angular templates.
+// Load `$localize` types and runtime support for i18n-tagged templates.
 import '@angular/localize/init';
 
 // Global variable is required by some 3rd party libraries such as 'ace-ui'.

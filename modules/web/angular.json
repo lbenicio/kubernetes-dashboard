@@ -57,7 +57,10 @@
             "index": "src/index.html",
             "main": "src/index.ts",
             "tsConfig": "tsconfig.app.json",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": [
+              "src/polyfills.ts",
+              "@angular/localize/init"
+            ],
             "i18nMissingTranslation": "error",
             "allowedCommonJsDependencies": [
               "truncate-url",
@@ -133,7 +136,10 @@
             "index": "src/index.html",
             "main": "src/index.ts",
             "tsConfig": "tsconfig.app.json",
-            "polyfills": "polyfills.ts",
+            "polyfills": [
+              "polyfills.ts",
+              "@angular/localize/init"
+            ],
             "i18nMissingTranslation": "error",
             "allowedCommonJsDependencies": [
               "truncate-url",

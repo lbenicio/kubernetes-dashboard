@@ -32,17 +32,17 @@ $colors-dark: (
   scrollbar: rgb(100 100 100 / 0.33),
 );
 $kd-blue: map.merge(
-  mat.$blue-palette,
+  mat.$m2-blue-palette,
   (
     500: #327df4,
   )
 );
-$theme-dark: mat.define-dark-theme(
+$theme-dark: mat.m2-define-dark-theme(
   (
     color: (
-      primary: mat.define-palette($kd-blue),
-      accent: mat.define-palette($kd-blue),
-      warn: mat.define-palette(mat.$red-palette),
+      primary: mat.m2-define-palette($kd-blue),
+      accent: mat.m2-define-palette($kd-blue),
+      warn: mat.m2-define-palette(mat.$m2-red-palette),
     ),
   )
 );

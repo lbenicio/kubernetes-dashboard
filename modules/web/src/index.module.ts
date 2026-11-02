@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {HttpClientModule} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {ErrorHandler, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -28,7 +28,6 @@ import {LoginModule} from './login/module';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    HttpClientModule,
     CoreModule,
     ChromeModule,
     LoginModule,
@@ -37,7 +36,10 @@ import {LoginModule} from './login/module';
       onSameUrlNavigation: 'reload',
     }),
   ],
-  providers: [{provide: ErrorHandler, useClass: GlobalErrorHandler}],
+  providers: [
+    {provide: ErrorHandler, useClass: GlobalErrorHandler},
+    provideHttpClient(withInterceptorsFromDi()),
+  ],
   declarations: [RootComponent],
   bootstrap: [RootComponent],
 })
