@@ -15,7 +15,7 @@
 services:
   gateway:
     container_name: kong-gateway
-    image: kong/kong-gateway:3.8
+    image: kong/kong-gateway:3.14
     environment:
       - "KONG_DATABASE=off"
       - "KONG_PROXY_ACCESS_LOG=/dev/stdout"

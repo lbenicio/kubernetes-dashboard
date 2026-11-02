@@ -23,14 +23,23 @@ services:
       - name: authLogin
         paths:
           - /api/v1/login
+        protocols:
+          - http
+          - https
         strip_path: false
       - name: authCsrf
         paths:
           - /api/v1/csrftoken/login
+        protocols:
+          - http
+          - https
         strip_path: false
       - name: authMe
         paths:
           - /api/v1/me
+        protocols:
+          - http
+          - https
         strip_path: false
   - name: api
     host: api # Internal name of docker service
@@ -40,10 +49,16 @@ services:
       - name: api
         paths:
           - /api
+        protocols:
+          - http
+          - https
         strip_path: false
       - name: metrics
         paths:
           - /metrics
+        protocols:
+          - http
+          - https
         strip_path: false
   - name: web
     host: web-go # Internal name of docker service
@@ -53,16 +68,28 @@ services:
       - name: root
         paths:
           - /
+        protocols:
+          - http
+          - https
         strip_path: false
       - name: config
         paths:
           - /config
+        protocols:
+          - http
+          - https
         strip_path: false
       - name: systembanner
         paths:
           - /systembanner
+        protocols:
+          - http
+          - https
         strip_path: false
       - name: settings
         paths:
           - /settings
+        protocols:
+          - http
+          - https
         strip_path: false
