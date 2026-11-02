@@ -7,7 +7,7 @@ require (
 	github.com/apache/skywalking-eyes v0.9.0
 	github.com/golangci/golangci-lint/v2 v2.15.0
 	k8s.io/code-generator v0.32.13
-	sigs.k8s.io/kind v0.29.0
+	sigs.k8s.io/kind v0.33.0
 )
 
 require (
