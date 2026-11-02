@@ -67,8 +67,8 @@ $theme-light: map.merge(
   --mat-app-background-color: #{map.get($background, background)};
   --mat-sidenav-content-background-color: #{map.get($background, background)};
   --mat-toolbar-container-background-color: #fafafa;
-  --mdc-filled-text-field-container-color: transparent;
-  --mdc-filled-text-field-disabled-container-color: transparent;
+  --mat-form-field-filled-container-color: transparent;
+  --mat-form-field-filled-disabled-container-color: transparent;
 
   .kd-toolbar-logo-text,
   .kd-primary-toolbar-icon {

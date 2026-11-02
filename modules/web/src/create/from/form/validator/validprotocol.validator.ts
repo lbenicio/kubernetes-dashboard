@@ -14,7 +14,8 @@
 
 import {HttpClient} from '@angular/common/http';
 import {Directive, forwardRef, Input} from '@angular/core';
-import {AbstractControl, AsyncValidator, AsyncValidatorFn, NG_ASYNC_VALIDATORS} from '@angular/forms';
+import {NG_ASYNC_VALIDATORS} from '@angular/forms';
+import type {AbstractControl, AsyncValidator, AsyncValidatorFn} from '@angular/forms';
 import {Observable, of} from 'rxjs';
 import {debounceTime, map, take} from 'rxjs/operators';
 

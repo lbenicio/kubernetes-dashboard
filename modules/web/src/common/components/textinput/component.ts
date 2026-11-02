@@ -21,9 +21,9 @@ import {
   OnChanges,
   OnInit,
   Output,
-  SimpleChanges,
   ViewChild,
 } from '@angular/core';
+import type {SimpleChanges} from '@angular/core';
 import {Ace, config, edit} from 'ace-builds';
 import {ThemeService} from '../../services/global/theme';
 

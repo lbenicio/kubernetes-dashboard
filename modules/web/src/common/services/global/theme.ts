@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {DOCUMENT} from '@angular/common';
-import {EventEmitter, Inject, Injectable} from '@angular/core';
+import {EventEmitter, Inject, Injectable, DOCUMENT} from '@angular/core';
 import {Theme} from '@api/root.api';
 import {ThemeSwitchCallback} from '@api/root.ui';
 import {LocalConfigLoaderService} from '@common/services/global/loader';

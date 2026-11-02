@@ -19,8 +19,8 @@ import {
   Input,
   OnChanges,
   OnInit,
-  SimpleChanges,
 } from '@angular/core';
+import type {SimpleChanges} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {StringMap} from '@api/root.shared';
 // @ts-expect-error as crop-url uses old style module declaration

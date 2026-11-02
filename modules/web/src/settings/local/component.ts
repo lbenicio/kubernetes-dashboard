@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {DOCUMENT} from '@angular/common';
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild, DOCUMENT} from '@angular/core';
 import {MatSelect} from '@angular/material/select';
 import {LocalSettings, Theme} from '@api/root.api';
 import {IConfig, LanguageConfig} from '@api/root.ui';

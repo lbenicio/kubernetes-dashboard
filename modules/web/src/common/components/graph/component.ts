@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnInit} from '@angular/core';
+import type {SimpleChanges} from '@angular/core';
 import {DataPoint, Metric} from '@api/root.api';
 import {curveMonotoneX} from 'd3-shape';
 import {timeFormat} from 'd3-time-format';

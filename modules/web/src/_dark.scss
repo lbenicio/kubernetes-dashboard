@@ -85,9 +85,9 @@ $theme-dark: map.merge(
   --mat-app-background-color: #{map.get($background, background)};
   --mat-sidenav-content-background-color: #{map.get($background, background)};
   --mat-toolbar-container-background-color: #{map.get($background, app-bar)};
-  --mdc-elevated-card-container-color: #{map.get($background, card)};
-  --mdc-outlined-card-container-color: #{map.get($background, card)};
-  --mdc-dialog-container-color: #{map.get($background, dialog)};
+  --mat-card-elevated-container-color: #{map.get($background, card)};
+  --mat-card-outlined-container-color: #{map.get($background, card)};
+  --mat-dialog-container-color: #{map.get($background, dialog)};
   --mat-menu-container-color: #{map.get($background, card)};
   --mat-select-panel-background-color: #{map.get($background, card)};
   --mat-autocomplete-background-color: #{map.get($background, card)};
@@ -98,8 +98,8 @@ $theme-dark: map.merge(
   --mat-sidenav-container-background-color: #{map.get($background, card)};
   --mat-stepper-container-color: #{map.get($background, card)};
   --mat-tree-container-background-color: #{map.get($background, card)};
-  --mdc-filled-text-field-container-color: transparent;
-  --mdc-filled-text-field-disabled-container-color: transparent;
+  --mat-form-field-filled-container-color: transparent;
+  --mat-form-field-filled-disabled-container-color: transparent;
 
   .kd-toolbar-logo-text,
   .kd-primary-toolbar-icon,

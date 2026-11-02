@@ -18,11 +18,11 @@ import {
   ComponentRef,
   Input,
   OnChanges,
-  SimpleChanges,
   Type,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
+import type {SimpleChanges} from '@angular/core';
 import {ActionColumn} from '@api/root.ui';
 import {CRDDetail, Resource} from 'typings/root.api';
 
