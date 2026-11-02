@@ -9,9 +9,9 @@ require (
 	github.com/samber/lo v1.53.0
 	github.com/spf13/pflag v1.0.10
 	golang.org/x/text v0.43.0
-	k8s.io/api v0.35.9
+	k8s.io/api v0.37.2
 	k8s.io/apimachinery v0.37.2
-	k8s.io/client-go v0.35.9
+	k8s.io/client-go v0.37.2
 	k8s.io/dashboard/certificates v0.0.0-00010101000000-000000000000
 	k8s.io/dashboard/client v0.0.0-00010101000000-000000000000
 	k8s.io/dashboard/errors v0.0.0-00010101000000-000000000000
@@ -75,7 +75,7 @@ require (
 	golang.org/x/arch v0.22.0 // indirect
 	golang.org/x/crypto v0.58.0 // indirect
 	golang.org/x/net v0.62.0 // indirect
-	golang.org/x/oauth2 v0.30.0 // indirect
+	golang.org/x/oauth2 v0.36.0 // indirect
 	golang.org/x/sys v0.49.0 // indirect
 	golang.org/x/term v0.47.0 // indirect
 	golang.org/x/time v0.15.0 // indirect
