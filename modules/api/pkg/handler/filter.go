@@ -141,8 +141,7 @@ func shouldDoCsrfValidation(req *restful.Request) bool {
 	return true
 }
 
-// getRemoteAddr extracts the remote address of the request, taking into
-// account proxy headers.
+// getRemoteAddr extracts the remote address of the request.
 func getRemoteAddr(r *http.Request) string {
 	// Hide sensitive content for log level lower than debug
 	if args.APILogLevel() < args.LogLevelDebug {
