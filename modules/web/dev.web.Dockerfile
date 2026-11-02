@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM node:22-alpine3.23
+FROM node:24-alpine3.23
 
 WORKDIR /workspace
 
