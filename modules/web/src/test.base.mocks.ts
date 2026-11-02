@@ -35,7 +35,6 @@ Object.defineProperties(window, {
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     value: {getRandomValues: () => [2, 4, 8, 16]},
   },
-  URL: {value: {createObjectURL: () => {}}},
   getComputedStyle: {
     value: () => {
       return {
@@ -59,4 +58,9 @@ Object.defineProperties(window, {
     })),
   },
   CSS: {value: null},
+});
+
+Object.defineProperty(window.URL, 'createObjectURL', {
+  configurable: true,
+  value: () => 'blob:mock',
 });

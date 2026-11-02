@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": ".tmp/out-tsc/spec",
-    "types": ["jest"],
+    "types": ["jest", "node"],
     "emitDecoratorMetadata": false
   },
   "include": [

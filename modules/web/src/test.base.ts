@@ -15,7 +15,8 @@
 // Load `$localize` onto the global scope - used if i18n tags appear in Angular templates.
 import '@angular/localize/init';
 
-import 'jest-preset-angular/setup-jest';
+import {setupZoneTestEnv} from 'jest-preset-angular/setup-env/zone';
+setupZoneTestEnv();
 import './test.base.mocks';
 
 // eslint-disable-next-line node/no-extraneous-import
@@ -26,6 +27,8 @@ const timeout = 15000;
 jest.setTimeout(timeout);
 
 // Polyfill text encoder and decoder ot fix tests
-import {TextEncoder, TextDecoder} from 'util';
-global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder;
+import {TextEncoder, TextDecoder} from 'node:util';
+Object.defineProperties(globalThis, {
+  TextEncoder: {configurable: true, value: TextEncoder, writable: true},
+  TextDecoder: {configurable: true, value: TextDecoder, writable: true},
+});

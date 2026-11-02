@@ -26,6 +26,7 @@ import {CardComponent} from './component';
 
 @Component({
   selector: 'test',
+  standalone: false,
   template: `
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
