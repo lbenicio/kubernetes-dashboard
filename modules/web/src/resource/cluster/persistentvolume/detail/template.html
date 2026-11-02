@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,12 +27,13 @@ limitations under the License.
     Resource information
   </div>
 
+  @if (isInitialized) {
   <div
     content
-    *ngIf="isInitialized"
     fxLayout="row wrap"
   >
-    <kd-property *ngIf="persistentVolume?.status">
+    @if (persistentVolume?.status) {
+    <kd-property>
       <div
         key
         i18n
@@ -41,8 +42,8 @@ limitations under the License.
       </div>
       <div value>{{ persistentVolume.status }}</div>
     </kd-property>
-
-    <kd-property *ngIf="persistentVolume?.claim">
+    } @if (persistentVolume?.claim) {
+    <kd-property>
       <div
         key
         i18n
@@ -58,8 +59,8 @@ limitations under the License.
         </a>
       </div>
     </kd-property>
-
-    <kd-property *ngIf="persistentVolume?.reclaimPolicy">
+    } @if (persistentVolume?.reclaimPolicy) {
+    <kd-property>
       <div
         key
         i18n
@@ -68,8 +69,8 @@ limitations under the License.
       </div>
       <div value>{{ persistentVolume.reclaimPolicy }}</div>
     </kd-property>
-
-    <kd-property *ngIf="persistentVolume?.storageClass">
+    } @if (persistentVolume?.storageClass) {
+    <kd-property>
       <div
         key
         i18n
@@ -80,8 +81,8 @@ limitations under the License.
         <div value>{{ persistentVolume.storageClass }}</div>
       </div>
     </kd-property>
-
-    <kd-property *ngIf="persistentVolume?.reason">
+    } @if (persistentVolume?.reason) {
+    <kd-property>
       <div
         key
         i18n
@@ -90,8 +91,8 @@ limitations under the License.
       </div>
       <div value>{{ persistentVolume.reason }}</div>
     </kd-property>
-
-    <kd-property *ngIf="persistentVolume?.message">
+    } @if (persistentVolume?.message) {
+    <kd-property>
       <div
         key
         i18n
@@ -100,11 +101,8 @@ limitations under the License.
       </div>
       <div value>{{ persistentVolume.message }}</div>
     </kd-property>
-
-    <kd-property
-      *ngIf="persistentVolume?.mountOptions"
-      fxFlex="0 0 auto"
-    >
+    } @if (persistentVolume?.mountOptions) {
+    <kd-property fxFlex="0 0 auto">
       <div
         key
         i18n
@@ -118,11 +116,8 @@ limitations under the License.
         ></kd-chips>
       </div>
     </kd-property>
-
-    <kd-property
-      *ngIf="persistentVolume?.accessModes"
-      fxFlex="0 0 auto"
-    >
+    } @if (persistentVolume?.accessModes) {
+    <kd-property fxFlex="0 0 auto">
       <div
         key
         i18n
@@ -136,7 +131,9 @@ limitations under the License.
         ></kd-chips>
       </div>
     </kd-property>
+    }
   </div>
+  }
 </kd-card>
 
 <kd-persistent-volume-source
@@ -167,8 +164,7 @@ limitations under the License.
           >Resource name</mat-header-cell
         >
         <mat-cell *matCellDef="let capacity">
-          <ng-container *ngIf="capacity.resourceName">{{ capacity.resourceName }}</ng-container>
-          <ng-container *ngIf="!capacity.resourceName">-</ng-container>
+          @if (capacity.resourceName) { {{ capacity.resourceName }} } @if (!capacity.resourceName) { - }
         </mat-cell>
       </ng-container>
 
@@ -179,8 +175,7 @@ limitations under the License.
           >Quantity</mat-header-cell
         >
         <mat-cell *matCellDef="let capacity">
-          <ng-container *ngIf="capacity.quantity">{{ capacity.quantity }}</ng-container>
-          <ng-container *ngIf="!capacity.quantity">-</ng-container>
+          @if (capacity.quantity) { {{ capacity.quantity }} } @if (!capacity.quantity) { - }
         </mat-cell>
       </ng-container>
 

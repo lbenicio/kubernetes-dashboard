@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,10 +18,8 @@ limitations under the License.
   class="kd-breadcrumbs-container kd-accent"
   fxFlex="auto"
 >
-  <div
-    *ngFor="let breadcrumb of breadcrumbs; let last = last"
-    [ngClass]="{'kd-inline-breadcrumb': !last}"
-  >
+  @for (breadcrumb of breadcrumbs; track breadcrumb; let last = $last) {
+  <div [ngClass]="{'kd-inline-breadcrumb': !last}">
     <a
       [routerLink]="breadcrumb.stateLink"
       queryParamsHandling="preserve"
@@ -29,11 +27,9 @@ limitations under the License.
     >
       {{ breadcrumb.label }}
     </a>
-    <mat-icon
-      *ngIf="!last"
-      class="kd-faded-breadcrumb kd-breadcrumb-divider"
-    >
-      keyboard_arrow_right
-    </mat-icon>
+    @if (!last) {
+    <mat-icon class="kd-faded-breadcrumb kd-breadcrumb-divider"> keyboard_arrow_right </mat-icon>
+    }
   </div>
+  }
 </div>

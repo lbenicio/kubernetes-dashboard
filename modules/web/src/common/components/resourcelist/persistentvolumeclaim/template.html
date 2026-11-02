@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -86,10 +86,8 @@ limitations under the License.
         </mat-cell>
       </ng-container>
 
-      <ng-container
-        *ngIf="shouldShowColumn('namespace')"
-        matColumnDef="namespace"
-      >
+      @if (shouldShowColumn('namespace')) {
+      <ng-container matColumnDef="namespace">
         <mat-header-cell
           *matHeaderCellDef
           class="col-stretch-l col-min-90"
@@ -102,6 +100,7 @@ limitations under the License.
           >{{ pvc.objectMeta.namespace }}</mat-cell
         >
       </ng-container>
+      }
 
       <ng-container matColumnDef="labels">
         <mat-header-cell
@@ -145,14 +144,13 @@ limitations under the License.
           *matCellDef="let pvc"
           class="col-stretch-xl"
         >
-          <ng-container *ngIf="pvc.volume">
-            <a
-              [routerLink]="getVolumeHref(pvc.volume)"
-              queryParamsHandling="preserve"
-              >{{ pvc.volume }}</a
-            >
-          </ng-container>
-          <ng-container *ngIf="!pvc.volume">-</ng-container>
+          @if (pvc.volume) {
+          <a
+            [routerLink]="getVolumeHref(pvc.volume)"
+            queryParamsHandling="preserve"
+            >{{ pvc.volume }}</a
+          >
+          } @if (!pvc.volume) { - }
         </mat-cell>
       </ng-container>
 
@@ -167,8 +165,7 @@ limitations under the License.
           *matCellDef="let pvc"
           class="col-stretch-s"
         >
-          <ng-container *ngIf="pvc?.capacity?.storage">{{ pvc.capacity.storage }}</ng-container>
-          <ng-container *ngIf="!pvc?.capacity?.storage">-</ng-container>
+          @if (pvc?.capacity?.storage) { {{ pvc.capacity.storage }} } @if (!pvc?.capacity?.storage) { - }
         </mat-cell>
       </ng-container>
 
@@ -198,8 +195,7 @@ limitations under the License.
           *matCellDef="let pvc"
           class="col-stretch-l"
         >
-          <ng-container *ngIf="pvc?.storageClass">{{ pvc.storageClass }}</ng-container>
-          <ng-container *ngIf="!pvc?.storageClass">-</ng-container>
+          @if (pvc?.storageClass) { {{ pvc.storageClass }} } @if (!pvc?.storageClass) { - }
         </mat-cell>
       </ng-container>
 
@@ -223,10 +219,8 @@ limitations under the License.
         </mat-cell>
       </ng-container>
 
-      <ng-container
-        *ngFor="let col of getActionColumns()"
-        [matColumnDef]="col.name"
-      >
+      @for (col of getActionColumns(); track col) {
+      <ng-container [matColumnDef]="col.name">
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let pvc">
           <kd-dynamic-cell
@@ -235,6 +229,7 @@ limitations under the License.
           ></kd-dynamic-cell>
         </mat-cell>
       </ng-container>
+      }
 
       <mat-header-row *matHeaderRowDef="getColumns()"></mat-header-row>
       <mat-row *matRowDef="let row; columns: getColumns()"></mat-row>

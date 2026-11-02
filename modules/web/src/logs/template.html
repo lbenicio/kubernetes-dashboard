@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,30 +31,25 @@ limitations under the License.
         [(ngModel)]="container"
         (selectionChange)="onContainerChange()"
       >
+        @if (logSources?.containerNames?.length > 0) {
         <mat-optgroup
           label="Containers"
           i18n-label
-          *ngIf="logSources?.containerNames?.length > 0"
         >
-          <mat-option
-            *ngFor="let item of logSources?.containerNames"
-            [value]="item"
-          >
-            {{ item }}
-          </mat-option>
+          @for (item of logSources?.containerNames; track item) {
+          <mat-option [value]="item"> {{ item }} </mat-option>
+          }
         </mat-optgroup>
+        } @if (logSources?.initContainerNames?.length > 0) {
         <mat-optgroup
           label="Init Containers"
           i18n-label
-          *ngIf="logSources?.initContainerNames?.length > 0"
         >
-          <mat-option
-            *ngFor="let item of logSources?.initContainerNames"
-            [value]="item"
-          >
-            {{ item }}
-          </mat-option>
+          @for (item of logSources?.initContainerNames; track item) {
+          <mat-option [value]="item"> {{ item }} </mat-option>
+          }
         </mat-optgroup>
+        }
       </mat-select>
     </mat-form-field>
 
@@ -64,12 +59,9 @@ limitations under the License.
         [(ngModel)]="pod"
         (selectionChange)="loadNewest()"
       >
-        <mat-option
-          *ngFor="let item of logSources?.podNames"
-          [value]="item"
-        >
-          {{ item }}
-        </mat-option>
+        @for (item of logSources?.podNames; track item) {
+        <mat-option [value]="item"> {{ item }} </mat-option>
+        }
       </mat-select>
     </mat-form-field>
 
@@ -109,12 +101,13 @@ limitations under the License.
       fxLayout="column"
       fxLayoutGap="2px"
     >
+      @for (item of logsSet; track item) {
       <div
-        *ngFor="let item of logsSet"
         [ngClass]="{'kd-logs-element-compact': logService.getCompact(), 'kd-logs-element': !logService.getCompact()}"
       >
         <span>{{ item | kdStripAnsi | kdUntrim }}</span>
       </div>
+      }
     </div>
   </div>
 
@@ -125,10 +118,8 @@ limitations under the License.
     class="footer"
     fxLayout="row"
   >
-    <div
-      *ngIf="logsSet?.length > 1"
-      i18n
-    >
+    @if (logsSet?.length > 1) {
+    <div i18n>
       Logs from
       <kd-date
         [date]="podLogs?.info.fromDate"
@@ -142,6 +133,7 @@ limitations under the License.
       >
       </kd-date>
     </div>
+    }
 
     <div fxFlex></div>
 

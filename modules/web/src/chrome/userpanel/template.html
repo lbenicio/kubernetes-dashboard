@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -32,16 +32,11 @@ limitations under the License.
         fxLayout="column"
         class="method kd-muted-light"
       >
-        <ng-container
-          *ngIf="hasAuthHeader()"
-          i18n
-          >Logged in with auth header
-        </ng-container>
-        <ng-container
-          *ngIf="hasTokenCookie()"
-          i18n
-          >Logged in with token
-        </ng-container>
+        @if (hasAuthHeader()) {
+        <ng-container i18n>Logged in with auth header </ng-container>
+        } @if (hasTokenCookie()) {
+        <ng-container i18n>Logged in with token </ng-container>
+        }
         <span class="username kd-muted">{{ username }}</span>
       </div>
 
@@ -55,23 +50,25 @@ limitations under the License.
       </button>
     </div>
   </div>
-  <mat-divider *ngIf="!hasAuthHeader()"></mat-divider>
+  @if (!hasAuthHeader()) {
+  <mat-divider></mat-divider>
+  } @if (!isAuthenticated()) {
   <button
     mat-menu-item
-    *ngIf="!isAuthenticated()"
     (click)="logout()"
     i18n
   >
     Sign in
   </button>
+  } @if (isAuthenticated() && !hasAuthHeader()) {
   <button
     mat-menu-item
-    *ngIf="isAuthenticated() && !hasAuthHeader()"
     (click)="logout()"
     i18n
   >
     Sign out
   </button>
+  }
 </mat-menu>
 
 <button
@@ -81,9 +78,9 @@ limitations under the License.
   (click)="$event.stopPropagation()"
 >
   <mat-icon class="kd-user-panel-icon kd-primary-toolbar-icon">account_circle</mat-icon>
+  @if (!isAuthenticated()) {
   <svg
     class="kd-cross-style"
-    *ngIf="!isAuthenticated()"
     width="40px"
     height="40px"
     viewBox="0 0 40 40"
@@ -103,4 +100,5 @@ limitations under the License.
       y2="30"
     />
   </svg>
+  }
 </button>

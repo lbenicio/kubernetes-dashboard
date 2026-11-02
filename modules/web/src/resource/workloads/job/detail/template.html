@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,10 +28,8 @@ limitations under the License.
   </div>
 
   <div description>
-    <div
-      class="kd-inline-property"
-      *ngIf="job?.completions"
-    >
+    @if (job?.completions) {
+    <div class="kd-inline-property">
       <span
         class="kd-muted-light"
         i18n
@@ -39,11 +37,8 @@ limitations under the License.
       >
       <span>{{ job.completions }}</span>
     </div>
-
-    <div
-      class="kd-inline-property"
-      *ngIf="job?.parallelism"
-    >
+    } @if (job?.parallelism) {
+    <div class="kd-inline-property">
       <span
         class="kd-muted-light"
         i18n
@@ -51,14 +46,16 @@ limitations under the License.
       >
       <span>{{ job.parallelism }}</span>
     </div>
+    }
   </div>
 
+  @if (isInitialized) {
   <div
     content
-    *ngIf="isInitialized"
     fxLayout="row wrap"
   >
-    <kd-property *ngIf="job?.completions">
+    @if (job?.completions) {
+    <kd-property>
       <div
         key
         i18n
@@ -67,8 +64,8 @@ limitations under the License.
       </div>
       <div value>{{ job.completions }}</div>
     </kd-property>
-
-    <kd-property *ngIf="job?.parallelism">
+    } @if (job?.parallelism) {
+    <kd-property>
       <div
         key
         i18n
@@ -77,11 +74,8 @@ limitations under the License.
       </div>
       <div value>{{ job.parallelism }}</div>
     </kd-property>
-
-    <kd-property
-      *ngIf="job?.containerImages"
-      fxFlex="100"
-    >
+    } @if (job?.containerImages) {
+    <kd-property fxFlex="100">
       <div
         key
         i18n
@@ -95,8 +89,8 @@ limitations under the License.
         ></kd-chips>
       </div>
     </kd-property>
-
-    <kd-property *ngIf="job?.initContainerImages">
+    } @if (job?.initContainerImages) {
+    <kd-property>
       <div
         key
         i18n
@@ -110,7 +104,9 @@ limitations under the License.
         ></kd-chips>
       </div>
     </kd-property>
+    }
   </div>
+  }
 </kd-card>
 
 <kd-condition-list

@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,25 +37,16 @@ limitations under the License.
       >
       </mat-progress-bar>
       <mat-hint align="end">{{ name.value?.length }} / {{ nameMaxLength }}</mat-hint>
-      <mat-error
-        *ngIf="name.errors?.uniqueName"
-        i18n
-      >
-        Deployment or service with this name already exists within namespace.
-      </mat-error>
-      <mat-error
-        *ngIf="name.errors?.required"
-        i18n
-      >
-        Application name is required.
-      </mat-error>
-      <mat-error
-        *ngIf="name.errors?.namePattern"
-        i18n
-      >
+      @if (name.errors?.uniqueName) {
+      <mat-error i18n> Deployment or service with this name already exists within namespace. </mat-error>
+      } @if (name.errors?.required) {
+      <mat-error i18n> Application name is required. </mat-error>
+      } @if (name.errors?.namePattern) {
+      <mat-error i18n>
         Application name must start with a lowercase letter and contain only lowercase letters, numbers, and '-' between
         words.
       </mat-error>
+      }
     </mat-form-field>
 
     <kd-user-help>
@@ -84,18 +75,11 @@ limitations under the License.
         kdValidImageReference
         required
       />
-      <mat-error
-        *ngIf="containerImage.errors?.required"
-        i18n
-      >
-        Container image is required
-      </mat-error>
-      <mat-error
-        *ngIf="containerImage.errors?.validImageReference"
-        i18n
-      >
-        Container image is invalid: {{ containerImage.errors?.validImageReference }}
-      </mat-error>
+      @if (containerImage.errors?.required) {
+      <mat-error i18n> Container image is required </mat-error>
+      } @if (containerImage.errors?.validImageReference) {
+      <mat-error i18n> Container image is invalid: {{ containerImage.errors?.validImageReference }} </mat-error>
+      }
     </mat-form-field>
 
     <kd-user-help>
@@ -127,25 +111,17 @@ limitations under the License.
         kdWarnThreshold="100"
         required
       />
-      <mat-error
-        *ngIf="replicas.errors?.required"
-        i18n
-      >
-        Number of pods is required
-      </mat-error>
-      <mat-error
-        *ngIf="replicas.errors?.kdValidInteger"
-        i18n
-      >
-        Number of pods must be a positive integer
-      </mat-error>
+      @if (replicas.errors?.required) {
+      <mat-error i18n> Number of pods is required </mat-error>
+      } @if (replicas.errors?.kdValidInteger) {
+      <mat-error i18n> Number of pods must be a positive integer </mat-error>
+      }
       <!-- <mat-error when="min">[[Number of pods must be at least 1|Number of pods must be at least 1 warning on deploy from settings page.]]</mat-error> -->
-      <mat-error
-        *ngIf="replicas.errors?.warnThreshold"
-        i18n
-      >
+      @if (replicas.errors?.warnThreshold) {
+      <mat-error i18n>
         Setting high number of pods may cause performance issues of the cluster and Dashboard UI.
       </mat-error>
+      }
     </mat-form-field>
     <kd-user-help>
       <ng-container i18n
@@ -199,12 +175,9 @@ limitations under the License.
         i18n-placeholder
         required
       >
-        <mat-option
-          *ngFor="let namespace of namespaces"
-          [value]="namespace"
-        >
-          {{ namespace }}
-        </mat-option>
+        @for (namespace of namespaces; track namespace) {
+        <mat-option [value]="namespace"> {{ namespace }} </mat-option>
+        }
         <mat-option
           (click)="handleNamespaceDialog()"
           i18n
@@ -281,12 +254,9 @@ limitations under the License.
           placeholder="Image Pull Secret"
           i18n-placeholder
         >
-          <mat-option
-            *ngFor="let secret of secrets"
-            [value]="secret"
-          >
-            {{ secret }}
-          </mat-option>
+          @for (secret of secrets; track secret) {
+          <mat-option [value]="secret"> {{ secret }} </mat-option>
+          }
           <mat-option
             (click)="handleCreateSecretDialog()"
             i18n
@@ -324,18 +294,11 @@ limitations under the License.
             min="0"
             formControlName="cpuRequirement"
           />
-          <mat-error
-            *ngIf="cpuRequirement.errors?.min"
-            i18n
-          >
-            CPU requirement must be given as a positive number.
-          </mat-error>
-          <mat-error
-            *ngIf="cpuRequirement.errors?.kdValidInteger"
-            i18n
-          >
-            CPU requirement must be given as a valid number.
-          </mat-error>
+          @if (cpuRequirement.errors?.min) {
+          <mat-error i18n> CPU requirement must be given as a positive number. </mat-error>
+          } @if (cpuRequirement.errors?.kdValidInteger) {
+          <mat-error i18n> CPU requirement must be given as a valid number. </mat-error>
+          }
         </mat-form-field>
         <div fxFlex="5"></div>
         <mat-form-field fxFlex="auto">
@@ -348,18 +311,11 @@ limitations under the License.
             min="0"
             formControlName="memoryRequirement"
           />
-          <mat-error
-            *ngIf="memoryRequirement.errors?.min"
-            i18n
-          >
-            Memory requirement must be given as a positive number.
-          </mat-error>
-          <mat-error
-            *ngIf="memoryRequirement.errors?.kdValidInteger"
-            i18n
-          >
-            Memory requirement must be given as a valid number.
-          </mat-error>
+          @if (memoryRequirement.errors?.min) {
+          <mat-error i18n> Memory requirement must be given as a positive number. </mat-error>
+          } @if (memoryRequirement.errors?.kdValidInteger) {
+          <mat-error i18n> Memory requirement must be given as a valid number. </mat-error>
+          }
         </mat-form-field>
       </div>
       <kd-user-help>

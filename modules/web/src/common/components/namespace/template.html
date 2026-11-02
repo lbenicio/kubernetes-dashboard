@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,26 +34,28 @@ limitations under the License.
         (keydown)="$event.code === 'Enter' ? selectNamespace() : null"
       />
     </div>
+    @if (showAllNamespaces() && namespaces.length && !usingFallbackNamespaces) {
     <mat-option
-      *ngIf="showAllNamespaces() && namespaces.length && !usingFallbackNamespaces"
       [value]="allNamespacesKey"
       (onSelectionChange)="onNamespaceOptionSelection($event)"
       i18n
       >All namespaces</mat-option
     >
+    } @if ((namespaces | kdFilterBy: selectNamespaceInput).length) {
     <mat-optgroup
       label="NAMESPACES"
       i18n-label
-      *ngIf="(namespaces | kdFilterBy: selectNamespaceInput).length"
     >
+      @for (namespace of namespaces | kdFilterBy: selectNamespaceInput; track namespace) {
       <mat-option
-        *ngFor="let namespace of namespaces | kdFilterBy: selectNamespaceInput"
         [value]="namespace"
         (onSelectionChange)="onNamespaceOptionSelection($event)"
       >
         {{ namespace }}
       </mat-option>
+      }
     </mat-optgroup>
+    }
     <mat-option
       class="kd-hidden"
       [value]="selectedNamespace"

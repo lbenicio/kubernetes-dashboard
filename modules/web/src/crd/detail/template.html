@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,13 +26,14 @@ limitations under the License.
   >
     Resource Information
   </div>
+  @if (isInitialized) {
   <div
     content
     id="resource-information"
-    *ngIf="isInitialized"
     fxLayout="row wrap"
   >
-    <kd-property *ngIf="crd?.version">
+    @if (crd?.version) {
+    <kd-property>
       <div
         key
         i18n
@@ -46,6 +47,7 @@ limitations under the License.
         {{ crd?.version }}
       </div>
     </kd-property>
+    }
     <kd-property>
       <div
         key
@@ -74,7 +76,8 @@ limitations under the License.
         {{ crd?.group }}
       </div>
     </kd-property>
-    <kd-property *ngIf="crd.subresources.length > 0">
+    @if (crd.subresources.length > 0) {
+    <kd-property>
       <div
         key
         i18n
@@ -83,7 +86,9 @@ limitations under the License.
       </div>
       <div value>{{ crd.subresources.join(', ') }}</div>
     </kd-property>
+    }
   </div>
+  }
 </kd-card>
 
 <kd-card [initialized]="isInitialized">
@@ -93,10 +98,10 @@ limitations under the License.
   >
     Accepted Names
   </div>
+  @if (isInitialized) {
   <div
     content
     id="accepted-names"
-    *ngIf="isInitialized"
     fxLayout="row wrap"
   >
     <kd-property>
@@ -108,7 +113,8 @@ limitations under the License.
       </div>
       <div value>{{ crd?.names.plural }}</div>
     </kd-property>
-    <kd-property *ngIf="crd?.names.singular">
+    @if (crd?.names.singular) {
+    <kd-property>
       <div
         key
         i18n
@@ -117,6 +123,7 @@ limitations under the License.
       </div>
       <div value>{{ crd?.names.singular }}</div>
     </kd-property>
+    }
     <kd-property>
       <div
         key
@@ -135,7 +142,8 @@ limitations under the License.
       </div>
       <div value>{{ crd?.names.listKind }}</div>
     </kd-property>
-    <kd-property *ngIf="crd?.names.shortNames">
+    @if (crd?.names.shortNames) {
+    <kd-property>
       <div
         key
         i18n
@@ -144,7 +152,8 @@ limitations under the License.
       </div>
       <div value>{{ crd?.names.shortNames.join(', ') }}</div>
     </kd-property>
-    <kd-property *ngIf="crd?.names.categories">
+    } @if (crd?.names.categories) {
+    <kd-property>
       <div
         key
         i18n
@@ -153,16 +162,19 @@ limitations under the License.
       </div>
       <div value>{{ crd?.names.categories.join(', ') }}</div>
     </kd-property>
+    }
   </div>
+  }
 </kd-card>
 
 <kd-crd-object-list [namespaced]="isNamespaced()"></kd-crd-object-list>
 
+@if (crd?.versions) {
 <kd-crd-versions-list
-  *ngIf="crd?.versions"
   [versions]="crd?.versions"
   [initialized]="isInitialized"
 ></kd-crd-versions-list>
+}
 
 <kd-condition-list
   [conditions]="crd?.conditions"

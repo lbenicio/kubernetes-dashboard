@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,10 +26,8 @@ limitations under the License.
   </div>
 
   <div description>
-    <div
-      class="kd-inline-property"
-      *ngIf="rules?.length"
-    >
+    @if (rules?.length) {
+    <div class="kd-inline-property">
       <span
         class="kd-muted-light"
         i18n
@@ -37,6 +35,7 @@ limitations under the License.
       >
       <span>{{ rules.length }}</span>
     </div>
+    }
   </div>
 
   <div
@@ -51,10 +50,9 @@ limitations under the License.
           >Resources</mat-header-cell
         >
         <mat-cell *matCellDef="let rule">
-          <ng-container *ngIf="rule.resources">
-            <span> {{ rule.resources | commaSeparated }} </span>
-          </ng-container>
-          <ng-container *ngIf="!rule.resources">-</ng-container>
+          @if (rule.resources) {
+          <span> {{ rule.resources | commaSeparated }} </span>
+          } @if (!rule.resources) { - }
         </mat-cell>
       </ng-container>
       <ng-container [matColumnDef]="getRuleColumns()[1]">
@@ -64,10 +62,9 @@ limitations under the License.
           >Non-resource URL</mat-header-cell
         >
         <mat-cell *matCellDef="let rule">
-          <ng-container *ngIf="rule.nonResourceURLs">
-            <span> {{ rule.nonResourceURLs | commaSeparated }} </span>
-          </ng-container>
-          <ng-container *ngIf="!rule.nonResourceURLs">-</ng-container>
+          @if (rule.nonResourceURLs) {
+          <span> {{ rule.nonResourceURLs | commaSeparated }} </span>
+          } @if (!rule.nonResourceURLs) { - }
         </mat-cell>
       </ng-container>
       <ng-container [matColumnDef]="getRuleColumns()[2]">
@@ -77,10 +74,9 @@ limitations under the License.
           >Resource Names</mat-header-cell
         >
         <mat-cell *matCellDef="let rule">
-          <ng-container *ngIf="rule.resourceNames">
-            <span> {{ rule.resourceNames | commaSeparated }} </span>
-          </ng-container>
-          <ng-container *ngIf="!rule.resourceNames">-</ng-container>
+          @if (rule.resourceNames) {
+          <span> {{ rule.resourceNames | commaSeparated }} </span>
+          } @if (!rule.resourceNames) { - }
         </mat-cell>
       </ng-container>
       <ng-container [matColumnDef]="getRuleColumns()[3]">
@@ -90,10 +86,9 @@ limitations under the License.
           >Verbs</mat-header-cell
         >
         <mat-cell *matCellDef="let rule">
-          <ng-container *ngIf="rule.verbs">
-            <span> {{ rule.verbs | commaSeparated }} </span>
-          </ng-container>
-          <ng-container *ngIf="!rule.verbs">-</ng-container>
+          @if (rule.verbs) {
+          <span> {{ rule.verbs | commaSeparated }} </span>
+          } @if (!rule.verbs) { - }
         </mat-cell>
       </ng-container>
       <ng-container [matColumnDef]="getRuleColumns()[4]">
@@ -103,10 +98,9 @@ limitations under the License.
           >API Groups</mat-header-cell
         >
         <mat-cell *matCellDef="let rule">
-          <ng-container *ngIf="rule.apiGroups && rule.apiGroups.length > 0">
-            <span> {{ rule.apiGroups | commaSeparated }} </span>
-          </ng-container>
-          <ng-container *ngIf="!rule.apiGroups || rule.apiGroups.length === 0">-</ng-container>
+          @if (rule.apiGroups && rule.apiGroups.length > 0) {
+          <span> {{ rule.apiGroups | commaSeparated }} </span>
+          } @if (!rule.apiGroups || rule.apiGroups.length === 0) { - }
         </mat-cell>
       </ng-container>
       <mat-header-row *matHeaderRowDef="getRuleColumns()"></mat-header-row>

@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -40,17 +40,14 @@ limitations under the License.
           fxFlex
         >
           <mat-option [value]="systemTheme">System</mat-option>
-          <mat-option
-            *ngFor="let theme of themes"
-            [value]="theme.name"
-          >
-            {{ theme.displayName }}
-          </mat-option>
+          @for (theme of themes; track theme) {
+          <mat-option [value]="theme.name"> {{ theme.displayName }} </mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </kd-settings-entry>
+    @if (isProdMode()) {
     <kd-settings-entry
-      *ngIf="isProdMode()"
       key="Language"
       i18n-key
       desc="Change the language of the dashboard"
@@ -61,14 +58,12 @@ limitations under the License.
           (ngModelChange)="onLanguageSelected($event)"
           [(ngModel)]="selectedLanguage"
         >
-          <mat-option
-            *ngFor="let language of languages"
-            [value]="language.value"
-          >
-            {{ language.label }}
-          </mat-option>
+          @for (language of languages; track language) {
+          <mat-option [value]="language.value"> {{ language.label }} </mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </kd-settings-entry>
+    }
   </div>
 </kd-card>

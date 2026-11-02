@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,16 +24,16 @@ limitations under the License.
   >
     <ng-content select="[key]"></ng-content>
     <mat-icon class="kd-hidden-property-icon">
-      <ng-container *ngIf="mode == HiddenPropertyMode.Hidden">visibility</ng-container>
-      <ng-container *ngIf="mode != HiddenPropertyMode.Hidden">visibility_off</ng-container>
+      @if (mode == HiddenPropertyMode.Hidden) { visibility } @if (mode != HiddenPropertyMode.Hidden) { visibility_off }
     </mat-icon>
+    @if (enableEdit) {
     <mat-icon
-      *ngIf="enableEdit"
       class="kd-hidden-property-icon"
       [ngClass]="mode == HiddenPropertyMode.Edit ? 'kd-edit-active' : ''"
       (click)="toggleEdit(); $event.stopPropagation()"
       >edit</mat-icon
     >
+    }
   </div>
   <div value>
     <div [hidden]="mode != HiddenPropertyMode.Hidden">

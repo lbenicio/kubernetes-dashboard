@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,10 +26,8 @@ limitations under the License.
   </div>
 
   <div description>
-    <div
-      class="kd-inline-property"
-      *ngIf="conditions?.length"
-    >
+    @if (conditions?.length) {
+    <div class="kd-inline-property">
       <span
         class="kd-muted-light"
         i18n
@@ -37,6 +35,7 @@ limitations under the License.
       >
       <span>{{ conditions.length }}</span>
     </div>
+    }
   </div>
 
   <div content>
@@ -51,8 +50,7 @@ limitations under the License.
           >Type</mat-header-cell
         >
         <mat-cell *matCellDef="let condition">
-          <ng-container *ngIf="condition.type">{{ condition.type }}</ng-container>
-          <ng-container *ngIf="!condition.type">-</ng-container>
+          @if (condition.type) { {{ condition.type }} } @if (!condition.type) { - }
         </mat-cell>
       </ng-container>
       <ng-container [matColumnDef]="getConditionsColumns()[1]">
@@ -62,8 +60,7 @@ limitations under the License.
           >Status</mat-header-cell
         >
         <mat-cell *matCellDef="let condition">
-          <ng-container *ngIf="condition.status">{{ condition.status }}</ng-container>
-          <ng-container *ngIf="!condition.status">-</ng-container>
+          @if (condition.status) { {{ condition.status }} } @if (!condition.status) { - }
         </mat-cell>
       </ng-container>
       <ng-container [matColumnDef]="getConditionsColumns()[2]">
@@ -99,8 +96,7 @@ limitations under the License.
           >Reason</mat-header-cell
         >
         <mat-cell *matCellDef="let condition">
-          <ng-container *ngIf="condition.reason">{{ condition.reason }}</ng-container>
-          <ng-container *ngIf="!condition.reason">-</ng-container>
+          @if (condition.reason) { {{ condition.reason }} } @if (!condition.reason) { - }
         </mat-cell>
       </ng-container>
       <ng-container [matColumnDef]="getConditionsColumns()[5]">
@@ -110,8 +106,7 @@ limitations under the License.
           >Message</mat-header-cell
         >
         <mat-cell *matCellDef="let condition">
-          <ng-container *ngIf="condition.message">{{ condition.message }}</ng-container>
-          <ng-container *ngIf="!condition.message">-</ng-container>
+          @if (condition.message) { {{ condition.message }} } @if (!condition.message) { - }
         </mat-cell>
       </ng-container>
       <mat-header-row *matHeaderRowDef="getColumnKeys()"></mat-header-row>

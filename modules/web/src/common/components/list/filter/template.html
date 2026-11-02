@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,8 +23,8 @@ limitations under the License.
     fxFlex
     fxLayoutAlign="flex-end"
   >
+    @if (isSearchVisible()) {
     <input
-      *ngIf="isSearchVisible()"
       (keyup)="keyUpEvent.next($event.target.value)"
       (click)="$event.stopPropagation()"
       kdAutofocus
@@ -34,23 +34,25 @@ limitations under the License.
       placeholder="Filter"
       class="kd-search-input"
     />
+    }
     <button mat-icon-button>
+      @if (!isSearchVisible()) {
       <mat-icon
         class="kd-search-icon"
         i18n-matTooltip
         matTooltip="Filter objects by name"
-        *ngIf="!isSearchVisible()"
         (click)="switchSearchVisibility($event)"
       >
         filter_list
       </mat-icon>
+      } @if (isSearchVisible()) {
       <mat-icon
         class="material-icons kd-search-icon"
-        *ngIf="isSearchVisible()"
         (click)="clearInput($event)"
       >
         close
       </mat-icon>
+      }
     </button>
   </div>
 </div>

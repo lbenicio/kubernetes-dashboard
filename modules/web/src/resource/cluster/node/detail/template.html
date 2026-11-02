@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,12 +28,13 @@ limitations under the License.
   >
     Resource information
   </div>
+  @if (isInitialized) {
   <div
     content
-    *ngIf="isInitialized"
     fxLayout="row wrap"
   >
-    <kd-property *ngIf="node?.phase">
+    @if (node?.phase) {
+    <kd-property>
       <div
         key
         i18n
@@ -42,7 +43,8 @@ limitations under the License.
       </div>
       <div value>{{ node?.phase }}</div>
     </kd-property>
-    <kd-property *ngIf="node?.podCIDR">
+    } @if (node?.podCIDR) {
+    <kd-property>
       <div
         key
         i18n
@@ -51,7 +53,8 @@ limitations under the License.
       </div>
       <div value>{{ node?.podCIDR }}</div>
     </kd-property>
-    <kd-property *ngIf="node?.providerID">
+    } @if (node?.providerID) {
+    <kd-property>
       <div
         key
         i18n
@@ -60,7 +63,8 @@ limitations under the License.
       </div>
       <div value>{{ node?.providerID }}</div>
     </kd-property>
-    <kd-property *ngIf="node?.unschedulable">
+    } @if (node?.unschedulable) {
+    <kd-property>
       <div
         key
         i18n
@@ -69,10 +73,8 @@ limitations under the License.
       </div>
       <div value>{{ node?.unschedulable }}</div>
     </kd-property>
-    <kd-property
-      *ngIf="node?.addresses"
-      fxFlex="100"
-    >
+    } @if (node?.addresses) {
+    <kd-property fxFlex="100">
       <div
         key
         i18n
@@ -86,10 +88,8 @@ limitations under the License.
         ></kd-chips>
       </div>
     </kd-property>
-    <kd-property
-      *ngIf="node?.taints"
-      fxFlex="100"
-    >
+    } @if (node?.taints) {
+    <kd-property fxFlex="100">
       <div
         key
         i18n
@@ -103,7 +103,9 @@ limitations under the License.
         ></kd-chips>
       </div>
     </kd-property>
+    }
   </div>
+  }
 </kd-card>
 
 <kd-card [initialized]="isInitialized">
@@ -113,12 +115,13 @@ limitations under the License.
   >
     System information
   </div>
+  @if (isInitialized) {
   <div
     content
-    *ngIf="isInitialized"
     fxLayout="row wrap"
   >
-    <kd-property *ngIf="node?.nodeInfo.machineID">
+    @if (node?.nodeInfo.machineID) {
+    <kd-property>
       <div
         key
         i18n
@@ -127,7 +130,8 @@ limitations under the License.
       </div>
       <div value>{{ node?.nodeInfo.machineID }}</div>
     </kd-property>
-    <kd-property *ngIf="node?.nodeInfo.systemUUID">
+    } @if (node?.nodeInfo.systemUUID) {
+    <kd-property>
       <div
         key
         i18n
@@ -136,7 +140,8 @@ limitations under the License.
       </div>
       <div value>{{ node?.nodeInfo.systemUUID }}</div>
     </kd-property>
-    <kd-property *ngIf="node?.nodeInfo.bootID">
+    } @if (node?.nodeInfo.bootID) {
+    <kd-property>
       <div
         key
         i18n
@@ -145,7 +150,8 @@ limitations under the License.
       </div>
       <div value>{{ node?.nodeInfo.bootID }}</div>
     </kd-property>
-    <kd-property *ngIf="node?.nodeInfo.kernelVersion">
+    } @if (node?.nodeInfo.kernelVersion) {
+    <kd-property>
       <div
         key
         i18n
@@ -154,7 +160,8 @@ limitations under the License.
       </div>
       <div value>{{ node?.nodeInfo.kernelVersion }}</div>
     </kd-property>
-    <kd-property *ngIf="node?.nodeInfo.osImage">
+    } @if (node?.nodeInfo.osImage) {
+    <kd-property>
       <div
         key
         i18n
@@ -163,7 +170,8 @@ limitations under the License.
       </div>
       <div value>{{ node?.nodeInfo.osImage }}</div>
     </kd-property>
-    <kd-property *ngIf="node?.nodeInfo.containerRuntimeVersion">
+    } @if (node?.nodeInfo.containerRuntimeVersion) {
+    <kd-property>
       <div
         key
         i18n
@@ -172,7 +180,8 @@ limitations under the License.
       </div>
       <div value>{{ node?.nodeInfo.containerRuntimeVersion }}</div>
     </kd-property>
-    <kd-property *ngIf="node?.nodeInfo.kubeletVersion">
+    } @if (node?.nodeInfo.kubeletVersion) {
+    <kd-property>
       <div
         key
         i18n
@@ -181,7 +190,8 @@ limitations under the License.
       </div>
       <div value>{{ node?.nodeInfo.kubeletVersion }}</div>
     </kd-property>
-    <kd-property *ngIf="node?.nodeInfo.kubeProxyVersion">
+    } @if (node?.nodeInfo.kubeProxyVersion) {
+    <kd-property>
       <div
         key
         i18n
@@ -190,7 +200,8 @@ limitations under the License.
       </div>
       <div value>{{ node?.nodeInfo.kubeProxyVersion }}</div>
     </kd-property>
-    <kd-property *ngIf="node?.nodeInfo.operatingSystem">
+    } @if (node?.nodeInfo.operatingSystem) {
+    <kd-property>
       <div
         key
         i18n
@@ -199,7 +210,8 @@ limitations under the License.
       </div>
       <div value>{{ node?.nodeInfo.operatingSystem }}</div>
     </kd-property>
-    <kd-property *ngIf="node?.nodeInfo.architecture">
+    } @if (node?.nodeInfo.architecture) {
+    <kd-property>
       <div
         key
         i18n
@@ -208,7 +220,8 @@ limitations under the License.
       </div>
       <div value>{{ node?.nodeInfo.architecture }}</div>
     </kd-property>
-    <kd-property *ngIf="node?.allocatedResources.cpuCapacity">
+    } @if (node?.allocatedResources.cpuCapacity) {
+    <kd-property>
       <div
         key
         i18n
@@ -217,7 +230,8 @@ limitations under the License.
       </div>
       <div value>{{ node?.allocatedResources.cpuCapacity | kdCores }}</div>
     </kd-property>
-    <kd-property *ngIf="node?.allocatedResources.memoryCapacity">
+    } @if (node?.allocatedResources.memoryCapacity) {
+    <kd-property>
       <div
         key
         i18n
@@ -226,7 +240,8 @@ limitations under the License.
       </div>
       <div value>{{ node?.allocatedResources.memoryCapacity | kdMemory }}</div>
     </kd-property>
-    <kd-property *ngIf="node?.allocatedResources.podCapacity">
+    } @if (node?.allocatedResources.podCapacity) {
+    <kd-property>
       <div
         key
         i18n
@@ -235,7 +250,9 @@ limitations under the License.
       </div>
       <div value>{{ node?.allocatedResources.podCapacity }}</div>
     </kd-property>
+    }
   </div>
+  }
 </kd-card>
 
 <kd-card [initialized]="isInitialized">
@@ -245,10 +262,8 @@ limitations under the License.
   >
     Allocation
   </div>
-  <div
-    content
-    *ngIf="isInitialized"
-  >
+  @if (isInitialized) {
+  <div content>
     <div class="kd-allocated-resources">
       <div
         fxLayoutAlign="center center"
@@ -315,6 +330,7 @@ limitations under the License.
       </div>
     </div>
   </div>
+  }
 </kd-card>
 
 <kd-condition-list

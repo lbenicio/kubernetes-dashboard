@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -75,10 +75,8 @@ limitations under the License.
         </mat-cell>
       </ng-container>
 
-      <ng-container
-        *ngIf="shouldShowColumn('namespace')"
-        matColumnDef="namespace"
-      >
+      @if (shouldShowColumn('namespace')) {
+      <ng-container matColumnDef="namespace">
         <mat-header-cell
           *matHeaderCellDef
           class="col-stretch-l col-min-90"
@@ -91,6 +89,7 @@ limitations under the License.
           >{{ ingress.objectMeta.namespace }}</mat-cell
         >
       </ng-container>
+      }
 
       <ng-container matColumnDef="labels">
         <mat-header-cell
@@ -151,10 +150,8 @@ limitations under the License.
           *matCellDef="let ingress"
           class="col-stretch-xl"
         >
-          <div
-            *ngFor="let host of ingress?.hosts; let last = last"
-            class="kd-ellipsised"
-          >
+          @for (host of ingress?.hosts; track host; let last = $last) {
+          <div class="kd-ellipsised">
             <a
               href="https://{{ host }}"
               target="_blank"
@@ -162,10 +159,13 @@ limitations under the License.
             >
               {{ host }}</a
             >
-            <span *ngIf="!last">,&nbsp;</span>
+            @if (!last) {
+            <span>,&nbsp;</span>
+            }
           </div>
-
-          <div *ngIf="ingress?.hosts?.length === 0">-</div>
+          } @if (ingress?.hosts?.length === 0) {
+          <div>-</div>
+          }
         </mat-cell>
       </ng-container>
 
@@ -189,10 +189,8 @@ limitations under the License.
         </mat-cell>
       </ng-container>
 
-      <ng-container
-        *ngFor="let col of getActionColumns()"
-        [matColumnDef]="col.name"
-      >
+      @for (col of getActionColumns(); track col) {
+      <ng-container [matColumnDef]="col.name">
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let ingress">
           <kd-dynamic-cell
@@ -201,6 +199,7 @@ limitations under the License.
           ></kd-dynamic-cell>
         </mat-cell>
       </ng-container>
+      }
 
       <mat-header-row *matHeaderRowDef="getColumns()"></mat-header-row>
       <mat-row *matRowDef="let row; columns: getColumns()"></mat-row>

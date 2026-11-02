@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,10 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<kd-graph-metrics
-  [metrics]="cumulativeMetrics"
-  *ngIf="showMetrics"
-></kd-graph-metrics>
+@if (showMetrics) {
+<kd-graph-metrics [metrics]="cumulativeMetrics"></kd-graph-metrics>
+}
 
 <kd-card
   role="table"
@@ -66,9 +65,7 @@ limitations under the License.
             [ngClass]="getStatus(rc).iconClass"
             [matTooltip]="getStatus(rc).iconTooltip"
           >
-            <ng-container *ngIf="showHoverIcon(index, rc); else showStatus"> remove_red_eye </ng-container>
-
-            <ng-template #showStatus> {{ getStatus(rc).iconName }} </ng-template>
+            @if (showHoverIcon(index, rc)) { remove_red_eye } @else { {{ getStatus(rc).iconName }} }
           </mat-icon>
         </mat-cell>
       </ng-container>
@@ -102,10 +99,8 @@ limitations under the License.
         </mat-cell>
       </ng-container>
 
-      <ng-container
-        *ngIf="shouldShowColumn('namespace')"
-        matColumnDef="namespace"
-      >
+      @if (shouldShowColumn('namespace')) {
+      <ng-container matColumnDef="namespace">
         <mat-header-cell
           *matHeaderCellDef
           class="col-stretch-l col-min-90"
@@ -118,6 +113,7 @@ limitations under the License.
           >{{ rc.objectMeta.namespace }}</mat-cell
         >
       </ng-container>
+      }
 
       <ng-container matColumnDef="images">
         <mat-header-cell
@@ -184,10 +180,8 @@ limitations under the License.
         </mat-cell>
       </ng-container>
 
-      <ng-container
-        *ngFor="let col of getActionColumns()"
-        [matColumnDef]="col.name"
-      >
+      @for (col of getActionColumns(); track col) {
+      <ng-container [matColumnDef]="col.name">
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let rc">
           <kd-dynamic-cell
@@ -196,6 +190,7 @@ limitations under the License.
           ></kd-dynamic-cell>
         </mat-cell>
       </ng-container>
+      }
 
       <mat-header-row *matHeaderRowDef="getColumns()"></mat-header-row>
       <mat-row

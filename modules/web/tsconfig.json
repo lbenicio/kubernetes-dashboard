@@ -6,15 +6,9 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@api/*": [
-        "typings/*"
-      ],
-      "@common/*": [
-        "common/*"
-      ],
-      "@environments/*": [
-        "environments/*"
-      ]
+      "@api/*": ["typings/*"],
+      "@common/*": ["common/*"],
+      "@environments/*": ["environments/*"]
     },
     "outDir": ".tmp/out-tsc",
     "moduleResolution": "bundler",
@@ -28,10 +22,6 @@
     "noImplicitAny": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "lib": [
-      "ES2022",
-      "dom"
-    ],
     "useDefineForClassFields": false
   }
 }

@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,21 +30,18 @@ limitations under the License.
         placeholder="Service"
         required
       >
-        <mat-option
-          *ngFor="let serviceType of serviceTypes"
-          [value]="serviceType"
-        >
-          {{ serviceType.label }}
-        </mat-option>
+        @for (serviceType of serviceTypes; track serviceType) {
+        <mat-option [value]="serviceType"> {{ serviceType.label }} </mat-option>
+        }
       </mat-select>
     </mat-form-field>
   </div>
 
   <ng-container>
     <ng-container formArrayName="portMappings">
+      @for (portMapping of portMappings.controls; track portMapping; let i = $index) {
       <div
         fxLayout="row"
-        *ngFor="let portMapping of portMappings.controls; let i = index"
         [formGroupName]="i"
       >
         <mat-form-field
@@ -62,34 +59,17 @@ limitations under the License.
             (change)="checkPortMapping(i)"
             [required]="isFirst(i)"
           />
-          <mat-error
-            *ngIf="portMapping.get('port').errors?.kdValidInteger"
-            i18n
-          >
-            Port must be an integer.
-          </mat-error>
-          <mat-error
-            *ngIf="portMapping.get('port').errors?.required"
-            i18n
-          >
-            Port cannot be empty.
-          </mat-error>
-          <mat-error
-            *ngIf="portMapping.get('port').errors?.min"
-            i18n
-          >
-            Port must be greater than 0.
-          </mat-error>
-          <mat-error
-            *ngIf="portMapping.get('port').errors?.max"
-            i18n
-          >
-            Port must be less than 65536.
-          </mat-error>
+          @if (portMapping.get('port').errors?.kdValidInteger) {
+          <mat-error i18n> Port must be an integer. </mat-error>
+          } @if (portMapping.get('port').errors?.required) {
+          <mat-error i18n> Port cannot be empty. </mat-error>
+          } @if (portMapping.get('port').errors?.min) {
+          <mat-error i18n> Port must be greater than 0. </mat-error>
+          } @if (portMapping.get('port').errors?.max) {
+          <mat-error i18n> Port must be less than 65536. </mat-error>
+          }
         </mat-form-field>
-
         <p fxFlex="5"></p>
-
         <mat-form-field
           md-no-float
           class="kd-deploy-input-row kd-port-form-field"
@@ -107,34 +87,17 @@ limitations under the License.
             (change)="checkPortMapping(i)"
             [required]="isFirst(i)"
           />
-          <mat-error
-            *ngIf="portMapping.get('targetPort').errors?.kdValidInteger"
-            i18n
-          >
-            Target port must be an integer.
-          </mat-error>
-          <mat-error
-            *ngIf="portMapping.get('targetPort').errors?.required"
-            i18n
-          >
-            Target port cannot be empty.
-          </mat-error>
-          <mat-error
-            *ngIf="portMapping.get('targetPort').errors?.min"
-            i18n
-          >
-            Target port must be greater than 0.
-          </mat-error>
-          <mat-error
-            *ngIf="portMapping.get('targetPort').errors?.max"
-            i18n
-          >
-            Target port must be less than 65536.
-          </mat-error>
+          @if (portMapping.get('targetPort').errors?.kdValidInteger) {
+          <mat-error i18n> Target port must be an integer. </mat-error>
+          } @if (portMapping.get('targetPort').errors?.required) {
+          <mat-error i18n> Target port cannot be empty. </mat-error>
+          } @if (portMapping.get('targetPort').errors?.min) {
+          <mat-error i18n> Target port must be greater than 0. </mat-error>
+          } @if (portMapping.get('targetPort').errors?.max) {
+          <mat-error i18n> Target port must be less than 65536. </mat-error>
+          }
         </mat-form-field>
-
         <p fxFlex="5"></p>
-
         <mat-form-field
           md-no-float
           class="kd-deploy-input-row kd-port-form-field"
@@ -149,11 +112,9 @@ limitations under the License.
             [isExternal]="isExternal"
             required
           >
-            <mat-option
-              *ngFor="let protocol of protocols"
-              [value]="protocol"
-              >{{ protocol }}</mat-option
-            >
+            @for (protocol of protocols; track protocol) {
+            <mat-option [value]="protocol">{{ protocol }}</mat-option>
+            }
           </mat-select>
           <mat-progress-bar
             class="kd-deploy-form-progress"
@@ -161,30 +122,24 @@ limitations under the License.
             mode="indeterminate"
           >
           </mat-progress-bar>
-          <mat-error
-            *ngIf="portMapping.get('protocol').errors?.required"
-            i18n
-          >
-            Protocol is required.
-          </mat-error>
-          <mat-error
-            *ngIf="portMapping.get('protocol').errors?.validProtocol"
-            i18n
-          >
-            Invalid protocol.
-          </mat-error>
+          @if (portMapping.get('protocol').errors?.required) {
+          <mat-error i18n> Protocol is required. </mat-error>
+          } @if (portMapping.get('protocol').errors?.validProtocol) {
+          <mat-error i18n> Invalid protocol. </mat-error>
+          }
         </mat-form-field>
-
         <div fxFlex="10">
+          @if (isRemovable(i)) {
           <button
             mat-icon-button
-            *ngIf="isRemovable(i)"
             (click)="remove(i)"
           >
             <mat-icon>delete</mat-icon>
           </button>
+          }
         </div>
       </div>
+      }
     </ng-container>
   </ng-container>
 </div>

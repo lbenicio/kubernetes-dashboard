@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,14 +23,14 @@ limitations under the License.
     >{{ container.image }}
   </div>
   <div title>
+    @if (container.status) {
     <mat-icon
-      *ngIf="container.status"
       class="container-status-icon"
       [ngClass]="containerStatusClass"
       [matTooltip]="containerStatus"
       >fiber_manual_record</mat-icon
     >
-    {{ container.name }}
+    } {{ container.name }}
   </div>
   <div
     content
@@ -47,216 +47,199 @@ limitations under the License.
       <div value>{{ container.image }}</div>
     </kd-property>
 
+    @if (container.status?.state) {
     <div
-      *ngIf="container.status?.state"
       class="kd-muted section-header"
       fxFlex="100"
       i18n
     >
       Status
     </div>
-
-    <ng-container *ngIf="container.status">
-      <kd-property>
-        <div
-          key
-          i18n
-        >
-          Ready
-        </div>
-        <div value>{{ container.status.ready }}</div>
-      </kd-property>
-
-      <kd-property>
-        <div
-          key
-          i18n
-        >
-          Started
-        </div>
-        <div value>{{ container.status.started }}</div>
-      </kd-property>
-    </ng-container>
-
-    <ng-container *ngIf="container.status?.state?.waiting">
-      <kd-property *ngIf="container.status.state.waiting.reason">
-        <div
-          key
-          i18n
-        >
-          Reason
-        </div>
-        <div value>{{ container.status.state.waiting.reason }}</div>
-      </kd-property>
-
-      <kd-property *ngIf="container.status.state.waiting.message">
-        <div
-          key
-          i18n
-        >
-          Message
-        </div>
-        <div value>{{ container.status.state.waiting.message }}</div>
-      </kd-property>
-    </ng-container>
-
-    <ng-container *ngIf="container.status?.state?.terminated">
-      <kd-property *ngIf="container.status.state.terminated.reason">
-        <div
-          key
-          i18n
-        >
-          Reason
-        </div>
-        <div value>{{ container.status.state.terminated.reason }}</div>
-      </kd-property>
-
-      <kd-property *ngIf="container.status.state.terminated.message">
-        <div
-          key
-          i18n
-        >
-          Message
-        </div>
-        <div value>{{ container.status.state.terminated.message }}</div>
-      </kd-property>
-
-      <kd-property *ngIf="container.status.state.terminated.exitCode">
-        <div
-          key
-          i18n
-        >
-          Exit Code
-        </div>
-        <div value>{{ container.status.state.terminated.exitCode }}</div>
-      </kd-property>
-
-      <kd-property *ngIf="container.status.state.terminated.signal">
-        <div
-          key
-          i18n
-        >
-          Signal
-        </div>
-        <div value>{{ container.status.state.terminated.signal }}</div>
-      </kd-property>
-    </ng-container>
-
-    <ng-container *ngIf="container.status?.state?.running">
-      <kd-property *ngIf="container.status.state.running.startedAt">
-        <div
-          key
-          i18n
-        >
-          Started At
-        </div>
-        <div value>{{ container.status.state.running.startedAt }}</div>
-      </kd-property>
-    </ng-container>
-
+    } @if (container.status) {
+    <kd-property>
+      <div
+        key
+        i18n
+      >
+        Ready
+      </div>
+      <div value>{{ container.status.ready }}</div>
+    </kd-property>
+    <kd-property>
+      <div
+        key
+        i18n
+      >
+        Started
+      </div>
+      <div value>{{ container.status.started }}</div>
+    </kd-property>
+    } @if (container.status?.state?.waiting) { @if (container.status.state.waiting.reason) {
+    <kd-property>
+      <div
+        key
+        i18n
+      >
+        Reason
+      </div>
+      <div value>{{ container.status.state.waiting.reason }}</div>
+    </kd-property>
+    } @if (container.status.state.waiting.message) {
+    <kd-property>
+      <div
+        key
+        i18n
+      >
+        Message
+      </div>
+      <div value>{{ container.status.state.waiting.message }}</div>
+    </kd-property>
+    } } @if (container.status?.state?.terminated) { @if (container.status.state.terminated.reason) {
+    <kd-property>
+      <div
+        key
+        i18n
+      >
+        Reason
+      </div>
+      <div value>{{ container.status.state.terminated.reason }}</div>
+    </kd-property>
+    } @if (container.status.state.terminated.message) {
+    <kd-property>
+      <div
+        key
+        i18n
+      >
+        Message
+      </div>
+      <div value>{{ container.status.state.terminated.message }}</div>
+    </kd-property>
+    } @if (container.status.state.terminated.exitCode) {
+    <kd-property>
+      <div
+        key
+        i18n
+      >
+        Exit Code
+      </div>
+      <div value>{{ container.status.state.terminated.exitCode }}</div>
+    </kd-property>
+    } @if (container.status.state.terminated.signal) {
+    <kd-property>
+      <div
+        key
+        i18n
+      >
+        Signal
+      </div>
+      <div value>{{ container.status.state.terminated.signal }}</div>
+    </kd-property>
+    } } @if (container.status?.state?.running) { @if (container.status.state.running.startedAt) {
+    <kd-property>
+      <div
+        key
+        i18n
+      >
+        Started At
+      </div>
+      <div value>{{ container.status.state.running.startedAt }}</div>
+    </kd-property>
+    } } @if (container?.env?.length > 0) {
     <div
-      *ngIf="container?.env?.length > 0"
       class="kd-muted section-header"
       fxFlex="100"
       i18n
     >
       Environment Variables
     </div>
-
-    <div *ngFor="let env of container?.env; trackBy: getEnvVarID">
-      <ng-container *ngIf="!isSecret(env) && !isConfigMap(env)">
-        <kd-property>
-          <div
-            key
-            fxLayout
+    } @for (env of container?.env; track getEnvVarID($index, env)) {
+    <div>
+      @if (!isSecret(env) && !isConfigMap(env)) {
+      <kd-property>
+        <div
+          key
+          fxLayout
+        >
+          {{ env.name }}
+          <mat-icon
+            matTooltip="Environment variable"
+            i18n-matTooltip
+            class="kd-env-variable-icon"
+            >public
+          </mat-icon>
+        </div>
+        <div value>{{ env.value || '-' }}</div>
+      </kd-property>
+      } @if (isSecret(env)) {
+      <kd-hidden-property>
+        <div
+          key
+          fxLayout
+        >
+          <a
+            [routerLink]="getEnvSecretHref(env.valueFrom.secretKeyRef)"
+            queryParamsHandling="preserve"
+            (click)="$event.stopPropagation()"
           >
             {{ env.name }}
-            <mat-icon
-              matTooltip="Environment variable"
-              i18n-matTooltip
-              class="kd-env-variable-icon"
-              >public
-            </mat-icon>
-          </div>
-          <div value>{{ env.value || '-' }}</div>
-        </kd-property>
-      </ng-container>
-
-      <ng-container *ngIf="isSecret(env)">
-        <kd-hidden-property>
-          <div
-            key
-            fxLayout
+          </a>
+          <mat-icon
+            matTooltip="Environment variable"
+            i18n-matTooltip
+            class="kd-env-variable-icon"
+            >public
+          </mat-icon>
+        </div>
+        <div
+          whenVisible
+          class="kd-code-block"
+        >
+          {{ decoder.base64(env.value) }}
+        </div>
+        <div
+          whenHidden
+          i18n
+        >
+          {{ decoder.base64(env.value).length }} bytes
+        </div>
+      </kd-hidden-property>
+      } @if (isConfigMap(env)) {
+      <kd-hidden-property>
+        <div
+          key
+          fxLayout
+        >
+          <a
+            [routerLink]="getEnvConfigMapHref(env.valueFrom.configMapKeyRef)"
+            queryParamsHandling="preserve"
+            (click)="$event.stopPropagation()"
           >
-            <a
-              [routerLink]="getEnvSecretHref(env.valueFrom.secretKeyRef)"
-              queryParamsHandling="preserve"
-              (click)="$event.stopPropagation()"
-            >
-              {{ env.name }}
-            </a>
-            <mat-icon
-              matTooltip="Environment variable"
-              i18n-matTooltip
-              class="kd-env-variable-icon"
-              >public
-            </mat-icon>
-          </div>
-          <div
-            whenVisible
-            class="kd-code-block"
-          >
-            {{ decoder.base64(env.value) }}
-          </div>
-          <div
-            whenHidden
-            i18n
-          >
-            {{ decoder.base64(env.value).length }} bytes
-          </div>
-        </kd-hidden-property>
-      </ng-container>
-
-      <ng-container *ngIf="isConfigMap(env)">
-        <kd-hidden-property>
-          <div
-            key
-            fxLayout
-          >
-            <a
-              [routerLink]="getEnvConfigMapHref(env.valueFrom.configMapKeyRef)"
-              queryParamsHandling="preserve"
-              (click)="$event.stopPropagation()"
-            >
-              {{ env.name }}
-            </a>
-            <mat-icon
-              matTooltip="Environment variable"
-              i18n-matTooltip
-              class="kd-env-variable-icon"
-              >public
-            </mat-icon>
-          </div>
-          <div
-            whenVisible
-            class="kd-code-block"
-          >
-            {{ env.value }}
-          </div>
-          <div
-            whenHidden
-            i18n
-          >
-            {{ env.value.length }} bytes
-          </div>
-        </kd-hidden-property>
-      </ng-container>
+            {{ env.name }}
+          </a>
+          <mat-icon
+            matTooltip="Environment variable"
+            i18n-matTooltip
+            class="kd-env-variable-icon"
+            >public
+          </mat-icon>
+        </div>
+        <div
+          whenVisible
+          class="kd-code-block"
+        >
+          {{ env.value }}
+        </div>
+        <div
+          whenHidden
+          i18n
+        >
+          {{ env.value.length }} bytes
+        </div>
+      </kd-hidden-property>
+      }
     </div>
-
-    <kd-property
-      *ngIf="container?.commands?.length"
-      fxFlex="100"
-    >
+    } @if (container?.commands?.length) {
+    <kd-property fxFlex="100">
       <div
         key
         fxFlex
@@ -267,20 +250,14 @@ limitations under the License.
       </div>
       <div value>
         <div class="kd-code-block kd-no-whitespace">
-          <div
-            *ngFor="let command of container.commands"
-            class="kd-code-block-font"
-          >
-            {{ command }}
-          </div>
+          @for (command of container.commands; track command) {
+          <div class="kd-code-block-font">{{ command }}</div>
+          }
         </div>
       </div>
     </kd-property>
-
-    <kd-property
-      *ngIf="container?.args?.length"
-      fxFlex="100"
-    >
+    } @if (container?.args?.length) {
+    <kd-property fxFlex="100">
       <div
         key
         fxFlex
@@ -291,18 +268,14 @@ limitations under the License.
       </div>
       <div value>
         <div class="kd-code-block kd-no-whitespace">
-          <div
-            *ngFor="let arg of container.args"
-            class="kd-code-block-font"
-          >
-            {{ arg }}
-          </div>
+          @for (arg of container.args; track arg) {
+          <div class="kd-code-block-font">{{ arg }}</div>
+          }
         </div>
       </div>
     </kd-property>
-
+    } @if (container?.volumeMounts?.length > 0) {
     <kd-property
-      *ngIf="container?.volumeMounts?.length > 0"
       [stretched]="true"
       fxFlex="100"
     >
@@ -326,9 +299,8 @@ limitations under the License.
         </kd-volumemounts-list>
       </div>
     </kd-property>
-
+    } @if (hasSecurityContext()) {
     <div
-      *ngIf="hasSecurityContext()"
       fxFlex="100"
       fxLayout="column"
     >
@@ -339,16 +311,14 @@ limitations under the License.
       >
         Security Context
       </div>
-
       <kd-security-context
         [securityContext]="container.securityContext"
         [initialized]="initialized"
       >
       </kd-security-context>
     </div>
-
+    } @if (container?.livenessProbe) {
     <div
-      *ngIf="container?.livenessProbe"
       fxFlex="100"
       fxLayout="column"
     >
@@ -365,9 +335,8 @@ limitations under the License.
       >
       </kd-probe-card>
     </div>
-
+    } @if (container?.readinessProbe) {
     <div
-      *ngIf="container?.readinessProbe"
       fxFlex="100"
       fxLayout="column"
     >
@@ -384,9 +353,8 @@ limitations under the License.
       >
       </kd-probe-card>
     </div>
-
+    } @if (container?.startupProbe) {
     <div
-      *ngIf="container?.startupProbe"
       fxFlex="100"
       fxLayout="column"
     >
@@ -403,11 +371,8 @@ limitations under the License.
       >
       </kd-probe-card>
     </div>
-
-    <kd-property
-      *ngIf="container?.resources?.limits"
-      fxFlex="50"
-    >
+    } @if (container?.resources?.limits) {
+    <kd-property fxFlex="50">
       <div
         key
         fxFlex
@@ -423,10 +388,8 @@ limitations under the License.
         ></kd-chips>
       </div>
     </kd-property>
-    <kd-property
-      *ngIf="container?.resources?.requests"
-      fxFlex="50"
-    >
+    } @if (container?.resources?.requests) {
+    <kd-property fxFlex="50">
       <div
         key
         fxFlex
@@ -442,6 +405,7 @@ limitations under the License.
         ></kd-chips>
       </div>
     </kd-property>
+    }
   </div>
 
   <div content></div>

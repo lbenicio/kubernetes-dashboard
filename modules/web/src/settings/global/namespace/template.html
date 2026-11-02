@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,12 +33,9 @@ limitations under the License.
         matInput
       />
       <mat-autocomplete #auto="matAutocomplete">
-        <mat-option
-          *ngFor="let namespace of namespaces | kdFilterBy: namespaceInput.value"
-          [value]="namespace"
-        >
-          {{ namespace }}
-        </mat-option>
+        @for (namespace of namespaces | kdFilterBy: namespaceInput.value; track namespace) {
+        <mat-option [value]="namespace"> {{ namespace }} </mat-option>
+        }
       </mat-autocomplete>
     </mat-form-field>
   </kd-settings-entry>
@@ -60,26 +57,27 @@ limitations under the License.
           fxLayoutAlign=" center"
           class="kd-namespace-chip-list"
         >
+          @for (namespace of form.get(Controls.FallbackList).value | slice: 0:visibleNamespaces; track namespace) {
           <mat-chip
-            *ngFor="let namespace of form.get(Controls.FallbackList).value | slice: 0:visibleNamespaces"
             style="max-width: 100px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; display: block"
             [matTooltip]="namespace"
           >
             {{ namespace }}
           </mat-chip>
+          } @if (form.get(Controls.FallbackList).value.length === 0) {
           <mat-chip
-            *ngIf="form.get(Controls.FallbackList).value.length === 0"
             [disabled]="true"
             i18n
             >Add namespaces...</mat-chip
           >
+          } @if (invisibleCount > 0) {
           <mat-chip
-            *ngIf="invisibleCount > 0"
             [disabled]="true"
             fxFlex
             fxLayoutAlign=" center"
             >+ {{ invisibleCount }}</mat-chip
           >
+          }
         </mat-chip-set>
         <div
           fxFlex="20"

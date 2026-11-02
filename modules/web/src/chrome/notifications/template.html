@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,22 +23,23 @@ limitations under the License.
     (click)="toggle()"
   >
     <mat-icon class="kd-notifications-icon kd-primary-toolbar-icon">notifications</mat-icon>
+    @if (getUnreadCount() > 0) {
     <div
-      *ngIf="getUnreadCount() > 0"
       @easeOut
       class="kd-notifications-counter kd-white kd-bg-error"
     >
       {{ getUnreadCount() }}
     </div>
+    }
   </button>
+  @if (isOpen()) {
   <div
     class="kd-notifications-panel"
     fxLayout="column"
-    *ngIf="isOpen()"
   >
     <div class="kd-notifications-content">
+      @for (notification of notifications; track notification; let last = $last; let index = $index) {
       <div
-        *ngFor="let notification of notifications; let last = last; let index = index"
         fxLayout="column"
         [ngClass]="{'kd-notification-unread': !notification.read}"
       >
@@ -72,10 +73,12 @@ limitations under the License.
             <mat-icon>close</mat-icon>
           </button>
         </div>
-        <mat-divider *ngIf="!last || !notification.read"></mat-divider>
+        @if (!last || !notification.read) {
+        <mat-divider></mat-divider>
+        }
       </div>
+      } @if (notifications.length === 0) {
       <div
-        *ngIf="notifications.length === 0"
         class="kd-notifications-zero-state kd-muted"
         fxLayoutAlign="center center"
         fxFlex
@@ -83,11 +86,10 @@ limitations under the License.
       >
         There are no notifications
       </div>
+      }
     </div>
-    <div
-      class="kd-notifications-controls kd-bg-primary kd-white"
-      *ngIf="notifications.length > 0"
-    >
+    @if (notifications.length > 0) {
+    <div class="kd-notifications-controls kd-bg-primary kd-white">
       <span
         class="kd-clickable kd-accent"
         (click)="clear()"
@@ -95,5 +97,7 @@ limitations under the License.
         >Remove all notifications</span
       >
     </div>
+    }
   </div>
+  }
 </div>

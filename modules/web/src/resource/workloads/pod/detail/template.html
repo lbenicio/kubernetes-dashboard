@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,10 +30,8 @@ limitations under the License.
   </div>
 
   <div description>
-    <div
-      class="kd-inline-property"
-      *ngIf="pod?.podPhase"
-    >
+    @if (pod?.podPhase) {
+    <div class="kd-inline-property">
       <span
         class="kd-muted-light"
         i18n
@@ -41,11 +39,8 @@ limitations under the License.
       >
       <span>{{ pod.podPhase }}</span>
     </div>
-
-    <div
-      class="kd-inline-property"
-      *ngIf="pod?.podIP"
-    >
+    } @if (pod?.podIP) {
+    <div class="kd-inline-property">
       <span
         class="kd-muted-light"
         i18n
@@ -53,14 +48,16 @@ limitations under the License.
       >
       <span>{{ pod.podIP }}</span>
     </div>
+    }
   </div>
 
+  @if (isInitialized) {
   <div
     content
-    *ngIf="isInitialized"
     fxLayout="row wrap"
   >
-    <kd-property *ngIf="pod?.nodeName">
+    @if (pod?.nodeName) {
+    <kd-property>
       <div
         key
         i18n
@@ -74,8 +71,8 @@ limitations under the License.
         >{{ pod.nodeName }}</a
       >
     </kd-property>
-
-    <kd-property *ngIf="pod?.podPhase">
+    } @if (pod?.podPhase) {
+    <kd-property>
       <div
         key
         i18n
@@ -84,8 +81,8 @@ limitations under the License.
       </div>
       <div value>{{ pod?.podPhase }}</div>
     </kd-property>
-
-    <kd-property *ngIf="pod?.podIP">
+    } @if (pod?.podIP) {
+    <kd-property>
       <div
         key
         i18n
@@ -94,8 +91,8 @@ limitations under the License.
       </div>
       <div value>{{ pod.podIP }}</div>
     </kd-property>
-
-    <kd-property *ngIf="pod?.qosClass">
+    } @if (pod?.qosClass) {
+    <kd-property>
       <div
         key
         i18n
@@ -104,8 +101,8 @@ limitations under the License.
       </div>
       <div value>{{ pod.qosClass }}</div>
     </kd-property>
-
-    <kd-property *ngIf="pod?.restartCount !== undefined">
+    } @if (pod?.restartCount !== undefined) {
+    <kd-property>
       <div
         key
         i18n
@@ -114,8 +111,8 @@ limitations under the License.
       </div>
       <div value>{{ pod.restartCount }}</div>
     </kd-property>
-
-    <kd-property *ngIf="pod?.serviceAccountName">
+    } @if (pod?.serviceAccountName) {
+    <kd-property>
       <div
         key
         i18n
@@ -130,31 +127,26 @@ limitations under the License.
         >
       </div>
     </kd-property>
-
-    <kd-property
-      *ngIf="pod?.imagePullSecrets"
-      fxFlex="100"
-    >
+    } @if (pod?.imagePullSecrets) {
+    <kd-property fxFlex="100">
       <div
         key
         i18n
       >
         Image Pull Secrets
       </div>
-      <div
-        value
-        *ngFor="let imagePullSecret of pod?.imagePullSecrets"
-      >
+      @for (imagePullSecret of pod?.imagePullSecrets; track imagePullSecret) {
+      <div value>
         <a
           [routerLink]="getObjectHref('secret', imagePullSecret.name)"
           queryParamsHandling="preserve"
           >{{ imagePullSecret.name }}</a
         >
       </div>
+      }
     </kd-property>
-
+    } @if (hasSecurityContext()) {
     <div
-      *ngIf="hasSecurityContext()"
       fxFlex="100"
       fxLayout="column"
     >
@@ -165,14 +157,15 @@ limitations under the License.
       >
         Security Context
       </div>
-
       <kd-security-context
         [securityContext]="pod?.securityContext"
         [initialized]="true"
       >
       </kd-security-context>
     </div>
+    }
   </div>
+  }
 </kd-card>
 
 <kd-condition-list
@@ -180,43 +173,41 @@ limitations under the License.
   [initialized]="isInitialized"
 ></kd-condition-list>
 
+@if (pod?.controller?.typeMeta?.kind) {
 <kd-creator-card
-  *ngIf="pod?.controller?.typeMeta?.kind"
   [creator]="pod?.controller"
   [initialized]="isInitialized"
 ></kd-creator-card>
-
-<kd-persistent-volume-claim-list
-  *ngIf="pod?.persistentVolumeClaimList"
-  [endpoint]="pvcListEndpoint"
-></kd-persistent-volume-claim-list>
+} @if (pod?.persistentVolumeClaimList) {
+<kd-persistent-volume-claim-list [endpoint]="pvcListEndpoint"></kd-persistent-volume-claim-list>
+}
 
 <kd-event-list [endpoint]="eventListEndpoint"></kd-event-list>
 
+@if (pod?.containers?.length) {
 <div
-  *ngIf="pod?.containers?.length"
   class="kd-card-group-header kd-muted"
   i18n
 >
   Containers
 </div>
+} @for (container of pod?.containers; track getContainerName($index, container)) {
 <kd-container-card
-  *ngFor="let container of pod?.containers; trackBy: getContainerName"
   [container]="container"
   [namespace]="pod.objectMeta.namespace"
   [initialized]="isInitialized"
 ></kd-container-card>
-
+} @if (pod?.initContainers?.length) {
 <div
-  *ngIf="pod?.initContainers?.length"
   class="kd-card-group-header kd-muted"
   i18n
 >
   Init containers
 </div>
+} @for (container of pod?.initContainers; track getContainerName($index, container)) {
 <kd-container-card
-  *ngFor="let container of pod?.initContainers; trackBy: getContainerName"
   [container]="container"
   [namespace]="pod.objectMeta.namespace"
   [initialized]="isInitialized"
 ></kd-container-card>
+}

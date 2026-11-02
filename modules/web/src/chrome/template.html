@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -74,13 +74,14 @@ limitations under the License.
     </div>
   </mat-toolbar>
 
+  @if (isSystemBannerVisible()) {
   <mat-toolbar
     class="kd-system-banner"
     [ngClass]="getSystemBannerClass()"
-    *ngIf="isSystemBannerVisible()"
     [innerHTML]="getSystemBannerMessage()"
   >
   </mat-toolbar>
+  }
 
   <div
     fxFlex
@@ -89,23 +90,20 @@ limitations under the License.
   >
     <kd-nav></kd-nav>
     <div
-      [ngSwitch]="loading"
       fxLayoutAlign="center"
       fxFlex
       class="kd-scroll-container"
     >
-      <div
-        *ngSwitchCase="true"
-        fxFlexAlign="center"
-      >
+      @switch (loading) { @case (true) {
+      <div fxFlexAlign="center">
         <mat-spinner
           mode="indeterminate"
           [diameter]="48"
         >
         </mat-spinner>
       </div>
+      } @case (false) {
       <div
-        *ngSwitchCase="false"
         fxFlex
         fxLayout="column"
         class="kd-scroll-container"
@@ -113,6 +111,7 @@ limitations under the License.
         <router-outlet></router-outlet>
         <kd-footer></kd-footer>
       </div>
+      } }
     </div>
   </div>
 </div>

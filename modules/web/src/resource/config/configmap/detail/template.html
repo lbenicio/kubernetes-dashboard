@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,19 +30,20 @@ limitations under the License.
     Data
   </div>
   <div content>
+    @if (configMap?.data) {
     <kd-text-input
-      *ngIf="configMap?.data"
       [text]="getConfigMapData(configMap)"
       [readOnly]="true"
       [border]="false"
       mode="json"
     ></kd-text-input>
+    } @if (!configMap?.data) {
     <div
-      *ngIf="!configMap?.data"
       class="kd-card-padding"
       i18n
     >
       There is no data to display.
     </div>
+    }
   </div>
 </kd-card>

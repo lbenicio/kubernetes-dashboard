@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,22 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<kd-card
-  [initialized]="initialized"
-  *ngIf="podInfo"
->
+@if (podInfo) {
+<kd-card [initialized]="initialized">
   <div
     title
     i18n
   >
     Pods status
   </div>
-
   <div description>
-    <div
-      class="kd-inline-property"
-      *ngIf="podInfo.running > 0"
-    >
+    @if (podInfo.running > 0) {
+    <div class="kd-inline-property">
       <span
         class="kd-muted-light"
         i18n
@@ -37,11 +32,8 @@ limitations under the License.
       >
       <span>{{ podInfo.running }}</span>
     </div>
-
-    <div
-      class="kd-inline-property"
-      *ngIf="podInfo.succeeded > 0"
-    >
+    } @if (podInfo.succeeded > 0) {
+    <div class="kd-inline-property">
       <span
         class="kd-muted-light"
         i18n
@@ -49,11 +41,8 @@ limitations under the License.
       >
       <span>{{ podInfo.succeeded }}</span>
     </div>
-
-    <div
-      class="kd-inline-property"
-      *ngIf="podInfo.pending > 0"
-    >
+    } @if (podInfo.pending > 0) {
+    <div class="kd-inline-property">
       <span
         class="kd-muted-light"
         i18n
@@ -61,11 +50,8 @@ limitations under the License.
       >
       <span>{{ podInfo.pending }}</span>
     </div>
-
-    <div
-      class="kd-inline-property"
-      *ngIf="podInfo.failed > 0"
-    >
+    } @if (podInfo.failed > 0) {
+    <div class="kd-inline-property">
       <span
         class="kd-muted-light"
         i18n
@@ -73,7 +59,7 @@ limitations under the License.
       >
       <span>{{ podInfo.failed }}</span>
     </div>
-
+    }
     <div class="kd-inline-property">
       <span
         class="kd-muted-light"
@@ -83,13 +69,13 @@ limitations under the License.
       <span>{{ podInfo.desired }}</span>
     </div>
   </div>
-
+  @if (initialized) {
   <div
     content
-    *ngIf="initialized"
     fxLayout="row wrap"
   >
-    <kd-property *ngIf="podInfo.running > 0">
+    @if (podInfo.running > 0) {
+    <kd-property>
       <div
         key
         i18n
@@ -98,8 +84,8 @@ limitations under the License.
       </div>
       <div value>{{ podInfo.running }}</div>
     </kd-property>
-
-    <kd-property *ngIf="podInfo.succeeded > 0">
+    } @if (podInfo.succeeded > 0) {
+    <kd-property>
       <div
         key
         i18n
@@ -108,8 +94,8 @@ limitations under the License.
       </div>
       <div value>{{ podInfo.succeeded }}</div>
     </kd-property>
-
-    <kd-property *ngIf="podInfo.pending > 0">
+    } @if (podInfo.pending > 0) {
+    <kd-property>
       <div
         key
         i18n
@@ -118,11 +104,8 @@ limitations under the License.
       </div>
       <div value>{{ podInfo.pending }}</div>
     </kd-property>
-
-    <kd-property
-      [ngClass]="{'kd-error': podInfo.failed > 0}"
-      *ngIf="podInfo.failed > 0"
-    >
+    } @if (podInfo.failed > 0) {
+    <kd-property [ngClass]="{'kd-error': podInfo.failed > 0}">
       <div
         key
         i18n
@@ -131,7 +114,7 @@ limitations under the License.
       </div>
       <div value>{{ podInfo.failed }}</div>
     </kd-property>
-
+    }
     <kd-property>
       <div
         key
@@ -142,4 +125,6 @@ limitations under the License.
       <div value>{{ podInfo.desired }}</div>
     </kd-property>
   </div>
+  }
 </kd-card>
+}

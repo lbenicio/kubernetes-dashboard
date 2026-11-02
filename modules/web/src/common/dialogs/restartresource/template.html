@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,7 +23,9 @@ limitations under the License.
 <mat-dialog-content class="kd-dialog-text">
   <ng-container i18n>
     <span>{{ data.displayName }} <i>{{ data.objectMeta.name }} </i></span>
-    <span *ngIf="data.objectMeta.namespace"> in namespace <i>{{ data.objectMeta.namespace }} </i> </span>
+    @if (data.objectMeta.namespace) {
+    <span> in namespace <i>{{ data.objectMeta.namespace }} </i> </span>
+    }
     <span>will be restarted.</span>
   </ng-container>
   <div
@@ -35,7 +37,7 @@ limitations under the License.
       <span i18n>This action is equivalent to: </span>
       <code>
         <ng-container>kubectl rollout restart </ng-container>
-        <ng-container *ngIf="data.objectMeta.namespace">-n {{ data.objectMeta.namespace }} </ng-container>
+        @if (data.objectMeta.namespace) { -n {{ data.objectMeta.namespace }} }
         <ng-container>{{ data.typeMeta.kind }} {{ data.objectMeta.name }}</ng-container>
       </code>
     </div>

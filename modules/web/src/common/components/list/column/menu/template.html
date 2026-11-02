@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,56 +15,50 @@ limitations under the License.
 -->
 
 <mat-menu #actions="matMenu">
+  @if (isLogsEnabled()) {
   <a
     mat-menu-item
-    *ngIf="isLogsEnabled()"
     [routerLink]="getLogsHref()"
     queryParamsHandling="preserve"
     i18n
     >Logs</a
   >
+  } @if (isExecEnabled()) {
   <a
     mat-menu-item
-    *ngIf="isExecEnabled()"
     [routerLink]="getExecHref()"
     queryParamsHandling="preserve"
     i18n
     >Exec</a
   >
+  } @if (isTriggerEnabled()) {
   <button
     mat-menu-item
-    *ngIf="isTriggerEnabled()"
     (click)="onTrigger()"
     i18n
   >
     Trigger
   </button>
+  } @if (isScaleEnabled()) {
   <button
     mat-menu-item
-    *ngIf="isScaleEnabled()"
     (click)="onScale()"
     i18n
   >
     Scale
   </button>
+  } @if (isPinEnabled()) {
   <button
     mat-menu-item
-    *ngIf="isPinEnabled()"
     (click)="isPinned() ? onUnpin() : onPin()"
   >
-    <ng-container [ngSwitch]="isPinned()">
-      <ng-container
-        *ngSwitchCase="true"
-        i18n
-        >Unpin</ng-container
-      >
-      <ng-container
-        *ngSwitchCase="false"
-        i18n
-        >Pin</ng-container
-      >
-    </ng-container>
+    @switch (isPinned()) { @case (true) {
+    <ng-container i18n>Unpin</ng-container>
+    } @case (false) {
+    <ng-container i18n>Pin</ng-container>
+    } }
   </button>
+  }
   <button
     mat-menu-item
     id="edit"
@@ -73,14 +67,15 @@ limitations under the License.
   >
     Edit
   </button>
+  @if (isRestartEnabled()) {
   <button
     mat-menu-item
-    *ngIf="isRestartEnabled()"
     (click)="onRestart()"
     i18n
   >
     Restart
   </button>
+  }
   <button
     mat-menu-item
     id="delete"

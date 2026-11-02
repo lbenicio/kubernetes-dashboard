@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,10 +28,8 @@ limitations under the License.
   </div>
 
   <div description>
-    <div
-      class="kd-inline-property"
-      *ngIf="replicaSet?.podInfo"
-    >
+    @if (replicaSet?.podInfo) {
+    <div class="kd-inline-property">
       <span
         class="kd-muted-light"
         i18n
@@ -39,14 +37,16 @@ limitations under the License.
       >
       <span>{{ replicaSet.podInfo.running }} / {{ replicaSet.podInfo.desired }}</span>
     </div>
+    }
   </div>
 
+  @if (isInitialized) {
   <div
     content
-    *ngIf="isInitialized"
     fxLayout="row wrap"
   >
-    <kd-property *ngIf="replicaSet?.selector">
+    @if (replicaSet?.selector) {
+    <kd-property>
       <div
         key
         i18n
@@ -60,8 +60,8 @@ limitations under the License.
         ></kd-chips>
       </div>
     </kd-property>
-
-    <kd-property *ngIf="replicaSet?.containerImages">
+    } @if (replicaSet?.containerImages) {
+    <kd-property>
       <div
         key
         i18n
@@ -75,8 +75,8 @@ limitations under the License.
         ></kd-chips>
       </div>
     </kd-property>
-
-    <kd-property *ngIf="replicaSet?.initContainerImages">
+    } @if (replicaSet?.initContainerImages) {
+    <kd-property>
       <div
         key
         i18n
@@ -90,7 +90,9 @@ limitations under the License.
         ></kd-chips>
       </div>
     </kd-property>
+    }
   </div>
+  }
 </kd-card>
 
 <kd-pod-status-card

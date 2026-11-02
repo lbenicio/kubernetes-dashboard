@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -156,14 +156,13 @@ limitations under the License.
           *matCellDef="let pv"
           class="col-stretch-xl"
         >
-          <ng-container *ngIf="pv.claim">
-            <a
-              [routerLink]="getClaimHref(pv.claim)"
-              queryParamsHandling="preserve"
-              >{{ pv.claim }}</a
-            >
-          </ng-container>
-          <ng-container *ngIf="!pv.claim">-</ng-container>
+          @if (pv.claim) {
+          <a
+            [routerLink]="getClaimHref(pv.claim)"
+            queryParamsHandling="preserve"
+            >{{ pv.claim }}</a
+          >
+          } @if (!pv.claim) { - }
         </mat-cell>
       </ng-container>
 
@@ -178,8 +177,11 @@ limitations under the License.
           *matCellDef="let pv"
           class="col-stretch-m"
         >
-          <div *ngIf="pv.storageClass">{{ pv.storageClass }}</div>
-          <div *ngIf="!pv.storageClass">-</div>
+          @if (pv.storageClass) {
+          <div>{{ pv.storageClass }}</div>
+          } @if (!pv.storageClass) {
+          <div>-</div>
+          }
         </mat-cell>
       </ng-container>
 
@@ -194,8 +196,7 @@ limitations under the License.
           *matCellDef="let pv"
           class="col-stretch-s"
         >
-          <ng-container *ngIf="pv.reason">{{ pv.reason }}</ng-container>
-          <ng-container *ngIf="!pv.reason">-</ng-container>
+          @if (pv.reason) { {{ pv.reason }} } @if (!pv.reason) { - }
         </mat-cell>
       </ng-container>
 
@@ -219,10 +220,8 @@ limitations under the License.
         </mat-cell>
       </ng-container>
 
-      <ng-container
-        *ngFor="let col of getActionColumns()"
-        [matColumnDef]="col.name"
-      >
+      @for (col of getActionColumns(); track col) {
+      <ng-container [matColumnDef]="col.name">
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let pv">
           <kd-dynamic-cell
@@ -231,6 +230,7 @@ limitations under the License.
           ></kd-dynamic-cell>
         </mat-cell>
       </ng-container>
+      }
 
       <mat-header-row *matHeaderRowDef="getColumns()"></mat-header-row>
       <mat-row *matRowDef="let row; columns: getColumns()"></mat-row>

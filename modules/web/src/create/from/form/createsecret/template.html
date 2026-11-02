@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,24 +37,13 @@ limitations under the License.
               required
             />
             <mat-hint align="end">{{ secretName.value.length }} / {{ secretNameMaxLength }}</mat-hint>
-            <mat-error
-              *ngIf="secretName.errors?.required"
-              i18n
-            >
-              Name is required.
-            </mat-error>
-            <mat-error
-              *ngIf="secretName.errors?.maxlength"
-              i18n
-            >
-              Name must be up to {{ secretNameMaxLength }} characters long.
-            </mat-error>
-            <mat-error
-              *ngIf="secretName.errors?.pattern"
-              i18n
-            >
-              Name must follow the DNS domain name syntax (e.g. new.image-pull.secret).
-            </mat-error>
+            @if (secretName.errors?.required) {
+            <mat-error i18n> Name is required. </mat-error>
+            } @if (secretName.errors?.maxlength) {
+            <mat-error i18n> Name must be up to {{ secretNameMaxLength }} characters long. </mat-error>
+            } @if (secretName.errors?.pattern) {
+            <mat-error i18n> Name must follow the DNS domain name syntax (e.g. new.image-pull.secret). </mat-error>
+            }
           </mat-form-field>
           <kd-user-help>
             <span i18n>A secret with the specified name will be added to the cluster in the namespace.</span>
@@ -80,18 +69,11 @@ limitations under the License.
               formControlName="data"
               required
             />
-            <mat-error
-              *ngIf="data.errors?.required"
-              i18n
-            >
-              Data is required.
-            </mat-error>
-            <mat-error
-              *ngIf="data.errors?.pattern"
-              i18n
-            >
-              Data must be Base64 encoded.
-            </mat-error>
+            @if (data.errors?.required) {
+            <mat-error i18n> Data is required. </mat-error>
+            } @if (data.errors?.pattern) {
+            <mat-error i18n> Data must be Base64 encoded. </mat-error>
+            }
           </mat-form-field>
           <kd-user-help>
             <ng-container i18n

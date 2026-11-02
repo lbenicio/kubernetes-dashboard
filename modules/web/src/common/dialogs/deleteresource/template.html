@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,7 +23,9 @@ limitations under the License.
 <mat-dialog-content class="kd-dialog-text">
   <ng-container i18n>
     <span>Are you sure you want to delete {{ data.displayName }} <i>{{ data.objectMeta.name }}</i></span>
-    <span *ngIf="data.objectMeta.namespace"> &nbsp;in namespace <i>{{ data.objectMeta.namespace }}</i> </span>
+    @if (data.objectMeta.namespace) {
+    <span> &nbsp;in namespace <i>{{ data.objectMeta.namespace }}</i> </span>
+    }
     <span>?</span>
   </ng-container>
   <ng-container>
@@ -36,12 +38,9 @@ limitations under the License.
         [(ngModel)]="options.propagation"
         class="kd-dialog-propagation-select"
       >
-        <mat-option
-          *ngFor="let propagation of DeletionPropagation | values"
-          [value]="propagation"
-        >
-          {{ propagation }}
-        </mat-option>
+        @for (propagation of DeletionPropagation | values; track propagation) {
+        <mat-option [value]="propagation"> {{ propagation }} </mat-option>
+        }
       </mat-select>
     </div>
   </ng-container>
@@ -67,8 +66,7 @@ limitations under the License.
       <div i18n>This action is equivalent to:</div>
       <code>
         <ng-container>kubectl delete </ng-container>
-        <ng-container *ngIf="data.objectMeta.namespace">-n {{ data.objectMeta.namespace }} </ng-container>
-        <ng-container *ngIf="options.deleteNow">--now </ng-container>
+        @if (data.objectMeta.namespace) { -n {{ data.objectMeta.namespace }} } @if (options.deleteNow) { --now }
         <ng-container>{{ data.typeMeta.kind }} {{ data.objectMeta.name }} </ng-container>
         <ng-container>--cascade={{ options.propagation.toLocaleLowerCase() }}</ng-container>
       </code>

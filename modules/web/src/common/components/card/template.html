@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,8 +24,8 @@ limitations under the License.
     'kd-flex': role === 'flex',
   }"
 >
+  @if (withTitle) {
   <mat-card-title
-    *ngIf="withTitle"
     [ngClass]="getTitleClasses()"
     (click)="onCardHeaderClick(); $event.stopPropagation()"
     fxLayoutAlign=" center"
@@ -36,37 +36,34 @@ limitations under the License.
     >
       <ng-content select="[title]"></ng-content>
     </div>
-
+    @if (!expanded) {
     <div
-      *ngIf="!expanded"
       class="kd-card-description kd-muted"
       fxLayoutAlign=" center"
       fxFlex="80"
     >
       <ng-content select="[description]"></ng-content>
     </div>
-
-    <div
-      *ngIf="expanded && expandable"
-      class="kd-card-actions kd-muted"
-    >
+    } @if (expanded && expandable) {
+    <div class="kd-card-actions kd-muted">
       <ng-content select="[actions]"></ng-content>
     </div>
+    } @if (expandable) {
     <button
       class="kd-card-toggle"
       mat-icon-button
       (click)="expand(); $event.stopPropagation()"
-      *ngIf="expandable"
     >
       <mat-icon
         class="kd-muted"
         [matTooltip]="expanded ? message.Minimize : message.Expand"
       >
-        <ng-container *ngIf="expanded">arrow_drop_up</ng-container>
-        <ng-container *ngIf="!expanded">arrow_drop_down</ng-container>
+        @if (expanded) { arrow_drop_up } @if (!expanded) { arrow_drop_down }
       </mat-icon>
     </button>
+    }
   </mat-card-title>
+  }
 
   <div
     [@expandInOut]="!expanded"
@@ -76,12 +73,13 @@ limitations under the License.
       class="kd-card-content"
       [ngClass]="{'kd-card-content-table': role === 'table'}"
     >
-      <div *ngIf="initialized; else loading">
+      @if (initialized) {
+      <div>
         <ng-content select="[content]"></ng-content>
       </div>
-      <ng-template #loading>
-        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
-      </ng-template>
+      } @else {
+      <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+      }
     </mat-card-content>
 
     <mat-card-footer>

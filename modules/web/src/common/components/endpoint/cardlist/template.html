@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,10 +26,8 @@ limitations under the License.
   </div>
 
   <div description>
-    <div
-      class="kd-inline-property"
-      *ngIf="endpoints?.length"
-    >
+    @if (endpoints?.length) {
+    <div class="kd-inline-property">
       <span
         class="kd-muted-light"
         i18n
@@ -37,6 +35,7 @@ limitations under the License.
       >
       <span>{{ endpoints.length }}</span>
     </div>
+    }
   </div>
 
   <div
@@ -54,8 +53,7 @@ limitations under the License.
           >Host</mat-header-cell
         >
         <mat-cell *matCellDef="let endpoint">
-          <ng-container *ngIf="endpoint.host">{{ endpoint.host }}</ng-container>
-          <ng-container *ngIf="!endpoint.host">-</ng-container>
+          @if (endpoint.host) { {{ endpoint.host }} } @if (!endpoint.host) { - }
         </mat-cell>
       </ng-container>
       <ng-container [matColumnDef]="getEndpointsColumns()[1]">
@@ -65,16 +63,15 @@ limitations under the License.
           >Ports (Name, Port, Protocol)</mat-header-cell
         >
         <mat-cell *matCellDef="let endpoint">
-          <ng-container *ngIf="endpoint?.ports">
-            <div
-              *ngFor="let port of endpoint.ports"
-              class="ports-item-line-height"
-            >
-              <span *ngIf="port.name">{{ port.name }},{{ port.port }},{{ port.protocol }}</span>
-              <span *ngIf="!port.name">&lt;<span i18n>unset</span>&gt;,{{ port.port }},{{ port.protocol }}</span>
-            </div>
-          </ng-container>
-          <ng-container *ngIf="!endpoint?.ports">-</ng-container>
+          @if (endpoint?.ports) { @for (port of endpoint.ports; track port) {
+          <div class="ports-item-line-height">
+            @if (port.name) {
+            <span>{{ port.name }},{{ port.port }},{{ port.protocol }}</span>
+            } @if (!port.name) {
+            <span>&lt;<span i18n>unset</span>&gt;,{{ port.port }},{{ port.protocol }}</span>
+            }
+          </div>
+          } } @if (!endpoint?.ports) { - }
         </mat-cell>
       </ng-container>
       <ng-container [matColumnDef]="getEndpointsColumns()[2]">
@@ -84,8 +81,7 @@ limitations under the License.
           >Node</mat-header-cell
         >
         <mat-cell *matCellDef="let endpoint">
-          <ng-container *ngIf="endpoint.nodeName"> {{ endpoint.nodeName }} </ng-container>
-          <ng-container *ngIf="!endpoint.nodeName">-</ng-container>
+          @if (endpoint.nodeName) { {{ endpoint.nodeName }} } @if (!endpoint.nodeName) { - }
         </mat-cell>
       </ng-container>
       <ng-container [matColumnDef]="getEndpointsColumns()[3]">
@@ -95,8 +91,7 @@ limitations under the License.
           >Ready</mat-header-cell
         >
         <mat-cell *matCellDef="let endpoint">
-          <ng-container *ngIf="endpoint.ready"> {{ endpoint.ready }} </ng-container>
-          <ng-container *ngIf="!endpoint.ready">-</ng-container>
+          @if (endpoint.ready) { {{ endpoint.ready }} } @if (!endpoint.ready) { - }
         </mat-cell>
       </ng-container>
       <mat-header-row *matHeaderRowDef="getEndpointsColumns()"></mat-header-row>

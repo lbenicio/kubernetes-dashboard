@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,10 +21,8 @@ limitations under the License.
   role="inner"
 >
   <div description>
-    <div
-      class="kd-inline-property"
-      *ngIf="volumeMounts?.length"
-    >
+    @if (volumeMounts?.length) {
+    <div class="kd-inline-property">
       <span
         class="kd-muted-light"
         i18n
@@ -32,6 +30,7 @@ limitations under the License.
       >
       <span>{{ volumeMounts.length }}</span>
     </div>
+    }
   </div>
 
   <div
@@ -86,20 +85,17 @@ limitations under the License.
           >Source Name</mat-header-cell
         >
         <mat-cell *matCellDef="let volumeMount">
-          <ng-container *ngIf="isResourceSupported(getMountTypeFromVolume(volumeMount.volume))">
-            <a
-              [routerLink]="
+          @if (isResourceSupported(getMountTypeFromVolume(volumeMount.volume))) {
+          <a
+            [routerLink]="
                 getDetailsHref(getNameFromVolume(volumeMount.volume), getMountTypeFromVolume(volumeMount.volume))
               "
-              queryParamsHandling="preserve"
-            >
-              {{ getNameFromVolume(volumeMount.volume) }}
-            </a>
-          </ng-container>
-
-          <ng-container *ngIf="!isResourceSupported(getMountTypeFromVolume(volumeMount.volume))">
+            queryParamsHandling="preserve"
+          >
             {{ getNameFromVolume(volumeMount.volume) }}
-          </ng-container>
+          </a>
+          } @if (!isResourceSupported(getMountTypeFromVolume(volumeMount.volume))) { {{
+          getNameFromVolume(volumeMount.volume) }} }
         </mat-cell>
       </ng-container>
       <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
