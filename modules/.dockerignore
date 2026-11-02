@@ -1,0 +1,6 @@
+# Frontend dependencies are not needed by the Go service image builds.
+web/node_modules/
+web/.yarn/cache/
+web/.yarn/install-state.gz
+web/.angular/
+web/coverage/
