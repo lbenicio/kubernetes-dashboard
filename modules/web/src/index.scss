@@ -301,6 +301,11 @@ router-outlet::after {
   margin-bottom: $baseline-grid;
 }
 
+.kd-actionbar-row {
+  display: flex;
+  flex-direction: row;
+}
+
 .kd-margin-right {
   margin-right: $baseline-grid;
 }

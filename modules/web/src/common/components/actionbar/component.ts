@@ -17,6 +17,7 @@ import {Component, ChangeDetectionStrategy} from '@angular/core';
 @Component({
   selector: 'kd-actionbar',
   templateUrl: './template.html',
+  styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })

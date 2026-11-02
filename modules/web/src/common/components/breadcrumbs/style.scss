@@ -16,7 +16,9 @@
 
 .kd-breadcrumbs-container {
   display: flex;
+  flex: 1 1 auto;
   font-size: $subhead-font-size-base-lg;
+  min-width: 0;
   padding: (0.25 * $baseline-grid) 0 0 $baseline-grid;
 
   a {
