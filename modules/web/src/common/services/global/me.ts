@@ -16,7 +16,7 @@
 
 import {EventEmitter, Injectable} from '@angular/core';
 import {User} from '@api/root.api';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {interval, lastValueFrom, Observable, of} from 'rxjs';
 import {catchError, switchMap, take, tap} from 'rxjs/operators';
 
@@ -53,7 +53,9 @@ export class MeService {
   }
 
   me(): Observable<User> {
-    return this._http.get<User>(this._endpoint);
+    return this._http.get<User>(this._endpoint, {
+      headers: new HttpHeaders().set('Cache-Control', 'no-cache'),
+    });
   }
 
   getUserName(): string {

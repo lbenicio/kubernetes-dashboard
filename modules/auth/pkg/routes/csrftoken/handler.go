@@ -31,5 +31,6 @@ func init() {
 func handleCSRFAction(c *gin.Context) {
 	action := c.Param("action")
 	token := xsrftoken.Generate(csrf.Key(), "none", action)
+	c.Header("Cache-Control", "no-store")
 	c.JSON(http.StatusOK, csrf.Response{Token: token})
 }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {CsrfToken} from '@api/root.api';
 import {Observable} from 'rxjs';
@@ -23,6 +23,8 @@ export class CsrfTokenService {
 
   /** Get a CSRF token for an action you want to perform. */
   getTokenForAction(action: string): Observable<CsrfToken> {
-    return this.http_.get<CsrfToken>(`api/v1/csrftoken/${action}`);
+    return this.http_.get<CsrfToken>(`api/v1/csrftoken/${action}`, {
+      headers: new HttpHeaders().set('Cache-Control', 'no-cache'),
+    });
   }
 }
