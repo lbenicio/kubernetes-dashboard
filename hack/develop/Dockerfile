@@ -71,26 +71,34 @@ ENV PATH=${GOPATH}/bin:${PATH}
 # Suppress angular analytics dialog
 ENV NG_CLI_ANALYTICS=false
 
-# Download a statically linked docker client,
-# so the container is able to build images on the host.
-RUN curl -sSL https://download.docker.com/linux/static/stable/x86_64/docker-23.0.1.tgz > /tmp/docker.tgz && \
-	cd /tmp/ && \
-	tar xzvf docker.tgz && \
-	rm docker.tgz && \
-	mv /tmp/docker/docker /usr/bin/docker && \
-	rm -rf /tmp/docker/ && \
-	chmod +x /usr/bin/docker
-
-# Install docker compose plugin
-RUN mkdir -p /usr/local/lib/docker/cli-plugins
-RUN curl -SL https://github.com/docker/compose/releases/download/v2.14.0/docker-compose-linux-x86_64 \
-  -o /usr/local/lib/docker/cli-plugins/docker-compose
-RUN chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
-
-# Install kubectl
-RUN curl -LO https://dl.k8s.io/release/$(curl -sL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
-RUN chmod +x ./kubectl
-RUN mv ./kubectl /usr/local/bin/kubectl
+# Download architecture-matched Docker CLI, Compose, and kubectl binaries.
+# Keep kubectl aligned with the Kubernetes version used by the local Kind cluster.
+ARG DOCKER_CLI_VERSION=29.9.2
+ARG DOCKER_COMPOSE_VERSION=v5.7.0
+ARG KUBECTL_VERSION=v1.35.8
+RUN set -eu; \
+  case "$(dpkg --print-architecture)" in \
+    amd64) DOCKER_ARCH=x86_64; COMPOSE_ARCH=x86_64; KUBECTL_ARCH=amd64 ;; \
+    arm64) DOCKER_ARCH=aarch64; COMPOSE_ARCH=aarch64; KUBECTL_ARCH=arm64 ;; \
+    *) echo "Unsupported development image architecture: $(dpkg --print-architecture)" >&2; exit 1 ;; \
+  esac; \
+  mkdir -p /usr/local/lib/docker/cli-plugins; \
+  curl -fsSL "https://download.docker.com/linux/static/stable/${DOCKER_ARCH}/docker-${DOCKER_CLI_VERSION}.tgz" -o /tmp/docker.tgz; \
+  tar -xzf /tmp/docker.tgz -C /tmp docker/docker; \
+  install -m 0755 /tmp/docker/docker /usr/bin/docker; \
+  rm -rf /tmp/docker /tmp/docker.tgz; \
+  COMPOSE_URL="https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-linux-${COMPOSE_ARCH}"; \
+  curl -fsSL "${COMPOSE_URL}" -o /tmp/docker-compose; \
+  curl -fsSL "${COMPOSE_URL}.sha256" -o /tmp/docker-compose.sha256; \
+  printf '%s  %s\n' "$(awk '{print $1}' /tmp/docker-compose.sha256)" /tmp/docker-compose | sha256sum -c -; \
+  install -m 0755 /tmp/docker-compose /usr/local/lib/docker/cli-plugins/docker-compose; \
+  rm /tmp/docker-compose /tmp/docker-compose.sha256; \
+  KUBECTL_URL="https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${KUBECTL_ARCH}/kubectl"; \
+  curl -fsSL "${KUBECTL_URL}" -o /tmp/kubectl; \
+  curl -fsSL "${KUBECTL_URL}.sha256" -o /tmp/kubectl.sha256; \
+  printf '%s  %s\n' "$(cat /tmp/kubectl.sha256)" /tmp/kubectl | sha256sum -c -; \
+  install -m 0755 /tmp/kubectl /usr/local/bin/kubectl; \
+  rm /tmp/kubectl /tmp/kubectl.sha256
 
 # Install golangci for checking or fixing Go code.
 # The version matches modules/common/tools/go.mod and is built with this Go toolchain.
