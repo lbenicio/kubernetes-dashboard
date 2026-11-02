@@ -55,6 +55,8 @@ rules:
   "@typescript-eslint/no-this-alias": off
   "@typescript-eslint/no-explicit-any": off
   "@angular-eslint/no-host-metadata-property": off
+  "@angular-eslint/prefer-inject": off
+  "@angular-eslint/prefer-standalone": off
   node/no-missing-import: off
   node/no-empty-function: off
   node/no-unpublished-import: off

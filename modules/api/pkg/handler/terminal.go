@@ -49,7 +49,7 @@ type PtyHandler interface {
 // TerminalSession implements PtyHandler (using a SockJS connection)
 type TerminalSession struct {
 	id            string
-	bound         chan error
+	bound         chan struct{}
 	sockJSSession sockjs.Session
 	sizeChan      chan remotecommand.TerminalSize
 }
@@ -205,7 +205,7 @@ func handleTerminalSession(session sockjs.Session) {
 
 	terminalSession.sockJSSession = session
 	terminalSessions.Set(msg.SessionID, terminalSession)
-	terminalSession.bound <- nil
+	terminalSession.bound <- struct{}{}
 }
 
 // CreateAttachHandler is called from main for /api/sockjs

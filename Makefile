@@ -28,7 +28,8 @@ build: $(PRE) ## Runs all available checks
 	@$(MAKE) --no-print-directory -C $(MODULES_DIRECTORY) TARGET=build
 
 .PHONY: check
-check: $(PRE) check-license ## Runs all available checks
+# Keep the dev stack's bind-mounted kubeconfig in .tmp intact while checking.
+check: check-license ## Runs all available checks
 	@$(MAKE) --no-print-directory -C $(MODULES_DIRECTORY) TARGET=check
 
 .PHONY: clean
@@ -57,7 +58,7 @@ schema: $(PRE)
 	@echo "[root] Schema regenerated successfully"
 
 .PHONY: check-license
-check-license: $(PRE) ## Checks if repo files contain valid license header
+check-license: --ensure-tools ## Checks if repo files contain valid license header
 	@echo "Running license check"
 	@${GOPATH}/bin/license-eye header check
 

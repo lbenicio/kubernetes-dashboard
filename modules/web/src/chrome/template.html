@@ -14,13 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<div
-  class="kd-chrome-root"
->
+<div class="kd-chrome-root">
   <mat-toolbar class="kd-toolbar kd-primary-toolbar">
-    <div
-      class="kd-toolbar-tools kd-primary-toolbar-tools"
-    >
+    <div class="kd-toolbar-tools kd-primary-toolbar-tools">
       <div class="kd-logo-bar">
         <a
           [routerLink]="getWorkloadsStateName()"
@@ -79,13 +75,9 @@ limitations under the License.
   </mat-toolbar>
   }
 
-  <div
-    class="kd-chrome-container kd-bg-background"
-  >
+  <div class="kd-chrome-container kd-bg-background">
     <kd-nav></kd-nav>
-    <div
-      class="kd-scroll-container kd-main-scroll-container"
-    >
+    <div class="kd-scroll-container kd-main-scroll-container">
       @switch (loading) { @case (true) {
       <div class="kd-loading-indicator">
         <mat-spinner
@@ -95,9 +87,7 @@ limitations under the License.
         </mat-spinner>
       </div>
       } @case (false) {
-      <div
-        class="kd-scroll-container kd-page-scroll-container"
-      >
+      <div class="kd-scroll-container kd-page-scroll-container">
         <router-outlet></router-outlet>
         <kd-footer></kd-footer>
       </div>

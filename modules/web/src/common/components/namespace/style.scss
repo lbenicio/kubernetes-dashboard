@@ -16,8 +16,8 @@
 
 :host {
   align-items: center;
-  box-sizing: border-box;
   border-radius: $baseline-grid * 0.25;
+  box-sizing: border-box;
   display: flex;
   height: 4.75 * $baseline-grid;
   line-height: 4.5 * $baseline-grid;
@@ -35,9 +35,9 @@
     }
 
     .mat-mdc-form-field-flex {
-      min-height: 4.5 * $baseline-grid;
-      height: 4.5 * $baseline-grid;
       align-items: center;
+      height: 4.5 * $baseline-grid;
+      min-height: 4.5 * $baseline-grid;
       padding: 0;
     }
 
@@ -82,8 +82,8 @@
 .kd-namespace-select-input {
   border: 0;
   box-sizing: border-box;
-  height: 3 * $baseline-grid;
   font-size: $body-font-size-base;
+  height: 3 * $baseline-grid;
   outline: none;
   padding: (2 * $baseline-grid) 0 (2 * $baseline-grid) (2 * $baseline-grid);
   width: 100%;

@@ -24,13 +24,12 @@ $kd-typography: mat.m2-define-typography-config(
   $subtitle-1: mat.m2-define-typography-level($subhead-font-size-base, 24px, $regular-font-weight),
   $subtitle-2: mat.m2-define-typography-level($body-font-size-base, 20px, $bold-font-weight),
   $caption: mat.m2-define-typography-level($caption-font-size-base, 20px, $regular-font-weight),
-  $button: mat.m2-define-typography-level($body-font-size-base, 20px, $bold-font-weight)
+  $button: mat.m2-define-typography-level($body-font-size-base, 20px, $bold-font-weight),
 );
 
 @mixin kd-theme($theme, $colors) {
   $foreground-palette: map.get($theme, foreground);
   $background-palette: map.get($theme, background);
-  color: mat.m2-get-color-from-palette($foreground-palette, text);
   $background: mat.m2-get-color-from-palette($background-palette, background);
   $card-background: mat.m2-get-color-from-palette($background-palette, card);
   $card-background-dark: color.adjust($card-background, $lightness: -5%);
@@ -46,6 +45,8 @@ $kd-typography: mat.m2-define-typography-config(
     0 2px 2px 0 $box-shadow-2,
     0 1px 5px 0 $box-shadow-3;
   $white: #fff;
+
+  color: mat.m2-get-color-from-palette($foreground-palette, text);
 
   // Global style overrides.
 
@@ -235,17 +236,20 @@ $kd-typography: mat.m2-define-typography-config(
   }
 
   .mat-mdc-option-active,
+  /* stylelint-disable-next-line selector-class-pattern -- MDC class name from Angular Material. */
   .mat-mdc-option.mdc-list-item--selected {
     color: map.get($colors, primary) !important;
   }
 
   .kd-namespace-panel {
     background-color: $card-background;
+
     --mat-option-label-text-color: #{mat.m2-get-color-from-palette($foreground-palette, text)};
   }
 
   kd-namespace-selector {
     border: 1px solid $border;
+
     &:hover,
     &.kd-namespace-open {
       background-color: $border;
@@ -259,6 +263,7 @@ $kd-typography: mat.m2-define-typography-config(
       .mdc-line-ripple {
         display: none;
       }
+
       .mat-mdc-select-arrow {
         color: $muted-light !important;
       }
@@ -288,11 +293,13 @@ $kd-typography: mat.m2-define-typography-config(
   .kd-cross-outline {
     stroke: $background;
   }
-  /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+
+  /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
   .mat-button-toggle-group {
     border: 1px solid $border;
   }
-  /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+
+  /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
   .mat-button-toggle-checked {
     background-color: $card-background-dark;
   }
@@ -323,6 +330,7 @@ $kd-typography: mat.m2-define-typography-config(
     .mat-mdc-form-field-infix {
       border-top: 0;
     }
+
     .mdc-line-ripple {
       display: none;
     }

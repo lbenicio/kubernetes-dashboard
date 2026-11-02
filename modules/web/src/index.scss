@@ -19,7 +19,6 @@
 @use './theming';
 @use './dark';
 @use './light';
-
 @include mat.all-component-typographies(theming.$kd-typography);
 
 html,
@@ -84,6 +83,7 @@ code {
   margin: 0 auto;
 }
 
+/* stylelint-disable-next-line selector-class-pattern -- MDC class name from Angular Material. */
 .mat-mdc-option .mdc-list-item__primary-text {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -201,7 +201,7 @@ code {
   padding-right: 3 * $baseline-grid !important;
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
 .mat-button-toggle-group {
   border-bottom: 0 !important;
   box-shadow: none !important;
@@ -426,6 +426,8 @@ router-outlet::after {
   &:focus {
     outline: none;
   }
+
+  /* stylelint-disable-next-line selector-class-pattern -- MDC class name from Angular Material. */
   .mdc-evolution-chip-set__chips {
     flex-wrap: nowrap;
     overflow-x: hidden;
@@ -441,6 +443,7 @@ kd-logs {
   .mat-mdc-form-field {
     max-width: 22 * $baseline-grid;
     width: auto;
+
     .mat-mdc-form-field-subscript-wrapper {
       display: none;
     }

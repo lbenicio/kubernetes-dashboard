@@ -125,13 +125,12 @@
 }
 
 .kd-main-scroll-container {
-  align-content: stretch;
   align-items: stretch;
   box-sizing: border-box;
   display: flex;
   flex: 1 1 0%;
   flex-direction: row;
-  justify-content: center;
+  place-content: stretch center;
 }
 
 .kd-loading-indicator {
@@ -141,6 +140,6 @@
 .kd-page-scroll-container {
   box-sizing: border-box;
   display: flex;
-  flex: 1 1 0.000000001px;
+  flex: 1 1 0;
   flex-direction: column;
 }

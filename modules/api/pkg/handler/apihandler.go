@@ -2197,7 +2197,7 @@ func (in *APIHandler) handleExecShell(request *restful.Request, response *restfu
 
 	terminalSessions.Set(sessionID, TerminalSession{
 		id:       sessionID,
-		bound:    make(chan error),
+		bound:    make(chan struct{}),
 		sizeChan: make(chan remotecommand.TerminalSize),
 	})
 	go WaitForTerminal(k8sClient, cfg, request, sessionID)
