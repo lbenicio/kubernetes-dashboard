@@ -112,7 +112,7 @@
     "cypress-fail-fast": "7.1.1",
     "del": "8.0.0",
     "esbuild-visualizer": "0.7.0",
-    "eslint": "8.57.0",
+    "eslint": "10.14.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-prettier": "5.2.6",
