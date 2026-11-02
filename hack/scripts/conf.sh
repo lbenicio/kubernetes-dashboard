@@ -26,8 +26,8 @@ RELEASE_VERSION=2.5.0
 ARCH=$(uname | awk '{print tolower($0)}')
 
 # Local cluster configuration (check start-cluster.sh script for more details).
-KIND_VERSION="v0.19.0"
-K8S_VERSION="v1.30.2"
+KIND_VERSION="v0.33.0"
+K8S_VERSION="v1.35.8"
 KIND_BIN=${CACHE_DIR}/kind-${KIND_VERSION}
 
 function ensure-cache {

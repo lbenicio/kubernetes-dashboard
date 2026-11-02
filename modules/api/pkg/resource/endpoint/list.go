@@ -16,6 +16,7 @@ package endpoint
 
 import (
 	v1 "k8s.io/api/core/v1"
+	discoveryv1 "k8s.io/api/discovery/v1"
 
 	"k8s.io/dashboard/types"
 )
@@ -26,23 +27,42 @@ type EndpointList struct {
 	Endpoints []Endpoint `json:"endpoints"`
 }
 
-// toEndpointList converts array of api events to endpoint List structure
-func toEndpointList(endpoints []v1.Endpoints) *EndpointList {
+// toEndpointList converts EndpointSlices to the Dashboard endpoint list structure.
+func toEndpointList(endpointSlices []discoveryv1.EndpointSlice) *EndpointList {
 	endpointList := EndpointList{
 		Endpoints: make([]Endpoint, 0),
-		ListMeta:  types.ListMeta{TotalItems: len(endpoints)},
+		ListMeta:  types.ListMeta{},
 	}
 
-	for _, endpoint := range endpoints {
-		for _, subSets := range endpoint.Subsets {
-			for _, address := range subSets.Addresses {
-				endpointList.Endpoints = append(endpointList.Endpoints, *toEndpoint(address, subSets.Ports, true))
-			}
-			for _, notReadyAddress := range subSets.NotReadyAddresses {
-				endpointList.Endpoints = append(endpointList.Endpoints, *toEndpoint(notReadyAddress, subSets.Ports, false))
+	for _, endpointSlice := range endpointSlices {
+		ports := toEndpointPorts(endpointSlice.Ports)
+		for _, endpoint := range endpointSlice.Endpoints {
+			ready := endpoint.Conditions.Ready == nil || *endpoint.Conditions.Ready
+			for _, address := range endpoint.Addresses {
+				endpointList.Endpoints = append(endpointList.Endpoints, *toEndpoint(address, endpoint.NodeName, ports, ready))
 			}
 		}
 	}
 
+	endpointList.ListMeta.TotalItems = len(endpointList.Endpoints)
 	return &endpointList
+}
+
+func toEndpointPorts(endpointPorts []discoveryv1.EndpointPort) []v1.EndpointPort {
+	ports := make([]v1.EndpointPort, 0, len(endpointPorts))
+	for _, endpointPort := range endpointPorts {
+		port := v1.EndpointPort{Protocol: v1.ProtocolTCP}
+		if endpointPort.Name != nil {
+			port.Name = *endpointPort.Name
+		}
+		if endpointPort.Port != nil {
+			port.Port = *endpointPort.Port
+		}
+		if endpointPort.Protocol != nil {
+			port.Protocol = *endpointPort.Protocol
+		}
+		port.AppProtocol = endpointPort.AppProtocol
+		ports = append(ports, port)
+	}
+	return ports
 }

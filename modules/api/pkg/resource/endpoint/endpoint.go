@@ -16,8 +16,8 @@ package endpoint
 
 import (
 	v1 "k8s.io/api/core/v1"
+	discoveryv1 "k8s.io/api/discovery/v1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/labels"
 	k8sClient "k8s.io/client-go/kubernetes"
 	"k8s.io/klog/v2"
@@ -61,38 +61,32 @@ func GetServiceEndpoints(client k8sClient.Interface, namespace, name string) (*E
 	return endpointList, nil
 }
 
-// GetEndpoints gets endpoints associated to resource with given name.
-func GetEndpoints(client k8sClient.Interface, namespace, name string) ([]v1.Endpoints, error) {
-	fieldSelector, err := fields.ParseSelector("metadata.name" + "=" + name)
-	if err != nil {
-		return nil, err
-	}
-
+// GetEndpoints gets EndpointSlices associated to a service with the given name.
+func GetEndpoints(client k8sClient.Interface, namespace, name string) ([]discoveryv1.EndpointSlice, error) {
 	channels := &common.ResourceChannels{
-		EndpointList: common.GetEndpointListChannelWithOptions(client,
+		EndpointSliceList: common.GetEndpointSliceListChannelWithOptions(client,
 			common.NewSameNamespaceQuery(namespace),
 			metaV1.ListOptions{
-				LabelSelector: labels.Everything().String(),
-				FieldSelector: fieldSelector.String(),
+				LabelSelector: labels.Set{discoveryv1.LabelServiceName: name}.AsSelector().String(),
 			},
 			1),
 	}
 
-	endpointList := <-channels.EndpointList.List
-	if err := <-channels.EndpointList.Error; err != nil {
+	endpointSliceList := <-channels.EndpointSliceList.List
+	if err := <-channels.EndpointSliceList.Error; err != nil {
 		return nil, err
 	}
 
-	return endpointList.Items, nil
+	return endpointSliceList.Items, nil
 }
 
-// toEndpoint converts endpoint api Endpoint to Endpoint model object.
-func toEndpoint(address v1.EndpointAddress, ports []v1.EndpointPort, ready bool) *Endpoint {
+// toEndpoint converts an EndpointSlice address to the Dashboard endpoint model.
+func toEndpoint(address string, nodeName *string, ports []v1.EndpointPort, ready bool) *Endpoint {
 	return &Endpoint{
 		TypeMeta: types.NewTypeMeta(types.ResourceKindEndpoint),
-		Host:     address.IP,
+		Host:     address,
 		Ports:    ports,
 		Ready:    ready,
-		NodeName: address.NodeName,
+		NodeName: nodeName,
 	}
 }

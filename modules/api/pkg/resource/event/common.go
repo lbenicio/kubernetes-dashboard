@@ -138,14 +138,14 @@ func GetNodeEvents(client kubernetes.Interface, dsQuery *dataselect.DataSelectQu
 		return &eventList, err
 	}
 
-	eventsInvUID, err := client.CoreV1().Events(v1.NamespaceAll).Search(scheme, node)
+	eventsInvUID, err := client.CoreV1().Events(v1.NamespaceAll).SearchWithContext(context.TODO(), scheme, node)
 	_, criticalError := errors.ExtractErrors(err)
 	if criticalError != nil {
 		return &eventList, criticalError
 	}
 
 	node.UID = apimachinery.UID(node.Name)
-	eventsInvName, err := client.CoreV1().Events(v1.NamespaceAll).Search(scheme, node)
+	eventsInvName, err := client.CoreV1().Events(v1.NamespaceAll).SearchWithContext(context.TODO(), scheme, node)
 	_, criticalError = errors.ExtractErrors(err)
 	if criticalError != nil {
 		return &eventList, criticalError

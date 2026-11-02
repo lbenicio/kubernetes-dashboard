@@ -21,6 +21,7 @@ import (
 	autoscaling "k8s.io/api/autoscaling/v1"
 	batch "k8s.io/api/batch/v1"
 	v1 "k8s.io/api/core/v1"
+	discoveryv1 "k8s.io/api/discovery/v1"
 	networkingv1 "k8s.io/api/networking/v1"
 	policyv1 "k8s.io/api/policy/v1"
 	rbac "k8s.io/api/rbac/v1"
@@ -66,8 +67,8 @@ type ResourceChannels struct {
 	// List and error channels to Services.
 	ServiceList ServiceListChannel
 
-	// List and error channels to Endpoints.
-	EndpointList EndpointListChannel
+	// List and error channels to EndpointSlices.
+	EndpointSliceList EndpointSliceListChannel
 
 	// List and error channels to Ingresses.
 	IngressList IngressListChannel
@@ -312,26 +313,26 @@ func GetEventListChannelWithOptions(client client.Interface,
 	return channel
 }
 
-// EndpointListChannel is a list and error channels to Endpoints.
-type EndpointListChannel struct {
-	List  chan *v1.EndpointsList
+// EndpointSliceListChannel is a list and error channels to EndpointSlices.
+type EndpointSliceListChannel struct {
+	List  chan *discoveryv1.EndpointSliceList
 	Error chan error
 }
 
-func GetEndpointListChannel(client client.Interface, nsQuery *NamespaceQuery, numReads int) EndpointListChannel {
-	return GetEndpointListChannelWithOptions(client, nsQuery, helpers.ListEverything, numReads)
+func GetEndpointSliceListChannel(client client.Interface, nsQuery *NamespaceQuery, numReads int) EndpointSliceListChannel {
+	return GetEndpointSliceListChannelWithOptions(client, nsQuery, helpers.ListEverything, numReads)
 }
 
-// GetEndpointListChannelWithOptions is GetEndpointListChannel plus list options.
-func GetEndpointListChannelWithOptions(client client.Interface,
-	nsQuery *NamespaceQuery, opt metaV1.ListOptions, numReads int) EndpointListChannel {
-	channel := EndpointListChannel{
-		List:  make(chan *v1.EndpointsList, numReads),
+// GetEndpointSliceListChannelWithOptions is GetEndpointSliceListChannel plus list options.
+func GetEndpointSliceListChannelWithOptions(client client.Interface,
+	nsQuery *NamespaceQuery, opt metaV1.ListOptions, numReads int) EndpointSliceListChannel {
+	channel := EndpointSliceListChannel{
+		List:  make(chan *discoveryv1.EndpointSliceList, numReads),
 		Error: make(chan error, numReads),
 	}
 
 	go func() {
-		list, err := client.CoreV1().Endpoints(nsQuery.ToRequestParam()).List(context.TODO(), opt)
+		list, err := client.DiscoveryV1().EndpointSlices(nsQuery.ToRequestParam()).List(context.TODO(), opt)
 
 		for i := 0; i < numReads; i++ {
 			channel.List <- list
