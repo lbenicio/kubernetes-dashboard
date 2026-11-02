@@ -13,7 +13,7 @@
 // limitations under the License.
 
 @use 'sass:map';
-@use '@angular/material/theming' as mat-theming;
+@use '@angular/material' as mat-theming;
 @use './theming';
 
 $colors-dark: (
@@ -32,15 +32,21 @@ $colors-dark: (
   scrollbar: rgb(100 100 100 / 0.33),
 );
 $kd-blue: map_merge(
-  mat-theming.$mat-blue,
+  mat-theming.$blue-palette,
   (
     500: #327df4,
   )
 );
-$theme-dark: mat-theming.mat-dark-theme(
-  mat-theming.mat-palette($kd-blue),
-  mat-theming.mat-palette($kd-blue),
-  mat-theming.mat-palette($kd-blue)
+$theme-dark: mat-theming.define-dark-theme(
+  (
+    color: (
+      primary: mat-theming.define-palette($kd-blue),
+      accent: mat-theming.define-palette($kd-blue),
+      warn: mat-theming.define-palette($kd-blue),
+    ),
+    typography: mat-theming.define-typography-config(),
+    density: 0,
+  )
 );
 $background: map.get($theme-dark, background);
 $background: map_merge(
@@ -75,7 +81,7 @@ $theme-dark: map_merge(
 );
 
 .kd-dark-theme {
-  @include mat-theming.angular-material-theme($theme-dark);
+  @include mat-theming.all-component-themes($theme-dark);
   @include theming.kd-theme($theme-dark, $colors-dark);
 
   .kd-toolbar-logo-text,
