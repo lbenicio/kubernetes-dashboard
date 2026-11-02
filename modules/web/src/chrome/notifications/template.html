@@ -35,25 +35,19 @@ limitations under the License.
   @if (isOpen()) {
   <div
     class="kd-notifications-panel"
-    fxLayout="column"
   >
     <div class="kd-notifications-content">
       @for (notification of notifications; track notification; let last = $last; let index = $index) {
       <div
-        fxLayout="column"
+        class="kd-notification-list-item"
         [ngClass]="{'kd-notification-unread': !notification.read}"
       >
         <div
-          fxLayout="row"
-          fxLayoutAlign=" center"
           class="kd-notification-container"
           [ngClass]="notification.cssClass"
         >
           <mat-icon class="kd-notification-icon">{{ notification.icon }}</mat-icon>
-          <div
-            fxLayout="column"
-            fxFlex
-          >
+          <div class="kd-notification-text">
             <span class="kd-notification">{{ notification.message }}</span>
             <span
               class="kd-notification-timestamp kd-muted"
@@ -80,8 +74,6 @@ limitations under the License.
       } @if (notifications.length === 0) {
       <div
         class="kd-notifications-zero-state kd-muted"
-        fxLayoutAlign="center center"
-        fxFlex
         i18n
       >
         There are no notifications

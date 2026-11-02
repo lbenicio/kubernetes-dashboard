@@ -23,14 +23,10 @@ limitations under the License.
     [ngClass]="hasAuthHeader() ? 'kd-auth-header' : ''"
   >
     <div
-      fxFlex
-      fxLayout="row"
+      class="kd-auth-status-row"
     >
       <div
-        fxFlex
-        fxFlexAlign=" center"
-        fxLayout="column"
-        class="method kd-muted-light"
+        class="kd-auth-status-method method kd-muted-light"
       >
         @if (hasAuthHeader()) {
         <ng-container i18n>Logged in with auth header </ng-container>

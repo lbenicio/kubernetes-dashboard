@@ -19,3 +19,22 @@
   font-size: $caption-font-size-base;
   padding: $content-padding $content-padding $content-padding;
 }
+
+.kd-footer-content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.kd-footer-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.kd-footer-links {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}

@@ -64,6 +64,21 @@
   flex-direction: row;
 }
 
+.kd-secondary-toolbar-tools {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: row;
+}
+
+.kd-secondary-toolbar-hamburger {
+  flex: 0 0 auto;
+}
+
+.kd-secondary-toolbar-actionbar {
+  margin-left: auto;
+}
+
 .kd-logo-bar {
   height: 4 * $baseline-grid;
   width: $nav-width;

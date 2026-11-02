@@ -24,6 +24,18 @@
   padding: $baseline-grid (2 * $baseline-grid) (2 * $baseline-grid);
 }
 
+.kd-auth-status-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.kd-auth-status-method {
+  align-self: center;
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: column;
+}
+
 .kd-auth-header {
   padding-top: 2 * $baseline-grid;
 }

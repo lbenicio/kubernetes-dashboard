@@ -14,7 +14,15 @@
 
 @use '../../variables' as *;
 
+:host {
+  display: flex;
+  min-width: 0;
+}
+
 .kd-search {
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  min-width: 0;
   border-radius: $baseline-grid * 0.25;
   padding-left: $baseline-grid;
 
@@ -30,4 +38,21 @@
     margin-left: $baseline-grid * 2;
     padding-right: $baseline-grid * 2;
   }
+}
+
+.kd-search-form {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  min-width: 0;
+}
+
+.kd-search-input {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+
+.kd-search-icon {
+  flex: 0 0 auto;
 }
