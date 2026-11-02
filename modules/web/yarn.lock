@@ -11782,14 +11782,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:4.3.2, js-yaml@npm:^4.1.0, js-yaml@npm:^4.3.2":
-  version: 4.3.2
-  resolution: "js-yaml@npm:4.3.2"
+"js-yaml@npm:5.5.0, js-yaml@npm:^5.4.1":
+  version: 5.5.0
+  resolution: "js-yaml@npm:5.5.0"
   dependencies:
-    argparse: ^2.0.1
+    argparse: ^3.0.3
   bin:
-    js-yaml: bin/js-yaml.js
-  checksum: 3c9294448ed83fec340f017f2be056dab05bcba3fc742468a80275d264e982dfd94350a93640eb810e0fdf283bef7c1c810690cc69b7b04a187f781e079d2555
+    js-yaml: bin/js-yaml.mjs
+  checksum: cc72b07047154c8ee26a30f081cd93b99ddd4c5ab06f57ab562f728fdd5b599a7c6658f2b41d5eb11908605c9c2f005b72b56d606a4d9a460cc6324a00ba26dc
   languageName: node
   linkType: hard
 
@@ -11805,14 +11805,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^5.4.1":
-  version: 5.5.0
-  resolution: "js-yaml@npm:5.5.0"
+"js-yaml@npm:^4.1.0, js-yaml@npm:^4.3.2":
+  version: 4.3.2
+  resolution: "js-yaml@npm:4.3.2"
   dependencies:
-    argparse: ^3.0.3
+    argparse: ^2.0.1
   bin:
-    js-yaml: bin/js-yaml.mjs
-  checksum: cc72b07047154c8ee26a30f081cd93b99ddd4c5ab06f57ab562f728fdd5b599a7c6658f2b41d5eb11908605c9c2f005b72b56d606a4d9a460cc6324a00ba26dc
+    js-yaml: bin/js-yaml.js
+  checksum: 3c9294448ed83fec340f017f2be056dab05bcba3fc742468a80275d264e982dfd94350a93640eb810e0fdf283bef7c1c810690cc69b7b04a187f781e079d2555
   languageName: node
   linkType: hard
 
@@ -12115,7 +12115,7 @@ __metadata:
     jest-environment-jsdom: 30.5.2
     jest-preset-angular: 17.0.3
     js-base64: 3.7.7
-    js-yaml: 4.3.2
+    js-yaml: 5.5.0
     jsdom: 26.1.0
     jwt-decode: 4.0.0
     lint-staged: 15.5.2
