@@ -424,14 +424,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/animations@npm:21.2.25":
-  version: 21.2.25
-  resolution: "@angular/animations@npm:21.2.25"
+"@angular/animations@npm:22.2.4":
+  version: 22.2.4
+  resolution: "@angular/animations@npm:22.2.4"
   dependencies:
     tslib: ^2.3.0
   peerDependencies:
-    "@angular/core": 21.2.25
-  checksum: bffdf087bdc52a1e2b899de88edd5359de9263167fd7407f5b0f6bc08485430a204afd0ed60524abd75310713ef0fbaada2579dfb21b341a8b3d1e0653cfd12a
+    "@angular/core": 22.2.4
+  checksum: 988cf0845d009d87b491a9ed69e34c93af99e990dda8e16278102db83a606355b735d8b201aa3956cb7278d16a39a3417a3272914632698a85638d4f9c0d6af2
   languageName: node
   linkType: hard
 
@@ -17484,7 +17484,7 @@ __metadata:
   dependencies:
     "@angular-devkit/build-angular": 21.2.29
     "@angular-eslint/eslint-plugin": 21.4.0
-    "@angular/animations": 21.2.25
+    "@angular/animations": 22.2.4
     "@angular/build": 21.2.29
     "@angular/cdk": 21.2.14
     "@angular/cli": 21.2.29
