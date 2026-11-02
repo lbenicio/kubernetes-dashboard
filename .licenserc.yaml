@@ -72,5 +72,6 @@ header:
     - "OWNERS_ALIASES"
     - "SECURITY_CONTACTS"
     - "charts/kubernetes-dashboard/templates/networking/post-install-ingress-issuer.yaml"
+    - ".gitignore"
   comment: on-failure
   license-location-threshold: 80
