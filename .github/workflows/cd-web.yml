@@ -15,7 +15,7 @@
 name: CD / Web
 on:
   push:
-    branches: [master]
+    branches: [main]
     paths:
       - .github/workflows/cd-web.yml
       - modules/web
