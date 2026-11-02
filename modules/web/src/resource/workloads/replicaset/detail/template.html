@@ -16,7 +16,7 @@ limitations under the License.
 
 <kd-object-meta
   [initialized]="isInitialized"
-  [objectMeta]="replicaSet?.objectMeta"
+  [objectMeta]="$safeNavigationMigration(replicaSet?.objectMeta)"
 ></kd-object-meta>
 
 <kd-card [initialized]="isInitialized">
@@ -96,7 +96,7 @@ limitations under the License.
 </kd-card>
 
 <kd-pod-status-card
-  [podInfo]="replicaSet?.podInfo"
+  [podInfo]="$safeNavigationMigration(replicaSet?.podInfo)"
   [initialized]="isInitialized"
 ></kd-pod-status-card>
 

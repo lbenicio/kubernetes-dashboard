@@ -16,7 +16,7 @@ limitations under the License.
 
 <kd-object-meta
   [initialized]="isInitialized"
-  [objectMeta]="object?.objectMeta"
+  [objectMeta]="$safeNavigationMigration(object?.objectMeta)"
 ></kd-object-meta>
 
 <kd-card>

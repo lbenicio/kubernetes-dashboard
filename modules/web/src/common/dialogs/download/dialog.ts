@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {HttpClient, HttpEventType, HttpParams, HttpRequest, HttpResponse} from '@angular/common/http';
-import {Component, DestroyRef, inject, Inject} from '@angular/core';
+import {Component, DestroyRef, inject, Inject, ChangeDetectionStrategy} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {LogOptions} from '@api/root.api';
 import {saveAs} from 'file-saver';
@@ -31,6 +31,7 @@ export interface LogsDownloadDialogMeta {
   selector: 'kd-logs-download-dialog',
   templateUrl: 'template.html',
   styleUrls: ['style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class LogsDownloadDialogComponent {

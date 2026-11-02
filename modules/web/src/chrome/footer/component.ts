@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, ChangeDetectionStrategy} from '@angular/core';
 
 import {AssetsService} from '@common/services/global/assets';
 import {ConfigService} from '@common/services/global/config';
@@ -21,6 +21,7 @@ import {ConfigService} from '@common/services/global/config';
   selector: 'kd-footer',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class FooterComponent {

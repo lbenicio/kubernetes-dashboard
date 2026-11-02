@@ -47,7 +47,7 @@ limitations under the License.
         >Age:&nbsp;</span
       >
       <kd-date
-        [date]="objectMeta?.creationTimestamp"
+        [date]="$safeNavigationMigration(objectMeta?.creationTimestamp)"
         relative
       ></kd-date>
     </div>
@@ -83,7 +83,7 @@ limitations under the License.
           Created
         </div>
         <div value>
-          <kd-date [date]="objectMeta?.creationTimestamp"></kd-date>
+          <kd-date [date]="$safeNavigationMigration(objectMeta?.creationTimestamp)"></kd-date>
         </div>
       </kd-property>
       <kd-property [ngClass]="'object-meta-age'">
@@ -95,7 +95,7 @@ limitations under the License.
         </div>
         <div value>
           <kd-date
-            [date]="objectMeta?.creationTimestamp"
+            [date]="$safeNavigationMigration(objectMeta?.creationTimestamp)"
             relative
           ></kd-date>
         </div>
@@ -144,7 +144,7 @@ limitations under the License.
         </div>
         <div value>
           <kd-chips
-            [map]="objectMeta?.labels"
+            [map]="$safeNavigationMigration(objectMeta?.labels)"
             [displayAll]="true"
           ></kd-chips>
         </div>
@@ -162,7 +162,7 @@ limitations under the License.
         </div>
         <div value>
           <kd-chips
-            [map]="objectMeta?.annotations"
+            [map]="$safeNavigationMigration(objectMeta?.annotations)"
             [displayAll]="true"
           ></kd-chips>
         </div>

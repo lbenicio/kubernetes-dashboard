@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, DestroyRef, EventEmitter, inject, OnInit} from '@angular/core';
+import {Component, DestroyRef, EventEmitter, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {ReplaySubject, Subject} from 'rxjs';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
@@ -21,6 +21,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
   selector: 'kd-card-list-filter',
   templateUrl: './template.html',
   styleUrls: ['style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CardListFilterComponent implements OnInit {

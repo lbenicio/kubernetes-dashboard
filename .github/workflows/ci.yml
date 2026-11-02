@@ -87,7 +87,7 @@ jobs:
           check-latest: true
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.19.0
+          node-version: 22.22.3
       - working-directory: modules/web
         run: yarn
       - run: PATH=$PATH:$GOPATH/bin make check
@@ -186,7 +186,7 @@ jobs:
           check-latest: true
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.19.0
+          node-version: 22.22.3
       - working-directory: modules/web
         run: yarn
       - run: PATH=$PATH:$GOPATH/bin make coverage

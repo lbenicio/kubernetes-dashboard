@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, ChangeDetectionStrategy} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 export interface ConfirmDialogConfig {
@@ -23,6 +23,7 @@ export interface ConfirmDialogConfig {
 @Component({
   selector: 'kd-confirm-dialog',
   templateUrl: 'template.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ConfirmDialogComponent {

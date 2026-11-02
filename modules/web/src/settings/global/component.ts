@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {HttpErrorResponse} from '@angular/common/http';
-import {Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {Component, DestroyRef, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {UntypedFormBuilder, UntypedFormGroup} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {GlobalSettings, NamespaceList} from '@api/root.api';
@@ -46,6 +46,7 @@ enum Controls {
   selector: 'kd-global-settings',
   templateUrl: './template.html',
   styleUrls: ['style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class GlobalSettingsComponent implements OnInit {

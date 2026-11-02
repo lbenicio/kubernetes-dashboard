@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Inject, Input} from '@angular/core';
+import {Component, Inject, Input, ChangeDetectionStrategy} from '@angular/core';
 import {ObjectMeta, TypeMeta} from '@api/root.api';
 import {IMessage} from '@api/root.ui';
 import {PinnerService} from '@common/services/global/pinner';
@@ -21,6 +21,7 @@ import {MESSAGES_DI_TOKEN} from '../../../../../index.messages';
 @Component({
   selector: 'kd-actionbar-detail-pin',
   templateUrl: './template.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ActionbarDetailPinComponent {

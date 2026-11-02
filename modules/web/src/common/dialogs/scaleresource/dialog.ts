@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {HttpClient} from '@angular/common/http';
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ReplicaCounts} from '@api/root.api';
 
@@ -22,6 +22,7 @@ import {ResourceMeta} from '../../services/global/actionbar';
 @Component({
   selector: 'kd-delete-resource-dialog',
   templateUrl: 'template.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ScaleResourceDialogComponent implements OnInit {

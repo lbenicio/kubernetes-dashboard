@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Params, Route, Router} from '@angular/router';
 import {Breadcrumb, IMessage} from '@api/root.ui';
 import {distinctUntilChanged, filter} from 'rxjs/operators';
@@ -30,6 +30,7 @@ export const SEARCH_BREADCRUMB_PLACEHOLDER = '___SEARCH_BREADCRUMB_PLACEHOLDER__
   selector: 'kd-breadcrumbs',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class BreadcrumbsComponent implements OnInit {

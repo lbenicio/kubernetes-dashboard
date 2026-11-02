@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, ElementRef, HostListener, Inject} from '@angular/core';
+import {Component, ElementRef, HostListener, Inject, ChangeDetectionStrategy} from '@angular/core';
 import {IMessage} from '@api/root.ui';
 
 import {Animations} from '@common/animations/animations';
@@ -24,6 +24,7 @@ import {MESSAGES_DI_TOKEN} from '../../index.messages';
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   animations: [Animations.easeOut],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class NotificationsComponent {

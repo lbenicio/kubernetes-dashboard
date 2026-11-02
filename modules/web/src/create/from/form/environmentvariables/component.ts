@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, forwardRef, OnInit} from '@angular/core';
+import {Component, forwardRef, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -41,6 +41,7 @@ import {EnvironmentVariable} from '@api/root.api';
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class EnvironmentVariablesComponent implements OnInit, ControlValueAccessor {

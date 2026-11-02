@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {Endpoint} from '@api/root.api';
 
 /**
@@ -23,6 +23,7 @@ import {Endpoint} from '@api/root.api';
   selector: 'kd-external-endpoint',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ExternalEndpointComponent implements OnInit {

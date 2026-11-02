@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 
 import {ListGroupIdentifier} from '@common/components/resourcelist/groupids';
 import {GroupedResourceList} from '@common/resources/groupedlist';
@@ -20,6 +20,7 @@ import {GroupedResourceList} from '@common/resources/groupedlist';
 @Component({
   selector: 'kd-overview',
   templateUrl: './template.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class OverviewComponent extends GroupedResourceList {

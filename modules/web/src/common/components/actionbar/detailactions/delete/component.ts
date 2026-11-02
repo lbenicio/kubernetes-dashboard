@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ObjectMeta, TypeMeta} from '@api/root.api';
 import {take} from 'rxjs/operators';
@@ -22,6 +22,7 @@ import {VerberService} from '@common/services/global/verber';
 @Component({
   selector: 'kd-actionbar-detail-delete',
   templateUrl: './template.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ActionbarDetailDeleteComponent implements OnInit {

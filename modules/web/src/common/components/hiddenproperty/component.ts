@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Input} from '@angular/core';
+import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 
 export enum HiddenPropertyMode {
   Hidden = 'hidden',
@@ -24,6 +24,7 @@ export enum HiddenPropertyMode {
   selector: 'kd-hidden-property',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class HiddenPropertyComponent {

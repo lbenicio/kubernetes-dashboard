@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {HttpClient} from '@angular/common/http';
-import {Component, Inject, OnInit, DOCUMENT} from '@angular/core';
+import {Component, Inject, OnInit, DOCUMENT, ChangeDetectionStrategy} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {AssetsService} from '@common/services/global/assets';
@@ -28,6 +28,7 @@ class SystemBanner {
   selector: 'kd-chrome',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ChromeComponent implements OnInit {

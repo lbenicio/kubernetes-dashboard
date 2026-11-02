@@ -16,7 +16,7 @@ limitations under the License.
 
 <kd-object-meta
   [initialized]="isInitialized"
-  [objectMeta]="job?.objectMeta"
+  [objectMeta]="$safeNavigationMigration(job?.objectMeta)"
 ></kd-object-meta>
 
 <kd-card [initialized]="isInitialized">
@@ -110,12 +110,12 @@ limitations under the License.
 </kd-card>
 
 <kd-condition-list
-  [conditions]="job?.jobStatus?.conditions"
+  [conditions]="$safeNavigationMigration(job?.jobStatus?.conditions)"
   [initialized]="isInitialized"
 ></kd-condition-list>
 
 <kd-pod-status-card
-  [podInfo]="job?.podInfo"
+  [podInfo]="$safeNavigationMigration(job?.podInfo)"
   [initialized]="isInitialized"
 ></kd-pod-status-card>
 

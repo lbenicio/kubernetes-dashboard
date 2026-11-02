@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, ViewChild} from '@angular/core';
+import {Component, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {ICanDeactivate} from '@common/interfaces/candeactivate';
 import {CreateFromFileComponent} from './from/file/component';
 import {CreateFromFormComponent} from './from/form/component';
@@ -22,6 +22,7 @@ import {CreateFromInputComponent} from './from/input/component';
   selector: 'kd-create',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CreateComponent extends ICanDeactivate {

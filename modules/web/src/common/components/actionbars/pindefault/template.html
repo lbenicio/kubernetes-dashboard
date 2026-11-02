@@ -18,10 +18,10 @@ limitations under the License.
 <div fxLayout="row">
   @if (isInitialized) {
   <kd-actionbar-detail-pin
-    [objectMeta]="resourceMeta?.objectMeta"
-    [typeMeta]="resourceMeta?.typeMeta"
-    [displayName]="resourceMeta?.displayName"
-    [namespaced]="resourceMeta?.namespaced"
+    [objectMeta]="$safeNavigationMigration(resourceMeta?.objectMeta)"
+    [typeMeta]="$safeNavigationMigration(resourceMeta?.typeMeta)"
+    [displayName]="$safeNavigationMigration(resourceMeta?.displayName)"
+    [namespaced]="$safeNavigationMigration(resourceMeta?.namespaced)"
   ></kd-actionbar-detail-pin>
   } @if (isInitialized) {
   <kd-actionbar-detail-actions

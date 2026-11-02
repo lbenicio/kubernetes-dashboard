@@ -90,7 +90,7 @@ limitations under the License.
     </div>
     <div value>{{ securityContext.windowsOptions.runAsUserName }}</div>
   </kd-property>
-  } @if (securityContext?.runAsUser !== undefined) {
+  } @if ($safeNavigationMigration(securityContext?.runAsUser) !== undefined) {
   <kd-property>
     <div
       key
@@ -100,7 +100,7 @@ limitations under the License.
     </div>
     <div value>{{ securityContext.runAsUser }}</div>
   </kd-property>
-  } @if (securityContext?.runAsGroup !== undefined) {
+  } @if ($safeNavigationMigration(securityContext?.runAsGroup) !== undefined) {
   <kd-property>
     <div
       key
@@ -110,7 +110,7 @@ limitations under the License.
     </div>
     <div value>{{ securityContext.runAsGroup }}</div>
   </kd-property>
-  } @if (securityContext?.runAsNonRoot !== undefined) {
+  } @if ($safeNavigationMigration(securityContext?.runAsNonRoot) !== undefined) {
   <kd-property>
     <div
       key
@@ -162,7 +162,7 @@ limitations under the License.
     </div>
     <div value>{{ securityContext.capabilities.drop }}</div>
   </kd-property>
-  } @if (securityContext?.privileged !== undefined) {
+  } @if ($safeNavigationMigration(securityContext?.privileged) !== undefined) {
   <kd-property>
     <div
       key
@@ -172,7 +172,7 @@ limitations under the License.
     </div>
     <div value>{{ securityContext.privileged }}</div>
   </kd-property>
-  } @if (securityContext?.readOnlyRootFilesystem !== undefined) {
+  } @if ($safeNavigationMigration(securityContext?.readOnlyRootFilesystem) !== undefined) {
   <kd-property>
     <div
       key
@@ -182,7 +182,7 @@ limitations under the License.
     </div>
     <div value>{{ securityContext.readOnlyRootFilesystem }}</div>
   </kd-property>
-  } @if (securityContext?.allowPrivilegeEscalation !== undefined) {
+  } @if ($safeNavigationMigration(securityContext?.allowPrivilegeEscalation) !== undefined) {
   <kd-property>
     <div
       key
@@ -204,7 +204,7 @@ limitations under the License.
   </kd-property>
   }
   <!-- Pod Security Context Properties -->
-  @if (securityContext?.fsGroup !== undefined) {
+  @if ($safeNavigationMigration(securityContext?.fsGroup) !== undefined) {
   <kd-property>
     <div
       key

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {HTMLInputEvent, KdFile} from '@api/root.ui';
 import {AlertDialogComponent, AlertDialogConfig} from 'common/dialogs/alert/dialog';
@@ -21,6 +21,7 @@ import {AlertDialogComponent, AlertDialogConfig} from 'common/dialogs/alert/dial
   selector: 'kd-upload-file',
   templateUrl: 'template.html',
   styleUrls: ['style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class UploadFileComponent {

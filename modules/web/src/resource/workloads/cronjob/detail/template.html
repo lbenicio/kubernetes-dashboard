@@ -16,7 +16,7 @@ limitations under the License.
 
 <kd-object-meta
   [initialized]="isInitialized"
-  [objectMeta]="cronJob?.objectMeta"
+  [objectMeta]="$safeNavigationMigration(cronJob?.objectMeta)"
 ></kd-object-meta>
 
 <kd-card [initialized]="isInitialized">
@@ -37,7 +37,7 @@ limitations under the License.
       >
       <span>{{ cronJob.schedule }}</span>
     </div>
-    } @if (cronJob?.active !== null) {
+    } @if ($safeNavigationMigration(cronJob?.active) !== null) {
     <div class="kd-inline-property">
       <span
         class="kd-muted-light"
@@ -46,7 +46,7 @@ limitations under the License.
       >
       <span>{{ cronJob.active }}</span>
     </div>
-    } @if (cronJob?.suspend !== null) {
+    } @if ($safeNavigationMigration(cronJob?.suspend) !== null) {
     <div class="kd-inline-property">
       <span
         class="kd-muted-light"
@@ -73,7 +73,7 @@ limitations under the License.
       </div>
       <div value>{{ cronJob.schedule }}</div>
     </kd-property>
-    } @if (cronJob?.active !== null) {
+    } @if ($safeNavigationMigration(cronJob?.active) !== null) {
     <kd-property>
       <div
         key
@@ -83,7 +83,7 @@ limitations under the License.
       </div>
       <div value>{{ cronJob.active }}</div>
     </kd-property>
-    } @if (cronJob?.suspend !== null) {
+    } @if ($safeNavigationMigration(cronJob?.suspend) !== null) {
     <kd-property>
       <div
         key
@@ -113,7 +113,7 @@ limitations under the License.
       </div>
       <div value>{{ cronJob.concurrencyPolicy }}</div>
     </kd-property>
-    } @if (cronJob?.startingDeadlineSeconds !== null) {
+    } @if ($safeNavigationMigration(cronJob?.startingDeadlineSeconds) !== null) {
     <kd-property>
       <div
         key

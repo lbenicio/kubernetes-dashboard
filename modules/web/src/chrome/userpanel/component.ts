@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, ViewChild} from '@angular/core';
+import {Component, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {MatMenuTrigger} from '@angular/material/menu';
 import {AuthService} from '@common/services/global/authentication';
 import {MeService} from '@common/services/global/me';
@@ -21,6 +21,7 @@ import {MeService} from '@common/services/global/me';
   selector: 'kd-user-panel',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class UserPanelComponent /* implements OnInit */ {

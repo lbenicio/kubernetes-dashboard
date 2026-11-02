@@ -42,7 +42,7 @@ limitations under the License.
         >Age:&nbsp;</span
       >
       <kd-date
-        [date]="creator?.objectMeta.creationTimestamp"
+        [date]="$safeNavigationMigration(creator?.objectMeta.creationTimestamp)"
         relative
       ></kd-date>
     </div>
@@ -104,7 +104,7 @@ limitations under the License.
       </div>
       <div value>
         <kd-date
-          [date]="creator?.objectMeta.creationTimestamp"
+          [date]="$safeNavigationMigration(creator?.objectMeta.creationTimestamp)"
           relative
         ></kd-date>
       </div>

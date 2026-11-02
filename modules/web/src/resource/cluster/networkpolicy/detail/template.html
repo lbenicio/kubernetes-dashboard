@@ -16,7 +16,7 @@ limitations under the License.
 
 <kd-object-meta
   [initialized]="isInitialized"
-  [objectMeta]="networkPolicy?.objectMeta"
+  [objectMeta]="$safeNavigationMigration(networkPolicy?.objectMeta)"
 ></kd-object-meta>
 
 <kd-card [initialized]="isInitialized">
@@ -41,7 +41,7 @@ limitations under the License.
       </div>
       <div value>
         <kd-chips
-          [map]="networkPolicy?.podSelector.matchLabels"
+          [map]="$safeNavigationMigration(networkPolicy?.podSelector.matchLabels)"
           [displayAll]="true"
         ></kd-chips>
       </div>
@@ -56,7 +56,7 @@ limitations under the License.
       </div>
       <div value>
         <kd-chips
-          [map]="networkPolicy?.policyTypes"
+          [map]="$safeNavigationMigration(networkPolicy?.policyTypes)"
           [displayAll]="true"
         ></kd-chips>
       </div>

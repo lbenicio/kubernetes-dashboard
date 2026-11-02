@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {HttpClient} from '@angular/common/http';
-import {Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {Component, DestroyRef, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -49,6 +49,7 @@ const APP_LABEL_KEY = 'k8s-app';
   selector: 'kd-create-from-form',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CreateFromFormComponent extends ICanDeactivate implements OnInit {

@@ -16,7 +16,7 @@ limitations under the License.
 
 <kd-object-meta
   [initialized]="isInitialized"
-  [objectMeta]="namespace?.objectMeta"
+  [objectMeta]="$safeNavigationMigration(namespace?.objectMeta)"
 ></kd-object-meta>
 
 <kd-card [initialized]="isInitialized">
@@ -47,12 +47,12 @@ limitations under the License.
 </kd-card>
 
 <kd-resource-quota-list
-  [quotas]="namespace?.resourceQuotaList?.items"
+  [quotas]="$safeNavigationMigration(namespace?.resourceQuotaList?.items)"
   [initialized]="isInitialized"
 ></kd-resource-quota-list>
 
 <kd-resource-limit-list
-  [limits]="namespace?.resourceLimits"
+  [limits]="$safeNavigationMigration(namespace?.resourceLimits)"
   [initialized]="isInitialized"
 ></kd-resource-limit-list>
 

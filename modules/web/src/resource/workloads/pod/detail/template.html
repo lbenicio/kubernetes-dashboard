@@ -14,11 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<kd-graph-metrics [metrics]="pod?.metrics"></kd-graph-metrics>
+<kd-graph-metrics [metrics]="$safeNavigationMigration(pod?.metrics)"></kd-graph-metrics>
 
 <kd-object-meta
   [initialized]="isInitialized"
-  [objectMeta]="pod?.objectMeta"
+  [objectMeta]="$safeNavigationMigration(pod?.objectMeta)"
 ></kd-object-meta>
 
 <kd-card [initialized]="isInitialized">
@@ -101,7 +101,7 @@ limitations under the License.
       </div>
       <div value>{{ pod.qosClass }}</div>
     </kd-property>
-    } @if (pod?.restartCount !== undefined) {
+    } @if ($safeNavigationMigration(pod?.restartCount) !== undefined) {
     <kd-property>
       <div
         key
@@ -158,7 +158,7 @@ limitations under the License.
         Security Context
       </div>
       <kd-security-context
-        [securityContext]="pod?.securityContext"
+        [securityContext]="$safeNavigationMigration(pod?.securityContext)"
         [initialized]="true"
       >
       </kd-security-context>
@@ -169,13 +169,13 @@ limitations under the License.
 </kd-card>
 
 <kd-condition-list
-  [conditions]="pod?.conditions"
+  [conditions]="$safeNavigationMigration(pod?.conditions)"
   [initialized]="isInitialized"
 ></kd-condition-list>
 
 @if (pod?.controller?.typeMeta?.kind) {
 <kd-creator-card
-  [creator]="pod?.controller"
+  [creator]="$safeNavigationMigration(pod?.controller)"
   [initialized]="isInitialized"
 ></kd-creator-card>
 } @if (pod?.persistentVolumeClaimList) {

@@ -21,6 +21,7 @@ import {
   inject,
   OnDestroy,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -41,6 +42,7 @@ declare let SockJS: any;
   selector: 'kd-shell',
   templateUrl: './template.html',
   styleUrls: ['./styles.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ShellComponent implements AfterViewInit, OnDestroy {

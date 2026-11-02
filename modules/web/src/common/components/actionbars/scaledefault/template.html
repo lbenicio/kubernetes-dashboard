@@ -18,15 +18,15 @@ limitations under the License.
 <div fxLayout="row">
   @if (isInitialized && scalable()) {
   <kd-actionbar-detail-scale
-    [objectMeta]="resourceMeta?.objectMeta"
-    [typeMeta]="resourceMeta?.typeMeta"
-    [displayName]="resourceMeta?.displayName"
+    [objectMeta]="$safeNavigationMigration(resourceMeta?.objectMeta)"
+    [typeMeta]="$safeNavigationMigration(resourceMeta?.typeMeta)"
+    [displayName]="$safeNavigationMigration(resourceMeta?.displayName)"
   ></kd-actionbar-detail-scale>
   } @if (isInitialized && restartable()) {
   <kd-actionbar-detail-restart
-    [objectMeta]="resourceMeta?.objectMeta"
-    [typeMeta]="resourceMeta?.typeMeta"
-    [displayName]="resourceMeta?.displayName"
+    [objectMeta]="$safeNavigationMigration(resourceMeta?.objectMeta)"
+    [typeMeta]="$safeNavigationMigration(resourceMeta?.typeMeta)"
+    [displayName]="$safeNavigationMigration(resourceMeta?.displayName)"
   ></kd-actionbar-detail-restart>
   } @if (isInitialized) {
   <kd-actionbar-detail-actions

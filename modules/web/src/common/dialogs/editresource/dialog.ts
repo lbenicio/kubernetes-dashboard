@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {HttpClient} from '@angular/common/http';
-import {Component, DestroyRef, inject, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, DestroyRef, inject, Inject, OnInit, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {MatButtonToggleGroup} from '@angular/material/button-toggle';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {dump as toYaml, load as fromYaml} from 'js-yaml';
@@ -26,6 +26,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 @Component({
   selector: 'kd-delete-resource-dialog',
   templateUrl: 'template.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class EditResourceDialogComponent implements OnInit {

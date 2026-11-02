@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, ChangeDetectionStrategy} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {ResourceMeta} from '../../services/global/actionbar';
 
 @Component({
   selector: 'kd-restart-resource-dialog',
   templateUrl: 'template.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class RestartResourceDialogComponent {

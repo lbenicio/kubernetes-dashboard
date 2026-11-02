@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {HttpClient} from '@angular/common/http';
-import {Component, EventEmitter, forwardRef, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, forwardRef, Input, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -73,6 +73,7 @@ const EXT_SERVICE: ServiceType = {
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class PortMappingsComponent implements OnInit, ControlValueAccessor {

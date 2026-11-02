@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 
 @Component({
   selector: 'kd-daemon-set-list-state',
   template: '<kd-daemon-set-list [showMetrics]="true"></kd-daemon-set-list>',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class DaemonSetListComponent {}

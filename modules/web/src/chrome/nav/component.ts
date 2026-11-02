@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {MatDrawer} from '@angular/material/sidenav';
 
 import {NavService} from '@common/services/nav/service';
@@ -21,6 +21,7 @@ import {NavService} from '@common/services/nav/service';
   selector: 'kd-nav',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class NavComponent implements OnInit {

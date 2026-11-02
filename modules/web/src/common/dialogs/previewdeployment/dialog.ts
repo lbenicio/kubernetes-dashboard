@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, DestroyRef, inject, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, DestroyRef, inject, Inject, OnInit, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {MatButtonToggleGroup} from '@angular/material/button-toggle';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {dump as toYaml, load as fromYaml} from 'js-yaml';
@@ -27,6 +27,7 @@ export interface PreviewDeploymentDialogData {
 @Component({
   selector: 'kd-preview-deploy-dialog',
   templateUrl: 'template.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class PreviewDeploymentDialogComponent implements OnInit {

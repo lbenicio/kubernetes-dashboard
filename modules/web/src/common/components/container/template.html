@@ -292,7 +292,7 @@ limitations under the License.
         class="kd-volume-mounts"
       >
         <kd-volumemounts-list
-          [volumeMounts]="container?.volumeMounts"
+          [volumeMounts]="$safeNavigationMigration(container?.volumeMounts)"
           [namespace]="namespace"
           [initialized]="initialized"
         >
@@ -330,7 +330,7 @@ limitations under the License.
         Liveness Probe
       </div>
       <kd-probe-card
-        [probe]="container?.livenessProbe"
+        [probe]="$safeNavigationMigration(container?.livenessProbe)"
         [initialized]="initialized"
       >
       </kd-probe-card>
@@ -348,7 +348,7 @@ limitations under the License.
         Readiness Probe
       </div>
       <kd-probe-card
-        [probe]="container?.readinessProbe"
+        [probe]="$safeNavigationMigration(container?.readinessProbe)"
         [initialized]="initialized"
       >
       </kd-probe-card>
@@ -366,7 +366,7 @@ limitations under the License.
         Startup Probe
       </div>
       <kd-probe-card
-        [probe]="container?.startupProbe"
+        [probe]="$safeNavigationMigration(container?.startupProbe)"
         [initialized]="initialized"
       >
       </kd-probe-card>
@@ -383,7 +383,7 @@ limitations under the License.
       </div>
       <div value>
         <kd-chips
-          [map]="container?.resources?.limits"
+          [map]="$safeNavigationMigration(container?.resources?.limits)"
           [displayAll]="true"
         ></kd-chips>
       </div>
@@ -400,7 +400,7 @@ limitations under the License.
       </div>
       <div value>
         <kd-chips
-          [map]="container?.resources?.requests"
+          [map]="$safeNavigationMigration(container?.resources?.requests)"
           [displayAll]="true"
         ></kd-chips>
       </div>

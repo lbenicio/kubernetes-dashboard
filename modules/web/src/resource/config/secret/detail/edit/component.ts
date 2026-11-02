@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, OnInit, Input, EventEmitter, Output} from '@angular/core';
+import {Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy} from '@angular/core';
 import {SecretDetail} from '@api/root.api';
 import {DecoderService} from '@common/services/global/decoder';
 import {RawResource} from 'common/resources/rawresource';
@@ -25,6 +25,7 @@ import {encode} from 'js-base64';
   selector: 'kd-secret-detail-edit',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class SecretDetailEditComponent implements OnInit {

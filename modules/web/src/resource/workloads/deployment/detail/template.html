@@ -16,7 +16,7 @@ limitations under the License.
 
 <kd-object-meta
   [initialized]="isInitialized"
-  [objectMeta]="deployment?.objectMeta"
+  [objectMeta]="$safeNavigationMigration(deployment?.objectMeta)"
 ></kd-object-meta>
 
 <kd-card [initialized]="isInitialized">
@@ -37,7 +37,7 @@ limitations under the License.
       >
       <span>{{ deployment.strategy }}</span>
     </div>
-    } @if (deployment?.minReadySeconds !== null) {
+    } @if ($safeNavigationMigration(deployment?.minReadySeconds) !== null) {
     <div class="kd-inline-property">
       <span
         class="kd-muted-light"
@@ -46,7 +46,7 @@ limitations under the License.
       >
       <span>{{ deployment.minReadySeconds }}</span>
     </div>
-    } @if (deployment?.revisionHistoryLimit !== null) {
+    } @if ($safeNavigationMigration(deployment?.revisionHistoryLimit) !== null) {
     <div class="kd-inline-property">
       <span
         class="kd-muted-light"
@@ -73,7 +73,7 @@ limitations under the License.
       </div>
       <div value>{{ deployment.strategy }}</div>
     </kd-property>
-    } @if (deployment?.minReadySeconds !== null) {
+    } @if ($safeNavigationMigration(deployment?.minReadySeconds) !== null) {
     <kd-property>
       <div
         key
@@ -83,7 +83,7 @@ limitations under the License.
       </div>
       <div value>{{ deployment.minReadySeconds }}</div>
     </kd-property>
-    } @if (deployment?.revisionHistoryLimit !== null) {
+    } @if ($safeNavigationMigration(deployment?.revisionHistoryLimit) !== null) {
     <kd-property>
       <div
         key
@@ -148,7 +148,7 @@ limitations under the License.
     content
     fxLayout="row wrap"
   >
-    @if (deployment?.rollingUpdateStrategy?.maxSurge !== null) {
+    @if ($safeNavigationMigration(deployment?.rollingUpdateStrategy?.maxSurge) !== null) {
     <kd-property>
       <div
         key
@@ -158,7 +158,7 @@ limitations under the License.
       </div>
       <div value>{{ deployment.rollingUpdateStrategy.maxSurge }}</div>
     </kd-property>
-    } @if (deployment?.rollingUpdateStrategy?.maxUnavailable !== null) {
+    } @if ($safeNavigationMigration(deployment?.rollingUpdateStrategy?.maxUnavailable) !== null) {
     <kd-property>
       <div
         key
@@ -272,7 +272,7 @@ limitations under the License.
 </kd-card>
 
 <kd-condition-list
-  [conditions]="deployment?.conditions"
+  [conditions]="$safeNavigationMigration(deployment?.conditions)"
   [initialized]="isInitialized"
 ></kd-condition-list>
 

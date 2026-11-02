@@ -16,7 +16,7 @@ limitations under the License.
 
 <kd-object-meta
   [initialized]="isInitialized"
-  [objectMeta]="persistentVolume?.objectMeta"
+  [objectMeta]="$safeNavigationMigration(persistentVolume?.objectMeta)"
 ></kd-object-meta>
 
 <kd-card [initialized]="isInitialized">
@@ -137,7 +137,7 @@ limitations under the License.
 </kd-card>
 
 <kd-persistent-volume-source
-  [source]="persistentVolume?.persistentVolumeSource"
+  [source]="$safeNavigationMigration(persistentVolume?.persistentVolumeSource)"
   [initialized]="isInitialized"
 ></kd-persistent-volume-source>
 

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Input, OnChanges, OnInit, SimpleChange} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChange, ChangeDetectionStrategy} from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {IngressSpecRule, IngressSpecRuleHttpPath, IngressSpecTLS} from '@api/root.api';
 import {SupportedResources} from '@api/root.shared';
@@ -34,6 +34,7 @@ interface IngressSpecTLSFlat {
 @Component({
   selector: 'kd-ingressruleflat-card-list',
   templateUrl: './template.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class IngressRuleFlatListComponent implements OnInit, OnChanges {

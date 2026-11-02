@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {HttpErrorResponse} from '@angular/common/http';
-import {Component, Inject, NgZone, OnInit} from '@angular/core';
+import {Component, Inject, NgZone, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {LoginSpec} from '@api/root.api';
 import {KdError} from '@api/root.shared';
@@ -28,6 +28,7 @@ import {CONFIG_DI_TOKEN} from '../index.config';
   selector: 'kd-login',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class LoginComponent implements OnInit {

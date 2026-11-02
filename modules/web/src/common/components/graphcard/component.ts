@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Input, OnChanges} from '@angular/core';
+import {Component, Input, OnChanges, ChangeDetectionStrategy} from '@angular/core';
 import type {SimpleChanges} from '@angular/core';
 import {Metric} from '@api/root.api';
 import {GraphType} from '../graph/component';
@@ -20,6 +20,7 @@ import {GraphType} from '../graph/component';
 @Component({
   selector: 'kd-graph-card',
   templateUrl: './template.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class GraphCardComponent implements OnChanges {

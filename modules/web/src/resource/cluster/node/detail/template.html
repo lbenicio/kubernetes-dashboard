@@ -14,11 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<kd-graph-metrics [metrics]="node?.metrics"></kd-graph-metrics>
+<kd-graph-metrics [metrics]="$safeNavigationMigration(node?.metrics)"></kd-graph-metrics>
 
 <kd-object-meta
   [initialized]="isInitialized"
-  [objectMeta]="node?.objectMeta"
+  [objectMeta]="$safeNavigationMigration(node?.objectMeta)"
 ></kd-object-meta>
 
 <kd-card [initialized]="isInitialized">
@@ -228,7 +228,7 @@ limitations under the License.
       >
         CPU capacity
       </div>
-      <div value>{{ node?.allocatedResources.cpuCapacity | kdCores }}</div>
+      <div value>{{ $safeNavigationMigration(node?.allocatedResources.cpuCapacity) | kdCores }}</div>
     </kd-property>
     } @if (node?.allocatedResources.memoryCapacity) {
     <kd-property>
@@ -238,7 +238,7 @@ limitations under the License.
       >
         Memory capacity
       </div>
-      <div value>{{ node?.allocatedResources.memoryCapacity | kdMemory }}</div>
+      <div value>{{ $safeNavigationMigration(node?.allocatedResources.memoryCapacity) | kdMemory }}</div>
     </kd-property>
     } @if (node?.allocatedResources.podCapacity) {
     <kd-property>
@@ -320,7 +320,7 @@ limitations under the License.
         </div>
         <ngx-charts-pie-grid
           [results]="podsAllocation"
-          [designatedTotal]="node?.allocatedResources.podCapacity"
+          [designatedTotal]="$safeNavigationMigration(node?.allocatedResources.podCapacity)"
           [customColors]="customColors"
           [animations]="false"
           [view]="[250, 250]"
@@ -334,7 +334,7 @@ limitations under the License.
 </kd-card>
 
 <kd-condition-list
-  [conditions]="node?.conditions"
+  [conditions]="$safeNavigationMigration(node?.conditions)"
   [initialized]="isInitialized"
 ></kd-condition-list>
 

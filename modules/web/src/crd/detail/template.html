@@ -16,7 +16,7 @@ limitations under the License.
 
 <kd-object-meta
   [initialized]="isInitialized"
-  [objectMeta]="crd?.objectMeta"
+  [objectMeta]="$safeNavigationMigration(crd?.objectMeta)"
 ></kd-object-meta>
 
 <kd-card [initialized]="isInitialized">
@@ -171,13 +171,13 @@ limitations under the License.
 
 @if (crd?.versions) {
 <kd-crd-versions-list
-  [versions]="crd?.versions"
+  [versions]="$safeNavigationMigration(crd?.versions)"
   [initialized]="isInitialized"
 ></kd-crd-versions-list>
 }
 
 <kd-condition-list
-  [conditions]="crd?.conditions"
+  [conditions]="$safeNavigationMigration(crd?.conditions)"
   [showLastProbeTime]="false"
   [initialized]="isInitialized"
 ></kd-condition-list>

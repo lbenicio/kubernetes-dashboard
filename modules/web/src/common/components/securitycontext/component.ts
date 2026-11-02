@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Input} from '@angular/core';
+import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {StringMap} from '@api/root.shared';
 import {ContainerSecurityContext, PodSecurityContext, Sysctl} from '@api/root.api';
 
 @Component({
   selector: 'kd-security-context',
   templateUrl: './template.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class SecurityContextComponent {

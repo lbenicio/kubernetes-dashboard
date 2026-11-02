@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {Router} from '@angular/router';
 import {ICanDeactivate} from '@common/interfaces/candeactivate';
 import {NAMESPACE_STATE_PARAM} from '@common/params/params';
@@ -25,6 +25,7 @@ import {NamespaceService} from '@common/services/global/namespace';
   selector: 'kd-create-from-input',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CreateFromInputComponent extends ICanDeactivate {

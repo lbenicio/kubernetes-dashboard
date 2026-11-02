@@ -16,10 +16,10 @@ limitations under the License.
 
 <kd-object-meta
   [initialized]="isInitialized"
-  [objectMeta]="clusterRole?.objectMeta"
+  [objectMeta]="$safeNavigationMigration(clusterRole?.objectMeta)"
 ></kd-object-meta>
 
 <kd-policy-rule-list
-  [rules]="clusterRole?.rules"
+  [rules]="$safeNavigationMigration(clusterRole?.rules)"
   [initialized]="isInitialized"
 ></kd-policy-rule-list>

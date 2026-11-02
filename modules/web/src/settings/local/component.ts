@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Inject, OnInit, ViewChild, DOCUMENT} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild, DOCUMENT, ChangeDetectionStrategy} from '@angular/core';
 import {MatSelect} from '@angular/material/select';
 import {LocalSettings, Theme} from '@api/root.api';
 import {IConfig, LanguageConfig} from '@api/root.ui';
@@ -26,6 +26,7 @@ import {CONFIG_DI_TOKEN} from '../../index.config';
   selector: 'kd-local-settings',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class LocalSettingsComponent implements OnInit {

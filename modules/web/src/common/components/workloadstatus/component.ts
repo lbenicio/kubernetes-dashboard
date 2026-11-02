@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Input} from '@angular/core';
+import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {ResourcesRatio} from '@api/root.ui';
 
 export const emptyResourcesRatio: ResourcesRatio = {
@@ -30,6 +30,7 @@ export const emptyResourcesRatio: ResourcesRatio = {
   selector: 'kd-workload-statuses',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class WorkloadStatusComponent {

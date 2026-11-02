@@ -21,6 +21,7 @@ import {
   Inject,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {MatOptionSelectionChange} from '@angular/material/core';
 import {MatDialog} from '@angular/material/dialog';
@@ -47,6 +48,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
   selector: 'kd-namespace-selector',
   templateUrl: './template.html',
   styleUrls: ['style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class NamespaceSelectorComponent implements OnInit {

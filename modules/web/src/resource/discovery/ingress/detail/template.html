@@ -16,7 +16,7 @@ limitations under the License.
 
 <kd-object-meta
   [initialized]="isInitialized"
-  [objectMeta]="ingress?.objectMeta"
+  [objectMeta]="$safeNavigationMigration(ingress?.objectMeta)"
 ></kd-object-meta>
 
 @if (ingress?.spec?.defaultBackend || ingress?.endpoints) {
@@ -90,7 +90,7 @@ limitations under the License.
           </div>
           <div value>{{ ingress.spec.defaultBackend.service.port.name }}</div>
         </kd-property>
-        } @if (ingress.spec.defaultBackend.service.port?.number !== undefined) {
+        } @if ($safeNavigationMigration(ingress.spec.defaultBackend.service.port?.number) !== undefined) {
         <kd-property>
           <div
             key
@@ -120,9 +120,9 @@ limitations under the License.
 }
 
 <kd-ingressruleflat-card-list
-  [ingressSpecRules]="ingress?.spec?.rules"
-  [tlsList]="ingress?.spec?.tls"
-  [namespace]="ingress?.objectMeta.namespace"
+  [ingressSpecRules]="$safeNavigationMigration(ingress?.spec?.rules)"
+  [tlsList]="$safeNavigationMigration(ingress?.spec?.tls)"
+  [namespace]="$safeNavigationMigration(ingress?.objectMeta.namespace)"
   [initialized]="isInitialized"
 >
 </kd-ingressruleflat-card-list>

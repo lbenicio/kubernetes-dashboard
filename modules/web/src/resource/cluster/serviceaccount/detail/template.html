@@ -16,7 +16,7 @@ limitations under the License.
 
 <kd-object-meta
   [initialized]="isInitialized"
-  [objectMeta]="serviceAccount?.objectMeta"
+  [objectMeta]="$safeNavigationMigration(serviceAccount?.objectMeta)"
 ></kd-object-meta>
 
 <kd-secret-list

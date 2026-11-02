@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 
 @Component({
   selector: 'kd-settings',
   template: '<kd-global-settings></kd-global-settings>' + '<kd-local-settings></kd-local-settings>',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class SettingsComponent {}

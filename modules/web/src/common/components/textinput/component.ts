@@ -22,6 +22,7 @@ import {
   OnInit,
   Output,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import type {SimpleChanges} from '@angular/core';
 import {Ace, config, edit} from 'ace-builds';
@@ -41,6 +42,7 @@ export enum EditorMode {
   selector: 'kd-text-input',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class TextInputComponent implements OnInit, AfterViewInit, OnChanges {

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {IConfig} from '@api/root.ui';
@@ -32,6 +32,7 @@ export interface CreateNamespaceDialogMeta {
 @Component({
   selector: 'kd-create-namespace-dialog',
   templateUrl: 'template.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CreateNamespaceDialogComponent implements OnInit {

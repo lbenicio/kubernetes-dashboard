@@ -16,7 +16,7 @@ limitations under the License.
 
 <kd-object-meta
   [initialized]="isInitialized"
-  [objectMeta]="roleBinding?.objectMeta"
+  [objectMeta]="$safeNavigationMigration(roleBinding?.objectMeta)"
 ></kd-object-meta>
 
 <kd-card [initialized]="isInitialized">
@@ -55,6 +55,6 @@ limitations under the License.
 </kd-card>
 
 <kd-subject-list
-  [subjects]="roleBinding?.subjects"
+  [subjects]="$safeNavigationMigration(roleBinding?.subjects)"
   [initialized]="isInitialized"
 ></kd-subject-list>

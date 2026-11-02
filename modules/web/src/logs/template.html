@@ -90,7 +90,7 @@ limitations under the License.
     #logViewContainer
     class="kd-log-line-container"
     (scroll)="onLogsScroll()"
-    [ngClass]="{'kd-logs-text-color-invert': logService?.getInverted()}"
+    [ngClass]="{'kd-logs-text-color-invert': $safeNavigationMigration(logService?.getInverted())}"
   >
     <div
       kdLoadingSpinner
@@ -122,13 +122,13 @@ limitations under the License.
     <div i18n>
       Logs from
       <kd-date
-        [date]="podLogs?.info.fromDate"
+        [date]="$safeNavigationMigration(podLogs?.info.fromDate)"
         format="short"
       >
       </kd-date>
       to
       <kd-date
-        [date]="podLogs?.info.toDate"
+        [date]="$safeNavigationMigration(podLogs?.info.toDate)"
         format="short"
       >
       </kd-date>

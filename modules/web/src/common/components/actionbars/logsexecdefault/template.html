@@ -17,11 +17,13 @@ limitations under the License.
 @if (isInitialized && isVisible) {
 <div fxLayout="row">
   <kd-actionbar-detail-logs [resourceMeta]="resourceMeta"></kd-actionbar-detail-logs>
-  <kd-actionbar-detail-exec [objectMeta]="resourceMeta?.objectMeta"></kd-actionbar-detail-exec>
+  <kd-actionbar-detail-exec
+    [objectMeta]="$safeNavigationMigration(resourceMeta?.objectMeta)"
+  ></kd-actionbar-detail-exec>
   <kd-actionbar-detail-actions
-    [objectMeta]="resourceMeta?.objectMeta"
-    [typeMeta]="resourceMeta?.typeMeta"
-    [displayName]="resourceMeta?.displayName"
+    [objectMeta]="$safeNavigationMigration(resourceMeta?.objectMeta)"
+    [typeMeta]="$safeNavigationMigration(resourceMeta?.typeMeta)"
+    [displayName]="$safeNavigationMigration(resourceMeta?.displayName)"
   ></kd-actionbar-detail-actions>
 </div>
 }

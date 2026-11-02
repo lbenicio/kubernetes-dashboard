@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Input} from '@angular/core';
+import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {PinnedResource} from '@api/root.api';
 import {PinnerService} from '@common/services/global/pinner';
 
@@ -20,6 +20,7 @@ import {PinnerService} from '@common/services/global/pinner';
   selector: 'kd-pinner-nav',
   templateUrl: './template.html',
   styleUrls: ['../style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class PinnerNavComponent {

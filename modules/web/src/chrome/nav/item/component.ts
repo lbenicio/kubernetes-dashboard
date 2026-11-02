@@ -13,7 +13,16 @@
 // limitations under the License.
 
 import {animate, keyframes, state, style, transition, trigger} from '@angular/animations';
-import {Component, DestroyRef, EventEmitter, HostListener, inject, Input, OnInit} from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  HostListener,
+  inject,
+  Input,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {debounceTime, tap} from 'rxjs/operators';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
@@ -51,6 +60,7 @@ const rollInOut = trigger('rollInOut', [
   templateUrl: 'template.html',
   styleUrls: ['style.scss'],
   animations: [rollInOut],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class NavItemComponent implements OnInit {

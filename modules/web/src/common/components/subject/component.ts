@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Input} from '@angular/core';
+import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {Subject} from 'typings/root.api';
 import {KdStateService} from '../../services/global/state';
@@ -21,6 +21,7 @@ import {Resource} from '../../services/resource/endpoint';
 @Component({
   selector: 'kd-subject-list',
   templateUrl: './template.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class SubjectListComponent {

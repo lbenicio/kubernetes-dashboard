@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {HttpParams} from '@angular/common/http';
-import {Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
 import {LogControl, LogDetails, LogLine, LogSelection, LogSources} from '@api/root.api';
@@ -34,6 +34,7 @@ const i18n = {
   selector: 'kd-logs',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class LogsComponent implements OnDestroy {

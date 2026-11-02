@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {StateError} from '@api/root.ui';
 import {map} from 'rxjs/operators';
@@ -23,6 +23,7 @@ import {KdError} from '@common/errors/errors';
   selector: 'kd-error',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ErrorComponent implements OnInit {

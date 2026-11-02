@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, ViewChild} from '@angular/core';
+import {Component, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Router} from '@angular/router';
 import {KdFile} from '@api/root.ui';
@@ -27,6 +27,7 @@ import {NamespaceService} from '@common/services/global/namespace';
   selector: 'kd-create-from-file',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CreateFromFileComponent extends ICanDeactivate {

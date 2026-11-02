@@ -137,7 +137,7 @@
             "main": "src/index.ts",
             "tsConfig": "tsconfig.app.json",
             "polyfills": [
-              "polyfills.ts",
+              "src/polyfills.ts",
               "@angular/localize/init"
             ],
             "i18nMissingTranslation": "error",

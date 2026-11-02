@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Input, OnChanges} from '@angular/core';
+import {Component, Input, OnChanges, ChangeDetectionStrategy} from '@angular/core';
 import {ConfigMapKeyRef, Container, EnvVar, SecretKeyRef} from '@api/root.api';
 import {Status, StatusClass} from '@common/components/resourcelist/statuses';
 import {DecoderService} from '@common/services/global/decoder';
@@ -23,6 +23,7 @@ import isEmpty from 'lodash-es/isEmpty';
   selector: 'kd-container-card',
   templateUrl: './template.html',
   styleUrls: ['style.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ContainerCardComponent implements OnChanges {

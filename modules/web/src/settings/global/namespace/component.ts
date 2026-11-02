@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
-import {Component, DestroyRef, forwardRef, inject, OnInit} from '@angular/core';
+import {Component, DestroyRef, forwardRef, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {
   ControlValueAccessor,
   UntypedFormArray,
@@ -58,6 +58,7 @@ interface NamespaceSettings {
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class NamespaceSettingsComponent implements OnInit, ControlValueAccessor {

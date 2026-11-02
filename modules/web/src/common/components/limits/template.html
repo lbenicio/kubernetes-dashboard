@@ -85,7 +85,7 @@ limitations under the License.
 
   <div
     content
-    [hidden]="limits?.length"
+    [hidden]="$safeNavigationMigration(limits?.length)"
   >
     <kd-list-zero-state></kd-list-zero-state>
   </div>

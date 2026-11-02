@@ -16,7 +16,7 @@ limitations under the License.
 
 <kd-object-meta
   [initialized]="isInitialized"
-  [objectMeta]="service?.objectMeta"
+  [objectMeta]="$safeNavigationMigration(service?.objectMeta)"
 ></kd-object-meta>
 
 <kd-card [initialized]="isInitialized">
@@ -71,7 +71,7 @@ limitations under the License.
       </div>
       <div value>
         <kd-chips
-          [map]="service?.selector"
+          [map]="$safeNavigationMigration(service?.selector)"
           [displayAll]="true"
         ></kd-chips>
       </div>
@@ -82,7 +82,7 @@ limitations under the License.
 </kd-card>
 
 <kd-endpoint-card-list
-  [endpoints]="service?.endpointList?.endpoints"
+  [endpoints]="$safeNavigationMigration(service?.endpointList?.endpoints)"
   [initialized]="isInitialized"
 ></kd-endpoint-card-list>
 

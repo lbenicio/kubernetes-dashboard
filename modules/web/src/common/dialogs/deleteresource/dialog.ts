@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, ChangeDetectionStrategy} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ResourceMeta} from '../../services/global/actionbar';
 
@@ -31,6 +31,7 @@ export interface DeleteOptions {
   selector: 'kd-delete-resource-dialog',
   templateUrl: 'template.html',
   styleUrls: ['./styles.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class DeleteResourceDialogComponent {

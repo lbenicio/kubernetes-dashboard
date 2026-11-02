@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Inject, Input} from '@angular/core';
+import {Component, Inject, Input, ChangeDetectionStrategy} from '@angular/core';
 import {IMessage} from '@api/root.ui';
 import {MESSAGES_DI_TOKEN} from '../../../index.messages';
 import {Animations} from '../../animations/animations';
@@ -22,6 +22,7 @@ import {Animations} from '../../animations/animations';
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   animations: [Animations.expandInOut],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CardComponent {

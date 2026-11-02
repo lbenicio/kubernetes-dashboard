@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Component, Input} from '@angular/core';
+import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {LimitRange} from 'typings/root.api';
 
 @Component({
   selector: 'kd-resource-limit-list',
   templateUrl: './template.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ResourceLimitListComponent {
