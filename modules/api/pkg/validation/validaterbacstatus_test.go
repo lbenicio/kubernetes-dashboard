@@ -39,7 +39,7 @@ type FakeClient struct {
 	fakeServerGroupsMethod
 }
 
-func (in *FakeClient) Discovery() discovery.DiscoveryInterface {
+func (in *FakeClient) Discovery() discovery.DiscoveryInterfaces {
 	return &FakeDiscovery{
 		FakeDiscovery:          fakediscovery.FakeDiscovery{Fake: &in.Fake},
 		fakeServerGroupsMethod: in.fakeServerGroupsMethod,
