@@ -87,8 +87,8 @@ FROM scratch AS final
 WORKDIR /web
 
 # By default dashboard-web will look for locale_conf.json in the same directory as binary
-COPY --from=web-builder /workspace/modules/web/.dist/public/locale_conf.json /locale_conf.json
-COPY --from=web-builder /workspace/modules/web/.dist/public /public
+COPY --from=web-builder /workspace/modules/web/.dist/public/browser/locale_conf.json /locale_conf.json
+COPY --from=web-builder /workspace/modules/web/.dist/public/browser /public
 COPY --from=go-builder /workspace/web/dashboard-web /dashboard-web
 
 # Import the user and group files from the builder.

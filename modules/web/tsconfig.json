@@ -35,7 +35,6 @@
     "noImplicitReturns": true,
     "noUnusedParameters": true,
     "noImplicitAny": true,
-    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "useDefineForClassFields": false
   }

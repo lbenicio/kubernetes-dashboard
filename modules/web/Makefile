@@ -96,16 +96,17 @@ schema:
 # Avoid locale caching due to the same output file naming
 # We'll add language code prefix to the generated main javascript file.
 .PHONY: --fix-locale-caching
---fix-locale-caching: LANGUAGES = $(shell ls $(WEB_DIST_ANGULAR_DIRECTORY))
+--fix-locale-caching: LANGUAGES = $(shell ls $(WEB_DIST_ANGULAR_BROWSER_DIRECTORY))
 --fix-locale-caching: --ng-build
-	@echo "[$(APP_NAME)] Patching locale caching" ; \
+	@set -e; \
+	echo "[$(APP_NAME)] Patching locale caching" ; \
 	for language in $(LANGUAGES) ; do \
-  		localeDir=$(WEB_DIST_ANGULAR_DIRECTORY)/$${language} ; \
-  		filename=$$(find $${localeDir} -name 'main.*.js' -exec basename {} \;) ; \
-  		mv "$${localeDir}/$${filename}" "$${localeDir}/$${language}.$${filename}" ; \
-  		perl -i -pe"s/$${filename}/$${language}.$${filename}/" "$${localeDir}/index.html" ; \
+		localeDir=$(WEB_DIST_ANGULAR_BROWSER_DIRECTORY)/$${language} ; \
+		filename=$$(find $${localeDir} -maxdepth 1 -name 'main*.js' -exec basename {} \;) ; \
+		mv "$${localeDir}/$${filename}" "$${localeDir}/$${language}.$${filename}" ; \
+		perl -i -pe"s/$${filename}/$${language}.$${filename}/" "$${localeDir}/index.html" ; \
 	done ; \
-	cp "$(WEB_DIRECTORY)/i18n/locale_conf.json" "$(WEB_DIST_ANGULAR_DIRECTORY)" ; \
+		cp "$(WEB_DIRECTORY)/i18n/locale_conf.json" "$(WEB_DIST_ANGULAR_BROWSER_DIRECTORY)" ; \
 
 .PHONY: --ng-build
 --ng-build: --ensure-dependencies

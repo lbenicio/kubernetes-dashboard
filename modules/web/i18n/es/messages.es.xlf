@@ -19,8 +19,8 @@
         <target>Listado de espacio de nombre de respaldo</target>
       </trans-unit>
       <trans-unit id="1045499538393271132" datatype="html">
-        <source>Auto-refresh (every <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> s.)</source>
-        <target>Refrescar automáticamente (cada <x id="INTERPOLATION" equiv-text="{{refreshInterval}}"/> s.)</target>
+        <source>Auto-refresh (every <x id="INTERPOLATION" equiv-text="{{ refreshInterval }}"/> s.)</source>
+        <target state="new">Refrescar automáticamente (cada <x id="INTERPOLATION" equiv-text="{{refreshInterval}}"/> s.)</target>
       </trans-unit>
       <trans-unit id="8432216995899653457" datatype="html">
         <source> Resource Information </source>
@@ -35,15 +35,15 @@
         <target>Número de pods</target>
       </trans-unit>
       <trans-unit id="1106543845307638308" datatype="html">
-        <source> <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> is not unique </source>
+        <source> <x id="INTERPOLATION" equiv-text="{{ label.get(&apos;key&apos;).value }}"/> is not unique </source>
         <target state="new"><x id="INTERPOLATION" equiv-text="{{label.get(&apos;key&apos;).value}}"/> no es única</target>
       </trans-unit>
       <trans-unit id="1119419133766787743" datatype="html">
         <source>Go to namespace</source>
         <target>Ir al espacio de nombre</target>
       </trans-unit>
-      <trans-unit id="4924861949788063991" datatype="html">
-        <source> Preparing file to download... </source>
+      <trans-unit id="1119485024840969330" datatype="html">
+        <source>Preparing file to download...</source>
         <target state="new">Preparando fichero para descargar...</target>
       </trans-unit>
       <trans-unit id="1134765132854526890" datatype="html">
@@ -223,7 +223,7 @@
         <target state="new">Estrategia de Rolling update</target>
       </trans-unit>
       <trans-unit id="1781490455950079869" datatype="html">
-        <source><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#10\uFFFD&quot;"/>Community<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#10\uFFFD&quot;"/></source>
+        <source><x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://github.com/kubernetes/dashboard/graphs/contributors&quot; target=&quot;_blank&quot; class=&quot;kd-muted-xlight&quot; &gt;"/>Community<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a &gt;"/></source>
         <target state="new"><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#10\uFFFD&quot;"/>Comunidad<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#10\uFFFD&quot;"/></target>
       </trans-unit>
       <trans-unit id="1791198005341902530" datatype="html">
@@ -303,8 +303,8 @@
         <target>Las variables de entorno disponibles para usar en el contenedor. Los valores pueden hacer referencia a otras variables usando la sintaxis $(VAR_NAME).</target>
       </trans-unit>
       <trans-unit id="2079136285643456368" datatype="html">
-        <source><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#16\uFFFD&quot;"/>Slack<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#16\uFFFD&quot;"/></source>
-        <target state="new"><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#16\uFFFD&quot;"/>Slack<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#16\uFFFD&quot;"/></target>
+        <source><x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://kubernetes.slack.com/archives/C09R1JVU6&quot; target=&quot;_blank&quot; class=&quot;kd-muted-xlight&quot; &gt;"/>Slack<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a &gt;"/></source>
+        <target state="new"><x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://kubernetes.slack.com/archives/C09R1JVU6&quot; target=&quot;_blank&quot; class=&quot;kd-muted-xlight&quot; &gt;"/>Slack<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a &gt;"/></target>
       </trans-unit>
       <trans-unit id="4860547712861504472" datatype="html">
         <source> Conditions </source>
@@ -335,6 +335,10 @@
         <target>Un Deployment será creado para mantener el número de pods deseado a lo largo de tu clúster.</target>
       </trans-unit>
       <trans-unit id="2131524838680811873" datatype="html">
+        <source> You can <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;deploy&quot; queryParamsHandling=&quot;preserve&quot; &gt;"/>deploy a containerized app<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>, select other namespace or <x id="START_LINK_1" equiv-text="&lt;a href=&quot;https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/#using-dashboard&quot; target=&quot;_blank&quot; &gt;"/>check the Dashboard Docs <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon class=&quot;kd-zerostate-icon&quot;&gt;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> to learn more. </source>
+        <target state="new"> Puedes <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>desplegar una aplicación contenerizada<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>, selecciona otra espacio de nombre o <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>revisa la documentación del Dashboard <x id="START_TAG_MAT-ICON" ctype="x-mat-icon" equiv-text="&lt;mat-icon&gt;"/>open_in_new<x id="CLOSE_TAG_MAT-ICON" ctype="x-mat-icon" equiv-text="&lt;/mat-icon&gt;"/> <x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> para aprender más. </target>
+      </trans-unit>
+      <trans-unit id="2131524838680811873" datatype="html">
         <source> You can <x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#6\uFFFD&quot;"/>deploy a containerized app<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;[\uFFFD/#6\uFFFD|\uFFFD/#7\uFFFD]&quot;"/>, select other namespace or <x id="START_LINK_1" equiv-text="&quot;\uFFFD#7\uFFFD&quot;"/>check the Dashboard Docs <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD#8\uFFFD&quot;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD/#8\uFFFD&quot;"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;[\uFFFD/#6\uFFFD|\uFFFD/#7\uFFFD]&quot;"/> to learn more. </source>
         <target state="new"> Puedes <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>desplegar una aplicación contenerizada<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>, selecciona otra espacio de nombre o <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>revisa la documentación del Dashboard <x id="START_TAG_MAT-ICON" ctype="x-mat-icon" equiv-text="&lt;mat-icon&gt;"/>open_in_new<x id="CLOSE_TAG_MAT-ICON" ctype="x-mat-icon" equiv-text="&lt;/mat-icon&gt;"/> <x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> para aprender más. </target>
       </trans-unit>
@@ -363,7 +367,7 @@
         <target>Servicio</target>
       </trans-unit>
       <trans-unit id="4335281277764237619" datatype="html">
-        <source> <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> © <x id="INTERPOLATION_1" equiv-text="&quot;\uFFFD1\uFFFD&quot;"/> The Kubernetes Authors </source>
+        <source> <x id="INTERPOLATION" equiv-text="{{ userAgent }}"/> © <x id="INTERPOLATION_1" equiv-text="{{ copyrightYear }}"/> The Kubernetes Authors </source>
         <target state="new"> Kubernetes Dashboard v<x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> © <x id="INTERPOLATION_1" equiv-text="&quot;\uFFFD1\uFFFD&quot;"/> Los autores de Kubernetes </target>
       </trans-unit>
       <trans-unit id="2235593604907350097" datatype="html">
@@ -387,8 +391,8 @@
         <target>Jobs inactivos</target>
       </trans-unit>
       <trans-unit id="709124445415376270" datatype="html">
-        <source> <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> bytes </source>
-        <target state="new"> <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> bytes </target>
+        <source> <x id="INTERPOLATION" equiv-text="{{ decoder.base64(env.value).length }}"/> bytes </source>
+        <target state="new"> <x id="INTERPOLATION" equiv-text="{{ decoder.base64(env.value).length }}"/> bytes </target>
       </trans-unit>
       <trans-unit id="3057224553801465622" datatype="html">
         <source> QoS Class </source>
@@ -406,10 +410,6 @@
         <source>Old Replica Sets</source>
         <target>Replica Sets antiguas</target>
       </trans-unit>
-      <trans-unit id="2320200316076079587" datatype="html">
-        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD#5\uFFFD|\uFFFD#8\uFFFD]&quot;"/>Are you sure you want to delete <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD#6\uFFFD|\uFFFD#2:1\uFFFD]&quot;"/><x id="INTERPOLATION_1" equiv-text="&quot;\uFFFD1\uFFFD&quot;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD/#6\uFFFD|\uFFFD/#2:1\uFFFD]&quot;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD/#5\uFFFD|\uFFFD/#1:1\uFFFD\uFFFD/*7:1\uFFFD|\uFFFD/#8\uFFFD]&quot;"/><x id="START_TAG_SPAN_1" ctype="x-span_1" equiv-text="&quot;\uFFFD*7:1\uFFFD\uFFFD#1:1\uFFFD&quot;"/>  in namespace <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD#6\uFFFD|\uFFFD#2:1\uFFFD]&quot;"/><x id="INTERPOLATION_2" equiv-text="&quot;\uFFFD0:1\uFFFD&quot;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD/#6\uFFFD|\uFFFD/#2:1\uFFFD]&quot;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD/#5\uFFFD|\uFFFD/#1:1\uFFFD\uFFFD/*7:1\uFFFD|\uFFFD/#8\uFFFD]&quot;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD#5\uFFFD|\uFFFD#8\uFFFD]&quot;"/>?<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD/#5\uFFFD|\uFFFD/#1:1\uFFFD\uFFFD/*7:1\uFFFD|\uFFFD/#8\uFFFD]&quot;"/></source>
-        <target state="new"> <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>¿Estás seguro de querer suprimir <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{data.objectMeta.name}}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> de tipo <x id="INTERPOLATION" equiv-text="{{data.displayName}}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> <x id="START_TAG_SPAN_1" ctype="x-span" equiv-text="&lt;span&gt;"/> en el espacio de nombre <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_2" equiv-text="{{data.objectMeta.namespace}}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>&amp;nbsp;?<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> </target>
-      </trans-unit>
       <trans-unit id="2335697433764621013" datatype="html">
         <source>Memory limits (bytes)</source>
         <target>Límites de Memoria (octetos)</target>
@@ -423,12 +423,8 @@
         <target state="new"> Resource Requests </target>
       </trans-unit>
       <trans-unit id="2380939390102386148" datatype="html">
-        <source>
-          <x id="ICU" equiv-text="i18n_81" xid="2986806881378584169"/>
-        </source>
-        <target>
-          <x id="ICU" equiv-text="{isMoreOptionsEnabled(), select, 1 {...} other {...}}"/>
-        </target>
+        <source> <x id="ICU" equiv-text="{isMoreOptionsEnabled(), select, true {Hide advanced options} other {Show advanced options}}" xid="2986806881378584169"/> </source>
+        <target state="new"> <x id="ICU" equiv-text="{isMoreOptionsEnabled(), select, 1 {...} other {...}}"/> </target>
       </trans-unit>
       <trans-unit id="2397234605876541174" datatype="html">
         <source>Image Pull Secrets</source>
@@ -519,7 +515,7 @@
         <target>Idioma</target>
       </trans-unit>
       <trans-unit id="2833767909565048391" datatype="html">
-        <source> Do you want to stay on current page and change namespace from <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD#7\uFFFD|\uFFFD#8\uFFFD]&quot;"/><x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD/#7\uFFFD|\uFFFD/#8\uFFFD]&quot;"/> to <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD#7\uFFFD|\uFFFD#8\uFFFD]&quot;"/><x id="INTERPOLATION_1" equiv-text="&quot;\uFFFD1\uFFFD&quot;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD/#7\uFFFD|\uFFFD/#8\uFFFD]&quot;"/>? </source>
+        <source> Do you want to stay on current page and change namespace from <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION" equiv-text="{{ namespace }}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> to <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{ newNamespace }}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>? </source>
         <target state="new">¿Deseas permanecer en la página en curso y modificar el nombre de <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION" equiv-text="{{namespace}}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> a <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{newNamespace}}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> ? </target>
       </trans-unit>
       <trans-unit id="284876663522831141" datatype="html">
@@ -539,7 +535,7 @@
         <target>Sub-objeto</target>
       </trans-unit>
       <trans-unit id="2933331719200534418" datatype="html">
-        <source><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#7\uFFFD&quot;"/>Documentation<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#7\uFFFD&quot;"/></source>
+        <source><x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://github.com/kubernetes/dashboard/tree/master/docs&quot; target=&quot;_blank&quot; class=&quot;kd-muted-xlight&quot; &gt;"/>Documentation<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a &gt;"/></source>
         <target state="new"><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#7\uFFFD&quot;"/>Documentación<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#7\uFFFD&quot;"/></target>
       </trans-unit>
       <trans-unit id="2944102521023817891" datatype="html">
@@ -591,8 +587,8 @@
         <target state="new">Cerrar panel de notificaciones</target>
       </trans-unit>
       <trans-unit id="31200575933930123" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> <x id="INTERPOLATION_1" equiv-text="&quot;\uFFFD1\uFFFD&quot;"/> will be triggered.</source>
-        <target><x id="INTERPOLATION" equiv-text="{{data.displayName}}"/> <x id="INTERPOLATION_1" equiv-text="{{data.objectMeta.name}}"/> será lanzado.</target>
+        <source><x id="INTERPOLATION" equiv-text="{{ data.displayName }}"/> <x id="INTERPOLATION_1" equiv-text="{{ data.objectMeta.name }}"/> will be triggered.</source>
+        <target state="new"><x id="INTERPOLATION" equiv-text="{{data.displayName}}"/> <x id="INTERPOLATION_1" equiv-text="{{data.objectMeta.name}}"/> será lanzado.</target>
       </trans-unit>
       <trans-unit id="3139808086382723160" datatype="html">
         <source>Number of seconds between every auto-refresh of every resource. Set 0 to disable.</source>
@@ -609,6 +605,10 @@
       <trans-unit id="315761510234903605" datatype="html">
         <source>Exec into pod</source>
         <target>Ejecutar en el pod</target>
+      </trans-unit>
+      <trans-unit id="3168073766619204338" datatype="html">
+        <source> Shell in <x id="START_BLOCK_IF" equiv-text="@if (containers?.length &gt; 0) {"/><x id="START_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&lt;mat-select class=&quot;kd-shell-toolbar-select&quot; (ngModelChange)=&quot;onPodContainerChange($event)&quot; [(ngModel)]=&quot;selectedContainer&quot; &gt;"/><x id="START_BLOCK_FOR" equiv-text="@for (item of containers; track item) {"/><x id="START_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&lt;mat-option [value]=&quot;item&quot;&gt;"/> <x id="INTERPOLATION" equiv-text="{{ item }}"/> <x id="CLOSE_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&lt;/mat-option&gt;"/><x id="CLOSE_BLOCK_FOR" equiv-text="}"/><x id="CLOSE_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&lt;/mat-select&gt;"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/> in <x id="INTERPOLATION_1" equiv-text="{{ podName }}"/> </source>
+        <target state="new"> Shell in <x id="START_BLOCK_IF" equiv-text="@if (containers?.length &gt; 0) {"/><x id="START_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&lt;mat-select class=&quot;kd-shell-toolbar-select&quot; (ngModelChange)=&quot;onPodContainerChange($event)&quot; [(ngModel)]=&quot;selectedContainer&quot; &gt;"/><x id="START_BLOCK_FOR" equiv-text="@for (item of containers; track item) {"/><x id="START_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&lt;mat-option [value]=&quot;item&quot;&gt;"/> <x id="INTERPOLATION" equiv-text="{{ item }}"/> <x id="CLOSE_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&lt;/mat-option&gt;"/><x id="CLOSE_BLOCK_FOR" equiv-text="}"/><x id="CLOSE_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&lt;/mat-select&gt;"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/> in <x id="INTERPOLATION_1" equiv-text="{{ podName }}"/> </target>
       </trans-unit>
       <trans-unit id="3175667526023915046" datatype="html">
         <source> Label Value must not exceed 253 characters. </source>
@@ -639,8 +639,8 @@
         <target state="new">Máx. no disponible</target>
       </trans-unit>
       <trans-unit id="3283019513707383139" datatype="html">
-        <source> Hosts <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD#2\uFFFD&quot;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD/#2\uFFFD&quot;"/></source>
-        <target state="new"> Hosts <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD#2\uFFFD&quot;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD/#2\uFFFD&quot;"/></target>
+        <source> Hosts <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon class=&quot;external-link-icon kd-clickable&quot; i18n-matTooltip matTooltip=&quot;Host links are external links that will be open in a new tab.&quot; &gt;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon &gt;"/></source>
+        <target state="new"> Hosts <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon class=&quot;external-link-icon kd-clickable&quot; i18n-matTooltip matTooltip=&quot;Host links are external links that will be open in a new tab.&quot; &gt;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon &gt;"/></target>
       </trans-unit>
       <trans-unit id="3294686077659093992" datatype="html">
         <source>Namespace</source>
@@ -671,7 +671,7 @@
         <target state="new">El valor de la etiqueta debe ser alfanumérico separado por &apos;.&apos; , &apos;-&apos; o &apos;_&apos;.</target>
       </trans-unit>
       <trans-unit id="3368378053177904137" datatype="html">
-        <source> Learn more <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;\uFFFD#5\uFFFD&quot;"/>open_in_new<x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;\uFFFD/#5\uFFFD&quot;"/></source>
+        <source> Learn more <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i class=&quot;material-icons&quot;&gt;"/>open_in_new<x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/></source>
         <target state="new">Saber más <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/> open_in_new <x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/></target>
       </trans-unit>
       <trans-unit id="3368378053177904137" datatype="html">
@@ -691,7 +691,7 @@
         <target state="new">Saber más <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/> open_in_new <x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/></target>
       </trans-unit>
       <trans-unit id="3370944056293075657" datatype="html">
-        <source> Name must be up to <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> characters long. </source>
+        <source> Name must be up to <x id="INTERPOLATION" equiv-text="{{ namespaceMaxLength }}"/> characters long. </source>
         <target state="new">El nombre debe tener hasta <x id="INTERPOLATION" equiv-text="{{secretNameMaxLength}}"/> caracteres.</target>
       </trans-unit>
       <trans-unit id="3370944056293075657" datatype="html">
@@ -938,10 +938,6 @@
         <source>Completions: </source>
         <target state="new">Terminaciones:</target>
       </trans-unit>
-      <trans-unit id="4342607865016428668" datatype="html">
-        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD#5\uFFFD|\uFFFD#8\uFFFD]&quot;"/><x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD#6\uFFFD|\uFFFD#2:1\uFFFD]&quot;"/><x id="INTERPOLATION_1" equiv-text="&quot;\uFFFD1\uFFFD&quot;"/> <x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD/#6\uFFFD|\uFFFD/#2:1\uFFFD]&quot;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD/#5\uFFFD|\uFFFD/#1:1\uFFFD\uFFFD/*7:1\uFFFD|\uFFFD/#8\uFFFD]&quot;"/><x id="START_TAG_SPAN_1" ctype="x-span_1" equiv-text="&quot;\uFFFD*7:1\uFFFD\uFFFD#1:1\uFFFD&quot;"/> in namespace <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD#6\uFFFD|\uFFFD#2:1\uFFFD]&quot;"/><x id="INTERPOLATION_2" equiv-text="&quot;\uFFFD0:1\uFFFD&quot;"/> <x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD/#6\uFFFD|\uFFFD/#2:1\uFFFD]&quot;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD/#5\uFFFD|\uFFFD/#1:1\uFFFD\uFFFD/*7:1\uFFFD|\uFFFD/#8\uFFFD]&quot;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD#5\uFFFD|\uFFFD#8\uFFFD]&quot;"/>will be restarted.<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD/#5\uFFFD|\uFFFD/#1:1\uFFFD\uFFFD/*7:1\uFFFD|\uFFFD/#8\uFFFD]&quot;"/></source>
-        <target><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{data.displayName}}"/> <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{data.objectMeta.name}}"/> <x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_TAG_SPAN_1" ctype="x-span_1" equiv-text="&lt;span *ngIf=&quot;data.objectMeta.namespace&quot;&gt;"/> en el espacio de nombre <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_2" equiv-text="{{data.objectMeta.namespace}}"/> <x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>será reiniciado.<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></target>
-      </trans-unit>
       <trans-unit id="6610543661547234529" datatype="html">
         <source> Starting deadline seconds </source>
         <target state="new">Segundos de fecha límite inicial</target>
@@ -1139,8 +1135,8 @@
         <target state="new">Cron Jobs </target>
       </trans-unit>
       <trans-unit id="5352570882809799670" datatype="html">
-        <source>Size: <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> B</source>
-        <target>Tamaño: <x id="INTERPOLATION" equiv-text="{{loaded | kdMemory}}"/> o</target>
+        <source>Size: <x id="INTERPOLATION" equiv-text="{{ loaded | kdMemory }}"/> B</source>
+        <target state="new">Tamaño: <x id="INTERPOLATION" equiv-text="{{loaded | kdMemory}}"/> o</target>
       </trans-unit>
       <trans-unit id="5371126920581174501" datatype="html">
         <source>Choose color theme of the dashboard</source>
@@ -1206,13 +1202,13 @@
         <source> Unavailable </source>
         <target state="new">No disponibles</target>
       </trans-unit>
+      <trans-unit id="1845880618404010933" datatype="html">
+        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ data.displayName }}"/> <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{ data.objectMeta.name }}"/> <x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_BLOCK_IF" equiv-text="@if (data.objectMeta.namespace) {"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/> in namespace <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_2" equiv-text="{{ data.objectMeta.namespace }}"/> <x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>will be restarted.<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+        <target state="new"><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ data.displayName }}"/> <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{ data.objectMeta.name }}"/> <x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_BLOCK_IF" equiv-text="@if (data.objectMeta.namespace) {"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/> in namespace <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_2" equiv-text="{{ data.objectMeta.namespace }}"/> <x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>will be restarted.<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></target>
+      </trans-unit>
       <trans-unit id="5674286808255988565" datatype="html">
         <source>Create</source>
         <target>Crear</target>
-      </trans-unit>
-      <trans-unit id="2131524838680811873" datatype="html">
-        <source> You can <x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#6\uFFFD&quot;"/>deploy a containerized app<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;[\uFFFD/#6\uFFFD|\uFFFD/#7\uFFFD]&quot;"/>, select other namespace or <x id="START_LINK_1" equiv-text="&quot;\uFFFD#7\uFFFD&quot;"/>check the Dashboard Docs <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD#8\uFFFD&quot;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD/#8\uFFFD&quot;"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;[\uFFFD/#6\uFFFD|\uFFFD/#7\uFFFD]&quot;"/> to learn more. </source>
-        <target state="new"> Puedes <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>desplegar una aplicación contenerizada<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>, selecciona otra espacio de nombre o <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>revisa la documentación del Dashboard <x id="START_TAG_MAT-ICON" ctype="x-mat-icon" equiv-text="&lt;mat-icon&gt;"/>open_in_new<x id="CLOSE_TAG_MAT-ICON" ctype="x-mat-icon" equiv-text="&lt;/mat-icon&gt;"/> <x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> para aprender más. </target>
       </trans-unit>
       <trans-unit id="5693993471751761333" datatype="html">
         <source> Create a new secret... </source>
@@ -1279,14 +1275,8 @@
         <target state="new">Service </target>
       </trans-unit>
       <trans-unit id="5943454400955467108" datatype="html">
-        <source>
-          <x id="START_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&quot;\uFFFD#9\uFFFD&quot;"/>
-          <x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&quot;\uFFFD/#9\uFFFD&quot;"/>
-        </source>
-        <target state="new">
-          <x id="START_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&quot;\uFFFD#9\uFFFD&quot;"/>
-          <x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&quot;\uFFFD/#9\uFFFD&quot;"/>
-        </target>
+        <source><x id="START_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&lt;kd-date [date]=&quot;notification.timestamp&quot; relative &gt;"/><x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&lt;/kd-date&gt;"/></source>
+        <target state="new"><x id="START_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&lt;kd-date [date]=&quot;notification.timestamp&quot; relative &gt;"/><x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&lt;/kd-date&gt;"/></target>
       </trans-unit>
       <trans-unit id="2737842181120837161" datatype="html">
         <source> Liveness Probe </source>
@@ -1585,7 +1575,7 @@
         <target>Tema</target>
       </trans-unit>
       <trans-unit id="4801818354593078957" datatype="html">
-        <source> Logs from <x id="START_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&quot;\uFFFD#2\uFFFD&quot;"/><x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&quot;[\uFFFD/#2\uFFFD|\uFFFD/#3\uFFFD]&quot;"/> to <x id="START_TAG_KD_DATE_1" ctype="x-kd_date_1" equiv-text="&quot;\uFFFD#3\uFFFD&quot;"/><x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&quot;[\uFFFD/#2\uFFFD|\uFFFD/#3\uFFFD]&quot;"/></source>
+        <source> Logs from <x id="START_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&lt;kd-date [date]=&quot;$safeNavigationMigration(podLogs?.info.fromDate)&quot; format=&quot;short&quot; &gt;"/><x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&lt;/kd-date&gt;"/> to <x id="START_TAG_KD_DATE_1" ctype="x-kd_date_1" equiv-text="&lt;kd-date [date]=&quot;$safeNavigationMigration(podLogs?.info.toDate)&quot; format=&quot;short&quot; &gt;"/><x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&lt;/kd-date&gt;"/></source>
         <target state="new"> Logs desde <x id="START_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&lt;kd-date [date]=&quot;podLogs?.info.fromDate&quot; format=&quot;short&quot;&gt;"/><x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&lt;/kd-date&gt;"/> a <x id="START_TAG_KD_DATE_1" ctype="x-kd_date_1" equiv-text="&lt;kd-date [date]=&quot;podLogs?.info.toDate&quot; format=&quot;short&quot;&gt;"/><x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&lt;/kd-date&gt;"/> UTC </target>
       </trans-unit>
       <trans-unit id="7136018875175606726" datatype="html">
@@ -1613,7 +1603,7 @@
         <target state="new">Oleada máxima: </target>
       </trans-unit>
       <trans-unit id="7194477224906924674" datatype="html">
-        <source><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#13\uFFFD&quot;"/>Feedback<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#13\uFFFD&quot;"/></source>
+        <source><x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://github.com/kubernetes/dashboard/issues/new/choose&quot; target=&quot;_blank&quot; class=&quot;kd-muted-xlight&quot; &gt;"/>Feedback<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a &gt;"/></source>
         <target state="new"><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#13\uFFFD&quot;"/>Comentarios<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#13\uFFFD&quot;"/></target>
       </trans-unit>
       <trans-unit id="4064570823222169007" datatype="html">
@@ -1635,10 +1625,6 @@
       <trans-unit id="7207867066492367466" datatype="html">
         <source>Settings </source>
         <target state="new">Ajustes </target>
-      </trans-unit>
-      <trans-unit id="728108318392658678" datatype="html">
-        <source> Shell in <x id="START_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&quot;\uFFFD*3:1\uFFFD\uFFFD#1:1\uFFFD&quot;"/><x id="START_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&quot;\uFFFD*2:2\uFFFD\uFFFD#1:2\uFFFD&quot;"/> <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0:2\uFFFD&quot;"/> <x id="CLOSE_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&quot;\uFFFD/#1:2\uFFFD\uFFFD/*2:2\uFFFD&quot;"/><x id="CLOSE_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&quot;\uFFFD/#1:1\uFFFD\uFFFD/*3:1\uFFFD&quot;"/> in <x id="INTERPOLATION_1" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> </source>
-        <target state="new">Shell en <x id="START_TAG_MAT-SELECT" ctype="x-mat-select" equiv-text="&lt;mat-select&gt;"/> <x id="START_TAG_MAT-OPTION" ctype="x-mat-option" equiv-text="&lt;mat-option&gt;"/> <x id="INTERPOLATION" equiv-text="{{ item }}"/> <x id="CLOSE_TAG_MAT-OPTION" ctype="x-mat-option" equiv-text="&lt;/mat-option&gt;"/> <x id="CLOSE_TAG_MAT-SELECT" ctype="x-mat-select" equiv-text="&lt;/mat-select&gt;"/> en <x id="INTERPOLATION_1" equiv-text="{{ podName }}"/> </target>
       </trans-unit>
       <trans-unit id="7281870845577621674" datatype="html">
         <source>Init Containers</source>
@@ -1865,7 +1851,7 @@
         <target state="new">Configuración y almacenamiento</target>
       </trans-unit>
       <trans-unit id="8175189185819474284" datatype="html">
-        <source> Container image is invalid: <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> </source>
+        <source> Container image is invalid: <x id="INTERPOLATION" equiv-text="{{ containerImage.errors?.validImageReference }}"/> </source>
         <target state="new"> La imagen del contenedor es inválida : <x id="INTERPOLATION" equiv-text="{{containerImage.errors?.validImageReference}}"/> </target>
       </trans-unit>
       <trans-unit id="8177873832400820695" datatype="html">
@@ -1909,12 +1895,8 @@
         <target>Prohibido (403)</target>
       </trans-unit>
       <trans-unit id="8323422358213440128" datatype="html">
-        <source>
-          <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/>
-        </source>
-        <target state="new">
-          <x id="INTERPOLATION" equiv-text="{{getDisplayName(resource)}}"/>
-        </target>
+        <source><x id="INTERPOLATION" equiv-text="{{ getDisplayName(resource) }}"/> </source>
+        <target state="new"> <x id="INTERPOLATION" equiv-text="{{getDisplayName(resource)}}"/> </target>
       </trans-unit>
       <trans-unit id="8337788905474874574" datatype="html">
         <source>Suspended: <x id="PH" equiv-text="status.failed"/></source>
@@ -1933,7 +1915,7 @@
         <target state="new">Controller</target>
       </trans-unit>
       <trans-unit id="8433565378732329468" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> <x id="INTERPOLATION_1" equiv-text="&quot;\uFFFD1\uFFFD&quot;"/> will be updated to reflect the desired replicas count.</source>
+        <source><x id="INTERPOLATION" equiv-text="{{ data.displayName }}"/> <x id="INTERPOLATION_1" equiv-text="{{ data.objectMeta.name }}"/> will be updated to reflect the desired replicas count.</source>
         <target state="new"><x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> <x id="INTERPOLATION_1" equiv-text="&quot;\uFFFD1\uFFFD&quot;"/> será actualizado para reflejar la cantidad deseada de replicas.</target>
       </trans-unit>
       <trans-unit id="2912107960899863277" datatype="html">
@@ -1941,8 +1923,8 @@
         <target state="new">Descargar fichero de logs</target>
       </trans-unit>
       <trans-unit id="8444287437490086299" datatype="html">
-        <source> Endpoints <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD#2\uFFFD&quot;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD/#2\uFFFD&quot;"/></source>
-        <target state="new"> Endpoints <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD#2\uFFFD&quot;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD/#2\uFFFD&quot;"/></target>
+        <source> Endpoints <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon class=&quot;external-link-icon kd-clickable&quot; i18n-matTooltip matTooltip=&quot;Endpoint links are external links that will be open in a new tab.&quot; &gt;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon &gt;"/></source>
+        <target state="new"> Endpoints <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon class=&quot;external-link-icon kd-clickable&quot; i18n-matTooltip matTooltip=&quot;Endpoint links are external links that will be open in a new tab.&quot; &gt;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon &gt;"/></target>
       </trans-unit>
       <trans-unit id="8451232601628619325" datatype="html">
         <source>Create from form</source>
@@ -1964,8 +1946,8 @@
         <source> Prefix is not a valid DNS subdomain prefix (eg. my-domain.com). </source>
         <target state="new"> El prefijo no es un prefijo de subdominio DNS válido (ej. my-domain.com). </target>
       </trans-unit>
-      <trans-unit id="8677653466943398856" datatype="html">
-        <source> File is ready to download! </source>
+      <trans-unit id="8548218669860642537" datatype="html">
+        <source>File is ready to download!</source>
         <target state="new">¡El fichero está listo para descargarse!</target>
       </trans-unit>
       <trans-unit id="858785118348238543" datatype="html">
@@ -1987,6 +1969,10 @@
       <trans-unit id="8606840907501114553" datatype="html">
         <source>Namespaced</source>
         <target>Relativo a un espacio de nombre</target>
+      </trans-unit>
+      <trans-unit id="2351101906677045487" datatype="html">
+        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>Are you sure you want to delete <x id="INTERPOLATION" equiv-text="{{ data.displayName }}"/> <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{ data.objectMeta.name }}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_BLOCK_IF" equiv-text="@if (data.objectMeta.namespace) {"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>  in namespace <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_2" equiv-text="{{ data.objectMeta.namespace }}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>?<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+        <target state="new"><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>Are you sure you want to delete <x id="INTERPOLATION" equiv-text="{{ data.displayName }}"/> <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{ data.objectMeta.name }}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_BLOCK_IF" equiv-text="@if (data.objectMeta.namespace) {"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>  in namespace <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_2" equiv-text="{{ data.objectMeta.namespace }}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>?<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></target>
       </trans-unit>
       <trans-unit id="235524549685805426" datatype="html">
         <source> Preview Deployment </source>
@@ -2088,12 +2074,16 @@
         <source> Number of pods is required </source>
         <target state="new"> El número de Pods es requerido </target>
       </trans-unit>
+      <trans-unit id="8972761415390213899" datatype="html">
+        <source> Propagation policy <x id="START_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&lt;mat-select [(ngModel)]=&quot;options.propagation&quot; class=&quot;kd-dialog-propagation-select&quot; &gt;"/><x id="START_BLOCK_FOR" equiv-text="@for (propagation of DeletionPropagation | values; track propagation) {"/><x id="START_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&lt;mat-option [value]=&quot;propagation&quot;&gt;"/> <x id="INTERPOLATION" equiv-text="{{ propagation }}"/> <x id="CLOSE_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&lt;/mat-option&gt;"/><x id="CLOSE_BLOCK_FOR" equiv-text="}"/><x id="CLOSE_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&lt;/mat-select&gt;"/></source>
+        <target state="new"> Propagation policy <x id="START_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&lt;mat-select [(ngModel)]=&quot;options.propagation&quot; class=&quot;kd-dialog-propagation-select&quot; &gt;"/><x id="START_BLOCK_FOR" equiv-text="@for (propagation of DeletionPropagation | values; track propagation) {"/><x id="START_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&lt;mat-option [value]=&quot;propagation&quot;&gt;"/> <x id="INTERPOLATION" equiv-text="{{ propagation }}"/> <x id="CLOSE_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&lt;/mat-option&gt;"/><x id="CLOSE_BLOCK_FOR" equiv-text="}"/><x id="CLOSE_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&lt;/mat-select&gt;"/></target>
+      </trans-unit>
       <trans-unit id="1560145840172937431" datatype="html">
         <source> Added Capabilities </source>
         <target state="new">Capacidades añadidas</target>
       </trans-unit>
       <trans-unit id="4516429772840668541" datatype="html">
-        <source> Trigger a <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> </source>
+        <source> Trigger a <x id="INTERPOLATION" equiv-text="{{ data.displayName }}"/> </source>
         <target state="new">Lanzar un <x id="INTERPOLATION" equiv-text="{{data.displayName}}"/></target>
       </trans-unit>
       <trans-unit id="9044448882574381355" datatype="html">
@@ -2161,8 +2151,8 @@
         <target state="new">You can generate token for service account with: </target>
       </trans-unit>
       <trans-unit id="5911975001974379688" datatype="html">
-        <source> To find out more on how to configure and use bearer tokens, please refer to the <x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#20\uFFFD&quot;"/>documentation<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#20\uFFFD&quot;"/>. </source>
-        <target state="new"> To find out more on how to configure and use bearer tokens, please refer to the <x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#20\uFFFD&quot;"/>documentation<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#20\uFFFD&quot;"/>. </target>
+        <source> To find out more on how to configure and use bearer tokens, please refer to the <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://kubernetes.io/docs/reference/access-authn-authz/authentication/&quot;&gt;"/>documentation<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>. </source>
+        <target state="new"> To find out more on how to configure and use bearer tokens, please refer to the <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://kubernetes.io/docs/reference/access-authn-authz/authentication/&quot;&gt;"/>documentation<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>. </target>
       </trans-unit>
       <trans-unit id="3209433866980480523" datatype="html">
         <source> Sign out </source>
@@ -2581,12 +2571,8 @@
         <target state="new"> Selector </target>
       </trans-unit>
       <trans-unit id="7708270344948043036" datatype="html">
-        <source>
-          <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/>
-        </source>
-        <target state="new">
-          <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/>
-        </target>
+        <source> <x id="INTERPOLATION" equiv-text="{{ ingress.spec.defaultBackend.resource.kind }}"/> </source>
+        <target state="new"> <x id="INTERPOLATION" equiv-text="{{ ingress.spec.defaultBackend.resource.kind }}"/> </target>
       </trans-unit>
       <trans-unit id="3292993112071634423" datatype="html">
         <source> Strategy </source>
@@ -2639,10 +2625,6 @@
       <trans-unit id="6255028082111766086" datatype="html">
         <source> Memory </source>
         <target state="new"> Memory </target>
-      </trans-unit>
-      <trans-unit id="2243696143525228256" datatype="html">
-        <source> Propagation policy <x id="START_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&quot;\uFFFD#12\uFFFD&quot;"/><x id="START_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&quot;\uFFFD*13:1\uFFFD\uFFFD#1:1\uFFFD&quot;"/> <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0:1\uFFFD&quot;"/> <x id="CLOSE_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&quot;\uFFFD/#1:1\uFFFD\uFFFD/*13:1\uFFFD&quot;"/><x id="CLOSE_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&quot;\uFFFD/#12\uFFFD&quot;"/></source>
-        <target state="new"> Propagation policy <x id="START_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&quot;\uFFFD#12\uFFFD&quot;"/><x id="START_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&quot;\uFFFD*13:1\uFFFD\uFFFD#1:1\uFFFD&quot;"/> <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0:1\uFFFD&quot;"/> <x id="CLOSE_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&quot;\uFFFD/#1:1\uFFFD\uFFFD/*13:1\uFFFD&quot;"/><x id="CLOSE_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&quot;\uFFFD/#12\uFFFD&quot;"/></target>
       </trans-unit>
       <trans-unit id="9193001935256028830" datatype="html">
         <source> Owner </source>

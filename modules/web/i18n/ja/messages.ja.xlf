@@ -19,8 +19,8 @@
         <target>無条件表示ネームスペース一覧</target>
       </trans-unit>
       <trans-unit id="1045499538393271132" datatype="html">
-        <source>Auto-refresh (every <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> s.)</source>
-        <target>自動更新 (<x id="INTERPOLATION" equiv-text="{{refreshInterval}}"/> 秒毎)</target>
+        <source>Auto-refresh (every <x id="INTERPOLATION" equiv-text="{{ refreshInterval }}"/> s.)</source>
+        <target state="new">自動更新 (<x id="INTERPOLATION" equiv-text="{{refreshInterval}}"/> 秒毎)</target>
       </trans-unit>
       <trans-unit id="8432216995899653457" datatype="html">
         <source> Resource Information </source>
@@ -35,15 +35,15 @@
         <target>ポッド数</target>
       </trans-unit>
       <trans-unit id="1106543845307638308" datatype="html">
-        <source> <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> is not unique </source>
-        <target> <x id="INTERPOLATION" equiv-text="{{label.get(&apos;key&apos;).value}}"/> は一意ではありません</target>
+        <source> <x id="INTERPOLATION" equiv-text="{{ label.get(&apos;key&apos;).value }}"/> is not unique </source>
+        <target state="new"> <x id="INTERPOLATION" equiv-text="{{label.get(&apos;key&apos;).value}}"/> は一意ではありません</target>
       </trans-unit>
       <trans-unit id="1119419133766787743" datatype="html">
         <source>Go to namespace</source>
         <target>ネームスペースへ移動</target>
       </trans-unit>
-      <trans-unit id="4924861949788063991" datatype="html">
-        <source> Preparing file to download... </source>
+      <trans-unit id="1119485024840969330" datatype="html">
+        <source>Preparing file to download...</source>
         <target state="new">ダウンロードファイル準備中...</target>
       </trans-unit>
       <trans-unit id="1134765132854526890" datatype="html">
@@ -223,8 +223,8 @@
         <target state="new">ローリングアップデートストラテジー</target>
       </trans-unit>
       <trans-unit id="1781490455950079869" datatype="html">
-        <source><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#10\uFFFD&quot;"/>Community<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#10\uFFFD&quot;"/></source>
-        <target><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#10\uFFFD&quot;"/>コミュニティ<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#10\uFFFD&quot;"/></target>
+        <source><x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://github.com/kubernetes/dashboard/graphs/contributors&quot; target=&quot;_blank&quot; class=&quot;kd-muted-xlight&quot; &gt;"/>Community<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a &gt;"/></source>
+        <target state="new"><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#10\uFFFD&quot;"/>コミュニティ<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#10\uFFFD&quot;"/></target>
       </trans-unit>
       <trans-unit id="1791198005341902530" datatype="html">
         <source> Deploy </source>
@@ -303,8 +303,8 @@
         <target>コンテナーで使用できる環境変数です。値は、$(VAR_NAME) 構文を使用して、他の変数を参照できます。</target>
       </trans-unit>
       <trans-unit id="2079136285643456368" datatype="html">
-        <source><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#16\uFFFD&quot;"/>Slack<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#16\uFFFD&quot;"/></source>
-        <target><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#16\uFFFD&quot;"/>Slack<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#16\uFFFD&quot;"/></target>
+        <source><x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://kubernetes.slack.com/archives/C09R1JVU6&quot; target=&quot;_blank&quot; class=&quot;kd-muted-xlight&quot; &gt;"/>Slack<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a &gt;"/></source>
+        <target state="new"><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#16\uFFFD&quot;"/>Slack<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#16\uFFFD&quot;"/></target>
       </trans-unit>
       <trans-unit id="4860547712861504472" datatype="html">
         <source> Conditions </source>
@@ -335,6 +335,10 @@
         <target>デプロイメントを作成して、クラスター内に必要な数のポッドを維持できます。</target>
       </trans-unit>
       <trans-unit id="2131524838680811873" datatype="html">
+        <source> You can <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;deploy&quot; queryParamsHandling=&quot;preserve&quot; &gt;"/>deploy a containerized app<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>, select other namespace or <x id="START_LINK_1" equiv-text="&lt;a href=&quot;https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/#using-dashboard&quot; target=&quot;_blank&quot; &gt;"/>check the Dashboard Docs <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon class=&quot;kd-zerostate-icon&quot;&gt;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> to learn more. </source>
+        <target state="new"><x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>コンテナー化されたアプリをデプロイ<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>、他のネームスペースを選択、 もっと詳しく知るために<x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>ダッシュボードツアーを見学 <x id="START_TAG_MAT-ICON" ctype="x-mat-icon" equiv-text="&lt;mat-icon&gt;"/>open_in_new<x id="CLOSE_TAG_MAT-ICON" ctype="x-mat-icon" equiv-text="&lt;/mat-icon&gt;"/> <x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>できます。</target>
+      </trans-unit>
+      <trans-unit id="2131524838680811873" datatype="html">
         <source> You can <x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#6\uFFFD&quot;"/>deploy a containerized app<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;[\uFFFD/#6\uFFFD|\uFFFD/#7\uFFFD]&quot;"/>, select other namespace or <x id="START_LINK_1" equiv-text="&quot;\uFFFD#7\uFFFD&quot;"/>check the Dashboard Docs <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD#8\uFFFD&quot;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD/#8\uFFFD&quot;"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;[\uFFFD/#6\uFFFD|\uFFFD/#7\uFFFD]&quot;"/> to learn more. </source>
         <target><x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>コンテナー化されたアプリをデプロイ<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>、他のネームスペースを選択、 もっと詳しく知るために<x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>ダッシュボードツアーを見学 <x id="START_TAG_MAT-ICON" ctype="x-mat-icon" equiv-text="&lt;mat-icon&gt;"/>open_in_new<x id="CLOSE_TAG_MAT-ICON" ctype="x-mat-icon" equiv-text="&lt;/mat-icon&gt;"/> <x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>できます。</target>
       </trans-unit>
@@ -363,7 +367,7 @@
         <target>サービス</target>
       </trans-unit>
       <trans-unit id="4335281277764237619" datatype="html">
-        <source> <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> © <x id="INTERPOLATION_1" equiv-text="&quot;\uFFFD1\uFFFD&quot;"/> The Kubernetes Authors </source>
+        <source> <x id="INTERPOLATION" equiv-text="{{ userAgent }}"/> © <x id="INTERPOLATION_1" equiv-text="{{ copyrightYear }}"/> The Kubernetes Authors </source>
         <target state="new"> Kubernetes Dashboard v<x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> © <x id="INTERPOLATION_1" equiv-text="&quot;\uFFFD1\uFFFD&quot;"/> The Kubernetes Authors </target>
       </trans-unit>
       <trans-unit id="2235593604907350097" datatype="html">
@@ -387,7 +391,7 @@
         <target>非稼働のジョブ</target>
       </trans-unit>
       <trans-unit id="709124445415376270" datatype="html">
-        <source> <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> bytes </source>
+        <source> <x id="INTERPOLATION" equiv-text="{{ decoder.base64(env.value).length }}"/> bytes </source>
         <target state="new"><x id="INTERPOLATION" equiv-text="{{ decoder.base64(env.value).length }}"/> バイト</target>
       </trans-unit>
       <trans-unit id="3057224553801465622" datatype="html">
@@ -406,10 +410,6 @@
         <source>Old Replica Sets</source>
         <target>古いレプリカセット</target>
       </trans-unit>
-      <trans-unit id="2320200316076079587" datatype="html">
-        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD#5\uFFFD|\uFFFD#8\uFFFD]&quot;"/>Are you sure you want to delete <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD#6\uFFFD|\uFFFD#2:1\uFFFD]&quot;"/><x id="INTERPOLATION_1" equiv-text="&quot;\uFFFD1\uFFFD&quot;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD/#6\uFFFD|\uFFFD/#2:1\uFFFD]&quot;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD/#5\uFFFD|\uFFFD/#1:1\uFFFD\uFFFD/*7:1\uFFFD|\uFFFD/#8\uFFFD]&quot;"/><x id="START_TAG_SPAN_1" ctype="x-span_1" equiv-text="&quot;\uFFFD*7:1\uFFFD\uFFFD#1:1\uFFFD&quot;"/>  in namespace <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD#6\uFFFD|\uFFFD#2:1\uFFFD]&quot;"/><x id="INTERPOLATION_2" equiv-text="&quot;\uFFFD0:1\uFFFD&quot;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD/#6\uFFFD|\uFFFD/#2:1\uFFFD]&quot;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD/#5\uFFFD|\uFFFD/#1:1\uFFFD\uFFFD/*7:1\uFFFD|\uFFFD/#8\uFFFD]&quot;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD#5\uFFFD|\uFFFD#8\uFFFD]&quot;"/>?<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD/#5\uFFFD|\uFFFD/#1:1\uFFFD\uFFFD/*7:1\uFFFD|\uFFFD/#8\uFFFD]&quot;"/></source>
-        <target state="new"><x id="START_TAG_SPAN_1" ctype="x-span" equiv-text="&lt;span&gt;"/> ネームスペース <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_2" equiv-text="{{data.objectMeta.namespace}}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> の <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/> <x id="INTERPOLATION" equiv-text="{{data.displayName}}"/> <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{data.objectMeta.name}}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> を本当に削除しますか<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>？<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></target>
-      </trans-unit>
       <trans-unit id="2335697433764621013" datatype="html">
         <source>Memory limits (bytes)</source>
         <target>メモリー上限 (バイト)</target>
@@ -423,12 +423,8 @@
         <target state="new">リソース要求</target>
       </trans-unit>
       <trans-unit id="2380939390102386148" datatype="html">
-        <source>
-          <x id="ICU" equiv-text="i18n_81" xid="2986806881378584169"/>
-        </source>
-        <target>
-          <x id="ICU" equiv-text="{isMoreOptionsEnabled(), select, 1 {...} other {...}}"/>
-        </target>
+        <source> <x id="ICU" equiv-text="{isMoreOptionsEnabled(), select, true {Hide advanced options} other {Show advanced options}}" xid="2986806881378584169"/> </source>
+        <target state="new"> <x id="ICU" equiv-text="{isMoreOptionsEnabled(), select, 1 {...} other {...}}"/> </target>
       </trans-unit>
       <trans-unit id="2397234605876541174" datatype="html">
         <source>Image Pull Secrets</source>
@@ -523,8 +519,8 @@
         <target>言語</target>
       </trans-unit>
       <trans-unit id="2833767909565048391" datatype="html">
-        <source> Do you want to stay on current page and change namespace from <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD#7\uFFFD|\uFFFD#8\uFFFD]&quot;"/><x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD/#7\uFFFD|\uFFFD/#8\uFFFD]&quot;"/> to <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD#7\uFFFD|\uFFFD#8\uFFFD]&quot;"/><x id="INTERPOLATION_1" equiv-text="&quot;\uFFFD1\uFFFD&quot;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD/#7\uFFFD|\uFFFD/#8\uFFFD]&quot;"/>? </source>
-        <target>現在のページで、ネームスペースを <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION" equiv-text="{{namespace}}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> から <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{newNamespace}}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> に変更しますか？</target>
+        <source> Do you want to stay on current page and change namespace from <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION" equiv-text="{{ namespace }}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> to <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{ newNamespace }}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>? </source>
+        <target state="new">現在のページで、ネームスペースを <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION" equiv-text="{{namespace}}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> から <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{newNamespace}}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> に変更しますか？</target>
       </trans-unit>
       <trans-unit id="284876663522831141" datatype="html">
         <source>Source Type</source>
@@ -543,8 +539,8 @@
         <target>サブオブジェクト</target>
       </trans-unit>
       <trans-unit id="2933331719200534418" datatype="html">
-        <source><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#7\uFFFD&quot;"/>Documentation<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#7\uFFFD&quot;"/></source>
-        <target><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#7\uFFFD&quot;"/>ドキュメント<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#7\uFFFD&quot;"/></target>
+        <source><x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://github.com/kubernetes/dashboard/tree/master/docs&quot; target=&quot;_blank&quot; class=&quot;kd-muted-xlight&quot; &gt;"/>Documentation<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a &gt;"/></source>
+        <target state="new"><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#7\uFFFD&quot;"/>ドキュメント<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#7\uFFFD&quot;"/></target>
       </trans-unit>
       <trans-unit id="2944102521023817891" datatype="html">
         <source>Cluster</source>
@@ -595,8 +591,8 @@
         <target>通知パネルを閉じる</target>
       </trans-unit>
       <trans-unit id="31200575933930123" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> <x id="INTERPOLATION_1" equiv-text="&quot;\uFFFD1\uFFFD&quot;"/> will be triggered.</source>
-        <target><x id="INTERPOLATION" equiv-text="{{data.displayName}}"/> <x id="INTERPOLATION_1" equiv-text="{{data.objectMeta.name}}"/> がトリガーされます。</target>
+        <source><x id="INTERPOLATION" equiv-text="{{ data.displayName }}"/> <x id="INTERPOLATION_1" equiv-text="{{ data.objectMeta.name }}"/> will be triggered.</source>
+        <target state="new"><x id="INTERPOLATION" equiv-text="{{data.displayName}}"/> <x id="INTERPOLATION_1" equiv-text="{{data.objectMeta.name}}"/> がトリガーされます。</target>
       </trans-unit>
       <trans-unit id="3139808086382723160" datatype="html">
         <source>Number of seconds between every auto-refresh of every resource. Set 0 to disable.</source>
@@ -613,6 +609,10 @@
       <trans-unit id="315761510234903605" datatype="html">
         <source>Exec into pod</source>
         <target>ポッドで実行する</target>
+      </trans-unit>
+      <trans-unit id="3168073766619204338" datatype="html">
+        <source> Shell in <x id="START_BLOCK_IF" equiv-text="@if (containers?.length &gt; 0) {"/><x id="START_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&lt;mat-select class=&quot;kd-shell-toolbar-select&quot; (ngModelChange)=&quot;onPodContainerChange($event)&quot; [(ngModel)]=&quot;selectedContainer&quot; &gt;"/><x id="START_BLOCK_FOR" equiv-text="@for (item of containers; track item) {"/><x id="START_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&lt;mat-option [value]=&quot;item&quot;&gt;"/> <x id="INTERPOLATION" equiv-text="{{ item }}"/> <x id="CLOSE_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&lt;/mat-option&gt;"/><x id="CLOSE_BLOCK_FOR" equiv-text="}"/><x id="CLOSE_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&lt;/mat-select&gt;"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/> in <x id="INTERPOLATION_1" equiv-text="{{ podName }}"/> </source>
+        <target state="new"> Shell in <x id="START_BLOCK_IF" equiv-text="@if (containers?.length &gt; 0) {"/><x id="START_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&lt;mat-select class=&quot;kd-shell-toolbar-select&quot; (ngModelChange)=&quot;onPodContainerChange($event)&quot; [(ngModel)]=&quot;selectedContainer&quot; &gt;"/><x id="START_BLOCK_FOR" equiv-text="@for (item of containers; track item) {"/><x id="START_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&lt;mat-option [value]=&quot;item&quot;&gt;"/> <x id="INTERPOLATION" equiv-text="{{ item }}"/> <x id="CLOSE_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&lt;/mat-option&gt;"/><x id="CLOSE_BLOCK_FOR" equiv-text="}"/><x id="CLOSE_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&lt;/mat-select&gt;"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/> in <x id="INTERPOLATION_1" equiv-text="{{ podName }}"/> </target>
       </trans-unit>
       <trans-unit id="3175667526023915046" datatype="html">
         <source> Label Value must not exceed 253 characters. </source>
@@ -643,8 +643,8 @@
         <target state="new">最大利用不可</target>
       </trans-unit>
       <trans-unit id="3283019513707383139" datatype="html">
-        <source> Hosts <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD#2\uFFFD&quot;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD/#2\uFFFD&quot;"/></source>
-        <target>ホスト <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon class=&quot;external-link-icon kd-clickable&quot; i18n-matTooltip matTooltip=&quot;ホストのリンクは、新しいタブで開かれる外部リンクです。&quot;&gt;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/></target>
+        <source> Hosts <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon class=&quot;external-link-icon kd-clickable&quot; i18n-matTooltip matTooltip=&quot;Host links are external links that will be open in a new tab.&quot; &gt;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon &gt;"/></source>
+        <target state="new">ホスト <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon class=&quot;external-link-icon kd-clickable&quot; i18n-matTooltip matTooltip=&quot;ホストのリンクは、新しいタブで開かれる外部リンクです。&quot;&gt;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/></target>
       </trans-unit>
       <trans-unit id="3294686077659093992" datatype="html">
         <source>Namespace</source>
@@ -675,8 +675,8 @@
         <target>ラベルの値は &apos;.&apos;、&apos;-&apos;、あるいは &apos;_&apos; で区切られたアルファベットと数字からなる必要があります。</target>
       </trans-unit>
       <trans-unit id="3368378053177904137" datatype="html">
-        <source> Learn more <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;\uFFFD#5\uFFFD&quot;"/>open_in_new<x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;\uFFFD/#5\uFFFD&quot;"/></source>
-        <target>もっと詳しく <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/>open_in_new<x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> </target>
+        <source> Learn more <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i class=&quot;material-icons&quot;&gt;"/>open_in_new<x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/></source>
+        <target state="new">もっと詳しく <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/>open_in_new<x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> </target>
       </trans-unit>
       <trans-unit id="3368378053177904137" datatype="html">
         <source>Learn more <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;\uFFFD#15\uFFFD&quot;"/>open_in_new<x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;\uFFFD/#15\uFFFD&quot;"/></source>
@@ -695,8 +695,8 @@
         <target>もっと詳しく <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/>open_in_new<x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> </target>
       </trans-unit>
       <trans-unit id="3370944056293075657" datatype="html">
-        <source> Name must be up to <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> characters long. </source>
-        <target>名前は <x id="INTERPOLATION" equiv-text="{{secretNameMaxLength}}"/> 文字までです。</target>
+        <source> Name must be up to <x id="INTERPOLATION" equiv-text="{{ namespaceMaxLength }}"/> characters long. </source>
+        <target state="new">名前は <x id="INTERPOLATION" equiv-text="{{secretNameMaxLength}}"/> 文字までです。</target>
       </trans-unit>
       <trans-unit id="3370944056293075657" datatype="html">
         <source> Name must be up to <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> characters long. </source>
@@ -942,10 +942,6 @@
         <source>Completions: </source>
         <target state="new">完了:</target>
       </trans-unit>
-      <trans-unit id="4342607865016428668" datatype="html">
-        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD#5\uFFFD|\uFFFD#8\uFFFD]&quot;"/><x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD#6\uFFFD|\uFFFD#2:1\uFFFD]&quot;"/><x id="INTERPOLATION_1" equiv-text="&quot;\uFFFD1\uFFFD&quot;"/> <x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD/#6\uFFFD|\uFFFD/#2:1\uFFFD]&quot;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD/#5\uFFFD|\uFFFD/#1:1\uFFFD\uFFFD/*7:1\uFFFD|\uFFFD/#8\uFFFD]&quot;"/><x id="START_TAG_SPAN_1" ctype="x-span_1" equiv-text="&quot;\uFFFD*7:1\uFFFD\uFFFD#1:1\uFFFD&quot;"/> in namespace <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD#6\uFFFD|\uFFFD#2:1\uFFFD]&quot;"/><x id="INTERPOLATION_2" equiv-text="&quot;\uFFFD0:1\uFFFD&quot;"/> <x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&quot;[\uFFFD/#6\uFFFD|\uFFFD/#2:1\uFFFD]&quot;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD/#5\uFFFD|\uFFFD/#1:1\uFFFD\uFFFD/*7:1\uFFFD|\uFFFD/#8\uFFFD]&quot;"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD#5\uFFFD|\uFFFD#8\uFFFD]&quot;"/>will be restarted.<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&quot;[\uFFFD/#5\uFFFD|\uFFFD/#1:1\uFFFD\uFFFD/*7:1\uFFFD|\uFFFD/#8\uFFFD]&quot;"/></source>
-        <target> <x id="START_TAG_SPAN_1" ctype="x-span_1" equiv-text="&lt;span *ngIf=&quot;data.objectMeta.namespace&quot;&gt;"/> ネームスペース <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/> <x id="INTERPOLATION_2" equiv-text="{{data.objectMeta.namespace}}"/> <x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> の <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/> <x id="INTERPOLATION" equiv-text="{{data.displayName}}"/> <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/> <x id="INTERPOLATION_1" equiv-text="{{data.objectMeta.name}}"/> <x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/> <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/> が再起動されます。 <x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> </target>
-      </trans-unit>
       <trans-unit id="6610543661547234529" datatype="html">
         <source> Starting deadline seconds </source>
         <target state="new">開始期限秒数</target>
@@ -1143,8 +1139,8 @@
         <target>Cron ジョブ</target>
       </trans-unit>
       <trans-unit id="5352570882809799670" datatype="html">
-        <source>Size: <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> B</source>
-        <target>サイズ: <x id="INTERPOLATION" equiv-text="{{loaded | kdMemory}}"/> B</target>
+        <source>Size: <x id="INTERPOLATION" equiv-text="{{ loaded | kdMemory }}"/> B</source>
+        <target state="new">サイズ: <x id="INTERPOLATION" equiv-text="{{loaded | kdMemory}}"/> B</target>
       </trans-unit>
       <trans-unit id="5371126920581174501" datatype="html">
         <source>Choose color theme of the dashboard</source>
@@ -1210,13 +1206,13 @@
         <source> Unavailable </source>
         <target state="new">利用不可</target>
       </trans-unit>
+      <trans-unit id="1845880618404010933" datatype="html">
+        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ data.displayName }}"/> <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{ data.objectMeta.name }}"/> <x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_BLOCK_IF" equiv-text="@if (data.objectMeta.namespace) {"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/> in namespace <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_2" equiv-text="{{ data.objectMeta.namespace }}"/> <x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>will be restarted.<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+        <target state="new"><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ data.displayName }}"/> <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{ data.objectMeta.name }}"/> <x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_BLOCK_IF" equiv-text="@if (data.objectMeta.namespace) {"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/> in namespace <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_2" equiv-text="{{ data.objectMeta.namespace }}"/> <x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>will be restarted.<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></target>
+      </trans-unit>
       <trans-unit id="5674286808255988565" datatype="html">
         <source>Create</source>
         <target>作成</target>
-      </trans-unit>
-      <trans-unit id="2131524838680811873" datatype="html">
-        <source> You can <x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#6\uFFFD&quot;"/>deploy a containerized app<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;[\uFFFD/#6\uFFFD|\uFFFD/#7\uFFFD]&quot;"/>, select other namespace or <x id="START_LINK_1" equiv-text="&quot;\uFFFD#7\uFFFD&quot;"/>check the Dashboard Docs <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD#8\uFFFD&quot;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD/#8\uFFFD&quot;"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;[\uFFFD/#6\uFFFD|\uFFFD/#7\uFFFD]&quot;"/> to learn more. </source>
-        <target><x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>コンテナー化されたアプリをデプロイ<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>、他のネームスペースを選択、 もっと詳しく知るために<x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a&gt;"/>ダッシュボードツアーを見学 <x id="START_TAG_MAT-ICON" ctype="x-mat-icon" equiv-text="&lt;mat-icon&gt;"/>open_in_new<x id="CLOSE_TAG_MAT-ICON" ctype="x-mat-icon" equiv-text="&lt;/mat-icon&gt;"/> <x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>できます。</target>
       </trans-unit>
       <trans-unit id="5693993471751761333" datatype="html">
         <source> Create a new secret... </source>
@@ -1283,14 +1279,8 @@
         <target>サービス</target>
       </trans-unit>
       <trans-unit id="5943454400955467108" datatype="html">
-        <source>
-          <x id="START_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&quot;\uFFFD#9\uFFFD&quot;"/>
-          <x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&quot;\uFFFD/#9\uFFFD&quot;"/>
-        </source>
-        <target>
-          <x id="START_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&quot;\uFFFD#9\uFFFD&quot;"/>
-          <x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&quot;\uFFFD/#9\uFFFD&quot;"/>
-        </target>
+        <source><x id="START_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&lt;kd-date [date]=&quot;notification.timestamp&quot; relative &gt;"/><x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&lt;/kd-date&gt;"/></source>
+        <target state="new"> <x id="START_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&quot;\uFFFD#9\uFFFD&quot;"/> <x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&quot;\uFFFD/#9\uFFFD&quot;"/> </target>
       </trans-unit>
       <trans-unit id="2737842181120837161" datatype="html">
         <source> Liveness Probe </source>
@@ -1589,7 +1579,7 @@
         <target>テーマ</target>
       </trans-unit>
       <trans-unit id="4801818354593078957" datatype="html">
-        <source> Logs from <x id="START_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&quot;\uFFFD#2\uFFFD&quot;"/><x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&quot;[\uFFFD/#2\uFFFD|\uFFFD/#3\uFFFD]&quot;"/> to <x id="START_TAG_KD_DATE_1" ctype="x-kd_date_1" equiv-text="&quot;\uFFFD#3\uFFFD&quot;"/><x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&quot;[\uFFFD/#2\uFFFD|\uFFFD/#3\uFFFD]&quot;"/></source>
+        <source> Logs from <x id="START_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&lt;kd-date [date]=&quot;$safeNavigationMigration(podLogs?.info.fromDate)&quot; format=&quot;short&quot; &gt;"/><x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&lt;/kd-date&gt;"/> to <x id="START_TAG_KD_DATE_1" ctype="x-kd_date_1" equiv-text="&lt;kd-date [date]=&quot;$safeNavigationMigration(podLogs?.info.toDate)&quot; format=&quot;short&quot; &gt;"/><x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&lt;/kd-date&gt;"/></source>
         <target state="new">UTC <x id="START_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&lt;kd-date [date]=&quot;podLogs?.info.fromDate&quot; format=&quot;short&quot;&gt;"/><x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&lt;/kd-date&gt;"/> から <x id="START_TAG_KD_DATE_1" ctype="x-kd_date_1" equiv-text="&lt;kd-date [date]=&quot;podLogs?.info.toDate&quot; format=&quot;short&quot;&gt;"/><x id="CLOSE_TAG_KD_DATE" ctype="x-kd_date" equiv-text="&lt;/kd-date&gt;"/> までのログ</target>
       </trans-unit>
       <trans-unit id="7136018875175606726" datatype="html">
@@ -1617,8 +1607,8 @@
         <target state="new">最大サージ:</target>
       </trans-unit>
       <trans-unit id="7194477224906924674" datatype="html">
-        <source><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#13\uFFFD&quot;"/>Feedback<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#13\uFFFD&quot;"/></source>
-        <target><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#13\uFFFD&quot;"/>フィードバック<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#13\uFFFD&quot;"/></target>
+        <source><x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://github.com/kubernetes/dashboard/issues/new/choose&quot; target=&quot;_blank&quot; class=&quot;kd-muted-xlight&quot; &gt;"/>Feedback<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a &gt;"/></source>
+        <target state="new"><x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#13\uFFFD&quot;"/>フィードバック<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#13\uFFFD&quot;"/></target>
       </trans-unit>
       <trans-unit id="4064570823222169007" datatype="html">
         <source> Success Threshold </source>
@@ -1639,10 +1629,6 @@
       <trans-unit id="7207867066492367466" datatype="html">
         <source>Settings </source>
         <target>設定</target>
-      </trans-unit>
-      <trans-unit id="728108318392658678" datatype="html">
-        <source> Shell in <x id="START_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&quot;\uFFFD*3:1\uFFFD\uFFFD#1:1\uFFFD&quot;"/><x id="START_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&quot;\uFFFD*2:2\uFFFD\uFFFD#1:2\uFFFD&quot;"/> <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0:2\uFFFD&quot;"/> <x id="CLOSE_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&quot;\uFFFD/#1:2\uFFFD\uFFFD/*2:2\uFFFD&quot;"/><x id="CLOSE_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&quot;\uFFFD/#1:1\uFFFD\uFFFD/*3:1\uFFFD&quot;"/> in <x id="INTERPOLATION_1" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> </source>
-        <target><x id="INTERPOLATION_1" equiv-text="{{ podName }}"/> の <x id="START_TAG_MAT-SELECT" ctype="x-mat-select" equiv-text="&lt;mat-select&gt;"/> <x id="START_TAG_MAT-OPTION" ctype="x-mat-option" equiv-text="&lt;mat-option&gt;"/> <x id="INTERPOLATION" equiv-text="{{ item }}"/> <x id="CLOSE_TAG_MAT-OPTION" ctype="x-mat-option" equiv-text="&lt;/mat-option&gt;"/> <x id="CLOSE_TAG_MAT-SELECT" ctype="x-mat-select" equiv-text="&lt;/mat-select&gt;"/> のシェル</target>
       </trans-unit>
       <trans-unit id="7281870845577621674" datatype="html">
         <source>Init Containers</source>
@@ -1865,8 +1851,8 @@
         <target>設定とストレージ</target>
       </trans-unit>
       <trans-unit id="8175189185819474284" datatype="html">
-        <source> Container image is invalid: <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> </source>
-        <target>コンテナーイメージが無効です: <x id="INTERPOLATION" equiv-text="{{containerImage.errors?.validImageReference}}"/> </target>
+        <source> Container image is invalid: <x id="INTERPOLATION" equiv-text="{{ containerImage.errors?.validImageReference }}"/> </source>
+        <target state="new">コンテナーイメージが無効です: <x id="INTERPOLATION" equiv-text="{{containerImage.errors?.validImageReference}}"/> </target>
       </trans-unit>
       <trans-unit id="8177873832400820695" datatype="html">
         <source>Count</source>
@@ -1909,12 +1895,8 @@
         <target>Forbidden (403)</target>
       </trans-unit>
       <trans-unit id="8323422358213440128" datatype="html">
-        <source>
-          <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/>
-        </source>
-        <target>
-          <x id="INTERPOLATION" equiv-text="{{getDisplayName(resource)}}"/>
-        </target>
+        <source><x id="INTERPOLATION" equiv-text="{{ getDisplayName(resource) }}"/> </source>
+        <target state="new"> <x id="INTERPOLATION" equiv-text="{{getDisplayName(resource)}}"/> </target>
       </trans-unit>
       <trans-unit id="8337788905474874574" datatype="html">
         <source>Suspended: <x id="PH" equiv-text="status.failed"/></source>
@@ -1933,16 +1915,16 @@
         <target>コントローラー</target>
       </trans-unit>
       <trans-unit id="8433565378732329468" datatype="html">
-        <source><x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> <x id="INTERPOLATION_1" equiv-text="&quot;\uFFFD1\uFFFD&quot;"/> will be updated to reflect the desired replicas count.</source>
-        <target><x id="INTERPOLATION" equiv-text="{{ data.displayName }}"/> <x id="INTERPOLATION_1" equiv-text="{{ data.objectMeta.name }}"/> は、目標のレプリカ数になるように更新されます。</target>
+        <source><x id="INTERPOLATION" equiv-text="{{ data.displayName }}"/> <x id="INTERPOLATION_1" equiv-text="{{ data.objectMeta.name }}"/> will be updated to reflect the desired replicas count.</source>
+        <target state="new"><x id="INTERPOLATION" equiv-text="{{ data.displayName }}"/> <x id="INTERPOLATION_1" equiv-text="{{ data.objectMeta.name }}"/> は、目標のレプリカ数になるように更新されます。</target>
       </trans-unit>
       <trans-unit id="2912107960899863277" datatype="html">
         <source> Download logs file </source>
         <target state="new">ログファイルのダウンロード</target>
       </trans-unit>
       <trans-unit id="8444287437490086299" datatype="html">
-        <source> Endpoints <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD#2\uFFFD&quot;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&quot;\uFFFD/#2\uFFFD&quot;"/></source>
-        <target>エンドポイント <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon class=&quot;external-link-icon kd-clickable&quot; i18n-matTooltip matTooltip=&quot;エンドポイントのリンクは、新しいタブで開かれる外部リンクです。&quot;&gt;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/></target>
+        <source> Endpoints <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon class=&quot;external-link-icon kd-clickable&quot; i18n-matTooltip matTooltip=&quot;Endpoint links are external links that will be open in a new tab.&quot; &gt;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon &gt;"/></source>
+        <target state="new">エンドポイント <x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon class=&quot;external-link-icon kd-clickable&quot; i18n-matTooltip matTooltip=&quot;エンドポイントのリンクは、新しいタブで開かれる外部リンクです。&quot;&gt;"/>open_in_new<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/></target>
       </trans-unit>
       <trans-unit id="8451232601628619325" datatype="html">
         <source>Create from form</source>
@@ -1964,8 +1946,8 @@
         <source> Prefix is not a valid DNS subdomain prefix (eg. my-domain.com). </source>
         <target>プレフィックスが有効な DNS サブドメインのプレフィックス (例 my-domain.com) ではありません。</target>
       </trans-unit>
-      <trans-unit id="8677653466943398856" datatype="html">
-        <source> File is ready to download! </source>
+      <trans-unit id="8548218669860642537" datatype="html">
+        <source>File is ready to download!</source>
         <target state="new">ファイルをダウンロードできます！</target>
       </trans-unit>
       <trans-unit id="858785118348238543" datatype="html">
@@ -1987,6 +1969,10 @@
       <trans-unit id="8606840907501114553" datatype="html">
         <source>Namespaced</source>
         <target>ネームスペース</target>
+      </trans-unit>
+      <trans-unit id="2351101906677045487" datatype="html">
+        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>Are you sure you want to delete <x id="INTERPOLATION" equiv-text="{{ data.displayName }}"/> <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{ data.objectMeta.name }}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_BLOCK_IF" equiv-text="@if (data.objectMeta.namespace) {"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>  in namespace <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_2" equiv-text="{{ data.objectMeta.namespace }}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>?<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+        <target state="new"><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>Are you sure you want to delete <x id="INTERPOLATION" equiv-text="{{ data.displayName }}"/> <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_1" equiv-text="{{ data.objectMeta.name }}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_BLOCK_IF" equiv-text="@if (data.objectMeta.namespace) {"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>  in namespace <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="INTERPOLATION_2" equiv-text="{{ data.objectMeta.namespace }}"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/>?<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></target>
       </trans-unit>
       <trans-unit id="235524549685805426" datatype="html">
         <source> Preview Deployment </source>
@@ -2088,12 +2074,16 @@
         <source> Number of pods is required </source>
         <target>ポッド数は必須です</target>
       </trans-unit>
+      <trans-unit id="8972761415390213899" datatype="html">
+        <source> Propagation policy <x id="START_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&lt;mat-select [(ngModel)]=&quot;options.propagation&quot; class=&quot;kd-dialog-propagation-select&quot; &gt;"/><x id="START_BLOCK_FOR" equiv-text="@for (propagation of DeletionPropagation | values; track propagation) {"/><x id="START_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&lt;mat-option [value]=&quot;propagation&quot;&gt;"/> <x id="INTERPOLATION" equiv-text="{{ propagation }}"/> <x id="CLOSE_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&lt;/mat-option&gt;"/><x id="CLOSE_BLOCK_FOR" equiv-text="}"/><x id="CLOSE_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&lt;/mat-select&gt;"/></source>
+        <target state="new"> Propagation policy <x id="START_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&lt;mat-select [(ngModel)]=&quot;options.propagation&quot; class=&quot;kd-dialog-propagation-select&quot; &gt;"/><x id="START_BLOCK_FOR" equiv-text="@for (propagation of DeletionPropagation | values; track propagation) {"/><x id="START_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&lt;mat-option [value]=&quot;propagation&quot;&gt;"/> <x id="INTERPOLATION" equiv-text="{{ propagation }}"/> <x id="CLOSE_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&lt;/mat-option&gt;"/><x id="CLOSE_BLOCK_FOR" equiv-text="}"/><x id="CLOSE_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&lt;/mat-select&gt;"/></target>
+      </trans-unit>
       <trans-unit id="1560145840172937431" datatype="html">
         <source> Added Capabilities </source>
         <target state="new">追加機能</target>
       </trans-unit>
       <trans-unit id="4516429772840668541" datatype="html">
-        <source> Trigger a <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/> </source>
+        <source> Trigger a <x id="INTERPOLATION" equiv-text="{{ data.displayName }}"/> </source>
         <target state="new"><x id="INTERPOLATION" equiv-text="{{ data.displayName }}"/>のトリガー</target>
       </trans-unit>
       <trans-unit id="9044448882574381355" datatype="html">
@@ -2161,8 +2151,8 @@
         <target state="new">You can generate token for service account with: </target>
       </trans-unit>
       <trans-unit id="5911975001974379688" datatype="html">
-        <source> To find out more on how to configure and use bearer tokens, please refer to the <x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#20\uFFFD&quot;"/>documentation<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#20\uFFFD&quot;"/>. </source>
-        <target state="new"> To find out more on how to configure and use bearer tokens, please refer to the <x id="START_LINK" ctype="x-a" equiv-text="&quot;\uFFFD#20\uFFFD&quot;"/>documentation<x id="CLOSE_LINK" ctype="x-a" equiv-text="&quot;\uFFFD/#20\uFFFD&quot;"/>. </target>
+        <source> To find out more on how to configure and use bearer tokens, please refer to the <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://kubernetes.io/docs/reference/access-authn-authz/authentication/&quot;&gt;"/>documentation<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>. </source>
+        <target state="new"> To find out more on how to configure and use bearer tokens, please refer to the <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://kubernetes.io/docs/reference/access-authn-authz/authentication/&quot;&gt;"/>documentation<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>. </target>
       </trans-unit>
       <trans-unit id="3209433866980480523" datatype="html">
         <source> Sign out </source>
@@ -2581,12 +2571,8 @@
         <target state="new"> Selector </target>
       </trans-unit>
       <trans-unit id="7708270344948043036" datatype="html">
-        <source>
-          <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/>
-        </source>
-        <target state="new">
-          <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0\uFFFD&quot;"/>
-        </target>
+        <source> <x id="INTERPOLATION" equiv-text="{{ ingress.spec.defaultBackend.resource.kind }}"/> </source>
+        <target state="new"> <x id="INTERPOLATION" equiv-text="{{ ingress.spec.defaultBackend.resource.kind }}"/> </target>
       </trans-unit>
       <trans-unit id="3292993112071634423" datatype="html">
         <source> Strategy </source>
@@ -2639,10 +2625,6 @@
       <trans-unit id="6255028082111766086" datatype="html">
         <source> Memory </source>
         <target state="new"> Memory </target>
-      </trans-unit>
-      <trans-unit id="2243696143525228256" datatype="html">
-        <source> Propagation policy <x id="START_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&quot;\uFFFD#12\uFFFD&quot;"/><x id="START_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&quot;\uFFFD*13:1\uFFFD\uFFFD#1:1\uFFFD&quot;"/> <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0:1\uFFFD&quot;"/> <x id="CLOSE_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&quot;\uFFFD/#1:1\uFFFD\uFFFD/*13:1\uFFFD&quot;"/><x id="CLOSE_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&quot;\uFFFD/#12\uFFFD&quot;"/></source>
-        <target state="new"> Propagation policy <x id="START_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&quot;\uFFFD#12\uFFFD&quot;"/><x id="START_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&quot;\uFFFD*13:1\uFFFD\uFFFD#1:1\uFFFD&quot;"/> <x id="INTERPOLATION" equiv-text="&quot;\uFFFD0:1\uFFFD&quot;"/> <x id="CLOSE_TAG_MAT_OPTION" ctype="x-mat_option" equiv-text="&quot;\uFFFD/#1:1\uFFFD\uFFFD/*13:1\uFFFD&quot;"/><x id="CLOSE_TAG_MAT_SELECT" ctype="x-mat_select" equiv-text="&quot;\uFFFD/#12\uFFFD&quot;"/></target>
       </trans-unit>
       <trans-unit id="9193001935256028830" datatype="html">
         <source> Owner </source>
