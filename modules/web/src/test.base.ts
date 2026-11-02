@@ -19,7 +19,6 @@ import {setupZoneTestEnv} from 'jest-preset-angular/setup-env/zone';
 setupZoneTestEnv();
 import './test.base.mocks';
 
-// eslint-disable-next-line node/no-extraneous-import
 import {jest} from '@jest/globals';
 
 // Async operations timeout

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// eslint-disable-next-line node/no-extraneous-import
 import {jest} from '@jest/globals';
 
 Object.defineProperty(document, 'doctype', {value: '<!DOCTYPE html>'});
@@ -32,7 +31,6 @@ Object.defineProperty(document.body.style, 'transform', {
 
 Object.defineProperties(window, {
   crypto: {
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     value: {getRandomValues: () => [2, 4, 8, 16]},
   },
   getComputedStyle: {
