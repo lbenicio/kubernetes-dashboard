@@ -17,9 +17,8 @@
 @use './variables' as *;
 @use './mixins' as *;
 @use './theming';
-@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
-@import './dark';
-@import './light';
+@use './dark';
+@use './light';
 
 @include mat.all-component-typographies(theming.$kd-typography);
 
