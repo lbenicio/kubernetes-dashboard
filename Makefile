@@ -137,7 +137,7 @@ endif
 # Note #2: Make sure that the port 443 (HTTPS) is free on your localhost.
 .PHONY: helm
 helm: --ensure-kind-cluster --ensure-kind-ingress-nginx --ensure-helm-dependencies image --kind-load-images ## Install Kubernetes Dashboard dev helm chart in the dev kind cluster
-	@helm upgrade \
+	@KUBECONFIG=$(KIND_CLUSTER_HOST_KUBECONFIG_PATH) helm upgrade \
 		--create-namespace \
 		--namespace dashboard \
 		--install kubernetes-dashboard \
@@ -167,7 +167,7 @@ helm: --ensure-kind-cluster --ensure-kind-ingress-nginx --ensure-helm-dependenci
 # Note #2: Make sure that the port 443 (HTTPS) is free on your localhost.
 .PHONY: helm-release
 helm-release: --ensure-kind-cluster --ensure-kind-ingress-nginx --ensure-helm-dependencies ## Install Kubernetes Dashboard helm chart in the dev kind cluster
-	@helm upgrade \
+	@KUBECONFIG=$(KIND_CLUSTER_HOST_KUBECONFIG_PATH) helm upgrade \
 		--create-namespace \
 		--namespace dashboard \
 		--install kubernetes-dashboard \
@@ -185,8 +185,8 @@ helm-release: --ensure-kind-cluster --ensure-kind-ingress-nginx --ensure-helm-de
 #		--set api.containers.args={--metrics-provider=none} \
 
 .PHONY: helm-uninstall
-helm-uninstall: ## Uninstall helm dev installation of Kubernetes Dashboard
-	@helm uninstall -n dashboard kubernetes-dashboard
+helm-uninstall: --ensure-kind-cluster ## Uninstall helm dev installation of Kubernetes Dashboard
+	@KUBECONFIG=$(KIND_CLUSTER_HOST_KUBECONFIG_PATH) helm uninstall -n dashboard kubernetes-dashboard
 
 # ============================ Private ============================ #
 
