@@ -15,15 +15,11 @@ limitations under the License.
 -->
 
 <div
-  fxLayout="column"
-  fxFill
-  fxFlexFill
+  class="kd-chrome-root"
 >
   <mat-toolbar class="kd-toolbar kd-primary-toolbar">
     <div
-      class="kd-toolbar-tools"
-      fxLayout="row"
-      fxFlex="auto"
+      class="kd-toolbar-tools kd-primary-toolbar-tools"
     >
       <div class="kd-logo-bar">
         <a
@@ -45,8 +41,8 @@ limitations under the License.
       </div>
       <kd-namespace-selector id="nav-namespace-selector"> </kd-namespace-selector>
 
-      <kd-search fxFlex> </kd-search>
-      <div fxLayout="row">
+      <kd-search class="kd-toolbar-search"> </kd-search>
+      <div class="kd-toolbar-actions">
         <button
           mat-icon-button
           color="primary"
@@ -84,18 +80,14 @@ limitations under the License.
   }
 
   <div
-    fxFlex
-    fxLayout="row"
     class="kd-chrome-container kd-bg-background"
   >
     <kd-nav></kd-nav>
     <div
-      fxLayoutAlign="center"
-      fxFlex
-      class="kd-scroll-container"
+      class="kd-scroll-container kd-main-scroll-container"
     >
       @switch (loading) { @case (true) {
-      <div fxFlexAlign="center">
+      <div class="kd-loading-indicator">
         <mat-spinner
           mode="indeterminate"
           [diameter]="48"
@@ -104,9 +96,7 @@ limitations under the License.
       </div>
       } @case (false) {
       <div
-        fxFlex
-        fxLayout="column"
-        class="kd-scroll-container"
+        class="kd-scroll-container kd-page-scroll-container"
       >
         <router-outlet></router-outlet>
         <kd-footer></kd-footer>

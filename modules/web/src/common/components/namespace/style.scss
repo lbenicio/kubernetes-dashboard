@@ -81,8 +81,10 @@
 
 .kd-namespace-select-input {
   border: 0;
+  box-sizing: border-box;
   height: 3 * $baseline-grid;
   font-size: $body-font-size-base;
   outline: none;
   padding: (2 * $baseline-grid) 0 (2 * $baseline-grid) (2 * $baseline-grid);
+  width: 100%;
 }

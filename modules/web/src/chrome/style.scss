@@ -14,6 +14,17 @@
 
 @use '../variables' as *;
 
+.kd-chrome-root {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0;
+  min-height: 100%;
+  min-width: 100%;
+  width: 100%;
+}
+
 %kd-toolbar-logo-placeholder {
   height: 4 * $baseline-grid;
   margin-right: $baseline-grid;
@@ -33,6 +44,24 @@
   height: $secondary-toolbar-height;
   margin: auto;
   padding-left: $baseline-grid;
+}
+
+.kd-primary-toolbar-tools {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: row;
+}
+
+.kd-toolbar-search {
+  box-sizing: border-box;
+  flex: 1 1 0%;
+}
+
+.kd-toolbar-actions {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
 }
 
 .kd-logo-bar {
@@ -83,10 +112,35 @@
 .kd-chrome-container {
   // Set overflow property to disable margin-collapse, which in turn
   // prevents scrollbar from being always visible.
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: row;
   overflow-x: hidden;
   position: relative;
 }
 
 .kd-scroll-container {
   overflow-x: auto;
+}
+
+.kd-main-scroll-container {
+  align-content: stretch;
+  align-items: stretch;
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.kd-loading-indicator {
+  align-self: center;
+}
+
+.kd-page-scroll-container {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 0.000000001px;
+  flex-direction: column;
 }
