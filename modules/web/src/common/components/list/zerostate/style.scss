@@ -15,16 +15,21 @@
 @use '../../../../variables' as *;
 
 .kd-zerostate-container {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   padding: 2 * $baseline-grid;
 }
 
 .kd-zerostate-title {
+  align-self: center;
   font-size: $headline-font-size-base;
   font-weight: $regular-font-weight;
   margin-bottom: $baseline-grid * 0.5;
 }
 
 .kd-zerostate-text {
+  align-self: center;
   font-size: $body-font-size-base;
   font-weight: $regular-font-weight;
   word-break: break-all;
