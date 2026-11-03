@@ -15,6 +15,9 @@
 @use '../../../variables' as *;
 
 .kd-property-container {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   margin: (0.75 * $baseline-grid) (5 * $baseline-grid) (0.75 * $baseline-grid) 0;
 }
 
@@ -23,7 +26,12 @@
 }
 
 .kd-property-label {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
   font-size: $caption-font-size-base;
+  justify-content: flex-start;
   margin-bottom: 0.25 * $baseline-grid;
 }
 
