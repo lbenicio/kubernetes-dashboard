@@ -20,10 +20,7 @@ limitations under the License.
 >
   <div
     title
-    fxLayout="row"
-    fxLayoutAlign="start center"
-    fxLayoutGap="8px"
-    fxFlex="100"
+    class="kd-logs-header"
   >
     <span i18n>Logs from</span>
     <mat-form-field>
@@ -65,10 +62,9 @@ limitations under the License.
       </mat-select>
     </mat-form-field>
 
-    <div fxFlex></div>
+    <div class="kd-logs-header-spacer"></div>
 
     <button
-      fxFlexAlign="center end"
       mat-icon-button
       i18n-matTooltip
       matTooltip="Download logs"
@@ -77,7 +73,7 @@ limitations under the License.
       <mat-icon>file_download</mat-icon>
     </button>
     <button
-      fxLayoutAlign="center end"
+      class="kd-logs-menu-button"
       mat-icon-button
       [matMenuTriggerFor]="kdMenu"
     >
@@ -96,11 +92,7 @@ limitations under the License.
       kdLoadingSpinner
       [isLoading]="isLoading"
     ></div>
-    <div
-      fxFlex
-      fxLayout="column"
-      fxLayoutGap="2px"
-    >
+    <div class="kd-logs-list">
       @for (item of logsSet; track item) {
       <div
         [ngClass]="{'kd-logs-element-compact': logService.getCompact(), 'kd-logs-element': !logService.getCompact()}"
@@ -113,10 +105,7 @@ limitations under the License.
 
   <div
     footer
-    fxFlex
-    fxLayoutAlign="start center"
     class="footer"
-    fxLayout="row"
   >
     @if (logsSet?.length > 1) {
     <div i18n>
@@ -135,7 +124,7 @@ limitations under the License.
     </div>
     }
 
-    <div fxFlex></div>
+    <div class="kd-logs-footer-spacer"></div>
 
     <div>
       <button

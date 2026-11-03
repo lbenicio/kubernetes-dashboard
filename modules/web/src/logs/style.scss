@@ -38,6 +38,30 @@
   font-size: $caption-font-size-base;
 }
 
+.kd-logs-header {
+  align-items: center;
+  display: flex;
+  flex: 1 1 100%;
+  gap: 8px;
+}
+
+.kd-logs-header-spacer,
+.kd-logs-footer-spacer {
+  flex: 1 1 0%;
+}
+
+.kd-logs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kd-logs-menu-button {
+  align-items: flex-end;
+  display: flex;
+  justify-content: center;
+}
+
 .kd-log-line-container {
   height: 100%;
   overflow-y: auto;
@@ -57,6 +81,8 @@ kd-card {
 }
 
 .footer {
+  align-items: center;
+  display: flex;
   font-size: $body-font-size-base;
   padding: (0.5 * $baseline-grid) (2 * $baseline-grid);
 }
