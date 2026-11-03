@@ -16,7 +16,7 @@
  */
 export class AbstractPage {
   static visitHome() {
-    cy.visit('/');
+    cy.visit('/#/workloads?namespace=default');
   }
 
   static visit(url: string) {
@@ -41,7 +41,7 @@ export class AbstractPage {
   }
 
   static clickSelectorItem(option: string) {
-    cy.get('mat-option').contains(option).click({force: true});
+    cy.get('mat-option').contains(option).should('be.visible').click();
   }
 
   static assertUrlContains(url: string) {

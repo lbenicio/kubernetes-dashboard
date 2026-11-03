@@ -58,8 +58,7 @@ describe('Navbar', () => {
       NavbarPage.assertUrlContains('workload');
     });
 
-    // TODO: passes locally but often fails in the CI. Needs to be investigated and fixed.
-    xit('namespace selector', () => {
+    it('namespace selector', () => {
       const ns = 'kube-public';
       NavbarPage.visitHome();
       NavbarPage.clickItem(NavbarPage.namespaceSelectorItemId);

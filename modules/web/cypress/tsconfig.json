@@ -1,6 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "rootDir": "..",
     "strict": true,
     "types": ["cypress", "node"],
     "sourceMap": false,

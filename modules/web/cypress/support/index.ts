@@ -19,6 +19,16 @@ import 'cypress-fail-fast';
 
 before(() => {
   cy.clearCookies();
+  cy.env(['token']).then(({token}) => {
+    if (typeof token !== 'string' || token.length === 0) {
+      throw new Error('CYPRESS_TOKEN must contain a Kubernetes service account token.');
+    }
+
+    cy.visit('/');
+    cy.get('#token').type(token, {log: false});
+    cy.get('.kd-login-button[type="submit"]').click();
+    cy.url().should('include', '/workloads');
+  });
 });
 
 afterEach(() => {

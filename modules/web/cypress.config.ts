@@ -16,6 +16,7 @@ import {defineConfig} from 'cypress';
 import failFast from 'cypress-fail-fast/plugin';
 
 export default defineConfig({
+  allowCypressEnv: false,
   e2e: {
     baseUrl: 'http://localhost:8080',
     supportFile: 'cypress/support/index.ts',
