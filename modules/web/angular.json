@@ -60,7 +60,7 @@
             "tsConfig": "tsconfig.app.json",
             "polyfills": ["src/polyfills.ts", "@angular/localize/init"],
             "i18nMissingTranslation": "error",
-            "allowedCommonJsDependencies": ["truncate-url", "strip-ansi"],
+            "allowedCommonJsDependencies": ["strip-ansi"],
             "assets": [
               {
                 "glob": "**/*",
@@ -89,6 +89,7 @@
               "src/index.scss"
             ],
             "scripts": [
+              "node_modules/ace-builds/src-min-noconflict/ace.js",
               "node_modules/sockjs-client/dist/sockjs.min.js",
               "node_modules/systemjs/dist/s.js",
               "node_modules/systemjs/dist/extras/named-register.js",

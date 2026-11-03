@@ -25,8 +25,14 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import type {SimpleChanges} from '@angular/core';
-import {Ace, config, edit} from 'ace-builds';
+import type {Ace} from 'ace-builds';
 import {ThemeService} from '../../services/global/theme';
+
+declare global {
+  interface Window {
+    ace: typeof import('ace-builds');
+  }
+}
 
 enum EditorTheme {
   light = 'textmate',
@@ -103,9 +109,10 @@ export class TextInputComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   private initEditor_(): void {
-    config.set('basePath', 'ace');
+    const ace = window.ace;
+    ace.config.set('basePath', 'ace');
 
-    this.editor = edit(this.editorRef.nativeElement);
+    this.editor = ace.edit(this.editorRef.nativeElement);
     this.prettify_();
 
     this.editor.setOptions(this.options);
