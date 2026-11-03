@@ -16,10 +16,10 @@ import {HttpClient, HttpEventType, HttpParams, HttpRequest, HttpResponse} from '
 import {Component, DestroyRef, inject, Inject, ChangeDetectionStrategy} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {LogOptions} from '@api/root.api';
-import {saveAs} from 'file-saver';
 
 import {LogService} from '../../services/global/logs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {saveBlob} from './save';
 
 export interface LogsDownloadDialogMeta {
   pod: string;
@@ -86,7 +86,7 @@ export class LogsDownloadDialogComponent {
   }
 
   save(): void {
-    saveAs(this._result, this.logService.getLogFileName(this.data.pod, this.data.container));
+    saveBlob(this._result, this.logService.getLogFileName(this.data.pod, this.data.container));
     this._dialogRef.close();
   }
 
