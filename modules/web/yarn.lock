@@ -8817,8 +8817,8 @@ __metadata:
 
 "deepmerge@patch:deepmerge@npm%3A4.3.1#./.yarn/patches/deepmerge-npm-4.3.1-4f751a0844.patch::locator=kubernetes-dashboard%40workspace%3A.":
   version: 4.3.1
-  resolution: "deepmerge@patch:deepmerge@npm%3A4.3.1#./.yarn/patches/deepmerge-npm-4.3.1-4f751a0844.patch::version=4.3.1&hash=bbcf50&locator=kubernetes-dashboard%40workspace%3A."
-  checksum: 88c846eb001dffae9a3c99800b3d1394031ad28513273ba8fe6f3dfb2912ea625b334dba841c5378829f5bc54c2830400c0d20cfb5f20cac6425cedba8c03cae
+  resolution: "deepmerge@patch:deepmerge@npm%3A4.3.1#./.yarn/patches/deepmerge-npm-4.3.1-4f751a0844.patch::version=4.3.1&hash=c60713&locator=kubernetes-dashboard%40workspace%3A."
+  checksum: 87673878395b3cf4bd3497b59d8612d0258b83030c55ab3ea3869bd8043bd4850b11e45800125aad682b18fe6d5bf301b8c1e0a08c46f6e6043d7c357262ba53
   languageName: node
   linkType: hard
 
