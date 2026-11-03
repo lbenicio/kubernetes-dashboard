@@ -15,13 +15,11 @@
 import {Component, Inject, Input, ChangeDetectionStrategy} from '@angular/core';
 import {IMessage} from '@api/root.ui';
 import {MESSAGES_DI_TOKEN} from '../../../index.messages';
-import {Animations} from '../../animations/animations';
 
 @Component({
   selector: 'kd-card',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
-  animations: [Animations.expandInOut],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })

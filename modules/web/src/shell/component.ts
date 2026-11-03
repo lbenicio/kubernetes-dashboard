@@ -27,7 +27,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {PodContainerList, ShellFrame, SJSCloseEvent, SJSMessageEvent, TerminalResponse} from '@api/root.api';
 import debounce from 'lodash-es/debounce';
-import {ReplaySubject, Subject} from 'rxjs';
+import {firstValueFrom, ReplaySubject, Subject} from 'rxjs';
 import {Terminal} from '@xterm/xterm';
 import {FitAddon} from '@xterm/addon-fit';
 
@@ -193,7 +193,7 @@ export class ShellComponent implements AfterViewInit, OnDestroy {
     const terminalSessionUrl = `${EndpointManager.utility(Utility.shell).shell(this.namespace_, this.podName)}/${
       this.selectedContainer
     }`;
-    const {id} = await this.utility_.shell(terminalSessionUrl).toPromise();
+    const {id} = await firstValueFrom(this.utility_.shell(terminalSessionUrl));
 
     this.conn_ = new SockJS(`api/sockjs?${id}`);
     this.conn_.onopen = this.onConnectionOpen.bind(this, id);

@@ -15,6 +15,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Component, Inject, OnInit, DOCUMENT, ChangeDetectionStrategy} from '@angular/core';
 import {Router} from '@angular/router';
+import {firstValueFrom} from 'rxjs';
 
 import {AssetsService} from '@common/services/global/assets';
 import {GlobalSettingsService} from '@common/services/global/globalsettings';
@@ -45,12 +46,9 @@ export class ChromeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.http_
-      .get<SystemBanner>(ChromeComponent.systemBannerEndpoint)
-      .toPromise()
-      .then(sb => {
-        this.systemBanner_ = sb;
-      });
+    firstValueFrom(this.http_.get<SystemBanner>(ChromeComponent.systemBannerEndpoint)).then(sb => {
+      this.systemBanner_ = sb;
+    });
 
     this.registerVisibilityChangeHandler_();
   }

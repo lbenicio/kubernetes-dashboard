@@ -20,6 +20,7 @@ import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {AlertDialogConfig, AlertDialogComponent} from 'common/dialogs/alert/dialog';
 import {MatDialogConfig, MatDialog} from '@angular/material/dialog';
 import {encode} from 'js-base64';
+import {firstValueFrom} from 'rxjs';
 
 @Component({
   selector: 'kd-secret-detail-edit',
@@ -67,19 +68,16 @@ export class SecretDetailEditComponent implements OnInit {
   update(): void {
     // Get the latest raw resource, and update it.
     const url = RawResource.getUrl(this.secret.typeMeta, this.secret.objectMeta);
-    this.http_
-      .get(url)
-      .toPromise()
-      .then((resource: any) => {
-        const dataValue = this.encode_(this.text);
-        resource.data[this.key] = dataValue;
-        const url = RawResource.getUrl(this.secret.typeMeta, this.secret.objectMeta);
-        this.http_.put(url, resource, {headers: this.getHttpHeaders_(), responseType: 'text'}).subscribe(() => {
-          // Update current data value for secret, so refresh isn't needed.
-          this.secret_.data[this.key] = dataValue;
-          this.closeEvent.emit(true);
-        }, this.handleErrorResponse_.bind(this));
-      });
+    firstValueFrom(this.http_.get(url)).then((resource: any) => {
+      const dataValue = this.encode_(this.text);
+      resource.data[this.key] = dataValue;
+      const url = RawResource.getUrl(this.secret.typeMeta, this.secret.objectMeta);
+      this.http_.put(url, resource, {headers: this.getHttpHeaders_(), responseType: 'text'}).subscribe(() => {
+        // Update current data value for secret, so refresh isn't needed.
+        this.secret_.data[this.key] = dataValue;
+        this.closeEvent.emit(true);
+      }, this.handleErrorResponse_.bind(this));
+    });
   }
 
   cancel(): void {

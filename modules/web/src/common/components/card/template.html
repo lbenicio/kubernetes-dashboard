@@ -59,29 +59,32 @@ limitations under the License.
   }
 
   <div
-    [@expandInOut]="!expanded"
+    class="kd-card-expandable-content"
+    [class.kd-card-expandable-content-collapsed]="!expanded"
     [ngClass]="{'kd-inner-content': role === 'inner-content'}"
   >
-    <mat-card-content
-      class="kd-card-content"
-      [ngClass]="{'kd-card-content-table': role === 'table'}"
-    >
-      @if (initialized) {
-      <div>
-        <ng-content select="[content]"></ng-content>
-      </div>
-      } @else {
-      <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
-      }
-    </mat-card-content>
-
-    <mat-card-footer>
-      <div
-        class="mat-small"
-        [ngClass]="{'kd-card-footer': withFooter}"
+    <div class="kd-card-expandable-inner">
+      <mat-card-content
+        class="kd-card-content"
+        [ngClass]="{'kd-card-content-table': role === 'table'}"
       >
-        <ng-content select="[footer]"></ng-content>
-      </div>
-    </mat-card-footer>
+        @if (initialized) {
+        <div>
+          <ng-content select="[content]"></ng-content>
+        </div>
+        } @else {
+        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+        }
+      </mat-card-content>
+
+      <mat-card-footer>
+        <div
+          class="mat-small"
+          [ngClass]="{'kd-card-footer': withFooter}"
+        >
+          <ng-content select="[footer]"></ng-content>
+        </div>
+      </mat-card-footer>
+    </div>
   </div>
 </mat-card>

@@ -16,6 +16,7 @@ import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Inject, Injectable} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Router} from '@angular/router';
+import {firstValueFrom} from 'rxjs';
 import {AppDeploymentContentResponse, AppDeploymentContentSpec, AppDeploymentSpec} from '@api/root.api';
 import {IConfig} from '@api/root.ui';
 import {AsKdError} from '@common/errors/errors';
@@ -69,13 +70,13 @@ export class CreateService {
     let error: HttpErrorResponse;
 
     try {
-      const {token} = await this.csrfToken_.getTokenForAction('appdeploymentfromfile').toPromise();
+      const {token} = await firstValueFrom(this.csrfToken_.getTokenForAction('appdeploymentfromfile'));
       this.isDeployInProgress_ = true;
-      response = await this.http_
-        .post<AppDeploymentContentResponse>('api/v1/appdeploymentfromfile', spec, {
+      response = await firstValueFrom(
+        this.http_.post<AppDeploymentContentResponse>('api/v1/appdeploymentfromfile', spec, {
           headers: {[this.CONFIG.csrfHeaderName]: token},
         })
-        .toPromise();
+      );
       if (response.error.length > 0) {
         this.reportError_(i18n.MSG_DEPLOY_DIALOG_PARTIAL_COMPLETED, response.error);
       }
@@ -97,13 +98,13 @@ export class CreateService {
     let error: HttpErrorResponse;
 
     try {
-      const {token} = await this.csrfToken_.getTokenForAction('appdeployment').toPromise();
+      const {token} = await firstValueFrom(this.csrfToken_.getTokenForAction('appdeployment'));
       this.isDeployInProgress_ = true;
-      response = await this.http_
-        .post<AppDeploymentContentResponse>('api/v1/appdeployment', spec, {
+      response = await firstValueFrom(
+        this.http_.post<AppDeploymentContentResponse>('api/v1/appdeployment', spec, {
           headers: {[this.CONFIG.csrfHeaderName]: token},
         })
-        .toPromise();
+      );
     } catch (err) {
       error = err;
     }

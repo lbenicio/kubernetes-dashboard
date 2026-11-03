@@ -25,6 +25,77 @@ import (
 	"k8s.io/dashboard/types"
 )
 
+func TestGetRestartCountIncludesInitContainers(t *testing.T) {
+	pod := v1.Pod{
+		Status: v1.PodStatus{
+			InitContainerStatuses: []v1.ContainerStatus{{RestartCount: 2}},
+			ContainerStatuses:     []v1.ContainerStatus{{RestartCount: 3}},
+		},
+	}
+
+	if got := getRestartCount(pod); got != 5 {
+		t.Fatalf("getRestartCount() = %d, want 5", got)
+	}
+}
+
+func TestGetPodStatusMatchesCurrentKubectlBehavior(t *testing.T) {
+	tests := []struct {
+		name string
+		pod  v1.Pod
+		want string
+	}{
+		{
+			name: "init container failure includes formatted exit code",
+			pod: v1.Pod{
+				Status: v1.PodStatus{
+					Phase: v1.PodPending,
+					InitContainerStatuses: []v1.ContainerStatus{{
+						Name:  "init",
+						State: v1.ContainerState{Terminated: &v1.ContainerStateTerminated{ExitCode: 1}},
+					}},
+				},
+			},
+			want: "Init:ExitCode:1",
+		},
+		{
+			name: "init container waiting reason is prefixed",
+			pod: v1.Pod{
+				Status: v1.PodStatus{
+					Phase: v1.PodPending,
+					InitContainerStatuses: []v1.ContainerStatus{{
+						Name:  "init",
+						State: v1.ContainerState{Waiting: &v1.ContainerStateWaiting{Reason: "CrashLoopBackOff"}},
+					}},
+				},
+			},
+			want: "Init:CrashLoopBackOff",
+		},
+		{
+			name: "container failure is retained when another container is running but pod is not ready",
+			pod: v1.Pod{
+				Status: v1.PodStatus{
+					Phase:      v1.PodRunning,
+					Conditions: []v1.PodCondition{{Type: v1.PodReady, Status: v1.ConditionFalse}},
+					ContainerStatuses: []v1.ContainerStatus{
+						{State: v1.ContainerState{Terminated: &v1.ContainerStateTerminated{Reason: "Completed"}}},
+						{State: v1.ContainerState{Terminated: &v1.ContainerStateTerminated{Reason: "Error", ExitCode: 1}}},
+						{Ready: true, State: v1.ContainerState{Running: &v1.ContainerStateRunning{}}},
+					},
+				},
+			},
+			want: "Error",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if got := getPodStatus(test.pod); got != test.want {
+				t.Fatalf("getPodStatus() = %q, want %q", got, test.want)
+			}
+		})
+	}
+}
+
 // TestToPodPodStatusFailed tests the returned status for pods that have completed unsuccessfully.
 func TestToPodPodStatusFailed(t *testing.T) {
 	pod := &v1.Pod{

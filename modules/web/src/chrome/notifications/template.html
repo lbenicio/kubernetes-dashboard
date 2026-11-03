@@ -25,7 +25,7 @@ limitations under the License.
     <mat-icon class="kd-notifications-icon kd-primary-toolbar-icon">notifications</mat-icon>
     @if (getUnreadCount() > 0) {
     <div
-      @easeOut
+      animate.leave="kd-notifications-counter-leave"
       class="kd-notifications-counter kd-white kd-bg-error"
     >
       {{ getUnreadCount() }}

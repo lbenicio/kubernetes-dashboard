@@ -110,3 +110,39 @@
   font-size: $footer-font-size-base;
   padding: 0 (2 * $baseline-grid) $baseline-grid;
 }
+
+.kd-card-expandable-content {
+  display: grid;
+  grid-template-rows: 1fr;
+  opacity: 1;
+  overflow: hidden;
+  transition:
+    grid-template-rows 500ms ease-in-out,
+    opacity 500ms ease-in-out;
+}
+
+.kd-card-expandable-content-collapsed {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+
+:host div.kd-inner-content.kd-card-expandable-content {
+  display: grid;
+}
+
+.kd-card-expandable-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+:host div.kd-inner-content .kd-card-expandable-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kd-card-expandable-content {
+    transition: none;
+  }
+}

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
-import {APP_INITIALIZER, Injector, NgModule} from '@angular/core';
+import {inject, Injector, NgModule, provideAppInitializer} from '@angular/core';
 import {DecoderService} from '@common/services/global/decoder';
 import {LocalConfigLoaderService} from '@common/services/global/loader';
 
@@ -61,21 +61,7 @@ import {MeService} from '@common/services/global/me';
     ParamsService,
     LocalConfigLoaderService,
     DecoderService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: init,
-      deps: [
-        GlobalSettingsService,
-        LocalSettingsService,
-        ConfigService,
-        HistoryService,
-        PinnerService,
-        ThemeService,
-        LocalConfigLoaderService,
-        MeService,
-      ],
-      multi: true,
-    },
+    provideAppInitializer(init),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
@@ -91,24 +77,24 @@ export class GlobalServicesModule {
   }
 }
 
-export function init(
-  globalSettings: GlobalSettingsService,
-  localSettings: LocalSettingsService,
-  pinner: PinnerService,
-  config: ConfigService,
-  history: HistoryService,
-  theme: ThemeService,
-  loader: LocalConfigLoaderService,
-  me: MeService
-): Function {
-  return async () => {
+export function init(): Promise<unknown> {
+  const globalSettings = inject(GlobalSettingsService);
+  const localSettings = inject(LocalSettingsService);
+  const config = inject(ConfigService);
+  const history = inject(HistoryService);
+  const pinner = inject(PinnerService);
+  const theme = inject(ThemeService);
+  const loader = inject(LocalConfigLoaderService);
+  const me = inject(MeService);
+
+  return (async () => {
     await loader.init();
     localSettings.init();
-    pinner.init();
     config.init();
     history.init();
+    pinner.init();
     theme.init();
     await me.init();
-    return await globalSettings.init();
-  };
+    return globalSettings.init();
+  })();
 }

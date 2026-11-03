@@ -33,13 +33,25 @@
   width: 100%;
 
   .kd-namespaced-item {
+    border-radius: 50%;
     display: inline-block;
     font-size: $footer-font-size-base;
     height: 2 * $baseline-grid;
     line-height: 2.25 * $baseline-grid;
     margin-left: 0.5 * $baseline-grid;
+    overflow: hidden;
     text-align: center;
+    transition:
+      width 0.15s linear,
+      border-radius 0.15s linear;
     vertical-align: text-top;
+    white-space: nowrap;
+    width: 2 * $baseline-grid;
+  }
+
+  .kd-namespaced-item-expanded {
+    border-radius: 8px;
+    width: 9 * $baseline-grid;
   }
 }
 

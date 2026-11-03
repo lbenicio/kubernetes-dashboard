@@ -46,6 +46,20 @@ $drawer-controls-size: $baseline-grid * 4;
   width: $counter-size;
 }
 
+.kd-notifications-counter-leave {
+  animation: kd-notifications-counter-fade-out 500ms ease-in-out;
+}
+
+@keyframes kd-notifications-counter-fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
 .kd-notifications-panel {
   border-radius: $baseline-grid * 0.5;
   display: flex;
@@ -130,4 +144,10 @@ $drawer-controls-size: $baseline-grid * 4;
   line-height: $drawer-controls-size;
   padding-left: $baseline-grid;
   width: $drawer-size - $baseline-grid;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kd-notifications-counter-leave {
+    animation: none;
+  }
 }

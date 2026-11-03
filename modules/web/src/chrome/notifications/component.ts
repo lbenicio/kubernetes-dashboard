@@ -15,7 +15,6 @@
 import {Component, ElementRef, HostListener, Inject, ChangeDetectionStrategy} from '@angular/core';
 import {IMessage} from '@api/root.ui';
 
-import {Animations} from '@common/animations/animations';
 import {Notification, NotificationsService} from '@common/services/global/notifications';
 import {MESSAGES_DI_TOKEN} from '../../index.messages';
 
@@ -23,7 +22,6 @@ import {MESSAGES_DI_TOKEN} from '../../index.messages';
   selector: 'kd-notifications',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
-  animations: [Animations.easeOut],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })

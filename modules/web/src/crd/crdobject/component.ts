@@ -33,6 +33,7 @@ import {NamespacedResourceService} from '@common/services/resource/resource';
 import {EndpointManager, Resource} from '@common/services/resource/endpoint';
 import {NotificationsService} from '@common/services/global/notifications';
 import {RawResource} from '@common/resources/rawresource';
+import {firstValueFrom} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
@@ -77,16 +78,13 @@ export class CRDObjectDetailComponent implements OnInit, OnDestroy {
 
         // Get raw resource
         const url = RawResource.getUrl(this.object.typeMeta, this.object.objectMeta);
-        this.http_
-          .get(url)
-          .toPromise()
-          .then(response => {
-            if (this.selectedMode === EditorMode.YAML) {
-              this.text = toYaml(response);
-            } else {
-              this.text = this.toRawJSON_(response);
-            }
-          });
+        firstValueFrom(this.http_.get(url)).then(response => {
+          if (this.selectedMode === EditorMode.YAML) {
+            this.text = toYaml(response);
+          } else {
+            this.text = this.toRawJSON_(response);
+          }
+        });
       });
 
     this.buttonToggleGroup.valueChange

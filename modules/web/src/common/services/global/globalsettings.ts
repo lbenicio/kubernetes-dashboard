@@ -17,7 +17,7 @@ import {EventEmitter, Injectable} from '@angular/core';
 import {GlobalSettings} from '@api/root.api';
 import {onSettingsFailCallback, onSettingsLoadCallback} from '@api/root.ui';
 import isArray from 'lodash-es/isArray';
-import {Observable, of, ReplaySubject, Subject} from 'rxjs';
+import {firstValueFrom, Observable, of, ReplaySubject, Subject} from 'rxjs';
 import {catchError, switchMap, takeUntil, tap} from 'rxjs/operators';
 
 import {AuthorizerService} from './authorizer';
@@ -64,9 +64,8 @@ export class GlobalSettingsService {
   }
 
   load(onLoad?: onSettingsLoadCallback, onFail?: onSettingsFailCallback): Promise<GlobalSettings> {
-    return this.http_
-      .get<GlobalSettings>(this.endpoint_)
-      .pipe(
+    return firstValueFrom(
+      this.http_.get<GlobalSettings>(this.endpoint_).pipe(
         tap(settings => {
           this.settings_ = this._defaultSettings(settings);
           this.isInitialized_ = true;
@@ -80,7 +79,7 @@ export class GlobalSettingsService {
           return of(DEFAULT_SETTINGS);
         })
       )
-      .toPromise();
+    );
   }
 
   private _defaultSettings(settings: GlobalSettings): GlobalSettings {

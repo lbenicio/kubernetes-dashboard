@@ -18,6 +18,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ReplicaCounts} from '@api/root.api';
 
 import {ResourceMeta} from '../../services/global/actionbar';
+import {firstValueFrom} from 'rxjs';
 
 @Component({
   selector: 'kd-delete-resource-dialog',
@@ -41,13 +42,10 @@ export class ScaleResourceDialogComponent implements OnInit {
       (this.data.objectMeta.namespace ? `/${this.data.objectMeta.namespace}` : '') +
       `/${this.data.objectMeta.name}`;
 
-    this.http_
-      .get<ReplicaCounts>(url)
-      .toPromise()
-      .then(rc => {
-        this.actual = rc.actualReplicas;
-        this.desired = rc.desiredReplicas;
-      });
+    firstValueFrom(this.http_.get<ReplicaCounts>(url)).then(rc => {
+      this.actual = rc.actualReplicas;
+      this.desired = rc.desiredReplicas;
+    });
   }
 
   onNoClick(): void {

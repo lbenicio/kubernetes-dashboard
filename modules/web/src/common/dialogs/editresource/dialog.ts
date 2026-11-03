@@ -22,6 +22,7 @@ import {EditorMode} from '../../components/textinput/component';
 import {RawResource} from '../../resources/rawresource';
 import {ResourceMeta} from '../../services/global/actionbar';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {firstValueFrom} from 'rxjs';
 
 @Component({
   selector: 'kd-delete-resource-dialog',
@@ -45,12 +46,9 @@ export class EditResourceDialogComponent implements OnInit {
 
   ngOnInit(): void {
     const url = RawResource.getUrl(this.data.typeMeta, this.data.objectMeta);
-    this.http_
-      .get(url)
-      .toPromise()
-      .then(response => {
-        this.text = toYaml(response);
-      });
+    firstValueFrom(this.http_.get(url)).then(response => {
+      this.text = toYaml(response);
+    });
 
     this.buttonToggleGroup.valueChange
       .pipe(takeUntilDestroyed(this.destroyRef))

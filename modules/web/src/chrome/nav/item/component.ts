@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {animate, keyframes, state, style, transition, trigger} from '@angular/animations';
 import {
   Component,
   DestroyRef,
@@ -31,35 +30,10 @@ enum NamespacedIndicatorState {
   Leave = 'mouseleave',
 }
 
-const rollInOut = trigger('rollInOut', [
-  state(NamespacedIndicatorState.Enter, style({width: '72px', 'border-radius': '8px'})),
-  state(NamespacedIndicatorState.Leave, style({width: '16px', 'border-radius': '50%'})),
-  transition(`${NamespacedIndicatorState.Leave} => ${NamespacedIndicatorState.Enter}`, [
-    animate(
-      '.15s linear',
-      keyframes([
-        style({width: '16px', 'border-radius': '50%', color: 'rgba(0,0,0,0)'}),
-        style({width: '72px', 'border-radius': '8px'}),
-      ])
-    ),
-  ]),
-
-  transition(`${NamespacedIndicatorState.Enter} => ${NamespacedIndicatorState.Leave}`, [
-    animate(
-      '.15s linear',
-      keyframes([
-        style({width: '72px', 'border-radius': '8px', color: 'rgba(0,0,0,0)'}),
-        style({width: '16px', 'border-radius': '50%'}),
-      ])
-    ),
-  ]),
-]);
-
 @Component({
   selector: 'kd-nav-item',
   templateUrl: 'template.html',
   styleUrls: ['style.scss'],
-  animations: [rollInOut],
   changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
@@ -77,6 +51,10 @@ export class NavItemComponent implements OnInit {
 
   get indicator(): string {
     return this.animationState === NamespacedIndicatorState.Leave || !this.animated ? 'N' : 'Namespaced';
+  }
+
+  get isIndicatorExpanded(): boolean {
+    return this.animated && this.animationState === NamespacedIndicatorState.Enter;
   }
 
   ngOnInit(): void {

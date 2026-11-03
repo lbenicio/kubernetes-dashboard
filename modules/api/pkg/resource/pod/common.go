@@ -27,17 +27,20 @@ import (
 	"k8s.io/dashboard/types"
 )
 
-// getRestartCount return the restart count of given pod (total number of its containers restarts).
+// getRestartCount returns the restart count of the pod's init and regular containers.
 func getRestartCount(pod v1.Pod) int32 {
 	var restartCount int32 = 0
+	for _, containerStatus := range pod.Status.InitContainerStatuses {
+		restartCount += containerStatus.RestartCount
+	}
 	for _, containerStatus := range pod.Status.ContainerStatuses {
 		restartCount += containerStatus.RestartCount
 	}
 	return restartCount
 }
 
-// getPodStatus returns status string calculated based on the same logic as kubectl
-// Base code: https://github.com/kubernetes/kubernetes/blob/v1.31.1/pkg/printers/internalversion/printers.go
+// getPodStatus returns the status string using the same logic as kubectl.
+// Base code: https://github.com/kubernetes/kubernetes/blob/v1.37.2/pkg/printers/internalversion/printers.go
 //
 // nolint:gocyclo // disable cyclo check as this function is copied from kubectl
 func getPodStatus(pod v1.Pod) string {
@@ -72,19 +75,19 @@ func getPodStatus(pod v1.Pod) string {
 			// initialization is failed
 			if len(container.State.Terminated.Reason) == 0 {
 				if container.State.Terminated.Signal != 0 {
-					reason = fmt.Sprintf("Init: Signal %d", container.State.Terminated.Signal)
+					reason = fmt.Sprintf("Init:Signal:%d", container.State.Terminated.Signal)
 				} else {
-					reason = fmt.Sprintf("Init: ExitCode %d", container.State.Terminated.ExitCode)
+					reason = fmt.Sprintf("Init:ExitCode:%d", container.State.Terminated.ExitCode)
 				}
 			} else {
 				reason = "Init:" + container.State.Terminated.Reason
 			}
 			initializing = true
 		case container.State.Waiting != nil && len(container.State.Waiting.Reason) > 0 && container.State.Waiting.Reason != "PodInitializing":
-			reason = fmt.Sprintf("Init: %s", container.State.Waiting.Reason)
+			reason = fmt.Sprintf("Init:%s", container.State.Waiting.Reason)
 			initializing = true
 		default:
-			reason = fmt.Sprintf("Init: %d/%d", i, len(pod.Spec.InitContainers))
+			reason = fmt.Sprintf("Init:%d/%d", i, len(pod.Spec.InitContainers))
 			initializing = true
 		}
 		break
@@ -92,18 +95,22 @@ func getPodStatus(pod v1.Pod) string {
 
 	if !initializing || isPodInitializedConditionTrue(&pod.Status) {
 		hasRunning := false
+		errorReason := ""
 		for i := len(pod.Status.ContainerStatuses) - 1; i >= 0; i-- {
 			container := pod.Status.ContainerStatuses[i]
 
 			if container.State.Waiting != nil && container.State.Waiting.Reason != "" {
 				reason = container.State.Waiting.Reason
-			} else if container.State.Terminated != nil && container.State.Terminated.Reason != "" {
-				reason = container.State.Terminated.Reason
-			} else if container.State.Terminated != nil && container.State.Terminated.Reason == "" {
-				if container.State.Terminated.Signal != 0 {
-					reason = fmt.Sprintf("Signal: %d", container.State.Terminated.Signal)
+			} else if container.State.Terminated != nil {
+				if len(container.State.Terminated.Reason) > 0 {
+					reason = container.State.Terminated.Reason
+				} else if container.State.Terminated.Signal != 0 {
+					reason = fmt.Sprintf("Signal:%d", container.State.Terminated.Signal)
 				} else {
-					reason = fmt.Sprintf("ExitCode: %d", container.State.Terminated.ExitCode)
+					reason = fmt.Sprintf("ExitCode:%d", container.State.Terminated.ExitCode)
+				}
+				if container.State.Terminated.ExitCode != 0 {
+					errorReason = reason
 				}
 			} else if container.Ready && container.State.Running != nil {
 				hasRunning = true
@@ -111,10 +118,12 @@ func getPodStatus(pod v1.Pod) string {
 		}
 
 		// change pod status back to "Running" if there is at least one container still reporting as "Running" status
-		if reason == "Completed" && hasRunning {
-			if hasPodReadyCondition(pod.Status.Conditions) {
+		if reason == "Completed" {
+			if hasRunning && hasPodReadyCondition(pod.Status.Conditions) {
 				reason = string(v1.PodRunning)
-			} else {
+			} else if errorReason != "" {
+				reason = errorReason
+			} else if hasRunning {
 				reason = "NotReady"
 			}
 		}
