@@ -126,7 +126,7 @@
     "minimatch": "11.0.1",
     "minimist": "1.2.8",
     "ng-extract-i18n-merge": "3.5.0",
-    "node-gyp": "11.2.0",
+    "node-gyp": "13.1.0",
     "postcss": "8.5.32",
     "prettier": "3.9.10",
     "q": "1.5.1",
