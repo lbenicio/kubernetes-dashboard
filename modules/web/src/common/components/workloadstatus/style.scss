@@ -14,9 +14,21 @@
 
 @use '../../../variables' as *;
 
+.kd-workload-status-list {
+  display: flex;
+  flex-flow: row wrap;
+}
+
 .kd-graph-container {
   flex: auto;
   text-align: center;
+}
+
+.kd-graph-content {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .kd-graph-title {

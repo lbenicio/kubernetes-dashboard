@@ -17,23 +17,19 @@ limitations under the License.
 <kd-card [graphMode]="true">
   <div
     title
-    fxLayout="row"
     i18n
   >
     Workload Status
   </div>
   <div
     content
-    fxLayout="row wrap"
+    class="kd-workload-status-list"
   >
     <div
       class="kd-graph-container"
       *ngIf="resourcesRatio.cronJobRatio.length"
     >
-      <div
-        fxLayout="column"
-        fxLayoutAlign="center center"
-      >
+      <div class="kd-graph-content">
         <ngx-charts-pie-chart
           [results]="resourcesRatio.cronJobRatio"
           [view]="size"
@@ -62,10 +58,7 @@ limitations under the License.
       class="kd-graph-container"
       *ngIf="resourcesRatio.daemonSetRatio.length"
     >
-      <div
-        fxLayout="column"
-        fxLayoutAlign="center center"
-      >
+      <div class="kd-graph-content">
         <ngx-charts-pie-chart
           [results]="resourcesRatio.daemonSetRatio"
           [view]="size"
@@ -94,10 +87,7 @@ limitations under the License.
       class="kd-graph-container"
       *ngIf="resourcesRatio.deploymentRatio.length"
     >
-      <div
-        fxLayout="column"
-        fxLayoutAlign="center center"
-      >
+      <div class="kd-graph-content">
         <ngx-charts-pie-chart
           [results]="resourcesRatio.deploymentRatio"
           [view]="size"
@@ -126,10 +116,7 @@ limitations under the License.
       class="kd-graph-container"
       *ngIf="resourcesRatio.jobRatio.length"
     >
-      <div
-        fxLayout="column"
-        fxLayoutAlign="center center"
-      >
+      <div class="kd-graph-content">
         <ngx-charts-pie-chart
           [results]="resourcesRatio.jobRatio"
           [view]="size"
@@ -158,10 +145,7 @@ limitations under the License.
       class="kd-graph-container"
       *ngIf="resourcesRatio.podRatio.length"
     >
-      <div
-        fxLayout="column"
-        fxLayoutAlign="center center"
-      >
+      <div class="kd-graph-content">
         <ngx-charts-pie-chart
           [results]="resourcesRatio.podRatio"
           [view]="size"
@@ -191,10 +175,7 @@ limitations under the License.
       class="kd-graph-container"
       *ngIf="resourcesRatio.replicaSetRatio.length"
     >
-      <div
-        fxLayout="column"
-        fxLayoutAlign="center center"
-      >
+      <div class="kd-graph-content">
         <ngx-charts-pie-chart
           [results]="resourcesRatio.replicaSetRatio"
           [view]="size"
@@ -223,10 +204,7 @@ limitations under the License.
       class="kd-graph-container"
       *ngIf="resourcesRatio.replicationControllerRatio.length"
     >
-      <div
-        fxLayout="column"
-        fxLayoutAlign="center center"
-      >
+      <div class="kd-graph-content">
         <ngx-charts-pie-chart
           [results]="resourcesRatio.replicationControllerRatio"
           [view]="size"
@@ -255,10 +233,7 @@ limitations under the License.
       class="kd-graph-container"
       *ngIf="resourcesRatio.statefulSetRatio.length"
     >
-      <div
-        fxLayout="column"
-        fxLayoutAlign="center center"
-      >
+      <div class="kd-graph-content">
         <ngx-charts-pie-chart
           [results]="resourcesRatio.statefulSetRatio"
           [view]="size"
