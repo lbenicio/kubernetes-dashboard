@@ -63,7 +63,6 @@
     "@xterm/xterm": "6.0.0",
     "ace-builds": "1.41.0",
     "core-js": "3.41.0",
-    "crop-url": "4.0.1",
     "d3-shape": "3.2.0",
     "d3-time-format": "4.1.0",
     "file-saver": "2.0.5",

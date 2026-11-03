@@ -16,11 +16,10 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges,
 import type {SimpleChanges} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {StringMap} from '@api/root.shared';
-// @ts-expect-error as crop-url uses old style module declaration
-import cropUrl from 'crop-url';
 
 import {GlobalSettingsService} from '../../services/global/globalsettings';
 import {ChipDialogComponent} from './chipdialog/dialog';
+import {cropUrl} from './crop-url';
 import {KdStateService} from '@common/services/global/state';
 
 export interface Chip {

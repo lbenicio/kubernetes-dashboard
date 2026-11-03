@@ -8158,13 +8158,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crop-url@npm:4.0.1":
-  version: 4.0.1
-  resolution: "crop-url@npm:4.0.1"
-  checksum: 10c0/2e46e5759afe40d913216cedb37380d4a5cd382c17c1bebbba1d8d5ba248d68d3b18865b9e4e570c589bd5ad8c7d7273dc93ccc416192f9955949951a0f60d63
-  languageName: node
-  linkType: hard
-
 "cross-inspect@npm:1.0.1, cross-inspect@npm:^1.0.1":
   version: 1.0.1
   resolution: "cross-inspect@npm:1.0.1"
@@ -11833,7 +11826,6 @@ __metadata:
     angular-eslint: "npm:22.6.0"
     concurrently: "npm:9.1.2"
     core-js: "npm:3.41.0"
-    crop-url: "npm:4.0.1"
     cypress: "npm:15.21.1"
     cypress-fail-fast: "npm:8.2.0"
     d3-shape: "npm:3.2.0"
