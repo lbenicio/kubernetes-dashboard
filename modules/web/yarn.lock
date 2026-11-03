@@ -6856,6 +6856,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@xterm/addon-fit@npm:0.11.0":
+  version: 0.11.0
+  resolution: "@xterm/addon-fit@npm:0.11.0"
+  checksum: 10c0/c0ce94f7e877d07e7197d15d041cc629ce2e853016400aadddc9810838ea8a26e836f87f325eba36df88c03feb72d9f13cd8c3bb41ee31e701f1058edb8553c3
+  languageName: node
+  linkType: hard
+
+"@xterm/xterm@npm:6.0.0":
+  version: 6.0.0
+  resolution: "@xterm/xterm@npm:6.0.0"
+  checksum: 10c0/b99122553f323a65b708e5eba9903d4c5a1bcb59fe576d29d6e91a33002bccfd1b99403e1e839e1942f4952039db6d3d74ca9d65ed0399b4e9a0a5f35b8c12d9
+  languageName: node
+  linkType: hard
+
 "@xtuc/ieee754@npm:^1.2.0":
   version: 1.2.0
   resolution: "@xtuc/ieee754@npm:1.2.0"
@@ -11813,6 +11827,8 @@ __metadata:
     "@types/node": "npm:24.19.2"
     "@typescript-eslint/parser": "npm:8.72.1"
     "@typescript-eslint/utils": "npm:8.72.1"
+    "@xterm/addon-fit": "npm:0.11.0"
+    "@xterm/xterm": "npm:6.0.0"
     ace-builds: "npm:1.41.0"
     angular-eslint: "npm:22.6.0"
     concurrently: "npm:9.1.2"
@@ -11878,8 +11894,6 @@ __metadata:
     typescript-eslint: "npm:8.72.1"
     wait-on: "npm:8.0.3"
     web-animations-js: "npm:2.3.2"
-    xterm: "npm:5.3.0"
-    xterm-addon-fit: "npm:0.8.0"
     zone.js: "npm:0.15.1"
   dependenciesMeta:
     "@parcel/watcher":
@@ -16485,22 +16499,6 @@ __metadata:
   dependencies:
     sax: "npm:^1.2.4"
   checksum: 10c0/7957c57ff77008ced62063560d3e8f80c7fdf31d3fafa12d16c9f1fe676c8255f50889e8f41b61cca4cd473b841eedf2625089dcaf3f6b8717df521b9d0acfcf
-  languageName: node
-  linkType: hard
-
-"xterm-addon-fit@npm:0.8.0":
-  version: 0.8.0
-  resolution: "xterm-addon-fit@npm:0.8.0"
-  peerDependencies:
-    xterm: ^5.0.0
-  checksum: 10c0/39f77c9ec74bcc048ad74fbc4b9d610070c0a67971837f7edf92a8d21d65189c887986713d6ab22c04e2704253022488324d27fdb2425dc8aa95a9b679703101
-  languageName: node
-  linkType: hard
-
-"xterm@npm:5.3.0":
-  version: 5.3.0
-  resolution: "xterm@npm:5.3.0"
-  checksum: 10c0/39bf5ea933cc2f65d5970560d065b4db645ed03c820bcf6c6239bd504e41a876ab1a773ad9e4e09476ba85a4891534702b9fbb885b0838d79e6620ed2f856bae
   languageName: node
   linkType: hard
 

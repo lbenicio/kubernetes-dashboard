@@ -28,8 +28,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {PodContainerList, ShellFrame, SJSCloseEvent, SJSMessageEvent, TerminalResponse} from '@api/root.api';
 import debounce from 'lodash-es/debounce';
 import {ReplaySubject, Subject} from 'rxjs';
-import {Terminal} from 'xterm';
-import {FitAddon} from 'xterm-addon-fit';
+import {Terminal} from '@xterm/xterm';
+import {FitAddon} from '@xterm/addon-fit';
 
 import {EndpointManager, Resource, Utility} from '@common/services/resource/endpoint';
 import {NamespacedResourceService} from '@common/services/resource/resource';
