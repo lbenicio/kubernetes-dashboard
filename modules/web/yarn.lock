@@ -11859,7 +11859,6 @@ __metadata:
     stylelint-config-standard-scss: "npm:14.0.0"
     stylelint-order: "npm:6.0.4"
     stylelint-prettier: "npm:5.0.3"
-    systemjs: "npm:6.15.1"
     tar: "npm:7.5.21"
     through2: "npm:5.0.12"
     ts-jest: "npm:29.4.15"
@@ -15336,13 +15335,6 @@ __metadata:
     systeminformation: lib/cli.js
   checksum: 10c0/cb95464c1ab9b5deabd0141d0ae22db29ced520f321c2b5cbcdea84eff5d0cf65fbb521a9945f8dc98e560bc9fc57cbe06e68dd2d34c53a4c3a59eb61d0535b3
   conditions: (os=darwin | os=linux | os=win32 | os=freebsd | os=openbsd | os=netbsd | os=sunos | os=android)
-  languageName: node
-  linkType: hard
-
-"systemjs@npm:6.15.1":
-  version: 6.15.1
-  resolution: "systemjs@npm:6.15.1"
-  checksum: 10c0/106e5751a49dbe4acb17fa1474a43b27fd26efbee1b322c00c04c08f3e95de756adfba828d743af89bef7fa10888da8a5c5ceb55dae5c42e4909b151168ad192
   languageName: node
   linkType: hard
 

@@ -90,10 +90,7 @@
             ],
             "scripts": [
               "node_modules/ace-builds/src-min-noconflict/ace.js",
-              "node_modules/sockjs-client/dist/sockjs.min.js",
-              "node_modules/systemjs/dist/s.js",
-              "node_modules/systemjs/dist/extras/named-register.js",
-              "node_modules/systemjs/dist/extras/amd.js"
+              "node_modules/sockjs-client/dist/sockjs.min.js"
             ],
             "browser": "src/index.ts"
           },
