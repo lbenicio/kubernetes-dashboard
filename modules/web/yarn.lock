@@ -11859,7 +11859,6 @@ __metadata:
     typescript: "npm:6.0.3"
     typescript-eslint: "npm:8.72.1"
     wait-on: "npm:8.0.3"
-    web-animations-js: "npm:2.3.2"
     zone.js: "npm:0.15.1"
   dependenciesMeta:
     "@parcel/watcher":
@@ -16192,13 +16191,6 @@ __metadata:
   version: 1.2.3
   resolution: "weak-lru-cache@npm:1.2.3"
   checksum: 10c0/09e2c202c39e4fc8d71fafd8ff8d28c81c22f32cc351f0ecc00c721f1b9739697488c9faaefd75e7a0d32eb166af16df07678157d6e466ce07bd55aeb06ef20f
-  languageName: node
-  linkType: hard
-
-"web-animations-js@npm:2.3.2":
-  version: 2.3.2
-  resolution: "web-animations-js@npm:2.3.2"
-  checksum: 10c0/91ae6a9439fbdf186c1589f81d607ebca633cdd95f27b7f492254c388296e49611dda57bbf2da8e59915cb53476c3f0710b6ee8c32d9ca8666a6bba301e3c155
   languageName: node
   linkType: hard
 

@@ -17,9 +17,6 @@
  * You can add your own extra polyfills to this file.
  */
 
-// Required to support Web Animations `@angular/platform-browser/animations`:
-import 'web-animations-js';
-
 // Zone JS is required by default for Angular itself.
 import 'zone.js';
 
