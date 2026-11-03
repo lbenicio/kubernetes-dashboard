@@ -14,7 +14,7 @@
   "packageManager": "yarn@4.18.1",
   "scripts": {
     "postinstall": "sh ./hack/postinstall.sh",
-    "start": "make serve",
+    "start": "make -C ../.. serve",
     "start:https": "make serve-https",
     "build:prod": "make build",
     "fix": "yarn fix:i18n && yarn fix:html && yarn fix:scss && yarn fix:ts",
@@ -76,7 +76,6 @@
     "normalize.css": "8.0.1",
     "roboto-fontface": "0.10.0",
     "rxjs": "7.8.2",
-    "rxjs-compat": "6.6.7",
     "sockjs-client": "1.6.1",
     "strip-ansi": "7.1.0",
     "systemjs": "6.15.1",

@@ -11874,7 +11874,6 @@ __metadata:
     roboto-fontface: "npm:0.10.0"
     run-node: "npm:2.0.0"
     rxjs: "npm:7.8.2"
-    rxjs-compat: "npm:6.6.7"
     sass: "npm:1.90.0"
     sass-loader: "npm:16.0.5"
     semver: "npm:7.7.1"
@@ -14264,13 +14263,6 @@ __metadata:
   dependencies:
     queue-microtask: "npm:^1.2.2"
   checksum: 10c0/200b5ab25b5b8b7113f9901bfe3afc347e19bb7475b267d55ad0eb86a62a46d77510cb0f232507c9e5d497ebda569a08a9867d0d14f57a82ad5564d991588b39
-  languageName: node
-  linkType: hard
-
-"rxjs-compat@npm:6.6.7":
-  version: 6.6.7
-  resolution: "rxjs-compat@npm:6.6.7"
-  checksum: 10c0/b10e2e006d04050676185b7fb2ef9874b60f6692c5d6a23c1fcc8fa6e0d0e08de2266cc7a5a8f8c56b7ed11a5e14b3feafad742c9741f2ce96b520504b6b3691
   languageName: node
   linkType: hard
 

@@ -242,7 +242,8 @@ jobs:
           mkdir -p .tmp
           kind get kubeconfig --name kubernetes-dashboard-v137 > .tmp/kubeconfig-host
           KUBECONFIG=.tmp/kubeconfig-host kubectl --context kind-kubernetes-dashboard-v137 create serviceaccount dashboard-e2e --namespace default
-          KUBECONFIG=.tmp/kubeconfig-host kubectl --context kind-kubernetes-dashboard-v137 create clusterrolebinding dashboard-e2e-admin --clusterrole=cluster-admin --serviceaccount=default:dashboard-e2e
+          KUBECONFIG=.tmp/kubeconfig-host kubectl --context kind-kubernetes-dashboard-v137 create clusterrole dashboard-e2e-namespace-reader --verb=get,list,watch --resource=namespaces
+          KUBECONFIG=.tmp/kubeconfig-host kubectl --context kind-kubernetes-dashboard-v137 create clusterrolebinding dashboard-e2e-namespace-reader --clusterrole=dashboard-e2e-namespace-reader --serviceaccount=default:dashboard-e2e
           token="$(KUBECONFIG=.tmp/kubeconfig-host kubectl --context kind-kubernetes-dashboard-v137 create token dashboard-e2e --namespace default --duration=1h)"
           echo "::add-mask::$token"
           echo "CYPRESS_token=$token" >> "$GITHUB_ENV"
