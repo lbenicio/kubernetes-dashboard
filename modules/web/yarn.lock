@@ -365,21 +365,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/flex-layout@npm:15.0.0-beta.42":
-  version: 15.0.0-beta.42
-  resolution: "@angular/flex-layout@npm:15.0.0-beta.42"
-  dependencies:
-    tslib: "npm:^2.3.0"
-  peerDependencies:
-    "@angular/cdk": ">=15.0.0"
-    "@angular/common": ">=15.0.2"
-    "@angular/core": ">=15.0.2"
-    "@angular/platform-browser": ">=15.0.2"
-    rxjs: ^6.5.3 || ^7.4.0
-  checksum: 10c0/adf8479383de8dc0873130521a23fc34c732444b2ab37e2937ad2c451cb8b4d473600a30c5625aeb0b61fb63f45a91f5e970b998aca5859c267a27f5fe2f9bdc
-  languageName: node
-  linkType: hard
-
 "@angular/forms@npm:22.2.4":
   version: 22.2.4
   resolution: "@angular/forms@npm:22.2.4"
@@ -4765,6 +4750,20 @@ __metadata:
     "@emnapi/core": ^1.7.1 || 2.0.0-beta.2
     "@emnapi/runtime": ^1.7.1 || 2.0.0-beta.2
   checksum: 10c0/8fd47200ba18df97149dceb194d405cf1110c785f00c774746b8e6413c892c1cc3c3af41ebc6efee33b235e9f67b18ccc8c0fc35dfcd9c2f0567e5e782dac47e
+  languageName: node
+  linkType: hard
+
+"@ngbracket/ngx-layout@npm:22.0.2":
+  version: 22.0.2
+  resolution: "@ngbracket/ngx-layout@npm:22.0.2"
+  dependencies:
+    tslib: "npm:^2.5.0"
+  peerDependencies:
+    "@angular/cdk": ">=21.0.0"
+    "@angular/common": ">=22.0.0"
+    "@angular/core": ">=22.0.0"
+    "@angular/platform-browser": ">=22.0.0"
+  checksum: 10c0/8904895877f2af5f76f970bc964219e979fa8526dfaf400a2d2b9647af2c222590e509e0f51caa2e6f35a52b10b90bf61973951c1a0e02d440059955441b911f
   languageName: node
   linkType: hard
 
@@ -11770,7 +11769,6 @@ __metadata:
     "@angular/compiler": "npm:22.2.4"
     "@angular/compiler-cli": "npm:22.2.4"
     "@angular/core": "npm:22.2.4"
-    "@angular/flex-layout": "npm:15.0.0-beta.42"
     "@angular/forms": "npm:22.2.4"
     "@angular/language-service": "npm:22.2.4"
     "@angular/localize": "npm:22.2.4"
@@ -11786,6 +11784,7 @@ __metadata:
     "@graphql-mesh/openapi": "npm:0.112.7"
     "@graphql-mesh/runtime": "npm:0.109.3"
     "@graphql-mesh/transform-replace-field": "npm:0.108.3"
+    "@ngbracket/ngx-layout": "npm:22.0.2"
     "@swimlane/ngx-charts": "npm:25.0.3"
     "@types/d3": "npm:7.4.3"
     "@types/d3-scale": "npm:4.0.9"
