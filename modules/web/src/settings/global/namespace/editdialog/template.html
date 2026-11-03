@@ -14,26 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<div
-  fxFlex
-  fxLayout="column"
->
+<div class="kd-layout-flex-fill kd-layout-column">
   <h2
     mat-dialog-title
     i18n
   >
     Edit Namespace List
   </h2>
-  <mat-dialog-content
-    fxLayout="column"
-    class="kd-dialog-text"
-  >
+  <mat-dialog-content class="kd-dialog-text kd-layout-column">
     <div i18n>Remove namespaces from the list and confirm to save the changes.</div>
 
     <mat-list>
       @for (namespace of namespaces; track namespace) {
       <mat-list-item>
-        <div fxFlex="100">{{ namespace }}</div>
+        <div class="kd-layout-flex-100">{{ namespace }}</div>
         <button
           mat-icon-button
           (click)="remove(namespace)"
@@ -51,7 +45,7 @@ limitations under the License.
 
   <mat-dialog-actions
     style="padding: 16px 0"
-    fxLayoutAlign="space-between center"
+    class="kd-layout-align-space-between-center"
   >
     <button
       mat-raised-button

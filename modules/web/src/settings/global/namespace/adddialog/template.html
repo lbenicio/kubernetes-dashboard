@@ -14,23 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<div
-  fxFlex
-  fxLayout="column"
->
+<div class="kd-layout-flex-fill kd-layout-column">
   <h2
     mat-dialog-title
     i18n
   >
     Add Namespace
   </h2>
-  <mat-dialog-content
-    fxLayout="column"
-    class="kd-dialog-text"
-  >
+  <mat-dialog-content class="kd-dialog-text kd-layout-column">
     <div i18n>Provide a namespace name that should be added to the namespace fallback list</div>
 
-    <mat-form-field fxFlex>
+    <mat-form-field class="kd-layout-flex-fill">
       <input
         #namespaceInput
         name="defaultNamespace"

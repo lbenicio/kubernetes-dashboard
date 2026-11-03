@@ -52,7 +52,7 @@ limitations under the License.
   @if (isInitialized) {
   <div
     content
-    fxLayout="row wrap"
+    class="kd-layout-row-wrap"
   >
     @if (job?.completions) {
     <kd-property>
@@ -75,7 +75,7 @@ limitations under the License.
       <div value>{{ job.parallelism }}</div>
     </kd-property>
     } @if (job?.containerImages) {
-    <kd-property fxFlex="100">
+    <kd-property class="kd-layout-flex-100">
       <div
         key
         i18n

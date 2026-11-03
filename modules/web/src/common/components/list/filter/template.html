@@ -14,15 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<div
-  class="kd-resource-card-list-filter-wrapper"
-  fxFlex
->
-  <div
-    class="kd-search-container"
-    fxFlex
-    fxLayoutAlign="flex-end"
-  >
+<div class="kd-resource-card-list-filter-wrapper kd-layout-flex-fill">
+  <div class="kd-search-container kd-layout-flex-fill kd-layout-align-end-stretch">
     @if (isSearchVisible()) {
     <input
       (keyup)="keyUpEvent.next($event.target.value)"

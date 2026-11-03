@@ -102,6 +102,168 @@ code {
   }
 }
 
+// Shared CSS equivalents for the static flex layouts used throughout templates.
+.kd-layout-column {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.kd-layout-row {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+}
+
+.kd-layout-row-wrap {
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.kd-layout-gap-8px {
+  gap: 8px;
+}
+
+.kd-layout-align-center-center,
+.kd-layout-align-end-center,
+.kd-layout-align-space-around-center,
+.kd-layout-align-space-between-center,
+.kd-layout-align-start-center {
+  align-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+}
+
+.kd-layout-align-space-between-start {
+  align-items: flex-start;
+  box-sizing: border-box;
+  display: flex;
+  place-content: flex-start space-between;
+}
+
+.kd-layout-align-center-center {
+  justify-content: center;
+}
+
+.kd-layout-align-end-center {
+  justify-content: flex-end;
+}
+
+.kd-layout-align-space-around-center {
+  justify-content: space-around;
+}
+
+.kd-layout-align-space-between-center {
+  justify-content: space-between;
+}
+
+.kd-layout-align-start-center {
+  justify-content: flex-start;
+}
+
+.kd-layout-align-center-stretch,
+.kd-layout-align-end-stretch {
+  align-content: stretch;
+  align-items: stretch;
+  box-sizing: border-box;
+  display: flex;
+}
+
+.kd-layout-align-center-stretch {
+  justify-content: center;
+}
+
+.kd-layout-align-end-stretch {
+  justify-content: flex-end;
+}
+
+.kd-layout-align-center-stretch:not(.kd-layout-column),
+.kd-layout-align-end-stretch:not(.kd-layout-column) {
+  max-height: 100%;
+}
+
+.kd-layout-column.kd-layout-align-center-stretch,
+.kd-layout-column.kd-layout-align-end-stretch {
+  max-height: unset;
+  max-width: 100%;
+}
+
+.kd-layout-flex-auto {
+  box-sizing: border-box;
+  flex: 1 1 auto;
+}
+
+.kd-layout-flex-none {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+}
+
+.kd-layout-flex-fill {
+  box-sizing: border-box;
+  flex: 1 1 0%;
+}
+
+.kd-layout-flex-fill-column {
+  box-sizing: border-box;
+  flex: 1 1 0.0001px;
+}
+
+.kd-layout-flex-align-center {
+  align-self: center;
+}
+
+.kd-layout-flex-5,
+.kd-layout-flex-10,
+.kd-layout-flex-20,
+.kd-layout-flex-30,
+.kd-layout-flex-40,
+.kd-layout-flex-45,
+.kd-layout-flex-50,
+.kd-layout-flex-80,
+.kd-layout-flex-100 {
+  box-sizing: border-box;
+  flex: 1 1 var(--kd-flex-basis);
+  max-width: var(--kd-flex-basis);
+}
+
+.kd-layout-flex-5 {
+  --kd-flex-basis: 5%;
+}
+
+.kd-layout-flex-10 {
+  --kd-flex-basis: 10%;
+}
+
+.kd-layout-flex-20 {
+  --kd-flex-basis: 20%;
+}
+
+.kd-layout-flex-30 {
+  --kd-flex-basis: 30%;
+}
+
+.kd-layout-flex-40 {
+  --kd-flex-basis: 40%;
+}
+
+.kd-layout-flex-45 {
+  --kd-flex-basis: 45%;
+}
+
+.kd-layout-flex-50 {
+  --kd-flex-basis: 50%;
+}
+
+.kd-layout-flex-80 {
+  --kd-flex-basis: 80%;
+}
+
+.kd-layout-flex-100 {
+  --kd-flex-basis: 100%;
+}
+
 .mat-mdc-chip.mat-mdc-standard-chip {
   box-shadow: none !important;
   font-size: $body-font-size-base;

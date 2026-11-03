@@ -14,11 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<div
-  class="kd-bg-background"
-  fxFlex
-  fxLayoutAlign="space-around center"
->
+<div class="kd-bg-background kd-layout-flex-fill kd-layout-align-space-around-center">
   <kd-card
     titleClasses="kd-card-top-radius kd-bg-primary kd-accent"
     [role]="'flex'"
@@ -32,13 +28,10 @@ limitations under the License.
     </div>
     <div content>
       <form
-        fxLayout="column"
         (ngSubmit)="login()"
+        class="kd-layout-column"
       >
-        <mat-form-field
-          fxFlex
-          class="kd-login-input"
-        >
+        <mat-form-field class="kd-login-input kd-layout-flex-fill-column">
           <input
             matInput
             id="token"
@@ -56,15 +49,8 @@ limitations under the License.
         </mat-error>
         }
 
-        <div
-          class="kd-login-mode-description"
-          fxFlex
-          fxLayout="column"
-        >
-          <div
-            class="kd-equivalent-block kd-muted kd-bg-card-dark"
-            fxLayoutAlign=" center"
-          >
+        <div class="kd-login-mode-description kd-layout-flex-fill kd-layout-column">
+          <div class="kd-equivalent-block kd-muted kd-bg-card-dark kd-layout-align-start-center">
             <mat-icon>info</mat-icon>
             <div>
               <span i18n>You can generate token for service account with:&nbsp;</span>
@@ -78,10 +64,7 @@ limitations under the License.
           </div>
         </div>
 
-        <div
-          fxLayout="row"
-          fxLayoutAlign="end center"
-        >
+        <div class="kd-layout-row kd-layout-align-end-center">
           <button
             mat-raised-button
             color="primary"

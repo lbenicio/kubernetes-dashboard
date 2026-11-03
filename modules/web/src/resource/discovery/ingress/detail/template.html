@@ -30,7 +30,7 @@ limitations under the License.
   @if (isInitialized) {
   <div
     content
-    fxLayout="row wrap"
+    class="kd-layout-row-wrap"
   >
     @if (ingress?.spec?.ingressClassName) {
     <kd-property>
@@ -43,7 +43,7 @@ limitations under the License.
       <div value>{{ ingress.spec.ingressClassName }}</div>
     </kd-property>
     } @if (ingress?.endpoints?.length > 0) {
-    <kd-property fxFlex="100">
+    <kd-property class="kd-layout-flex-100">
       <div
         key
         i18n
@@ -57,19 +57,14 @@ limitations under the License.
       </div>
     </kd-property>
     } @if (ingress?.spec?.defaultBackend) {
-    <div
-      fxFlex="100"
-      fxLayout="column"
-      fxLayoutGap="8px"
-    >
+    <div class="kd-layout-flex-100 kd-layout-column kd-layout-gap-8px">
       <div
-        fxFlex
-        class="kd-muted section-header"
+        class="kd-muted section-header kd-layout-flex-fill-column"
         i18n
       >
         Default Backend
       </div>
-      <div fxLayout="row wrap">
+      <div class="kd-layout-row-wrap">
         @if (ingress.spec.defaultBackend.service) {
         <kd-property>
           <div

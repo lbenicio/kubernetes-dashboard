@@ -15,8 +15,8 @@ limitations under the License.
 -->
 
 @if (showGraphs()) {
-<div fxLayout="row">
-  <div fxFlex="50">
+<div class="kd-layout-row">
+  <div class="kd-layout-flex-50">
     <kd-graph-card
       graphTitle="CPU Usage"
       [graphType]="GraphType.CPU"
@@ -24,7 +24,7 @@ limitations under the License.
       selectedMetricName="cpu/usage_rate"
     ></kd-graph-card>
   </div>
-  <div fxFlex="50">
+  <div class="kd-layout-flex-50">
     <kd-graph-card
       graphTitle="Memory Usage"
       [graphType]="GraphType.Memory"

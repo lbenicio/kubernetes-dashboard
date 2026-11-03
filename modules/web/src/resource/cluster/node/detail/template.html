@@ -31,7 +31,7 @@ limitations under the License.
   @if (isInitialized) {
   <div
     content
-    fxLayout="row wrap"
+    class="kd-layout-row-wrap"
   >
     @if (node?.phase) {
     <kd-property>
@@ -74,7 +74,7 @@ limitations under the License.
       <div value>{{ node?.unschedulable }}</div>
     </kd-property>
     } @if (node?.addresses) {
-    <kd-property fxFlex="100">
+    <kd-property class="kd-layout-flex-100">
       <div
         key
         i18n
@@ -89,7 +89,7 @@ limitations under the License.
       </div>
     </kd-property>
     } @if (node?.taints) {
-    <kd-property fxFlex="100">
+    <kd-property class="kd-layout-flex-100">
       <div
         key
         i18n
@@ -118,7 +118,7 @@ limitations under the License.
   @if (isInitialized) {
   <div
     content
-    fxLayout="row wrap"
+    class="kd-layout-row-wrap"
   >
     @if (node?.nodeInfo.machineID) {
     <kd-property>
@@ -265,11 +265,7 @@ limitations under the License.
   @if (isInitialized) {
   <div content>
     <div class="kd-allocated-resources">
-      <div
-        fxLayoutAlign="center center"
-        fxLayout="column"
-        fxFlex
-      >
+      <div class="kd-layout-align-center-center kd-layout-column kd-layout-flex-fill">
         <div
           class="kd-h1"
           i18n
@@ -286,11 +282,7 @@ limitations under the License.
         >
         </ngx-charts-pie-grid>
       </div>
-      <div
-        fxLayoutAlign="center center"
-        fxLayout="column"
-        fxFlex
-      >
+      <div class="kd-layout-align-center-center kd-layout-column kd-layout-flex-fill">
         <div
           class="kd-h1"
           i18n
@@ -307,11 +299,7 @@ limitations under the License.
         >
         </ngx-charts-pie-grid>
       </div>
-      <div
-        fxLayoutAlign="center center"
-        fxLayout="column"
-        fxFlex
-      >
+      <div class="kd-layout-align-center-center kd-layout-column kd-layout-flex-fill">
         <div
           class="kd-h1"
           i18n

@@ -34,7 +34,7 @@ limitations under the License.
         desc="Cluster name appears in the browser window title if it is set."
         i18n-desc
       >
-        <mat-form-field fxFlex>
+        <mat-form-field class="kd-layout-flex-fill">
           <input
             [formControlName]="Controls.ClusterName"
             name="clusterName"
@@ -54,25 +54,20 @@ limitations under the License.
         desc="Max number of items that can be displayed on every list view."
         i18n-desc
       >
-        <div fxFlex>
+        <div class="kd-layout-flex-fill">
           <mat-slider
             color="primary"
             min="5"
             max="50"
             step="5"
-            fxFlex
+            class="kd-layout-flex-fill"
           >
             <input
               matSliderThumb
               [formControlName]="Controls.ItemsPerPage"
             />
           </mat-slider>
-          <div
-            class="kd-slider-value kd-muted"
-            fxFlexAlign=" center"
-          >
-            {{ settings.itemsPerPage }}
-          </div>
+          <div class="kd-slider-value kd-muted kd-layout-flex-align-center">{{ settings.itemsPerPage }}</div>
         </div>
       </kd-settings-entry>
       <kd-settings-entry
@@ -81,25 +76,20 @@ limitations under the License.
         desc="Max number of labels that are displayed by default on most views."
         i18n-desc
       >
-        <div fxFlex>
+        <div class="kd-layout-flex-fill">
           <mat-slider
             color="primary"
             min="1"
             max="10"
             step="1"
-            fxFlex
+            class="kd-layout-flex-fill"
           >
             <input
               matSliderThumb
               [formControlName]="Controls.LabelsLimit"
             />
           </mat-slider>
-          <div
-            class="kd-slider-value kd-muted"
-            fxFlexAlign=" center"
-          >
-            {{ settings.labelsLimit }}
-          </div>
+          <div class="kd-slider-value kd-muted kd-layout-flex-align-center">{{ settings.labelsLimit }}</div>
         </div>
       </kd-settings-entry>
       <kd-settings-entry
@@ -108,23 +98,20 @@ limitations under the License.
         desc="Number of seconds between every auto-refresh of logs."
         i18n-desc
       >
-        <div fxFlex>
+        <div class="kd-layout-flex-fill">
           <mat-slider
             color="primary"
             min="1"
             max="10"
             step="1"
-            fxFlex
+            class="kd-layout-flex-fill"
           >
             <input
               matSliderThumb
               [formControlName]="Controls.LogsAutorefreshInterval"
             />
           </mat-slider>
-          <span
-            class="kd-slider-value kd-muted"
-            fxFlexAlign=" center"
-          >
+          <span class="kd-slider-value kd-muted kd-layout-flex-align-center">
             {{ settings.logsAutoRefreshTimeInterval }}
           </span>
         </div>
@@ -135,23 +122,20 @@ limitations under the License.
         desc="Number of seconds between every auto-refresh of every resource. Set 0 to disable."
         i18n-desc
       >
-        <div fxFlex>
+        <div class="kd-layout-flex-fill">
           <mat-slider
             color="primary"
             min="0"
             max="60"
             step="5"
-            fxFlex
+            class="kd-layout-flex-fill"
           >
             <input
               matSliderThumb
               [formControlName]="Controls.ResourceAutorefreshInterval"
             />
           </mat-slider>
-          <span
-            class="kd-slider-value kd-muted"
-            fxFlexAlign=" center"
-          >
+          <span class="kd-slider-value kd-muted kd-layout-flex-align-center">
             {{ settings.resourceAutoRefreshTimeInterval }}
           </span>
         </div>
@@ -162,10 +146,7 @@ limitations under the License.
         desc="Hides all access denied warnings in the notification panel."
         i18n-desc
       >
-        <div
-          fxFlex
-          fxLayoutAlign=" center"
-        >
+        <div class="kd-layout-flex-fill kd-layout-align-start-center">
           <mat-slide-toggle
             color="primary"
             name="disableAccessDeniedNotifications"
@@ -180,10 +161,7 @@ limitations under the License.
         desc="Hides all-namespaces option from the namespaces dropdown list in UI."
         i18n-desc
       >
-        <div
-          fxFlex
-          fxLayoutAlign=" center"
-        >
+        <div class="kd-layout-flex-fill kd-layout-align-start-center">
           <mat-slide-toggle
             color="primary"
             name="hideAllNamespaces"

@@ -30,7 +30,7 @@ limitations under the License.
   @if (isInitialized) {
   <div
     content
-    fxLayout="row wrap"
+    class="kd-layout-row-wrap"
   >
     @if (persistentVolume?.status) {
     <kd-property>
@@ -102,7 +102,7 @@ limitations under the License.
       <div value>{{ persistentVolume.message }}</div>
     </kd-property>
     } @if (persistentVolume?.mountOptions) {
-    <kd-property fxFlex="0 0 auto">
+    <kd-property class="kd-layout-flex-none">
       <div
         key
         i18n
@@ -117,7 +117,7 @@ limitations under the License.
       </div>
     </kd-property>
     } @if (persistentVolume?.accessModes) {
-    <kd-property fxFlex="0 0 auto">
+    <kd-property class="kd-layout-flex-none">
       <div
         key
         i18n

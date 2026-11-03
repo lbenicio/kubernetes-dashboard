@@ -29,7 +29,7 @@ limitations under the License.
   @if (isInitialized) {
   <div
     content
-    fxLayout="row wrap"
+    class="kd-layout-row-wrap"
   >
     @if (persistentVolumeClaim?.status) {
     <kd-property>
@@ -69,7 +69,7 @@ limitations under the License.
       </div>
     </kd-property>
     } @if (persistentVolumeClaim?.capacity) {
-    <kd-property fxFlex="100">
+    <kd-property class="kd-layout-flex-100">
       <div
         key
         i18n
@@ -84,7 +84,7 @@ limitations under the License.
       </div>
     </kd-property>
     } @if (persistentVolumeClaim?.accessModes) {
-    <kd-property fxFlex="100">
+    <kd-property class="kd-layout-flex-100">
       <div
         key
         i18n

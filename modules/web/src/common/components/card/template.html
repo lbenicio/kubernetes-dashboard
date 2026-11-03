@@ -28,20 +28,13 @@ limitations under the License.
   <mat-card-title
     [ngClass]="getTitleClasses()"
     (click)="onCardHeaderClick(); $event.stopPropagation()"
-    fxLayoutAlign=" center"
+    class="kd-layout-align-start-center"
   >
-    <div
-      class="kd-card-title"
-      fxFlex="100%"
-    >
+    <div class="kd-card-title kd-layout-flex-100">
       <ng-content select="[title]"></ng-content>
     </div>
     @if (!expanded) {
-    <div
-      class="kd-card-description kd-muted"
-      fxLayoutAlign=" center"
-      fxFlex="80"
-    >
+    <div class="kd-card-description kd-muted kd-layout-align-start-center kd-layout-flex-80">
       <ng-content select="[description]"></ng-content>
     </div>
     } @if (expanded && expandable) {

@@ -33,11 +33,11 @@ limitations under the License.
       desc="Choose color theme of the dashboard"
       i18n-desc
     >
-      <mat-form-field fxFlex>
+      <mat-form-field class="kd-layout-flex-fill">
         <mat-select
           [(value)]="selectedTheme"
           (valueChange)="onThemeChange()"
-          fxFlex
+          class="kd-layout-flex-fill"
         >
           <mat-option [value]="systemTheme">System</mat-option>
           @for (theme of themes; track theme) {
@@ -53,7 +53,7 @@ limitations under the License.
       desc="Change the language of the dashboard"
       i18n-desc
     >
-      <mat-form-field fxFlex>
+      <mat-form-field class="kd-layout-flex-fill">
         <mat-select
           (ngModelChange)="onLanguageSelected($event)"
           [(ngModel)]="selectedLanguage"

@@ -14,14 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<div fxLayoutAlign="center">
+<div class="kd-layout-align-center-stretch">
   <kd-card
-    fxFlex="none"
     [expandable]="false"
+    class="kd-layout-flex-none"
   >
     <div
       title
-      fxLayout
+      class="kd-layout-row"
     >
       <mat-icon class="kd-error-icon">error_outline</mat-icon>
       <div>{{ getErrorStatus() }}</div>

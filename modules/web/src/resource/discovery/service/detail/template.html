@@ -29,7 +29,7 @@ limitations under the License.
   @if (isInitialized) {
   <div
     content
-    fxLayout="row wrap"
+    class="kd-layout-row-wrap"
   >
     @if (service?.type) {
     <kd-property>
@@ -62,7 +62,7 @@ limitations under the License.
       <div value>{{ service?.sessionAffinity }}</div>
     </kd-property>
     } @if (service?.selector) {
-    <kd-property fxFlex="100">
+    <kd-property class="kd-layout-flex-100">
       <div
         key
         i18n

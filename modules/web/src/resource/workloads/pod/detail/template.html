@@ -54,7 +54,7 @@ limitations under the License.
   @if (isInitialized) {
   <div
     content
-    fxLayout="row wrap"
+    class="kd-layout-row-wrap"
   >
     @if (pod?.nodeName) {
     <kd-property>
@@ -128,7 +128,7 @@ limitations under the License.
       </div>
     </kd-property>
     } @if (pod?.imagePullSecrets) {
-    <kd-property fxFlex="100">
+    <kd-property class="kd-layout-flex-100">
       <div
         key
         i18n
@@ -146,13 +146,9 @@ limitations under the License.
       }
     </kd-property>
     } @if (hasSecurityContext()) {
-    <div
-      fxFlex="100"
-      fxLayout="column"
-    >
+    <div class="kd-layout-flex-100 kd-layout-column">
       <div
-        fxFlex
-        class="kd-muted section-header"
+        class="kd-muted section-header kd-layout-flex-fill-column"
         i18n
       >
         Security Context

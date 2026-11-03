@@ -20,8 +20,7 @@ limitations under the License.
     <div [formGroupName]="i">
       <mat-form-field
         md-no-float
-        class="kd-deploy-input-row"
-        fxFlex="45"
+        class="kd-deploy-input-row kd-layout-flex-45"
       >
         <input
           matInput
@@ -47,11 +46,10 @@ limitations under the License.
         <mat-error i18n> Label Key name should not exceed 63 characters. </mat-error>
         }
       </mat-form-field>
-      <p fxFlex="5"></p>
+      <p class="kd-layout-flex-5"></p>
       <mat-form-field
         md-no-float
-        class="kd-deploy-input-row"
-        fxFlex="40"
+        class="kd-deploy-input-row kd-layout-flex-40"
       >
         <input
           matInput
@@ -73,7 +71,7 @@ limitations under the License.
         type="hidden"
         formControlName="editable"
       />
-      <div fxFlex="10">
+      <div class="kd-layout-flex-10">
         @if (isRemovable(i)) {
         <button
           mat-icon-button

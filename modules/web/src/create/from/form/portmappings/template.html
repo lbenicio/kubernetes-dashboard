@@ -15,10 +15,10 @@ limitations under the License.
 -->
 
 <div
-  fxLayout="column"
   [formGroup]="portMappingForm"
+  class="kd-layout-column"
 >
-  <div fxLayout="row">
+  <div class="kd-layout-row">
     <mat-form-field
       class="mat-block kd-deploy-input-row"
       style="width: 100%"
@@ -41,13 +41,12 @@ limitations under the License.
     <ng-container formArrayName="portMappings">
       @for (portMapping of portMappings.controls; track portMapping; let i = $index) {
       <div
-        fxLayout="row"
         [formGroupName]="i"
+        class="kd-layout-row"
       >
         <mat-form-field
           md-no-float
-          class="kd-deploy-input-row kd-port-form-field"
-          fxFlex="30"
+          class="kd-deploy-input-row kd-port-form-field kd-layout-flex-30"
         >
           <input
             matInput
@@ -69,11 +68,10 @@ limitations under the License.
           <mat-error i18n> Port must be less than 65536. </mat-error>
           }
         </mat-form-field>
-        <p fxFlex="5"></p>
+        <p class="kd-layout-flex-5"></p>
         <mat-form-field
           md-no-float
-          class="kd-deploy-input-row kd-port-form-field"
-          fxFlex="30"
+          class="kd-deploy-input-row kd-port-form-field kd-layout-flex-30"
         >
           <input
             matInput
@@ -97,11 +95,10 @@ limitations under the License.
           <mat-error i18n> Target port must be less than 65536. </mat-error>
           }
         </mat-form-field>
-        <p fxFlex="5"></p>
+        <p class="kd-layout-flex-5"></p>
         <mat-form-field
           md-no-float
-          class="kd-deploy-input-row kd-port-form-field"
-          fxFlex="20"
+          class="kd-deploy-input-row kd-port-form-field kd-layout-flex-20"
         >
           <mat-select
             name="protocol"
@@ -128,7 +125,7 @@ limitations under the License.
           <mat-error i18n> Invalid protocol. </mat-error>
           }
         </mat-form-field>
-        <div fxFlex="10">
+        <div class="kd-layout-flex-10">
           @if (isRemovable(i)) {
           <button
             mat-icon-button

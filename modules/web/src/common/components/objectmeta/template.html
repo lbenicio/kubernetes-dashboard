@@ -54,7 +54,7 @@ limitations under the License.
     }
   </div>
   <div content>
-    <div fxLayout="row wrap">
+    <div class="kd-layout-row-wrap">
       <kd-property [ngClass]="'object-meta-name'">
         <div
           key
@@ -133,8 +133,8 @@ limitations under the License.
       </kd-property>
       } @if (objectMeta?.labels) {
       <kd-property
-        fxFlex="100"
         [ngClass]="'object-meta-labels'"
+        class="kd-layout-flex-100"
       >
         <div
           key
@@ -151,8 +151,8 @@ limitations under the License.
       </kd-property>
       } @if (objectMeta?.annotations) {
       <kd-property
-        fxFlex="100"
         [ngClass]="'object-meta-annotations'"
+        class="kd-layout-flex-100"
       >
         <div
           key

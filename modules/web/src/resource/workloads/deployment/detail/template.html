@@ -61,7 +61,7 @@ limitations under the License.
   @if (isInitialized) {
   <div
     content
-    fxLayout="row wrap"
+    class="kd-layout-row-wrap"
   >
     @if (deployment?.strategy) {
     <kd-property>
@@ -94,7 +94,7 @@ limitations under the License.
       <div value>{{ deployment.revisionHistoryLimit }}</div>
     </kd-property>
     } @if (deployment?.selector) {
-    <kd-property fxFlex="100">
+    <kd-property class="kd-layout-flex-100">
       <div
         key
         i18n
@@ -146,7 +146,7 @@ limitations under the License.
   @if (isInitialized) {
   <div
     content
-    fxLayout="row wrap"
+    class="kd-layout-row-wrap"
   >
     @if ($safeNavigationMigration(deployment?.rollingUpdateStrategy?.maxSurge) !== null) {
     <kd-property>
@@ -224,7 +224,7 @@ limitations under the License.
   @if (isInitialized) {
   <div
     content
-    fxLayout="row wrap"
+    class="kd-layout-row-wrap"
   >
     @if (deployment?.statusInfo?.updated > 0) {
     <kd-property>
@@ -329,7 +329,7 @@ limitations under the License.
   @if (isInitialized) {
   <div
     content
-    fxLayout="row wrap"
+    class="kd-layout-row-wrap"
   >
     @if (newReplicaSet?.objectMeta.name) {
     <kd-property>
@@ -382,7 +382,7 @@ limitations under the License.
       <div value>{{ newReplicaSet.podInfo.running }} / {{ newReplicaSet.podInfo.desired }}</div>
     </kd-property>
     } @if (newReplicaSet?.objectMeta?.labels) {
-    <kd-property fxFlex="100">
+    <kd-property class="kd-layout-flex-100">
       <div
         key
         i18n

@@ -16,7 +16,6 @@ limitations under the License.
 
 @if (shouldShowGraph) {
 <ngx-charts-area-chart
-  fxFlex
   kdIsVisible
   (visibilityChange)="onChangeState($event)"
   [xAxis]="true"
@@ -30,6 +29,7 @@ limitations under the License.
   [curve]="curve"
   [customColors]="customColors"
   [gradient]="true"
+  class="kd-layout-flex-fill"
 >
   <ng-template
     #seriesTooltipTemplate
@@ -39,13 +39,9 @@ limitations under the License.
   </ng-template>
 </ngx-charts-area-chart>
 } @else {
-<div
-  fxLayout="column"
-  class="kd-muted chart-container"
->
+<div class="kd-muted chart-container kd-layout-column">
   <div
-    fxFlexAlign="center"
-    class="empty-chart-text"
+    class="empty-chart-text kd-layout-flex-align-center"
     i18n
   >
     Waiting for more data to display chart...

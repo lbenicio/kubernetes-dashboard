@@ -17,7 +17,7 @@ limitations under the License.
 @if (initialized) {
 <div
   content
-  fxLayout="row wrap"
+  class="kd-layout-row-wrap"
 >
   <!--  Common Security Context Properties -->
   @if (securityContext?.seLinuxOptions?.user) {
@@ -225,7 +225,7 @@ limitations under the License.
     <div value>{{ securityContext.fsGroupChangePolicy }}</div>
   </kd-property>
   } @if (securityContext?.supplementalGroups) {
-  <kd-property fxFlex="100">
+  <kd-property class="kd-layout-flex-100">
     <div
       key
       i18n
@@ -237,7 +237,7 @@ limitations under the License.
     </div>
   </kd-property>
   } @if (securityContext?.sysctls) {
-  <kd-property fxFlex="100">
+  <kd-property class="kd-layout-flex-100">
     <div
       key
       i18n

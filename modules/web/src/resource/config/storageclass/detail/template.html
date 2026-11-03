@@ -29,10 +29,10 @@ limitations under the License.
   @if (isInitialized) {
   <div
     content
-    fxLayout="row wrap"
+    class="kd-layout-row-wrap"
   >
     @if (storageClass?.provisioner) {
-    <kd-property fxFlex="100">
+    <kd-property class="kd-layout-flex-100">
       <div
         key
         i18n
@@ -45,7 +45,7 @@ limitations under the License.
     <kd-property>
       <div
         key
-        fxLayout
+        class="kd-layout-row"
       >
         {{ parameter }}
         <mat-icon

@@ -21,7 +21,7 @@ limitations under the License.
     desc="Namespace that should be selected by default after logging in."
     i18n-desc
   >
-    <mat-form-field fxFlex>
+    <mat-form-field class="kd-layout-flex-fill">
       <input
         #namespaceInput
         formControlName="defaultNamespace"
@@ -46,16 +46,11 @@ limitations under the License.
     desc="List of namespaces that should be presented to user without namespace list privileges."
     i18n-desc
   >
-    <div fxFlex>
-      <div
-        fxFlex="100"
-        fxLayout="row"
-      >
+    <div class="kd-layout-flex-fill">
+      <div class="kd-layout-flex-100 kd-layout-row">
         <mat-chip-set
           [formArrayName]="Controls.FallbackList"
-          fxFlex="80"
-          fxLayoutAlign=" center"
-          class="kd-namespace-chip-list"
+          class="kd-namespace-chip-list kd-layout-flex-80 kd-layout-align-start-center"
         >
           @for (namespace of form.get(Controls.FallbackList).value | slice: 0:visibleNamespaces; track namespace) {
           <mat-chip
@@ -73,16 +68,12 @@ limitations under the License.
           } @if (invisibleCount > 0) {
           <mat-chip
             [disabled]="true"
-            fxFlex
-            fxLayoutAlign=" center"
+            class="kd-layout-flex-fill kd-layout-align-start-center"
             >+ {{ invisibleCount }}</mat-chip
           >
           }
         </mat-chip-set>
-        <div
-          fxFlex="20"
-          fxLayoutAlign="end"
-        >
+        <div class="kd-layout-flex-20 kd-layout-align-end-stretch">
           <button
             mat-icon-button
             style="margin-right: 0"

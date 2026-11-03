@@ -15,7 +15,6 @@
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
-import {FlexLayoutModule} from '@ngbracket/ngx-layout';
 import {MatCardModule} from '@angular/material/card';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
@@ -77,7 +76,6 @@ describe('WorkloadStatusComponent', () => {
         MatTooltipModule,
         NoopAnimationsModule,
         HttpClientTestingModule,
-        FlexLayoutModule,
       ],
       providers: [ConfigService, {provide: MESSAGES_DI_TOKEN, useValue: MESSAGES}],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

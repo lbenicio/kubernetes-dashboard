@@ -4753,20 +4753,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngbracket/ngx-layout@npm:22.0.2":
-  version: 22.0.2
-  resolution: "@ngbracket/ngx-layout@npm:22.0.2"
-  dependencies:
-    tslib: "npm:^2.5.0"
-  peerDependencies:
-    "@angular/cdk": ">=21.0.0"
-    "@angular/common": ">=22.0.0"
-    "@angular/core": ">=22.0.0"
-    "@angular/platform-browser": ">=22.0.0"
-  checksum: 10c0/8904895877f2af5f76f970bc964219e979fa8526dfaf400a2d2b9647af2c222590e509e0f51caa2e6f35a52b10b90bf61973951c1a0e02d440059955441b911f
-  languageName: node
-  linkType: hard
-
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -11784,7 +11770,6 @@ __metadata:
     "@graphql-mesh/openapi": "npm:0.112.7"
     "@graphql-mesh/runtime": "npm:0.109.3"
     "@graphql-mesh/transform-replace-field": "npm:0.108.3"
-    "@ngbracket/ngx-layout": "npm:22.0.2"
     "@swimlane/ngx-charts": "npm:25.0.3"
     "@types/d3": "npm:7.4.3"
     "@types/d3-scale": "npm:4.0.9"

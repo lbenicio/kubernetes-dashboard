@@ -25,7 +25,7 @@ limitations under the License.
   @if (initialized) {
   <div
     content
-    fxLayout="row wrap"
+    class="kd-layout-row-wrap"
   >
     @if (source?.awsElasticBlockStore) {
     <kd-property>
@@ -158,7 +158,7 @@ limitations under the License.
       <div value>{{ source.fc.lun }}</div>
     </kd-property>
     } @if (source.fc.targetWWNs) {
-    <kd-property fxFlex="100">
+    <kd-property class="kd-layout-flex-100">
       <div
         key
         i18n
@@ -355,12 +355,11 @@ limitations under the License.
     } @if (source.csi?.volumeAttributes) {
     <kd-property
       [stretched]="true"
-      fxFlex="100"
+      class="kd-layout-flex-100"
     >
       <div
         key
-        fxFlex
-        class="kd-muted section-header"
+        class="kd-muted section-header kd-layout-flex-fill"
         i18n
       >
         Volume Attributes

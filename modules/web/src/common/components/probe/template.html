@@ -23,7 +23,7 @@ limitations under the License.
   @if (initialized) {
   <div
     content
-    fxLayout="row wrap"
+    class="kd-layout-row-wrap"
   >
     @if (probe?.initialDelaySeconds) {
     <kd-property>
@@ -98,11 +98,10 @@ limitations under the License.
       </div>
     </kd-property>
     @if (probe?.httpGet?.httpHeaders?.length) {
-    <kd-property fxFlex="100">
+    <kd-property class="kd-layout-flex-100">
       <div
         key
-        fxFlex
-        class="kd-muted section-header"
+        class="kd-muted section-header kd-layout-flex-fill"
         i18n
       >
         HTTP Headers

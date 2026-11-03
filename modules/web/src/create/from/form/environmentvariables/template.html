@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<div fxLayout="column">
+<div class="kd-layout-column">
   <div
     class="kd-margin-bottom"
     i18n
@@ -25,7 +25,7 @@ limitations under the License.
     <ng-container formArrayName="variables">
       @for (variable of variables.controls; track variable; let i = $index) {
       <div [formGroupName]="i">
-        <mat-form-field fxFlex="auto">
+        <mat-form-field class="kd-layout-flex-auto">
           <input
             matInput
             name="name"
@@ -38,8 +38,8 @@ limitations under the License.
           <mat-error i18n> Variable name must be a valid C identifier. </mat-error>
           }
         </mat-form-field>
-        <div fxFlex="5"></div>
-        <mat-form-field fxFlex="auto">
+        <div class="kd-layout-flex-5"></div>
+        <mat-form-field class="kd-layout-flex-auto">
           <input
             matInput
             name="value"
@@ -48,7 +48,7 @@ limitations under the License.
             placeholder="Value"
           />
         </mat-form-field>
-        <div fxFlex="10">
+        <div class="kd-layout-flex-10">
           @if (isRemovable(i)) {
           <button
             mat-icon-button

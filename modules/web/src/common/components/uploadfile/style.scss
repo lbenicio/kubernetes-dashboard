@@ -14,6 +14,12 @@
 
 @use '../../../variables' as *;
 
+.kd-upload-file-field {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+}
+
 .kd-upload-button {
   margin-left: 2 * $baseline-grid;
   margin-top: 0.5 * $baseline-grid;
