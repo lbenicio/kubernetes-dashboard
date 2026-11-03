@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {Component, DestroyRef, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 import {ClusterRoleBindingDetail} from '@api/root.api';
 
 import {ActionbarService, ResourceMeta} from '@common/services/global/actionbar';
@@ -23,12 +23,16 @@ import {ResourceService} from '@common/services/resource/resource';
 import {KdStateService} from '@common/services/global/state';
 import {Subscription} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ObjectMetaComponent} from '../../../../common/components/objectmeta/component';
+import {CardComponent} from '../../../../common/components/card/component';
+import {PropertyComponent} from '../../../../common/components/property/component';
+import {SubjectListComponent} from '../../../../common/components/subject/component';
 
 @Component({
   selector: 'kd-cluster-role-binding-detail',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [ObjectMetaComponent, CardComponent, PropertyComponent, RouterLink, SubjectListComponent],
 })
 export class ClusterRoleBindingDetailComponent implements OnInit, OnDestroy {
   private clusterRoleSubscription_: Subscription;

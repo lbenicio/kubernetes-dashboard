@@ -15,12 +15,14 @@
 import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {StringMap} from '@api/root.shared';
 import {ContainerSecurityContext, PodSecurityContext, Sysctl} from '@api/root.api';
+import {PropertyComponent} from '../property/component';
+import {ChipsComponent} from '../chips/component';
 
 @Component({
   selector: 'kd-security-context',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [PropertyComponent, ChipsComponent],
 })
 export class SecurityContextComponent {
   @Input() initialized: boolean;

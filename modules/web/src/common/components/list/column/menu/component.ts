@@ -13,13 +13,17 @@
 // limitations under the License.
 
 import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
-import {Router} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {ObjectMeta, TypeMeta} from '@api/root.api';
 import {ActionColumn} from '@api/root.ui';
 import {PinnerService} from '@common/services/global/pinner';
 import {KdStateService} from '@common/services/global/state';
 import {VerberService} from '@common/services/global/verber';
 import {Resource} from '@common/services/resource/endpoint';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {MatTooltip} from '@angular/material/tooltip';
 
 const loggableResources: string[] = [
   Resource.daemonSet,
@@ -38,7 +42,7 @@ const triggerableResources: string[] = [Resource.cronJob];
   selector: 'kd-resource-context-menu',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatMenu, MatMenuItem, RouterLink, MatIconButton, MatMenuTrigger, MatIcon, MatTooltip],
 })
 export class MenuComponent implements ActionColumn {
   @Input() objectMeta: ObjectMeta;

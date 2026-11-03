@@ -14,10 +14,7 @@
 
 import {Pipe, PipeTransform} from '@angular/core';
 
-@Pipe({
-  name: 'commaSeparated',
-  standalone: false,
-})
+@Pipe({name: 'commaSeparated'})
 export class CommaSeparatedPipe implements PipeTransform {
   transform(value: string[]): string {
     if (!value) {

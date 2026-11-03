@@ -15,12 +15,15 @@
 import {Component, DestroyRef, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {ActionbarService, ResourceMeta} from '@common/services/global/actionbar';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ActionbarDetailScaleComponent} from '../../actionbar/detailactions/scale/component';
+import {ActionbarDetailRestartComponent} from '../../actionbar/detailactions/restart/component';
+import {ActionbarDetailActionsComponent} from '../../actionbar/detailactions/component';
 
 @Component({
   selector: '',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [ActionbarDetailScaleComponent, ActionbarDetailRestartComponent, ActionbarDetailActionsComponent],
 })
 export class ScaleDefaultActionbarComponent implements OnInit {
   isInitialized = false;

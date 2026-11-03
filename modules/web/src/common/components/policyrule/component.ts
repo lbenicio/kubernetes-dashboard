@@ -13,14 +13,43 @@
 // limitations under the License.
 
 import {Component, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import {MatTableDataSource} from '@angular/material/table';
+import {
+  MatTableDataSource,
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow,
+} from '@angular/material/table';
 import {PolicyRule} from 'typings/root.api';
+import {CardComponent} from '../card/component';
+import {ListZeroStateComponent} from '../list/zerostate/component';
+import {CommaSeparatedPipe} from '../../pipes/commaseparated';
 
 @Component({
   selector: 'kd-policy-rule-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    CardComponent,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    ListZeroStateComponent,
+    CommaSeparatedPipe,
+  ],
 })
 export class PolicyRuleListComponent implements OnInit {
   @Input() initialized: boolean;

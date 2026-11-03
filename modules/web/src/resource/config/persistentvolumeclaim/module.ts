@@ -22,7 +22,12 @@ import {PersistentVolumeClaimListComponent} from './list/component';
 import {PersistentVolumeClaimRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, PersistentVolumeClaimRoutingModule],
-  declarations: [PersistentVolumeClaimListComponent, PersistentVolumeClaimDetailComponent],
+  imports: [
+    SharedModule,
+    ComponentsModule,
+    PersistentVolumeClaimRoutingModule,
+    PersistentVolumeClaimListComponent,
+    PersistentVolumeClaimDetailComponent,
+  ],
 })
 export class PersistentVolumeClaimModule {}

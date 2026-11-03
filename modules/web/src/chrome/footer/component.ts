@@ -22,7 +22,6 @@ import {ConfigService} from '@common/services/global/config';
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
 })
 export class FooterComponent {
   copyrightYear: number;

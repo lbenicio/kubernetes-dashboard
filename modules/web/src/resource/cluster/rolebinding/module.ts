@@ -22,7 +22,12 @@ import {RoleBingingListComponent} from './list/component';
 import {RoleBindingRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, RoleBindingRoutingModule],
-  declarations: [RoleBingingListComponent, RoleBingingDetailComponent],
+  imports: [
+    SharedModule,
+    ComponentsModule,
+    RoleBindingRoutingModule,
+    RoleBingingListComponent,
+    RoleBingingDetailComponent,
+  ],
 })
 export class RoleBingingModule {}

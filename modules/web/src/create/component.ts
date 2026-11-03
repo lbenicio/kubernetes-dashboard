@@ -17,13 +17,15 @@ import {ICanDeactivate} from '@common/interfaces/candeactivate';
 import {CreateFromFileComponent} from './from/file/component';
 import {CreateFromFormComponent} from './from/form/component';
 import {CreateFromInputComponent} from './from/input/component';
+import {MatCard} from '@angular/material/card';
+import {MatTabGroup, MatTab} from '@angular/material/tabs';
 
 @Component({
   selector: 'kd-create',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatCard, MatTabGroup, MatTab, CreateFromInputComponent, CreateFromFileComponent, CreateFromFormComponent],
 })
 export class CreateComponent extends ICanDeactivate {
   @ViewChild(CreateFromInputComponent) fromInput: CreateFromInputComponent;

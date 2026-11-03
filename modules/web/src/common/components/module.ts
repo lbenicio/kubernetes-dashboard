@@ -197,8 +197,7 @@ const components = [
 ];
 
 @NgModule({
-  imports: [SharedModule, DirectivesModule, MatTableModule, MatTableModule],
-  declarations: [...components],
+  imports: [SharedModule, DirectivesModule, MatTableModule, MatTableModule, ...components],
   exports: [...components],
 })
 export class ComponentsModule {}

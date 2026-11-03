@@ -24,7 +24,6 @@ import {Endpoint} from '@api/root.api';
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
 })
 export class InternalEndpointComponent {
   @Input() endpoints: Endpoint[];

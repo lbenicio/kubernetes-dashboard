@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {PersistentVolumeListComponent as PersistentVolumeListComponent_1} from '../../../../common/components/resourcelist/persistentvolume/component';
 
 @Component({
   selector: 'kd-persistent-volume-list-state',
   template: '<kd-persistent-volume-list></kd-persistent-volume-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [PersistentVolumeListComponent_1],
 })
 export class PersistentVolumeListComponent {}

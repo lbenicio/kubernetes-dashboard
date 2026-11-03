@@ -16,12 +16,18 @@ import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {ObjectMeta} from '@api/root.api';
 import {KdStateService} from '@common/services/global/state';
 import {Resource} from '@common/services/resource/endpoint';
+import {CardComponent} from '../card/component';
+import {DateComponent} from '../date/component';
+import {PropertyComponent} from '../property/component';
+import {NgClass} from '@angular/common';
+import {RouterLink} from '@angular/router';
+import {ChipsComponent} from '../chips/component';
 
 @Component({
   selector: 'kd-object-meta',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [CardComponent, DateComponent, PropertyComponent, NgClass, RouterLink, ChipsComponent],
 })
 export class ObjectMetaComponent {
   @Input() initialized = false;

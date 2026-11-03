@@ -17,12 +17,14 @@ import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {ActionbarService, ResourceMeta} from '@common/services/global/actionbar';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ActionbarDetailPinComponent} from '../../actionbar/detailactions/pin/component';
+import {ActionbarDetailActionsComponent} from '../../actionbar/detailactions/component';
 
 @Component({
   selector: '',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [ActionbarDetailPinComponent, ActionbarDetailActionsComponent],
 })
 export class PinDefaultActionbarComponent implements OnInit {
   isInitialized = false;

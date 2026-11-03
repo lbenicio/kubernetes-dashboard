@@ -14,12 +14,15 @@
 
 import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {Probe} from '@api/root.api';
+import {CardComponent} from '../card/component';
+import {PropertyComponent} from '../property/component';
+import {JsonPipe} from '@angular/common';
 
 @Component({
   selector: 'kd-probe-card',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [CardComponent, PropertyComponent, JsonPipe],
 })
 export class ProbeComponent {
   @Input() initialized: boolean;

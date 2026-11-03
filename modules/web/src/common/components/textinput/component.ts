@@ -49,7 +49,6 @@ export enum EditorMode {
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
 })
 export class TextInputComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() textChange = new EventEmitter<string>();

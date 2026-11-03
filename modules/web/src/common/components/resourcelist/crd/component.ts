@@ -22,12 +22,60 @@ import {ResourceService} from '@common/services/resource/resource';
 import {Observable} from 'rxjs';
 import {MenuComponent} from '../../list/column/menu/component';
 import {ListGroupIdentifier, ListIdentifier} from '../groupids';
+import {CardComponent} from '../../card/component';
+import {CardListFilterComponent} from '../../list/filter/component';
+import {LoadingSpinnerComponent} from '../../list/spinner/component';
+import {
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow,
+} from '@angular/material/table';
+import {MatSort, MatSortHeader} from '@angular/material/sort';
+import {MatIcon} from '@angular/material/icon';
+import {NgClass} from '@angular/common';
+import {MatTooltip} from '@angular/material/tooltip';
+import {RouterLink} from '@angular/router';
+import {DateComponent} from '../../date/component';
+import {ColumnComponent} from '../../list/column/component';
+import {MatPaginator} from '@angular/material/paginator';
+import {ListZeroStateComponent} from '../../list/zerostate/component';
 
 @Component({
   selector: 'kd-crd-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [
+    CardComponent,
+    CardListFilterComponent,
+    LoadingSpinnerComponent,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    MatIcon,
+    NgClass,
+    MatTooltip,
+    MatSortHeader,
+    RouterLink,
+    DateComponent,
+    ColumnComponent,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    MatPaginator,
+    ListZeroStateComponent,
+  ],
 })
 export class CRDListComponent extends ResourceListWithStatuses<CRDList, CRD> {
   @Input() endpoint = EndpointManager.resource(Resource.crd).list();

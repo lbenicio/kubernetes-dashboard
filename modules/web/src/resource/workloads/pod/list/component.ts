@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {PodListComponent as PodListComponent_1} from '../../../../common/components/resourcelist/pod/component';
 
 @Component({
   selector: 'kd-pod-list-state',
   template: '<kd-pod-list [showMetrics]="true"></kd-pod-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [PodListComponent_1],
 })
 export class PodListComponent {}

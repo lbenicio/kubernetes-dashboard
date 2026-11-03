@@ -13,15 +13,42 @@
 // limitations under the License.
 
 import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
-import {MatTableDataSource} from '@angular/material/table';
+import {
+  MatTableDataSource,
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow,
+} from '@angular/material/table';
 import {Endpoint} from '@api/root.api';
+import {CardComponent} from '../../card/component';
+import {ListZeroStateComponent} from '../../list/zerostate/component';
 
 @Component({
   selector: 'kd-endpoint-card-list',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    CardComponent,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    ListZeroStateComponent,
+  ],
 })
 export class EndpointListComponent {
   @Input() initialized: boolean;

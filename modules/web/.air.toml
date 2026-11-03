@@ -18,7 +18,7 @@ tmp_dir = ".tmp"
 
 [build]
   cmd = "go build -o .tmp/dashboard-web ."
-  bin = ".tmp/dashboard-web"
+  entrypoint = ".tmp/dashboard-web"
   delay = 2000
   exclude_unchanged = false
   include_dir = ["pkg"]

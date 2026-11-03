@@ -19,11 +19,24 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {LogControl, LogDetails, LogLine, LogSelection, LogSources} from '@api/root.api';
 
 import {LogsDownloadDialogComponent} from '@common/dialogs/download/dialog';
-import {GlobalSettingsService} from 'common/services/global/globalsettings';
-import {LogService} from 'common/services/global/logs';
-import {NotificationSeverity, NotificationsService} from 'common/services/global/notifications';
+import {GlobalSettingsService} from '@common/services/global/globalsettings';
+import {LogService} from '@common/services/global/logs';
+import {NotificationSeverity, NotificationsService} from '@common/services/global/notifications';
 import {merge, Observable, of, Subject, timer} from 'rxjs';
 import {switchMap, take, takeUntil, tap} from 'rxjs/operators';
+import {CardComponent} from '../common/components/card/component';
+import {MatFormField} from '@angular/material/form-field';
+import {MatSelect, MatOptgroup, MatOption} from '@angular/material/select';
+import {FormsModule} from '@angular/forms';
+import {MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
+import {MatMenuTrigger, MatMenu, MatMenuItem} from '@angular/material/menu';
+import {NgClass} from '@angular/common';
+import {LoadingSpinnerComponent} from '../common/components/list/spinner/component';
+import {DateComponent} from '../common/components/date/component';
+import {StripAnsiPipe} from '../common/pipes/stripansi';
+import {UntrimPipe} from '@common/pipes/untrim';
 
 const i18n = {
   MSG_LOGS_ZEROSTATE_TEXT: 'The selected container has not logged any messages yet.',
@@ -35,7 +48,25 @@ const i18n = {
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    CardComponent,
+    MatFormField,
+    MatSelect,
+    FormsModule,
+    MatOptgroup,
+    MatOption,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+    MatMenuTrigger,
+    NgClass,
+    LoadingSpinnerComponent,
+    DateComponent,
+    MatMenu,
+    MatMenuItem,
+    StripAnsiPipe,
+    UntrimPipe,
+  ],
 })
 export class LogsComponent implements OnDestroy {
   @ViewChild('logViewContainer', {static: true}) logViewContainer_: ElementRef;

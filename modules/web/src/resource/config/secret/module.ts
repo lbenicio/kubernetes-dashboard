@@ -23,7 +23,13 @@ import {SecretListComponent} from './list/component';
 import {SecretRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, SecretRoutingModule],
-  declarations: [SecretListComponent, SecretDetailComponent, SecretDetailEditComponent],
+  imports: [
+    SharedModule,
+    ComponentsModule,
+    SecretRoutingModule,
+    SecretListComponent,
+    SecretDetailComponent,
+    SecretDetailEditComponent,
+  ],
 })
 export class SecretModule {}

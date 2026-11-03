@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {SecretListComponent as SecretListComponent_1} from '../../../../common/components/resourcelist/secret/component';
 
 @Component({
   selector: 'kd-secret-list-state',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [SecretListComponent_1],
 })
 export class SecretListComponent {}

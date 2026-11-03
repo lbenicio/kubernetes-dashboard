@@ -13,7 +13,16 @@
 // limitations under the License.
 
 import {Component, Inject, ChangeDetectionStrategy} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+  MatDialogClose,
+} from '@angular/material/dialog';
+import {CdkScrollable} from '@angular/cdk/scrolling';
+import {MatButton} from '@angular/material/button';
 
 export interface AlertDialogConfig {
   title: string;
@@ -25,7 +34,7 @@ export interface AlertDialogConfig {
   selector: 'kd-alert-dialog',
   templateUrl: 'template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatDialogActions, MatButton, MatDialogClose],
 })
 export class AlertDialogComponent {
   constructor(

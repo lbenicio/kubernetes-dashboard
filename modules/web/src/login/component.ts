@@ -23,13 +23,19 @@ import {AuthService} from '@common/services/global/authentication';
 import {HistoryService} from '@common/services/global/history';
 import {map} from 'rxjs/operators';
 import {CONFIG_DI_TOKEN} from '../index.config';
+import {CardComponent} from '../common/components/card/component';
+import {FormsModule} from '@angular/forms';
+import {MatFormField, MatError} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatIcon} from '@angular/material/icon';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'kd-login',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [CardComponent, FormsModule, MatFormField, MatInput, MatError, MatIcon, MatButton],
 })
 export class LoginComponent implements OnInit {
   errors: KdError[] = [];

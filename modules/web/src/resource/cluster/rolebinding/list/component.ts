@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {RoleBindingListComponent} from '../../../../common/components/resourcelist/rolebinding/component';
 
 @Component({
   selector: 'kd-role-binding-list-state',
   template: '<kd-role-binding-list></kd-role-binding-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [RoleBindingListComponent],
 })
 export class RoleBingingListComponent {}

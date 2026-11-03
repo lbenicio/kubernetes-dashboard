@@ -22,12 +22,17 @@ import {NotificationsService} from '@common/services/global/notifications';
 import {EndpointManager, Resource} from '@common/services/resource/endpoint';
 import {NamespacedResourceService} from '@common/services/resource/resource';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ObjectMetaComponent} from '../../../../common/components/objectmeta/component';
+import {CardComponent} from '../../../../common/components/card/component';
+import {PropertyComponent} from '../../../../common/components/property/component';
+import {ChipsComponent} from '../../../../common/components/chips/component';
+import {TextInputComponent} from '../../../../common/components/textinput/component';
 
 @Component({
   selector: 'kd-network-policy-detail',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [ObjectMetaComponent, CardComponent, PropertyComponent, ChipsComponent, TextInputComponent],
 })
 export class NetworkPolicyDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.networkPolicy, true);

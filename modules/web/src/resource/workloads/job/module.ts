@@ -20,7 +20,6 @@ import {JobListComponent} from './list/component';
 import {JobRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, JobRoutingModule],
-  declarations: [JobListComponent, JobDetailComponent],
+  imports: [SharedModule, ComponentsModule, JobRoutingModule, JobListComponent, JobDetailComponent],
 })
 export class JobModule {}

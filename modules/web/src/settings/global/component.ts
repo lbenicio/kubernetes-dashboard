@@ -14,7 +14,7 @@
 
 import {HttpErrorResponse} from '@angular/common/http';
 import {Component, DestroyRef, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import {UntypedFormBuilder, UntypedFormGroup} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {GlobalSettings, NamespaceList} from '@api/root.api';
 import isEqual from 'lodash-es/isEqual';
@@ -30,6 +30,14 @@ import {SettingsHelperService} from './service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {AlertDialogComponent} from '@common/dialogs/alert/dialog';
 import {AsKdError} from '@common/errors/errors';
+import {CardComponent} from '../../common/components/card/component';
+import {SettingsEntryComponent} from '../entry/component';
+import {MatFormField} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {NamespaceSettingsComponent} from './namespace/component';
+import {MatSlider, MatSliderThumb} from '@angular/material/slider';
+import {MatSlideToggle} from '@angular/material/slide-toggle';
+import {MatButton} from '@angular/material/button';
 
 enum Controls {
   ClusterName = 'clusterName',
@@ -47,7 +55,19 @@ enum Controls {
   templateUrl: './template.html',
   styleUrls: ['style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    CardComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    SettingsEntryComponent,
+    MatFormField,
+    MatInput,
+    NamespaceSettingsComponent,
+    MatSlider,
+    MatSliderThumb,
+    MatSlideToggle,
+    MatButton,
+  ],
 })
 export class GlobalSettingsComponent implements OnInit {
   readonly Controls = Controls;

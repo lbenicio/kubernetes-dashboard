@@ -13,7 +13,15 @@
 // limitations under the License.
 
 import {Component, Inject, ChangeDetectionStrategy} from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+  MatDialogClose,
+} from '@angular/material/dialog';
+import {CdkScrollable} from '@angular/cdk/scrolling';
+import {MatButton} from '@angular/material/button';
 
 export interface ConfirmDialogConfig {
   title: string;
@@ -24,7 +32,7 @@ export interface ConfirmDialogConfig {
   selector: 'kd-confirm-dialog',
   templateUrl: 'template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatDialogActions, MatButton, MatDialogClose],
 })
 export class ConfirmDialogComponent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: ConfirmDialogConfig) {}

@@ -13,18 +13,19 @@
 // limitations under the License.
 
 import {Component, DestroyRef, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {NgForm, FormsModule} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SEARCH_QUERY_STATE_PARAM} from '@common/params/params';
 import {ParamsService} from '@common/services/global/params';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'kd-search',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [FormsModule, MatIcon],
 })
 export class SearchComponent implements OnInit {
   query: string;

@@ -13,8 +13,20 @@
 // limitations under the License.
 
 import {Component, DestroyRef, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import {MatTableDataSource} from '@angular/material/table';
-import {ActivatedRoute} from '@angular/router';
+import {
+  MatTableDataSource,
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow,
+} from '@angular/material/table';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 import {CapacityItem, PersistentVolumeDetail} from '@api/root.api';
 
 import {ActionbarService, ResourceMeta} from '@common/services/global/actionbar';
@@ -24,12 +36,34 @@ import {ResourceService} from '@common/services/resource/resource';
 import {KdStateService} from '@common/services/global/state';
 import {GlobalServicesModule} from '@common/services/global/module';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ObjectMetaComponent} from '../../../../common/components/objectmeta/component';
+import {CardComponent} from '../../../../common/components/card/component';
+import {PropertyComponent} from '../../../../common/components/property/component';
+import {ChipsComponent} from '../../../../common/components/chips/component';
+import {PersistentVolumeSourceComponent} from './source/component';
 
 @Component({
   selector: 'kd-persistent-volume-detail',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    ObjectMetaComponent,
+    CardComponent,
+    PropertyComponent,
+    RouterLink,
+    ChipsComponent,
+    PersistentVolumeSourceComponent,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+  ],
 })
 export class PersistentVolumeDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.persistentVolume);

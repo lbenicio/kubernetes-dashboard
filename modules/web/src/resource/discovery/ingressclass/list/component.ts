@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {IngressClassListComponent as IngressClassListComponent_1} from '../../../../common/components/resourcelist/ingressclass/component';
 
 @Component({
   selector: 'kd-ingress-class-list-state',
   template: '<kd-ingress-class-list></kd-ingress-class-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [IngressClassListComponent_1],
 })
 export class IngressClassListComponent {}

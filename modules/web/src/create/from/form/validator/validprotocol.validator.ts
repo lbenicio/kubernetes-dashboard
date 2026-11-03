@@ -34,7 +34,6 @@ export const validProtocolValidationKey = 'validProtocol';
       multi: true,
     },
   ],
-  standalone: false,
 })
 export class ProtocolValidator implements AsyncValidator {
   @Input() isExternal: boolean;

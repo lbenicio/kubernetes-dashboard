@@ -13,8 +13,22 @@
 // limitations under the License.
 
 import {Component, Inject, ChangeDetectionStrategy} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+  MatDialogClose,
+} from '@angular/material/dialog';
 import {ResourceMeta} from '../../services/global/actionbar';
+import {CdkScrollable} from '@angular/cdk/scrolling';
+import {MatSelect, MatOption} from '@angular/material/select';
+import {FormsModule} from '@angular/forms';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {MatIcon} from '@angular/material/icon';
+import {MatButton} from '@angular/material/button';
+import {NgObjectPipesModule} from 'ngx-pipes';
 
 enum DeletionPropagation {
   DeletePropagationBackground = 'Background',
@@ -32,7 +46,20 @@ export interface DeleteOptions {
   templateUrl: 'template.html',
   styleUrls: ['./styles.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    MatDialogTitle,
+    CdkScrollable,
+    MatDialogContent,
+    MatSelect,
+    FormsModule,
+    MatOption,
+    MatCheckbox,
+    MatIcon,
+    MatDialogActions,
+    MatButton,
+    MatDialogClose,
+    NgObjectPipesModule,
+  ],
 })
 export class DeleteResourceDialogComponent {
   options: DeleteOptions;

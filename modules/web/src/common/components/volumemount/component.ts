@@ -13,17 +13,46 @@
 // limitations under the License.
 
 import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
-import {MatTableDataSource} from '@angular/material/table';
+import {
+  MatTableDataSource,
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow,
+} from '@angular/material/table';
 import {VolumeMounts} from '@api/root.api';
 import {SupportedResources} from '@api/root.shared';
 import {PersistentVolumeSource} from '@api/volume.api';
 import {KdStateService} from '../../services/global/state';
+import {CardComponent} from '../card/component';
+import {RouterLink} from '@angular/router';
+import {ListZeroStateComponent} from '../list/zerostate/component';
 
 @Component({
   selector: 'kd-volumemounts-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    CardComponent,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    RouterLink,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    ListZeroStateComponent,
+  ],
 })
 export class VolumeMountComponent {
   @Input() initialized: boolean;

@@ -35,8 +35,7 @@ describe('GraphCardComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [GraphCardComponent, GraphComponent, CardComponent],
-      imports: [SharedModule, NoopAnimationsModule],
+      imports: [GraphCardComponent, GraphComponent, CardComponent, SharedModule, NoopAnimationsModule],
     }).compileComponents();
   }));
 

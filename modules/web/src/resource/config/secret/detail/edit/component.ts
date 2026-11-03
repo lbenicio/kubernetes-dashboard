@@ -15,19 +15,24 @@
 import {Component, OnInit, Input, EventEmitter, Output, ChangeDetectionStrategy} from '@angular/core';
 import {SecretDetail} from '@api/root.api';
 import {DecoderService} from '@common/services/global/decoder';
-import {RawResource} from 'common/resources/rawresource';
+import {RawResource} from '@common/resources/rawresource';
 import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
-import {AlertDialogConfig, AlertDialogComponent} from 'common/dialogs/alert/dialog';
+import {AlertDialogConfig, AlertDialogComponent} from '@common/dialogs/alert/dialog';
 import {MatDialogConfig, MatDialog} from '@angular/material/dialog';
 import {encode} from 'js-base64';
 import {firstValueFrom} from 'rxjs';
+import {MatFormField} from '@angular/material/form-field';
+import {CdkTextareaAutosize} from '@angular/cdk/text-field';
+import {MatInput} from '@angular/material/input';
+import {FormsModule} from '@angular/forms';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'kd-secret-detail-edit',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatFormField, CdkTextareaAutosize, MatInput, FormsModule, MatButton],
 })
 export class SecretDetailEditComponent implements OnInit {
   @Output() closeEvent = new EventEmitter<boolean>();

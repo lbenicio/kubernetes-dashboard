@@ -18,13 +18,15 @@ import {StateError} from '@api/root.ui';
 import {map} from 'rxjs/operators';
 
 import {KdError} from '@common/errors/errors';
+import {CardComponent} from '../common/components/card/component';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'kd-error',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [CardComponent, MatIcon],
 })
 export class ErrorComponent implements OnInit {
   private error_: KdError;

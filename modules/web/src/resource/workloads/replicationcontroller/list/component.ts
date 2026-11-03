@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {ReplicationControllerListComponent as ReplicationControllerListComponent_1} from '../../../../common/components/resourcelist/replicationcontroller/component';
 
 @Component({
   selector: 'kd-replication-controller-list-state',
   template: '<kd-replication-controller-list [showMetrics]="true"></kd-replication-controller-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [ReplicationControllerListComponent_1],
 })
 export class ReplicationControllerListComponent {}

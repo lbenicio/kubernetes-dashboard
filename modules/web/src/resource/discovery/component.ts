@@ -14,11 +14,15 @@
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {GroupedResourceList} from '@common/resources/groupedlist';
+import {IngressListComponent} from '../../common/components/resourcelist/ingress/component';
+import {IngressClassListComponent} from '../../common/components/resourcelist/ingressclass/component';
+import {ServiceListComponent} from '../../common/components/resourcelist/service/component';
+import {ZeroStateComponent} from '../../common/components/zerostate/component';
 
 @Component({
   selector: 'kd-discovery',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [IngressListComponent, IngressClassListComponent, ServiceListComponent, ZeroStateComponent],
 })
 export class DiscoveryComponent extends GroupedResourceList {}

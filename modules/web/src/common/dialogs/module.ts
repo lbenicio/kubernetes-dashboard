@@ -28,8 +28,9 @@ import {TriggerResourceDialogComponent} from './triggerresource/dialog';
 import {PreviewDeploymentDialogComponent} from './previewdeployment/dialog';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule],
-  declarations: [
+  imports: [
+    SharedModule,
+    ComponentsModule,
     AlertDialogComponent,
     EditResourceDialogComponent,
     DeleteResourceDialogComponent,

@@ -13,12 +13,15 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {CardComponent} from '../card/component';
+import {RouterLink} from '@angular/router';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'kd-zero-state',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [CardComponent, RouterLink, MatIcon],
 })
 export class ZeroStateComponent {}

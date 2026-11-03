@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {CRDListComponent as CRDListComponent_1} from '../../common/components/resourcelist/crd/component';
 
 @Component({
   selector: 'kd-crd-list-state',
   template: '<kd-crd-list></kd-crd-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [CRDListComponent_1],
 })
 export class CRDListComponent {}

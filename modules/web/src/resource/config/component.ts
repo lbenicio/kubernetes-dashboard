@@ -14,11 +14,22 @@
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {GroupedResourceList} from '@common/resources/groupedlist';
+import {ConfigMapListComponent} from '../../common/components/resourcelist/configmap/component';
+import {PersistentVolumeClaimListComponent} from '../../common/components/resourcelist/persistentvolumeclaim/component';
+import {SecretListComponent} from '../../common/components/resourcelist/secret/component';
+import {StorageClassListComponent} from '../../common/components/resourcelist/storageclass/component';
+import {ZeroStateComponent} from '../../common/components/zerostate/component';
 
 @Component({
   selector: 'kd-config',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    ConfigMapListComponent,
+    PersistentVolumeClaimListComponent,
+    SecretListComponent,
+    StorageClassListComponent,
+    ZeroStateComponent,
+  ],
 })
 export class ConfigComponent extends GroupedResourceList {}

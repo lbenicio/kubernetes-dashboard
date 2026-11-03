@@ -13,16 +13,20 @@
 // limitations under the License.
 
 import {Component, OnInit, ViewChild, ChangeDetectionStrategy} from '@angular/core';
-import {MatDrawer} from '@angular/material/sidenav';
+import {MatDrawer, MatDrawerContainer} from '@angular/material/sidenav';
 
 import {NavService} from '@common/services/nav/service';
+import {NgClass} from '@angular/common';
+import {NavItemComponent} from './item/component';
+import {PinnerNavComponent} from './pinner/component';
+import {MatDivider} from '@angular/material/divider';
 
 @Component({
   selector: 'kd-nav',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatDrawerContainer, NgClass, MatDrawer, NavItemComponent, PinnerNavComponent, MatDivider],
 })
 export class NavComponent implements OnInit {
   @ViewChild(MatDrawer, {static: true}) private readonly nav_: MatDrawer;

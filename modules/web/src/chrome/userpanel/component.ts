@@ -13,16 +13,21 @@
 // limitations under the License.
 
 import {Component, ViewChild, ChangeDetectionStrategy} from '@angular/core';
-import {MatMenuTrigger} from '@angular/material/menu';
+import {MatMenuTrigger, MatMenu, MatMenuItem} from '@angular/material/menu';
 import {AuthService} from '@common/services/global/authentication';
 import {MeService} from '@common/services/global/me';
+import {NgClass} from '@angular/common';
+import {MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
+import {MatDivider} from '@angular/material/divider';
 
 @Component({
   selector: 'kd-user-panel',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatMenu, NgClass, MatIconButton, MatTooltip, MatIcon, MatDivider, MatMenuItem, MatMenuTrigger],
 })
 export class UserPanelComponent /* implements OnInit */ {
   @ViewChild(MatMenuTrigger)

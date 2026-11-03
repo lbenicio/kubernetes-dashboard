@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {StatefulSetListComponent as StatefulSetListComponent_1} from '../../../../common/components/resourcelist/statefulset/component';
 
 @Component({
   selector: 'kd-stateful-set-state',
   template: '<kd-stateful-set-list [showMetrics]="true"></kd-stateful-set-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [StatefulSetListComponent_1],
 })
 export class StatefulSetListComponent {}

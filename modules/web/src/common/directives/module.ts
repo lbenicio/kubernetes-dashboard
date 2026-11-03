@@ -21,8 +21,7 @@ import {IsVisibleDirective} from './isvisible/directive';
 const directives = [AutofocusDirective, IsVisibleDirective];
 
 @NgModule({
-  imports: [SharedModule],
-  declarations: [...directives],
+  imports: [SharedModule, ...directives],
   exports: [...directives],
 })
 export class DirectivesModule {}

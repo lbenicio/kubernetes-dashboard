@@ -21,13 +21,19 @@ import {NotificationsService} from '@common/services/global/notifications';
 import {EndpointManager, Resource} from '@common/services/resource/endpoint';
 import {ResourceService} from '@common/services/resource/resource';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ObjectMetaComponent} from '../../../../common/components/objectmeta/component';
+import {CardComponent} from '../../../../common/components/card/component';
+import {PropertyComponent} from '../../../../common/components/property/component';
+import {MatIcon} from '@angular/material/icon';
+import {MatTooltip} from '@angular/material/tooltip';
+import {PersistentVolumeListComponent} from '../../../../common/components/resourcelist/persistentvolume/component';
 
 @Component({
   selector: 'kd-storage-class-detail',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [ObjectMetaComponent, CardComponent, PropertyComponent, MatIcon, MatTooltip, PersistentVolumeListComponent],
 })
 export class StorageClassDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.storageClass);

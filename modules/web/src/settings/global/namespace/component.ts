@@ -20,6 +20,8 @@ import {
   UntypedFormBuilder,
   UntypedFormGroup,
   NG_VALUE_ACCESSOR,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {GlobalSettings, NamespaceList} from '@api/root.api';
@@ -30,6 +32,17 @@ import {SettingsHelperService} from '../service';
 import {AddFallbackNamespaceDialogComponent, AddFallbackNamespaceDialogData} from './adddialog/dialog';
 import {EditFallbackNamespaceDialogComponent, EditFallbackNamespaceDialogData} from './editdialog/dialog';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {SettingsEntryComponent} from '../../entry/component';
+import {MatFormField} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatAutocompleteTrigger, MatAutocomplete} from '@angular/material/autocomplete';
+import {MatOption} from '@angular/material/select';
+import {MatChipSet, MatChip} from '@angular/material/chips';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {SlicePipe} from '@angular/common';
+import {FilterByPipe} from '@common/pipes/filterby';
 
 enum BreakpointElementCount {
   XLarge = 5,
@@ -59,7 +72,23 @@ interface NamespaceSettings {
     },
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    SettingsEntryComponent,
+    MatFormField,
+    MatInput,
+    MatAutocompleteTrigger,
+    MatAutocomplete,
+    MatOption,
+    MatChipSet,
+    MatChip,
+    MatTooltip,
+    MatIconButton,
+    MatIcon,
+    SlicePipe,
+    FilterByPipe,
+  ],
 })
 export class NamespaceSettingsComponent implements OnInit, ControlValueAccessor {
   readonly Controls = Controls;

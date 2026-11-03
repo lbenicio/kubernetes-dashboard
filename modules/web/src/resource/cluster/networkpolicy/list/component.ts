@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {NetworkPolicyListComponent as NetworkPolicyListComponent_1} from '../../../../common/components/resourcelist/networkpolicy/component';
 
 @Component({
   selector: 'kd-network-policy-list-state',
   template: '<kd-network-policy-list></kd-network-policy-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [NetworkPolicyListComponent_1],
 })
 export class NetworkPolicyListComponent {}

@@ -23,9 +23,15 @@ import {
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import {FormValidators} from '../validator/validators';
 import {DeployLabel} from './deploylabel';
+import {MatFormField, MatError, MatHint} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
 
 interface DeployLabelI {
   value: string;
@@ -48,7 +54,7 @@ interface DeployLabelI {
     },
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatError, MatHint, MatIconButton, MatIcon],
 })
 export class DeployLabelComponent implements OnInit, ControlValueAccessor {
   @Input() labelArr: DeployLabel[];

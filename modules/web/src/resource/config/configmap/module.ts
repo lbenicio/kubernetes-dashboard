@@ -22,7 +22,6 @@ import {ConfigMapListComponent} from './list/component';
 import {ConfigMapRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, ConfigMapRoutingModule],
-  declarations: [ConfigMapListComponent, ConfigMapDetailComponent],
+  imports: [SharedModule, ComponentsModule, ConfigMapRoutingModule, ConfigMapListComponent, ConfigMapDetailComponent],
 })
 export class ConfigMapModule {}

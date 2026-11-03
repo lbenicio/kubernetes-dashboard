@@ -22,7 +22,6 @@ import {IngressListComponent} from './list/component';
 import {IngressRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, IngressRoutingModule],
-  declarations: [IngressListComponent, IngressDetailComponent],
+  imports: [SharedModule, ComponentsModule, IngressRoutingModule, IngressListComponent, IngressDetailComponent],
 })
 export class IngressModule {}

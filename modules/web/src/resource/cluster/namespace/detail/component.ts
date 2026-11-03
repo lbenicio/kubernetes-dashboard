@@ -21,12 +21,25 @@ import {NotificationsService} from '@common/services/global/notifications';
 import {EndpointManager, Resource} from '@common/services/resource/endpoint';
 import {ResourceService} from '@common/services/resource/resource';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ObjectMetaComponent} from '../../../../common/components/objectmeta/component';
+import {CardComponent} from '../../../../common/components/card/component';
+import {PropertyComponent} from '../../../../common/components/property/component';
+import {ResourceQuotaListComponent} from '../../../../common/components/quotas/component';
+import {ResourceLimitListComponent} from '../../../../common/components/limits/component';
+import {EventListComponent} from '../../../../common/components/resourcelist/event/component';
 
 @Component({
   selector: 'kd-namespace-detail',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    ObjectMetaComponent,
+    CardComponent,
+    PropertyComponent,
+    ResourceQuotaListComponent,
+    ResourceLimitListComponent,
+    EventListComponent,
+  ],
 })
 export class NamespaceDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.namespace);

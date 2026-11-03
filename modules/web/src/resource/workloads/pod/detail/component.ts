@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {Component, DestroyRef, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 import {Container, PodDetail} from '@api/root.api';
 import {ActionbarService, ResourceMeta} from '@common/services/global/actionbar';
 import {NotificationsService} from '@common/services/global/notifications';
@@ -22,13 +22,35 @@ import {EndpointManager, Resource} from '@common/services/resource/endpoint';
 import {NamespacedResourceService} from '@common/services/resource/resource';
 import isEmpty from 'lodash-es/isEmpty';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {GraphMetricsComponent} from '../../../../common/components/graphmetrics/component';
+import {ObjectMetaComponent} from '../../../../common/components/objectmeta/component';
+import {CardComponent} from '../../../../common/components/card/component';
+import {PropertyComponent} from '../../../../common/components/property/component';
+import {SecurityContextComponent} from '../../../../common/components/securitycontext/component';
+import {ConditionListComponent} from '../../../../common/components/condition/component';
+import {CreatorCardComponent} from '../../../../common/components/creator/component';
+import {PersistentVolumeClaimListComponent} from '../../../../common/components/resourcelist/persistentvolumeclaim/component';
+import {EventListComponent} from '../../../../common/components/resourcelist/event/component';
+import {ContainerCardComponent} from '../../../../common/components/container/component';
 
 @Component({
   selector: 'kd-pod-detail',
   templateUrl: './template.html',
   styleUrls: ['style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    GraphMetricsComponent,
+    ObjectMetaComponent,
+    CardComponent,
+    PropertyComponent,
+    RouterLink,
+    SecurityContextComponent,
+    ConditionListComponent,
+    CreatorCardComponent,
+    PersistentVolumeClaimListComponent,
+    EventListComponent,
+    ContainerCardComponent,
+  ],
 })
 export class PodDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.pod, true);

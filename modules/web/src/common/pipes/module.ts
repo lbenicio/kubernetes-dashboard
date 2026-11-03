@@ -25,7 +25,7 @@ import {StripAnsiPipe} from './stripansi';
 import {TrimPipe} from './trim';
 
 @NgModule({
-  declarations: [
+  imports: [
     MemoryFormatter,
     CoreFormatter,
     RelativeTimeFormatter,

@@ -14,6 +14,9 @@
 
 import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {ResourcesRatio} from '@api/root.ui';
+import {CardComponent} from '../card/component';
+import {NgIf, DecimalPipe} from '@angular/common';
+import {PieChartModule} from '@swimlane/ngx-charts';
 
 export const emptyResourcesRatio: ResourcesRatio = {
   cronJobRatio: [],
@@ -31,7 +34,7 @@ export const emptyResourcesRatio: ResourcesRatio = {
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [CardComponent, NgIf, PieChartModule, DecimalPipe],
 })
 export class WorkloadStatusComponent {
   @Input() resourcesRatio = emptyResourcesRatio;

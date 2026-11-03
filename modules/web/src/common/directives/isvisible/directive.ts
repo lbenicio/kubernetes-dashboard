@@ -14,10 +14,7 @@
 
 import {AfterViewInit, Directive, EventEmitter, Output, ViewContainerRef} from '@angular/core';
 
-@Directive({
-  selector: '[kdIsVisible]',
-  standalone: false,
-})
+@Directive({selector: '[kdIsVisible]'})
 export class IsVisibleDirective implements AfterViewInit {
   @Output() visibilityChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 

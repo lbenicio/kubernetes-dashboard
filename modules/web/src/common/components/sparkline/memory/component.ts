@@ -14,11 +14,12 @@
 
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Sparkline} from '../sparkline';
+import {MemoryFormatter} from '../../../pipes/memoryformatter';
 
 @Component({
   selector: 'kd-memory-sparkline',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [MemoryFormatter],
 })
 export class MemorySparklineComponent extends Sparkline {}

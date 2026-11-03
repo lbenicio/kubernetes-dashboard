@@ -29,6 +29,7 @@ import {AuthService} from '@common/services/global/authentication';
 import {HistoryService} from '@common/services/global/history';
 import {from, Observable, of, throwError} from 'rxjs';
 import {CONFIG_DI_TOKEN} from '../index.config';
+import {MESSAGES, MESSAGES_DI_TOKEN} from '../index.messages';
 import {LoginComponent} from './component';
 
 const queries = {
@@ -90,8 +91,8 @@ describe('LoginComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [LoginComponent],
       imports: [
+        LoginComponent,
         NoopAnimationsModule,
         HttpClientTestingModule,
         RouterTestingModule,
@@ -130,12 +131,14 @@ describe('LoginComponent', () => {
           provide: HistoryService,
           useClass: MockHistoryService,
         },
+        {provide: MESSAGES_DI_TOKEN, useValue: MESSAGES},
       ],
     }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LoginComponent);
+    fixture.detectChanges();
   });
 
   describe('options', () => {
@@ -154,6 +157,7 @@ describe('LoginComponent', () => {
       const token = fixture.debugElement.query(By.css(queries.token)).nativeElement;
       token.value = loginToken;
       token.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
 
       submit();
 
@@ -170,7 +174,8 @@ describe('LoginComponent', () => {
       // set inputs and fire change events to trigger onChange()
       const token = fixture.debugElement.query(By.css(queries.token)).nativeElement;
       token.value = loginToken;
-      token.dispatchEvent(new Event('change'));
+      token.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
 
       submit();
 

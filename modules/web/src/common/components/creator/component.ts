@@ -15,12 +15,17 @@
 import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {ResourceOwner} from '@api/root.api';
 import {KdStateService} from '../../services/global/state';
+import {CardComponent} from '../card/component';
+import {DateComponent} from '../date/component';
+import {PropertyComponent} from '../property/component';
+import {RouterLink} from '@angular/router';
+import {ChipsComponent} from '../chips/component';
 
 @Component({
   selector: 'kd-creator-card',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [CardComponent, DateComponent, PropertyComponent, RouterLink, ChipsComponent],
 })
 export class CreatorCardComponent {
   @Input() creator: ResourceOwner;

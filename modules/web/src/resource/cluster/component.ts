@@ -14,11 +14,32 @@
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {GroupedResourceList} from '@common/resources/groupedlist';
+import {ClusterRoleBindingListComponent} from '../../common/components/resourcelist/clusterrolebinding/component';
+import {ClusterRoleListComponent} from '../../common/components/resourcelist/clusterrole/component';
+import {NamespaceListComponent} from '../../common/components/resourcelist/namespace/component';
+import {NetworkPolicyListComponent} from '../../common/components/resourcelist/networkpolicy/component';
+import {NodeListComponent} from '../../common/components/resourcelist/node/component';
+import {PersistentVolumeListComponent} from '../../common/components/resourcelist/persistentvolume/component';
+import {RoleBindingListComponent} from '../../common/components/resourcelist/rolebinding/component';
+import {RoleListComponent} from '../../common/components/resourcelist/role/component';
+import {ServiceAccountListComponent} from '../../common/components/resourcelist/serviceaccount/component';
+import {ZeroStateComponent} from '../../common/components/zerostate/component';
 
 @Component({
   selector: 'kd-cluster',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    ClusterRoleBindingListComponent,
+    ClusterRoleListComponent,
+    NamespaceListComponent,
+    NetworkPolicyListComponent,
+    NodeListComponent,
+    PersistentVolumeListComponent,
+    RoleBindingListComponent,
+    RoleListComponent,
+    ServiceAccountListComponent,
+    ZeroStateComponent,
+  ],
 })
 export class ClusterComponent extends GroupedResourceList {}

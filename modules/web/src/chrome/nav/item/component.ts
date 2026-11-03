@@ -24,6 +24,8 @@ import {
 } from '@angular/core';
 import {debounceTime, tap} from 'rxjs/operators';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {MatButton} from '@angular/material/button';
+import {RouterLink, RouterLinkActive} from '@angular/router';
 
 enum NamespacedIndicatorState {
   Enter = 'mouseenter',
@@ -35,7 +37,7 @@ enum NamespacedIndicatorState {
   templateUrl: 'template.html',
   styleUrls: ['style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatButton, RouterLink, RouterLinkActive],
 })
 export class NavItemComponent implements OnInit {
   @Input() state: string;

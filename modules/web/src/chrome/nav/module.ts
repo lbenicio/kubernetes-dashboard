@@ -24,8 +24,15 @@ import {NavItemComponent} from './item/component';
 import {PinnerNavComponent} from './pinner/component';
 
 @NgModule({
-  declarations: [NavComponent, NavItemComponent, HamburgerComponent, PinnerNavComponent],
   exports: [NavComponent, NavItemComponent, HamburgerComponent],
-  imports: [SharedModule, ComponentsModule, NavServiceModule],
+  imports: [
+    SharedModule,
+    ComponentsModule,
+    NavServiceModule,
+    NavComponent,
+    NavItemComponent,
+    HamburgerComponent,
+    PinnerNavComponent,
+  ],
 })
 export class NavModule {}

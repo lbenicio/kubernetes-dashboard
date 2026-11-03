@@ -21,7 +21,6 @@ import {WorkloadsComponent} from './component';
 import {WorkloadsRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, WorkloadsRoutingModule],
-  declarations: [WorkloadsComponent],
+  imports: [SharedModule, ComponentsModule, WorkloadsRoutingModule, WorkloadsComponent],
 })
 export class WorkloadsModule {}

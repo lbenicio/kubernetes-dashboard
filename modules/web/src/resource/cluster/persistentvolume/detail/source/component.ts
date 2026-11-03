@@ -13,16 +13,45 @@
 // limitations under the License.
 
 import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
-import {MatTableDataSource} from '@angular/material/table';
+import {
+  MatTableDataSource,
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow,
+} from '@angular/material/table';
 import {PersistentVolumeSource} from '@api/volume.api';
 import {StringMap} from '@api/root.shared';
+import {CardComponent} from '../../../../../common/components/card/component';
+import {PropertyComponent} from '../../../../../common/components/property/component';
+import {ChipsComponent} from '../../../../../common/components/chips/component';
 
 @Component({
   selector: 'kd-persistent-volume-source',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    CardComponent,
+    PropertyComponent,
+    ChipsComponent,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+  ],
 })
 export class PersistentVolumeSourceComponent {
   @Input() source: PersistentVolumeSource;

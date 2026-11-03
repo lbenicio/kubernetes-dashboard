@@ -15,12 +15,13 @@
 import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {Metric} from '@api/root.api';
 import {GraphType} from '../graph/component';
+import {GraphCardComponent} from '../graphcard/component';
 
 @Component({
   selector: 'kd-graph-metrics',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [GraphCardComponent],
 })
 export class GraphMetricsComponent {
   @Input() metrics: Metric[];

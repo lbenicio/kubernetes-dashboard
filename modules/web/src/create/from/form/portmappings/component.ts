@@ -24,12 +24,21 @@ import {
   NG_ASYNC_VALIDATORS,
   NG_VALUE_ACCESSOR,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import {PortMapping} from '@api/root.api';
 import {Observable} from 'rxjs';
 import {filter, map, startWith, take} from 'rxjs/operators';
 import {FormValidators} from '../validator/validators';
-import {validateProtocol} from '../validator/validprotocol.validator';
+import {validateProtocol, ProtocolValidator} from '../validator/validprotocol.validator';
+import {MatFormField, MatError} from '@angular/material/form-field';
+import {MatSelect, MatOption} from '@angular/material/select';
+import {MatInput} from '@angular/material/input';
+import {MatProgressBar} from '@angular/material/progress-bar';
+import {NgClass} from '@angular/common';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
 
 const i18n = {
   MSG_PORT_MAPPINGS_SERVICE_TYPE_NONE_LABEL: 'None',
@@ -74,7 +83,20 @@ const EXT_SERVICE: ServiceType = {
     },
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatSelect,
+    MatOption,
+    MatInput,
+    MatError,
+    ProtocolValidator,
+    MatProgressBar,
+    NgClass,
+    MatIconButton,
+    MatIcon,
+  ],
 })
 export class PortMappingsComponent implements OnInit, ControlValueAccessor {
   @Input() protocols: string[];

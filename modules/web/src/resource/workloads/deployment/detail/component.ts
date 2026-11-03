@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {Component, DestroyRef, inject, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 import {DeploymentDetail, ReplicaSet} from '@api/root.api';
 
 import {ActionbarService, ResourceMeta} from '@common/services/global/actionbar';
@@ -22,12 +22,32 @@ import {KdStateService} from '@common/services/global/state';
 import {EndpointManager, Resource} from '@common/services/resource/endpoint';
 import {NamespacedResourceService} from '@common/services/resource/resource';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ObjectMetaComponent} from '../../../../common/components/objectmeta/component';
+import {CardComponent} from '../../../../common/components/card/component';
+import {PropertyComponent} from '../../../../common/components/property/component';
+import {ChipsComponent} from '../../../../common/components/chips/component';
+import {ConditionListComponent} from '../../../../common/components/condition/component';
+import {DateComponent} from '../../../../common/components/date/component';
+import {ReplicaSetListComponent} from '../../../../common/components/resourcelist/replicaset/component';
+import {HorizontalPodAutoscalerListComponent} from '../../../../common/components/resourcelist/horizontalpodautoscaler/component';
+import {EventListComponent} from '../../../../common/components/resourcelist/event/component';
 
 @Component({
   selector: 'kd-deployment-detail',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    ObjectMetaComponent,
+    CardComponent,
+    PropertyComponent,
+    ChipsComponent,
+    ConditionListComponent,
+    DateComponent,
+    RouterLink,
+    ReplicaSetListComponent,
+    HorizontalPodAutoscalerListComponent,
+    EventListComponent,
+  ],
 })
 export class DeploymentDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.deployment, true);

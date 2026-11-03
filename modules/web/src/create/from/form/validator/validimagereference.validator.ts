@@ -33,7 +33,6 @@ export const uniqueNameValidationKey = 'validImageReference';
       multi: true,
     },
   ],
-  standalone: false,
 })
 export class ValidImageReferenceValidator implements AsyncValidator, Validator {
   @Input() namespace: string;

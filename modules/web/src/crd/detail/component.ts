@@ -22,12 +22,25 @@ import {NotificationsService} from '@common/services/global/notifications';
 import {ResourceService} from '@common/services/resource/resource';
 import {EndpointManager, Resource} from '@common/services/resource/endpoint';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ObjectMetaComponent} from '../../common/components/objectmeta/component';
+import {CardComponent} from '../../common/components/card/component';
+import {PropertyComponent} from '../../common/components/property/component';
+import {CRDObjectListComponent} from '../../common/components/resourcelist/crdobject/component';
+import {CRDVersionListComponent} from '../../common/components/resourcelist/crdversion/component';
+import {ConditionListComponent} from '../../common/components/condition/component';
 
 @Component({
   selector: 'kd-crd-detail',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    ObjectMetaComponent,
+    CardComponent,
+    PropertyComponent,
+    CRDObjectListComponent,
+    CRDVersionListComponent,
+    ConditionListComponent,
+  ],
 })
 export class CRDDetailComponent implements OnInit, OnDestroy {
   crd: CRDDetail;

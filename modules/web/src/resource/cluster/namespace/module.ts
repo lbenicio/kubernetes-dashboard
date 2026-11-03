@@ -23,7 +23,13 @@ import {NamespaceListComponent} from './list/component';
 import {NamespaceRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, NamespaceRoutingModule],
-  declarations: [NamespaceListComponent, NamespaceDetailComponent, ActionbarComponent],
+  imports: [
+    SharedModule,
+    ComponentsModule,
+    NamespaceRoutingModule,
+    NamespaceListComponent,
+    NamespaceDetailComponent,
+    ActionbarComponent,
+  ],
 })
 export class NamespaceModule {}

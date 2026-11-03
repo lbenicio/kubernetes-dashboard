@@ -21,7 +21,6 @@ import {ConfigComponent} from './component';
 import {ConfigRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, ConfigRoutingModule],
-  declarations: [ConfigComponent],
+  imports: [SharedModule, ComponentsModule, ConfigRoutingModule, ConfigComponent],
 })
 export class ConfigModule {}

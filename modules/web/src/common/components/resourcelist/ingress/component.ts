@@ -23,13 +23,63 @@ import {EndpointManager, Resource} from '@common/services/resource/endpoint';
 import {NamespacedResourceService} from '@common/services/resource/resource';
 import {MenuComponent} from '../../list/column/menu/component';
 import {ListGroupIdentifier, ListIdentifier} from '../groupids';
+import {CardComponent} from '../../card/component';
+import {CardListFilterComponent} from '../../list/filter/component';
+import {LoadingSpinnerComponent} from '../../list/spinner/component';
+import {
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow,
+} from '@angular/material/table';
+import {MatSort, MatSortHeader} from '@angular/material/sort';
+import {RouterLink} from '@angular/router';
+import {ChipsComponent} from '../../chips/component';
+import {MatIcon} from '@angular/material/icon';
+import {MatTooltip} from '@angular/material/tooltip';
+import {ExternalEndpointComponent} from '../../endpoint/external/component';
+import {DateComponent} from '../../date/component';
+import {ColumnComponent} from '../../list/column/component';
+import {MatPaginator} from '@angular/material/paginator';
+import {ListZeroStateComponent} from '../../list/zerostate/component';
 
 @Component({
   selector: 'kd-ingress-list',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [
+    CardComponent,
+    CardListFilterComponent,
+    LoadingSpinnerComponent,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatSortHeader,
+    MatCellDef,
+    MatCell,
+    RouterLink,
+    ChipsComponent,
+    MatIcon,
+    MatTooltip,
+    ExternalEndpointComponent,
+    DateComponent,
+    ColumnComponent,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    MatPaginator,
+    ListZeroStateComponent,
+  ],
 })
 export class IngressListComponent extends ResourceListBase<IngressList, Ingress> {
   @Input() endpoint = EndpointManager.resource(Resource.ingress, true).list();

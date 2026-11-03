@@ -23,7 +23,13 @@ import {PersistentVolumeListComponent} from './list/component';
 import {PersistentVolumeRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, PersistentVolumeRoutingModule],
-  declarations: [PersistentVolumeListComponent, PersistentVolumeDetailComponent, PersistentVolumeSourceComponent],
+  imports: [
+    SharedModule,
+    ComponentsModule,
+    PersistentVolumeRoutingModule,
+    PersistentVolumeListComponent,
+    PersistentVolumeDetailComponent,
+    PersistentVolumeSourceComponent,
+  ],
 })
 export class PersistentVolumeModule {}

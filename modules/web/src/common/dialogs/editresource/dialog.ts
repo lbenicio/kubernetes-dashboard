@@ -14,21 +14,42 @@
 
 import {HttpClient} from '@angular/common/http';
 import {Component, DestroyRef, inject, Inject, OnInit, ViewChild, ChangeDetectionStrategy} from '@angular/core';
-import {MatButtonToggleGroup} from '@angular/material/button-toggle';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {MatButtonToggleGroup, MatButtonToggle} from '@angular/material/button-toggle';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+  MatDialogClose,
+} from '@angular/material/dialog';
 import {dump as toYaml, load as fromYaml} from 'js-yaml';
-import {EditorMode} from '../../components/textinput/component';
+import {EditorMode, TextInputComponent} from '../../components/textinput/component';
 
 import {RawResource} from '../../resources/rawresource';
 import {ResourceMeta} from '../../services/global/actionbar';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {firstValueFrom} from 'rxjs';
+import {CdkScrollable} from '@angular/cdk/scrolling';
+import {MatIcon} from '@angular/material/icon';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'kd-delete-resource-dialog',
   templateUrl: 'template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    MatDialogTitle,
+    CdkScrollable,
+    MatDialogContent,
+    MatButtonToggleGroup,
+    MatButtonToggle,
+    TextInputComponent,
+    MatIcon,
+    MatDialogActions,
+    MatButton,
+    MatDialogClose,
+  ],
 })
 export class EditResourceDialogComponent implements OnInit {
   selectedMode = EditorMode.YAML;

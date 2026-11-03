@@ -16,12 +16,15 @@ import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {ObjectMeta, TypeMeta} from '@api/root.api';
 
 import {VerberService} from '@common/services/global/verber';
+import {MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'kd-actionbar-detail-edit',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatIconButton, MatTooltip, MatIcon],
 })
 export class ActionbarDetailEditComponent {
   @Input() objectMeta: ObjectMeta;

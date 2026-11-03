@@ -23,12 +23,35 @@ import {NotificationsService} from '@common/services/global/notifications';
 import {EndpointManager, Resource} from '@common/services/resource/endpoint';
 import {ResourceService} from '@common/services/resource/resource';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {GraphMetricsComponent} from '../../../../common/components/graphmetrics/component';
+import {ObjectMetaComponent} from '../../../../common/components/objectmeta/component';
+import {CardComponent} from '../../../../common/components/card/component';
+import {PropertyComponent} from '../../../../common/components/property/component';
+import {ChipsComponent} from '../../../../common/components/chips/component';
+import {PieChartModule} from '@swimlane/ngx-charts';
+import {ConditionListComponent} from '../../../../common/components/condition/component';
+import {PodListComponent} from '../../../../common/components/resourcelist/pod/component';
+import {EventListComponent} from '../../../../common/components/resourcelist/event/component';
+import {MemoryFormatter} from '../../../../common/pipes/memoryformatter';
+import {CoreFormatter} from '../../../../common/pipes/coreformatter';
 
 @Component({
   selector: 'kd-node-detail',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    GraphMetricsComponent,
+    ObjectMetaComponent,
+    CardComponent,
+    PropertyComponent,
+    ChipsComponent,
+    PieChartModule,
+    ConditionListComponent,
+    PodListComponent,
+    EventListComponent,
+    MemoryFormatter,
+    CoreFormatter,
+  ],
 })
 export class NodeDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.node);

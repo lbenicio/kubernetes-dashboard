@@ -22,7 +22,12 @@ import {DeploymentListComponent} from './list/component';
 import {DeploymentRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, DeploymentRoutingModule],
-  declarations: [DeploymentListComponent, DeploymentDetailComponent],
+  imports: [
+    SharedModule,
+    ComponentsModule,
+    DeploymentRoutingModule,
+    DeploymentListComponent,
+    DeploymentDetailComponent,
+  ],
 })
 export class DeploymentModule {}

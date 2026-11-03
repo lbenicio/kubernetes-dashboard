@@ -13,13 +13,14 @@
 // limitations under the License.
 
 import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
+import {NgClass} from '@angular/common';
 
 @Component({
   selector: 'kd-property',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [NgClass],
 })
 export class PropertyComponent {
   @Input() stretched = false;

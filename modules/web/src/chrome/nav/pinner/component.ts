@@ -15,13 +15,14 @@
 import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {PinnedResource} from '@api/root.api';
 import {PinnerService} from '@common/services/global/pinner';
+import {NavItemComponent} from '../item/component';
 
 @Component({
   selector: 'kd-pinner-nav',
   templateUrl: './template.html',
   styleUrls: ['../style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [NavItemComponent],
 })
 export class PinnerNavComponent {
   @Input() kind: string;

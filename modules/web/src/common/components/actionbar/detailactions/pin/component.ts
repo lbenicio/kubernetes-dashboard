@@ -17,12 +17,15 @@ import {ObjectMeta, TypeMeta} from '@api/root.api';
 import {IMessage} from '@api/root.ui';
 import {PinnerService} from '@common/services/global/pinner';
 import {MESSAGES_DI_TOKEN} from '../../../../../index.messages';
+import {MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'kd-actionbar-detail-pin',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatIconButton, MatTooltip, MatIcon],
 })
 export class ActionbarDetailPinComponent {
   @Input() objectMeta: ObjectMeta;

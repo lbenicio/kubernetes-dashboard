@@ -12,14 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {enableProdMode, provideZoneChangeDetection} from '@angular/core';
-import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
+import {enableProdMode, ErrorHandler, importProvidersFrom} from '@angular/core';
 
 import {environment} from '@environments/environment';
-import {RootModule} from './index.module';
+
+import {GlobalErrorHandler} from './error/handler';
+import {provideHttpClient, withXhr, withInterceptorsFromDi} from '@angular/common/http';
+import {BrowserModule, bootstrapApplication} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {CoreModule} from './core.module';
+import {ChromeModule} from './chrome/module';
+import {LoginModule} from './login/module';
+import {withHashLocation, withRouterConfig, provideRouter} from '@angular/router';
+import {routes} from './index.routing';
+import {RootComponent} from './index.component';
 
 if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(RootModule, {applicationProviders: [provideZoneChangeDetection()]});
+bootstrapApplication(RootComponent, {
+  providers: [
+    importProvidersFrom(BrowserModule, BrowserAnimationsModule, CoreModule, ChromeModule, LoginModule),
+    {provide: ErrorHandler, useClass: GlobalErrorHandler},
+    provideHttpClient(withXhr(), withInterceptorsFromDi()),
+    provideRouter(routes, withHashLocation(), withRouterConfig({onSameUrlNavigation: 'reload'})),
+  ],
+});

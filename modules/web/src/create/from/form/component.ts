@@ -14,7 +14,15 @@
 
 import {HttpClient} from '@angular/common/http';
 import {Component, DestroyRef, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import {AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
+import {
+  AbstractControl,
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
@@ -37,10 +45,24 @@ import {take} from 'rxjs/operators';
 
 import {CreateNamespaceDialogComponent} from './createnamespace/dialog';
 import {DeployLabel} from './deploylabel/deploylabel';
-import {validateUniqueName} from './validator/uniquename.validator';
+import {validateUniqueName, UniqueNameValidator} from './validator/uniquename.validator';
 import {FormValidators} from './validator/validators';
 import {CreateSecretDialogComponent} from './createsecret/dialog';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {HelpSectionComponent} from './helpsection/component';
+import {MatFormField, MatHint, MatError} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatProgressBar} from '@angular/material/progress-bar';
+import {NgClass} from '@angular/common';
+import {UserHelpComponent} from './helpsection/userhelp/component';
+import {ValidImageReferenceValidator} from './validator/validimagereference.validator';
+import {WarnThresholdValidator} from './validator/warnthreshold.validator';
+import {PortMappingsComponent} from './portmappings/component';
+import {MatSelect, MatOption} from '@angular/material/select';
+import {DeployLabelComponent} from './deploylabel/component';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {EnvironmentVariablesComponent} from './environmentvariables/component';
+import {MatButton} from '@angular/material/button';
 
 // Label keys for predefined labels
 const APP_LABEL_KEY = 'k8s-app';
@@ -50,7 +72,28 @@ const APP_LABEL_KEY = 'k8s-app';
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    HelpSectionComponent,
+    MatFormField,
+    MatInput,
+    UniqueNameValidator,
+    MatProgressBar,
+    NgClass,
+    MatHint,
+    MatError,
+    UserHelpComponent,
+    ValidImageReferenceValidator,
+    WarnThresholdValidator,
+    PortMappingsComponent,
+    MatSelect,
+    MatOption,
+    DeployLabelComponent,
+    MatCheckbox,
+    EnvironmentVariablesComponent,
+    MatButton,
+  ],
 })
 export class CreateFromFormComponent extends ICanDeactivate implements OnInit {
   showMoreOptions_ = false;

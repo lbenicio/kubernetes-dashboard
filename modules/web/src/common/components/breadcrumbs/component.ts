@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {Component, Inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, Params, Route, Router} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, Params, Route, Router, RouterLink} from '@angular/router';
 import {Breadcrumb, IMessage} from '@api/root.ui';
 import {distinctUntilChanged, filter} from 'rxjs/operators';
 import {MESSAGES_DI_TOKEN} from '../../../index.messages';
@@ -21,6 +21,8 @@ import {POD_DETAIL_ROUTE} from '../../../resource/workloads/pod/routing';
 import {REPLICASET_DETAIL_ROUTE} from '../../../resource/workloads/replicaset/routing';
 import {REPLICATIONCONTROLLER_DETAIL_ROUTE} from '../../../resource/workloads/replicationcontroller/routing';
 import {SEARCH_QUERY_STATE_PARAM} from '../../params/params';
+import {NgClass} from '@angular/common';
+import {MatIcon} from '@angular/material/icon';
 
 export const LOGS_PARENT_PLACEHOLDER = '___LOGS_PARENT_PLACEHOLDER___';
 export const EXEC_PARENT_PLACEHOLDER = '___EXEC_PARENT_PLACEHOLDER___';
@@ -31,7 +33,7 @@ export const SEARCH_BREADCRUMB_PLACEHOLDER = '___SEARCH_BREADCRUMB_PLACEHOLDER__
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [NgClass, RouterLink, MatIcon],
 })
 export class BreadcrumbsComponent implements OnInit {
   breadcrumbs: Breadcrumb[];

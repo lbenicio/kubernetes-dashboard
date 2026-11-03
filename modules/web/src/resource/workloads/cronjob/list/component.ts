@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {CronJobListComponent as CronJobListComponent_1} from '../../../../common/components/resourcelist/cronjob/component';
 
 @Component({
   selector: 'kd-cron-job-list-state',
   template: '<kd-cron-job-list [showMetrics]="true"></kd-cron-job-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [CronJobListComponent_1],
 })
 export class CronJobListComponent {}

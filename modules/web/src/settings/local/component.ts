@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {Component, Inject, OnInit, ViewChild, DOCUMENT, ChangeDetectionStrategy} from '@angular/core';
-import {MatSelect} from '@angular/material/select';
+import {MatSelect, MatOption} from '@angular/material/select';
 import {LocalSettings, Theme} from '@api/root.api';
 import {IConfig, LanguageConfig} from '@api/root.ui';
 import {LocalSettingsService} from '@common/services/global/localsettings';
@@ -21,13 +21,17 @@ import {ThemeService} from '@common/services/global/theme';
 import {environment} from '@environments/environment';
 import {CookieService} from 'ngx-cookie-service';
 import {CONFIG_DI_TOKEN} from '../../index.config';
+import {CardComponent} from '../../common/components/card/component';
+import {SettingsEntryComponent} from '../entry/component';
+import {MatFormField} from '@angular/material/form-field';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'kd-local-settings',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [CardComponent, SettingsEntryComponent, MatFormField, MatSelect, MatOption, FormsModule],
 })
 export class LocalSettingsComponent implements OnInit {
   settings: LocalSettings = {} as LocalSettings;

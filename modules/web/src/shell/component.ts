@@ -35,6 +35,9 @@ import {EndpointManager, Resource, Utility} from '@common/services/resource/endp
 import {NamespacedResourceService} from '@common/services/resource/resource';
 import {UtilityService} from '@common/services/resource/utility';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {CardComponent} from '../common/components/card/component';
+import {MatSelect, MatOption} from '@angular/material/select';
+import {FormsModule} from '@angular/forms';
 
 declare let SockJS: any;
 
@@ -43,7 +46,7 @@ declare let SockJS: any;
   templateUrl: './template.html',
   styleUrls: ['./styles.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [CardComponent, MatSelect, FormsModule, MatOption],
 })
 export class ShellComponent implements AfterViewInit, OnDestroy {
   @ViewChild('anchor', {static: true}) anchorRef: ElementRef;

@@ -13,14 +13,23 @@
 // limitations under the License.
 
 import {Component, Inject, ChangeDetectionStrategy} from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+  MatDialogClose,
+} from '@angular/material/dialog';
 import {ResourceMeta} from '../../services/global/actionbar';
+import {CdkScrollable} from '@angular/cdk/scrolling';
+import {MatIcon} from '@angular/material/icon';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'kd-restart-resource-dialog',
   templateUrl: 'template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatIcon, MatDialogActions, MatButton, MatDialogClose],
 })
 export class RestartResourceDialogComponent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: ResourceMeta) {}

@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {NamespaceListComponent as NamespaceListComponent_1} from '../../../../common/components/resourcelist/namespace/component';
 
 @Component({
   selector: 'kd-namespace-list-view',
   template: '<kd-namespace-list></kd-namespace-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [NamespaceListComponent_1],
 })
 export class NamespaceListComponent {}

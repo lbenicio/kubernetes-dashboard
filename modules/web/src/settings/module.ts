@@ -29,8 +29,10 @@ import {LocalSettingsComponent} from './local/component';
 import {SettingsRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, SettingsRoutingModule],
-  declarations: [
+  imports: [
+    SharedModule,
+    ComponentsModule,
+    SettingsRoutingModule,
     GlobalSettingsComponent,
     LocalSettingsComponent,
     SettingsComponent,

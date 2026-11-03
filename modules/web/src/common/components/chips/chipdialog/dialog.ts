@@ -13,14 +13,32 @@
 // limitations under the License.
 
 import {Component, Inject, ChangeDetectionStrategy} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+  MatDialogClose,
+} from '@angular/material/dialog';
 import {Chip} from '../component';
+import {CdkScrollable} from '@angular/cdk/scrolling';
+import {TextInputComponent} from '../../textinput/component';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'kd-chip-dialog',
   templateUrl: 'template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    MatDialogTitle,
+    CdkScrollable,
+    MatDialogContent,
+    TextInputComponent,
+    MatDialogActions,
+    MatButton,
+    MatDialogClose,
+  ],
 })
 export class ChipDialogComponent {
   constructor(

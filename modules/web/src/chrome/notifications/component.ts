@@ -17,13 +17,19 @@ import {IMessage} from '@api/root.ui';
 
 import {Notification, NotificationsService} from '@common/services/global/notifications';
 import {MESSAGES_DI_TOKEN} from '../../index.messages';
+import {MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
+import {NgClass} from '@angular/common';
+import {DateComponent} from '../../common/components/date/component';
+import {MatDivider} from '@angular/material/divider';
 
 @Component({
   selector: 'kd-notifications',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatIconButton, MatTooltip, MatIcon, NgClass, DateComponent, MatDivider],
 })
 export class NotificationsComponent {
   isOpen_ = false;

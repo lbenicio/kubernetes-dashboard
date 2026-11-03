@@ -18,12 +18,13 @@ import {Component, ElementRef, OnInit, ChangeDetectionStrategy} from '@angular/c
 import {LocalSettingsService} from '@common/services/global/localsettings';
 import {ThemeService} from '@common/services/global/theme';
 import {TitleService} from '@common/services/global/title';
+import {RouterOutlet} from '@angular/router';
 
 @Component({
   selector: 'kd-root',
   template: '<router-outlet></router-outlet>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [RouterOutlet],
 })
 export class RootComponent implements OnInit {
   private _theme = this._themeService.theme;

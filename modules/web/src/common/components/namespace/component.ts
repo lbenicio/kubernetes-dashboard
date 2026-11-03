@@ -25,7 +25,7 @@ import {
 } from '@angular/core';
 import {MatOptionSelectionChange} from '@angular/material/core';
 import {MatDialog} from '@angular/material/dialog';
-import {MatSelect} from '@angular/material/select';
+import {MatSelect, MatOption, MatOptgroup} from '@angular/material/select';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {NamespaceList} from '@api/root.api';
 import {IConfig} from '@api/root.ui';
@@ -43,13 +43,17 @@ import {EndpointManager, Resource} from '../../services/resource/endpoint';
 import {ResourceService} from '../../services/resource/resource';
 import {NamespaceChangeDialogComponent} from './changedialog/dialog';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {MatFormField} from '@angular/material/form-field';
+import {FormsModule} from '@angular/forms';
+import {NgClass} from '@angular/common';
+import {FilterByPipe} from '@common/pipes/filterby';
 
 @Component({
   selector: 'kd-namespace-selector',
   templateUrl: './template.html',
   styleUrls: ['style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatFormField, MatSelect, FormsModule, NgClass, MatOption, MatOptgroup, FilterByPipe],
 })
 export class NamespaceSelectorComponent implements OnInit {
   namespaces: string[] = [];

@@ -30,7 +30,10 @@ import {ProtocolValidator} from './validator/validprotocol.validator';
 import {WarnThresholdValidator} from './validator/warnthreshold.validator';
 
 @NgModule({
-  declarations: [
+  imports: [
+    CommonModule,
+    SharedModule,
+    ComponentsModule,
     HelpSectionComponent,
     UserHelpComponent,
     CreateFromFormComponent,
@@ -44,7 +47,6 @@ import {WarnThresholdValidator} from './validator/warnthreshold.validator';
     DeployLabelComponent,
     WarnThresholdValidator,
   ],
-  imports: [CommonModule, SharedModule, ComponentsModule],
   exports: [CreateFromFormComponent],
 })
 export class CreateFromFormModule {}

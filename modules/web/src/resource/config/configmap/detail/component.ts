@@ -21,12 +21,15 @@ import {NotificationsService} from '@common/services/global/notifications';
 import {EndpointManager, Resource} from '@common/services/resource/endpoint';
 import {NamespacedResourceService} from '@common/services/resource/resource';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ObjectMetaComponent} from '../../../../common/components/objectmeta/component';
+import {CardComponent} from '../../../../common/components/card/component';
+import {TextInputComponent} from '../../../../common/components/textinput/component';
 
 @Component({
   selector: 'kd-config-map-detail',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [ObjectMetaComponent, CardComponent, TextInputComponent],
 })
 export class ConfigMapDetailComponent implements OnInit, OnDestroy {
   private endpoint_ = EndpointManager.resource(Resource.configMap, true);

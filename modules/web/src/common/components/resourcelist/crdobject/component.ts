@@ -14,7 +14,7 @@
 
 import {HttpParams} from '@angular/common/http';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 import {CRDObject, CRDObjectList} from '@api/root.api';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -25,12 +25,52 @@ import {NamespacedResourceService} from '@common/services/resource/resource';
 import {MenuComponent} from '../../list/column/menu/component';
 import {ListGroupIdentifier, ListIdentifier} from '../groupids';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {CardComponent} from '../../card/component';
+import {CardListFilterComponent} from '../../list/filter/component';
+import {LoadingSpinnerComponent} from '../../list/spinner/component';
+import {
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow,
+} from '@angular/material/table';
+import {MatSort} from '@angular/material/sort';
+import {DateComponent} from '../../date/component';
+import {ColumnComponent} from '../../list/column/component';
+import {MatPaginator} from '@angular/material/paginator';
+import {ListZeroStateComponent} from '../../list/zerostate/component';
 
 @Component({
   selector: 'kd-crd-object-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [
+    CardComponent,
+    CardListFilterComponent,
+    LoadingSpinnerComponent,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    RouterLink,
+    DateComponent,
+    ColumnComponent,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    MatPaginator,
+    ListZeroStateComponent,
+  ],
 })
 export class CRDObjectListComponent extends ResourceListBase<CRDObjectList, CRDObject> {
   @Input() endpoint: string;

@@ -168,15 +168,12 @@ describe('IngressDetailComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
+      declarations: [MaxiTestComponent, MiniTestComponent],
+      imports: [
         ObjectMetaComponent,
-        MaxiTestComponent,
-        MiniTestComponent,
         CardComponent,
         PropertyComponent,
         IngressDetailComponent,
-      ],
-      imports: [
         MatCardModule,
         MatDividerModule,
         MatTooltipModule,

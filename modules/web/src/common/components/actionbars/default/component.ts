@@ -15,12 +15,13 @@
 import {Component, DestroyRef, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {ActionbarService, ResourceMeta} from '@common/services/global/actionbar';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ActionbarDetailActionsComponent} from '../../actionbar/detailactions/component';
 
 @Component({
   selector: '',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [ActionbarDetailActionsComponent],
 })
 export class DefaultActionbarComponent implements OnInit {
   isInitialized = false;

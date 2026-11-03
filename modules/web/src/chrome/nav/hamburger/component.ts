@@ -14,12 +14,14 @@
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {NavService} from '@common/services/nav/service';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'kd-nav-hamburger',
   templateUrl: 'template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatIconButton, MatIcon],
 })
 export class HamburgerComponent {
   constructor(private readonly navService_: NavService) {}

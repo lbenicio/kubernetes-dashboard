@@ -13,12 +13,22 @@
 // limitations under the License.
 
 import {Component, DestroyRef, inject, Inject, OnInit, ViewChild, ChangeDetectionStrategy} from '@angular/core';
-import {MatButtonToggleGroup} from '@angular/material/button-toggle';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {MatButtonToggleGroup, MatButtonToggle} from '@angular/material/button-toggle';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+  MatDialogClose,
+} from '@angular/material/dialog';
 import {dump as toYaml, load as fromYaml} from 'js-yaml';
 import {EditorMode} from '@common/components/textinput/component';
 import {AppDeploymentSpec} from '@api/root.api';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {CdkScrollable} from '@angular/cdk/scrolling';
+import {TextInputComponent} from '../../components/textinput/component';
+import {MatButton} from '@angular/material/button';
 
 export interface PreviewDeploymentDialogData {
   spec: AppDeploymentSpec;
@@ -28,7 +38,17 @@ export interface PreviewDeploymentDialogData {
   selector: 'kd-preview-deploy-dialog',
   templateUrl: 'template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    MatDialogTitle,
+    CdkScrollable,
+    MatDialogContent,
+    MatButtonToggleGroup,
+    MatButtonToggle,
+    TextInputComponent,
+    MatDialogActions,
+    MatButton,
+    MatDialogClose,
+  ],
 })
 export class PreviewDeploymentDialogComponent implements OnInit {
   @ViewChild('group', {static: true}) buttonToggleGroup: MatButtonToggleGroup;

@@ -18,12 +18,15 @@ import {ObjectMeta, TypeMeta} from '@api/root.api';
 import {take} from 'rxjs/operators';
 
 import {VerberService} from '@common/services/global/verber';
+import {MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'kd-actionbar-detail-delete',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatIconButton, MatTooltip, MatIcon],
 })
 export class ActionbarDetailDeleteComponent implements OnInit {
   @Input() objectMeta: ObjectMeta;

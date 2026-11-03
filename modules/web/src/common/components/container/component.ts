@@ -18,13 +18,36 @@ import {Status, StatusClass} from '@common/components/resourcelist/statuses';
 import {DecoderService} from '@common/services/global/decoder';
 import {KdStateService} from '@common/services/global/state';
 import isEmpty from 'lodash-es/isEmpty';
+import {CardComponent} from '../card/component';
+import {MatIcon} from '@angular/material/icon';
+import {NgClass} from '@angular/common';
+import {MatTooltip} from '@angular/material/tooltip';
+import {PropertyComponent} from '../property/component';
+import {HiddenPropertyComponent} from '../hiddenproperty/component';
+import {RouterLink} from '@angular/router';
+import {VolumeMountComponent} from '../volumemount/component';
+import {SecurityContextComponent} from '../securitycontext/component';
+import {ProbeComponent} from '../probe/component';
+import {ChipsComponent} from '../chips/component';
 
 @Component({
   selector: 'kd-container-card',
   templateUrl: './template.html',
   styleUrls: ['style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    CardComponent,
+    MatIcon,
+    NgClass,
+    MatTooltip,
+    PropertyComponent,
+    HiddenPropertyComponent,
+    RouterLink,
+    VolumeMountComponent,
+    SecurityContextComponent,
+    ProbeComponent,
+    ChipsComponent,
+  ],
 })
 export class ContainerCardComponent implements OnChanges {
   @Input() container: Container;

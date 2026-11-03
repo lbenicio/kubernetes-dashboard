@@ -13,18 +13,11 @@
 // limitations under the License.
 
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {Component, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
-import {MatCardModule} from '@angular/material/card';
-import {MatDividerModule} from '@angular/material/divider';
-import {MatIconModule} from '@angular/material/icon';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {AppConfig, CronJobList, DaemonSetList, PodList} from '@api/root.api';
 
-import {CardComponent} from '@common/components/card/component';
 import {ListGroupIdentifier, ListIdentifier} from '@common/components/resourcelist/groupids';
-import {emptyResourcesRatio, WorkloadStatusComponent} from '@common/components/workloadstatus/component';
+import {emptyResourcesRatio} from '@common/components/workloadstatus/component';
 import {ConfigService} from '@common/services/global/config';
 import {NotificationsService} from '@common/services/global/notifications';
 
@@ -55,27 +48,16 @@ const mockCronJobsData: CronJobList = {
   errors: [],
 };
 
-@Component({selector: 'kd-daemon-set-list', template: '', standalone: false})
-class MockDaemonSetListComponent {}
-
 describe('OverviewComponent', () => {
   let httpMock: HttpTestingController;
   let configService: ConfigService;
   let testHostFixture: ComponentFixture<OverviewComponent>;
 
   beforeEach(waitForAsync(() => {
+    TestBed.overrideComponent(OverviewComponent, {set: {imports: [], template: ''}});
     TestBed.configureTestingModule({
-      declarations: [CardComponent, OverviewComponent, MockDaemonSetListComponent, WorkloadStatusComponent],
-      imports: [
-        MatIconModule,
-        MatCardModule,
-        MatDividerModule,
-        MatTooltipModule,
-        NoopAnimationsModule,
-        HttpClientTestingModule,
-      ],
+      imports: [OverviewComponent, HttpClientTestingModule],
       providers: [ConfigService, NotificationsService],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
     httpMock = TestBed.inject(HttpTestingController);
     configService = TestBed.inject(ConfigService);

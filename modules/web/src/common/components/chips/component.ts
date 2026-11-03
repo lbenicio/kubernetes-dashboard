@@ -21,6 +21,8 @@ import {GlobalSettingsService} from '../../services/global/globalsettings';
 import {ChipDialogComponent} from './chipdialog/dialog';
 import {cropUrl} from './crop-url';
 import {KdStateService} from '@common/services/global/state';
+import {MatChipSet, MatChip} from '@angular/material/chips';
+import {RouterLink} from '@angular/router';
 
 export interface Chip {
   key: string;
@@ -34,7 +36,7 @@ const MAX_CHIP_VALUE_LENGTH = 63;
   styleUrls: ['./style.scss'],
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [MatChipSet, MatChip, RouterLink],
 })
 export class ChipsComponent implements OnInit, OnChanges {
   @Input() map: StringMap | string[] | number[];

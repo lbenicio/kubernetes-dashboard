@@ -13,13 +13,21 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
-import {MatDialogRef} from '@angular/material/dialog';
+import {
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+  MatDialogClose,
+} from '@angular/material/dialog';
+import {CdkScrollable} from '@angular/cdk/scrolling';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'kd-settings-save-anyway-dialog',
   templateUrl: 'template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatDialogActions, MatButton, MatDialogClose],
 })
 export class SaveAnywayDialogComponent {
   constructor(public dialogRef: MatDialogRef<SaveAnywayDialogComponent>) {}

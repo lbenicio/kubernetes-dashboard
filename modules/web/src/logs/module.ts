@@ -22,7 +22,6 @@ import {LogsComponent} from './component';
 import {LogsRoutingModule} from './routing';
 
 @NgModule({
-  imports: [CommonModule, SharedModule, ComponentsModule, LogsRoutingModule],
-  declarations: [LogsComponent],
+  imports: [CommonModule, SharedModule, ComponentsModule, LogsRoutingModule, LogsComponent],
 })
 export class LogsModule {}

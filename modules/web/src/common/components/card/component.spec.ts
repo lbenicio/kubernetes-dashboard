@@ -57,8 +57,8 @@ describe('CardComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [CardComponent, TestComponent],
-      imports: [MatIconModule, MatCardModule, MatDividerModule, MatTooltipModule, NoopAnimationsModule],
+      declarations: [TestComponent],
+      imports: [CardComponent, MatIconModule, MatCardModule, MatDividerModule, MatTooltipModule, NoopAnimationsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [{provide: MESSAGES_DI_TOKEN, useValue: MESSAGES}],
     }).compileComponents();

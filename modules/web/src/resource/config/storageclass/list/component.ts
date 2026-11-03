@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {StorageClassListComponent as StorageClassListComponent_1} from '../../../../common/components/resourcelist/storageclass/component';
 
 @Component({
   selector: 'kd-storage-class-list-state',
   template: '<kd-storage-class-list></kd-storage-class-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [StorageClassListComponent_1],
 })
 export class StorageClassListComponent {}

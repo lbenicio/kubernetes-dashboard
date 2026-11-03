@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {ClusterRoleListComponent as ClusterRoleListComponent_1} from '../../../../common/components/resourcelist/clusterrole/component';
 
 @Component({
   selector: 'kd-cluster-role-list-state',
   template: '<kd-cluster-role-list></kd-cluster-role-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [ClusterRoleListComponent_1],
 })
 export class ClusterRoleListComponent {}

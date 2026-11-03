@@ -14,17 +14,41 @@
 
 import {HttpClient} from '@angular/common/http';
 import {Component, Inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+  MatDialogClose,
+} from '@angular/material/dialog';
 import {ReplicaCounts} from '@api/root.api';
 
 import {ResourceMeta} from '../../services/global/actionbar';
 import {firstValueFrom} from 'rxjs';
+import {CdkScrollable} from '@angular/cdk/scrolling';
+import {MatFormField} from '@angular/material/form-field';
+import {FormsModule} from '@angular/forms';
+import {MatInput} from '@angular/material/input';
+import {MatIcon} from '@angular/material/icon';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'kd-delete-resource-dialog',
   templateUrl: 'template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    MatDialogTitle,
+    CdkScrollable,
+    MatDialogContent,
+    MatFormField,
+    FormsModule,
+    MatInput,
+    MatIcon,
+    MatDialogActions,
+    MatButton,
+    MatDialogClose,
+  ],
 })
 export class ScaleResourceDialogComponent implements OnInit {
   actual = 0;

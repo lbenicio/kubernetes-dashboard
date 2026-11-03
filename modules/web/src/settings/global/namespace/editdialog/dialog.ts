@@ -13,7 +13,18 @@
 // limitations under the License.
 
 import {Component, Inject, ChangeDetectionStrategy} from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+  MatDialogClose,
+} from '@angular/material/dialog';
+import {CdkScrollable} from '@angular/cdk/scrolling';
+import {MatList, MatListItem} from '@angular/material/list';
+import {MatIconButton, MatButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {MatDivider} from '@angular/material/divider';
 
 export interface EditFallbackNamespaceDialogData {
   namespaces: string[];
@@ -23,7 +34,19 @@ export interface EditFallbackNamespaceDialogData {
   selector: 'kd-namespace-settings-edit-dialog',
   templateUrl: 'template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    MatDialogTitle,
+    CdkScrollable,
+    MatDialogContent,
+    MatList,
+    MatListItem,
+    MatIconButton,
+    MatIcon,
+    MatDivider,
+    MatDialogActions,
+    MatButton,
+    MatDialogClose,
+  ],
 })
 export class EditFallbackNamespaceDialogComponent {
   namespaces: string[] = [];

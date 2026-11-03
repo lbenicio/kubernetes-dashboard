@@ -14,11 +14,12 @@
 
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Sparkline} from '../sparkline';
+import {CoreFormatter} from '../../../pipes/coreformatter';
 
 @Component({
   selector: 'kd-cpu-sparkline',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [CoreFormatter],
 })
 export class CpuSparklineComponent extends Sparkline {}

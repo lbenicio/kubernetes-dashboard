@@ -13,13 +13,14 @@
 // limitations under the License.
 
 import {Component, ContentChild, TemplateRef, ChangeDetectionStrategy} from '@angular/core';
+import {NgTemplateOutlet} from '@angular/common';
 
 @Component({
   selector: 'kd-list-zero-state',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [NgTemplateOutlet],
 })
 export class ListZeroStateComponent {
   @ContentChild('textTemplate', {read: TemplateRef}) textTemplate: TemplateRef<any>;

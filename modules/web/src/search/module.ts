@@ -21,7 +21,6 @@ import {SearchComponent} from './component';
 import {SearchRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, SearchRoutingModule],
-  declarations: [SearchComponent],
+  imports: [SharedModule, ComponentsModule, SearchRoutingModule, SearchComponent],
 })
 export class SearchModule {}

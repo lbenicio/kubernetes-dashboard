@@ -18,7 +18,6 @@ import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
   selector: 'kd-settings-entry',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
 })
 export class SettingsEntryComponent {
   @Input() key: string;

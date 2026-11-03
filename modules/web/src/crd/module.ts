@@ -23,7 +23,13 @@ import {CRDListComponent} from './list/component';
 import {CRDObjectDetailComponent} from './crdobject/component';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, CRDRoutingModule],
-  declarations: [CRDListComponent, CRDDetailComponent, CRDObjectDetailComponent],
+  imports: [
+    SharedModule,
+    ComponentsModule,
+    CRDRoutingModule,
+    CRDListComponent,
+    CRDDetailComponent,
+    CRDObjectDetailComponent,
+  ],
 })
 export class CrdModule {}

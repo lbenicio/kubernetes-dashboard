@@ -15,13 +15,29 @@
 import {Component, Inject, Input, ChangeDetectionStrategy} from '@angular/core';
 import {IMessage} from '@api/root.ui';
 import {MESSAGES_DI_TOKEN} from '../../../index.messages';
+import {MatCard, MatCardTitle, MatCardContent, MatCardFooter} from '@angular/material/card';
+import {NgClass} from '@angular/common';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'kd-card',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    MatCard,
+    NgClass,
+    MatCardTitle,
+    MatIconButton,
+    MatIcon,
+    MatTooltip,
+    MatCardContent,
+    MatProgressSpinner,
+    MatCardFooter,
+  ],
 })
 export class CardComponent {
   @Input() initialized = true;

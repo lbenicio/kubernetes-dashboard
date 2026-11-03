@@ -14,12 +14,15 @@
 
 import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {PodInfo} from '@api/root.api';
+import {CardComponent} from '../card/component';
+import {PropertyComponent} from '../property/component';
+import {NgClass} from '@angular/common';
 
 @Component({
   selector: 'kd-pod-status-card',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [CardComponent, PropertyComponent, NgClass],
 })
 export class PodStatusCardComponent {
   @Input() podInfo: PodInfo;

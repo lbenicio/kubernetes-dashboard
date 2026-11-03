@@ -21,12 +21,17 @@ import {NotificationsService} from '@common/services/global/notifications';
 import {EndpointManager, Resource} from '@common/services/resource/endpoint';
 import {NamespacedResourceService} from '@common/services/resource/resource';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ObjectMetaComponent} from '../../../../common/components/objectmeta/component';
+import {CardComponent} from '../../../../common/components/card/component';
+import {PropertyComponent} from '../../../../common/components/property/component';
+import {JobListComponent} from '../../../../common/components/resourcelist/job/component';
+import {EventListComponent} from '../../../../common/components/resourcelist/event/component';
 
 @Component({
   selector: 'kd-cron-job-detail',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [ObjectMetaComponent, CardComponent, PropertyComponent, JobListComponent, EventListComponent],
 })
 export class CronJobDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.cronJob, true);

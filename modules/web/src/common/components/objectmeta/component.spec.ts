@@ -57,8 +57,11 @@ describe('ObjectMetaComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ObjectMetaComponent, TestComponent, CardComponent, PropertyComponent],
+      declarations: [TestComponent],
       imports: [
+        ObjectMetaComponent,
+        CardComponent,
+        PropertyComponent,
         MatIconModule,
         MatCardModule,
         MatDividerModule,

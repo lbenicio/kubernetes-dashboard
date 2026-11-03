@@ -23,12 +23,16 @@ import {NotificationsService} from '@common/services/global/notifications';
 import {EndpointManager, Resource} from '@common/services/resource/endpoint';
 import {NamespacedResourceService} from '@common/services/resource/resource';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ObjectMetaComponent} from '../../../../common/components/objectmeta/component';
+import {CardComponent} from '../../../../common/components/card/component';
+import {HiddenPropertyComponent} from '../../../../common/components/hiddenproperty/component';
+import {SecretDetailEditComponent} from './edit/component';
 
 @Component({
   selector: 'kd-secret-detail',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [ObjectMetaComponent, CardComponent, HiddenPropertyComponent, SecretDetailEditComponent],
 })
 export class SecretDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.secret, true);

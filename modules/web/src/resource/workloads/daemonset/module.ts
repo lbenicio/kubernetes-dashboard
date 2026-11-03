@@ -23,7 +23,13 @@ import {DaemonSetListComponent} from './list/component';
 import {DaemonSetRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, DaemonSetRoutingModule],
-  declarations: [DaemonSetListComponent, DaemonSetDetailComponent, ActionbarComponent],
+  imports: [
+    SharedModule,
+    ComponentsModule,
+    DaemonSetRoutingModule,
+    DaemonSetListComponent,
+    DaemonSetDetailComponent,
+    ActionbarComponent,
+  ],
 })
 export class DaemonSetModule {}

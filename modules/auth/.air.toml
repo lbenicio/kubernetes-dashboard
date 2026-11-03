@@ -18,7 +18,7 @@ tmp_dir = ".tmp"
 
 [build]
   cmd = "go build -o .tmp/dashboard-auth ."
-  bin = ".tmp/dashboard-auth"
+  entrypoint = ".tmp/dashboard-auth"
   delay = 2000
   exclude_unchanged = false
   include_dir = ["pkg", "api", "../common"]

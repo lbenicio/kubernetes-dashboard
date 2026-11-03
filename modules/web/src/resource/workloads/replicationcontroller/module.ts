@@ -21,7 +21,12 @@ import {ReplicationControllerListComponent} from './list/component';
 import {ReplicationControllerRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, ReplicationControllerRoutingModule],
-  declarations: [ReplicationControllerListComponent, ReplicationControllerDetailComponent],
+  imports: [
+    SharedModule,
+    ComponentsModule,
+    ReplicationControllerRoutingModule,
+    ReplicationControllerListComponent,
+    ReplicationControllerDetailComponent,
+  ],
 })
 export class ReplicationControllerModule {}

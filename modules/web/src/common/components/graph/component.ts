@@ -19,6 +19,8 @@ import {curveMonotoneX} from 'd3-shape';
 import {timeFormat} from 'd3-time-format';
 
 import {FormattedValue} from './helper';
+import {AreaChartModule} from '@swimlane/ngx-charts';
+import {IsVisibleDirective} from '../../directives/isvisible/directive';
 
 export enum GraphType {
   CPU = 'cpu',
@@ -36,7 +38,7 @@ enum TimeScale {
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [AreaChartModule, IsVisibleDirective],
 })
 export class GraphComponent implements OnInit, OnChanges {
   @Input() metric: Metric;

@@ -16,12 +16,16 @@ import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 
 import {ResourceMeta} from '@common/services/global/actionbar';
 import {KdStateService} from '@common/services/global/state';
+import {MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {RouterLink} from '@angular/router';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'kd-actionbar-detail-logs',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatIconButton, MatTooltip, RouterLink, MatIcon],
 })
 export class ActionbarDetailLogsComponent {
   @Input() resourceMeta: ResourceMeta;

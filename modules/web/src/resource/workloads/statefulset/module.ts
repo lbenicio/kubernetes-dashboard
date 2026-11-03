@@ -21,7 +21,12 @@ import {StatefulSetListComponent} from './list/component';
 import {StatefulSetRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, StatefulSetRoutingModule],
-  declarations: [StatefulSetListComponent, StatefulSetDetailComponent],
+  imports: [
+    SharedModule,
+    ComponentsModule,
+    StatefulSetRoutingModule,
+    StatefulSetListComponent,
+    StatefulSetDetailComponent,
+  ],
 })
 export class StatefulSetModule {}

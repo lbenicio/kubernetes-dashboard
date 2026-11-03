@@ -19,6 +19,5 @@ import {Component, ChangeDetectionStrategy} from '@angular/core';
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
 })
 export class UserHelpComponent {}

@@ -23,8 +23,14 @@ import {
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import {EnvironmentVariable} from '@api/root.api';
+import {MatFormField, MatError} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'kd-environment-variables',
@@ -42,7 +48,7 @@ import {EnvironmentVariable} from '@api/root.api';
     },
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatError, MatIconButton, MatIcon],
 })
 export class EnvironmentVariablesComponent implements OnInit, ControlValueAccessor {
   form: UntypedFormGroup;

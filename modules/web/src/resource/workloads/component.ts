@@ -16,12 +16,33 @@ import {Component, ChangeDetectionStrategy} from '@angular/core';
 
 import {ListGroupIdentifier} from '@common/components/resourcelist/groupids';
 import {GroupedResourceList} from '@common/resources/groupedlist';
+import {WorkloadStatusComponent} from '../../common/components/workloadstatus/component';
+import {CronJobListComponent} from '../../common/components/resourcelist/cronjob/component';
+import {DaemonSetListComponent} from '../../common/components/resourcelist/daemonset/component';
+import {DeploymentListComponent} from '../../common/components/resourcelist/deployment/component';
+import {JobListComponent} from '../../common/components/resourcelist/job/component';
+import {PodListComponent} from '../../common/components/resourcelist/pod/component';
+import {ReplicaSetListComponent} from '../../common/components/resourcelist/replicaset/component';
+import {ReplicationControllerListComponent} from '../../common/components/resourcelist/replicationcontroller/component';
+import {StatefulSetListComponent} from '../../common/components/resourcelist/statefulset/component';
+import {ZeroStateComponent} from '../../common/components/zerostate/component';
 
 @Component({
   selector: 'kd-workloads',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    WorkloadStatusComponent,
+    CronJobListComponent,
+    DaemonSetListComponent,
+    DeploymentListComponent,
+    JobListComponent,
+    PodListComponent,
+    ReplicaSetListComponent,
+    ReplicationControllerListComponent,
+    StatefulSetListComponent,
+    ZeroStateComponent,
+  ],
 })
 export class WorkloadsComponent extends GroupedResourceList {
   hasWorkloads(): boolean {

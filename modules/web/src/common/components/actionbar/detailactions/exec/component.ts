@@ -15,12 +15,16 @@
 import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {ObjectMeta} from '@api/root.api';
 import {KdStateService} from '@common/services/global/state';
+import {MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {RouterLink} from '@angular/router';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'kd-actionbar-detail-exec',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatIconButton, MatTooltip, RouterLink, MatIcon],
 })
 export class ActionbarDetailExecComponent {
   @Input() objectMeta: ObjectMeta;

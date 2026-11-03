@@ -18,12 +18,16 @@ import {Router} from '@angular/router';
 import {NAMESPACE_STATE_PARAM} from '@common/params/params';
 import {ActionbarService, ResourceMeta} from '@common/services/global/actionbar';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
+import {ActionbarDetailActionsComponent} from '../../../../../common/components/actionbar/detailactions/component';
 
 @Component({
   selector: '',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatIconButton, MatTooltip, MatIcon, ActionbarDetailActionsComponent],
 })
 export class ActionbarComponent implements OnInit {
   isInitialized = false;

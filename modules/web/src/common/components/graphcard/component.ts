@@ -15,13 +15,14 @@
 import {Component, Input, OnChanges, ChangeDetectionStrategy} from '@angular/core';
 import type {SimpleChanges} from '@angular/core';
 import {Metric} from '@api/root.api';
-import {GraphType} from '../graph/component';
+import {GraphType, GraphComponent} from '../graph/component';
+import {CardComponent} from '../card/component';
 
 @Component({
   selector: 'kd-graph-card',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [CardComponent, GraphComponent],
 })
 export class GraphCardComponent implements OnChanges {
   @Input() graphTitle: string;

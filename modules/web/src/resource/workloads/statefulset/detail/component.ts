@@ -21,12 +21,27 @@ import {NotificationsService} from '@common/services/global/notifications';
 import {EndpointManager, Resource} from '@common/services/resource/endpoint';
 import {NamespacedResourceService} from '@common/services/resource/resource';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ObjectMetaComponent} from '../../../../common/components/objectmeta/component';
+import {CardComponent} from '../../../../common/components/card/component';
+import {PropertyComponent} from '../../../../common/components/property/component';
+import {ChipsComponent} from '../../../../common/components/chips/component';
+import {PodStatusCardComponent} from '../../../../common/components/podstatus/component';
+import {PodListComponent} from '../../../../common/components/resourcelist/pod/component';
+import {EventListComponent} from '../../../../common/components/resourcelist/event/component';
 
 @Component({
   selector: 'kd-stateful-set-detail',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    ObjectMetaComponent,
+    CardComponent,
+    PropertyComponent,
+    ChipsComponent,
+    PodStatusCardComponent,
+    PodListComponent,
+    EventListComponent,
+  ],
 })
 export class StatefulSetDetailComponent implements OnInit, OnDestroy {
   private readonly endpoint_ = EndpointManager.resource(Resource.statefulSet, true);

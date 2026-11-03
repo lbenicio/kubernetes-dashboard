@@ -22,7 +22,12 @@ import {NetworkPolicyListComponent} from './list/component';
 import {NetworkPolicyRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, NetworkPolicyRoutingModule],
-  declarations: [NetworkPolicyListComponent, NetworkPolicyDetailComponent],
+  imports: [
+    SharedModule,
+    ComponentsModule,
+    NetworkPolicyRoutingModule,
+    NetworkPolicyListComponent,
+    NetworkPolicyDetailComponent,
+  ],
 })
 export class NetworkPolicyModule {}

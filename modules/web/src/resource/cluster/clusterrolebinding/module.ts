@@ -22,7 +22,12 @@ import {ClusterRoleBindingListComponent} from './list/component';
 import {ClusterRoleBindingRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, ClusterRoleBindingRoutingModule],
-  declarations: [ClusterRoleBindingListComponent, ClusterRoleBindingDetailComponent],
+  imports: [
+    SharedModule,
+    ComponentsModule,
+    ClusterRoleBindingRoutingModule,
+    ClusterRoleBindingListComponent,
+    ClusterRoleBindingDetailComponent,
+  ],
 })
 export class ClusterRoleBindingModule {}

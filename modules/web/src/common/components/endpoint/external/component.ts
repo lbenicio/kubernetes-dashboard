@@ -14,6 +14,7 @@
 
 import {Component, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {Endpoint} from '@api/root.api';
+import {MatIcon} from '@angular/material/icon';
 
 /**
  * Component definition object for the component that displays the endpoints which are accessible
@@ -24,7 +25,7 @@ import {Endpoint} from '@api/root.api';
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatIcon],
 })
 export class ExternalEndpointComponent implements OnInit {
   @Input() endpoints: Endpoint[];

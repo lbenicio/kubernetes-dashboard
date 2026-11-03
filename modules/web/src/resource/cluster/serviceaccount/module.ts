@@ -22,7 +22,12 @@ import {ServiceAccountListComponent} from './list/component';
 import {ServiceAccountRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, ServiceAccountRoutingModule],
-  declarations: [ServiceAccountListComponent, ServiceAccountDetailComponent],
+  imports: [
+    SharedModule,
+    ComponentsModule,
+    ServiceAccountRoutingModule,
+    ServiceAccountListComponent,
+    ServiceAccountDetailComponent,
+  ],
 })
 export class ServiceAccountModule {}

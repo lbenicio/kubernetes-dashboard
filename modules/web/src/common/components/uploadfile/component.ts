@@ -15,14 +15,19 @@
 import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {HTMLInputEvent, KdFile} from '@api/root.ui';
-import {AlertDialogComponent, AlertDialogConfig} from 'common/dialogs/alert/dialog';
+import {AlertDialogComponent, AlertDialogConfig} from '@common/dialogs/alert/dialog';
+import {MatFormField} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {FormsModule} from '@angular/forms';
+import {MatButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'kd-upload-file',
   templateUrl: 'template.html',
   styleUrls: ['style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatFormField, MatInput, FormsModule, MatButton, MatIcon],
 })
 export class UploadFileComponent {
   @Input() label: string;

@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {EventListComponent as EventListComponent_1} from '../../../../common/components/resourcelist/event/component';
 
 @Component({
   selector: 'kd-event-list-state',
   template: '<kd-event-list></kd-event-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [EventListComponent_1],
 })
 export class EventListComponent {}

@@ -22,7 +22,6 @@ import {ServiceListComponent} from './list/component';
 import {ServiceRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, ServiceRoutingModule],
-  declarations: [ServiceListComponent, ServiceDetailComponent],
+  imports: [SharedModule, ComponentsModule, ServiceRoutingModule, ServiceListComponent, ServiceDetailComponent],
 })
 export class ServiceModule {}

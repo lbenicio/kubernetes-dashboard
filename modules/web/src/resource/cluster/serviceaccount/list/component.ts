@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {ServiceAccountListComponent as ServiceAccountListComponent_1} from '../../../../common/components/resourcelist/serviceaccount/component';
 
 @Component({
   selector: 'kd-service-account-list-state',
   template: '<kd-service-account-list></kd-service-account-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [ServiceAccountListComponent_1],
 })
 export class ServiceAccountListComponent {}

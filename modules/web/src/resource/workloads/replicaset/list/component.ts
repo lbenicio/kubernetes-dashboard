@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {ReplicaSetListComponent as ReplicaSetListComponent_1} from '../../../../common/components/resourcelist/replicaset/component';
 
 @Component({
   selector: 'kd-replica-set-list-state',
   template: '<kd-replica-set-list [showMetrics]="true"></kd-replica-set-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [ReplicaSetListComponent_1],
 })
 export class ReplicaSetListComponent {}

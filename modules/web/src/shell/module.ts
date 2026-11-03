@@ -22,7 +22,6 @@ import {ShellComponent} from './component';
 import {ShellRoutingModule} from './routing';
 
 @NgModule({
-  imports: [CommonModule, SharedModule, ComponentsModule, ShellRoutingModule],
-  declarations: [ShellComponent],
+  imports: [CommonModule, SharedModule, ComponentsModule, ShellRoutingModule, ShellComponent],
 })
 export class ShellModule {}

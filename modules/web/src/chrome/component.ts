@@ -14,11 +14,26 @@
 
 import {HttpClient} from '@angular/common/http';
 import {Component, Inject, OnInit, DOCUMENT, ChangeDetectionStrategy} from '@angular/core';
-import {Router} from '@angular/router';
+import {Router, RouterLink, RouterOutlet} from '@angular/router';
 import {firstValueFrom} from 'rxjs';
 
 import {AssetsService} from '@common/services/global/assets';
 import {GlobalSettingsService} from '@common/services/global/globalsettings';
+import {MatToolbar} from '@angular/material/toolbar';
+import {MatIcon} from '@angular/material/icon';
+import {NamespaceSelectorComponent} from '../common/components/namespace/component';
+import {SearchComponent} from './search/component';
+import {MatIconButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {NotificationsComponent} from './notifications/component';
+import {UserPanelComponent} from './userpanel/component';
+import {HamburgerComponent} from './nav/hamburger/component';
+import {BreadcrumbsComponent} from '../common/components/breadcrumbs/component';
+import {ActionbarComponent} from '../common/components/actionbar/component';
+import {NgClass} from '@angular/common';
+import {NavComponent} from './nav/component';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
+import {FooterComponent} from './footer/component';
 
 class SystemBanner {
   message: string;
@@ -30,7 +45,25 @@ class SystemBanner {
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    MatToolbar,
+    RouterLink,
+    MatIcon,
+    NamespaceSelectorComponent,
+    SearchComponent,
+    MatIconButton,
+    MatTooltip,
+    NotificationsComponent,
+    UserPanelComponent,
+    HamburgerComponent,
+    BreadcrumbsComponent,
+    ActionbarComponent,
+    NgClass,
+    NavComponent,
+    MatProgressSpinner,
+    RouterOutlet,
+    FooterComponent,
+  ],
 })
 export class ChromeComponent implements OnInit {
   private static readonly systemBannerEndpoint = 'systembanner';

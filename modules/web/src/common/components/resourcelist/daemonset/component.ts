@@ -24,12 +24,66 @@ import {NamespacedResourceService} from '@common/services/resource/resource';
 import {MenuComponent} from '../../list/column/menu/component';
 import {ListGroupIdentifier, ListIdentifier} from '../groupids';
 import {Status} from '../statuses';
+import {GraphMetricsComponent} from '../../graphmetrics/component';
+import {CardComponent} from '../../card/component';
+import {CardListFilterComponent} from '../../list/filter/component';
+import {LoadingSpinnerComponent} from '../../list/spinner/component';
+import {
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow,
+} from '@angular/material/table';
+import {MatSort, MatSortHeader} from '@angular/material/sort';
+import {MatIcon} from '@angular/material/icon';
+import {NgClass} from '@angular/common';
+import {MatTooltip} from '@angular/material/tooltip';
+import {RowDetailComponent} from '../../list/rowdetail/component';
+import {RouterLink} from '@angular/router';
+import {ChipsComponent} from '../../chips/component';
+import {DateComponent} from '../../date/component';
+import {ColumnComponent} from '../../list/column/component';
+import {MatPaginator} from '@angular/material/paginator';
+import {ListZeroStateComponent} from '../../list/zerostate/component';
 
 @Component({
   selector: 'kd-daemon-set-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [
+    GraphMetricsComponent,
+    CardComponent,
+    CardListFilterComponent,
+    LoadingSpinnerComponent,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    MatIcon,
+    NgClass,
+    MatTooltip,
+    RowDetailComponent,
+    MatSortHeader,
+    RouterLink,
+    ChipsComponent,
+    DateComponent,
+    ColumnComponent,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    MatPaginator,
+    ListZeroStateComponent,
+  ],
 })
 export class DaemonSetListComponent extends ResourceListWithStatuses<DaemonSetList, DaemonSet> {
   @Input() endpoint = EndpointManager.resource(Resource.daemonSet, true).list();

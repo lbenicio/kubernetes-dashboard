@@ -21,7 +21,6 @@ import {CronJobListComponent} from './list/component';
 import {CronJobRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, CronJobRoutingModule],
-  declarations: [CronJobListComponent, CronJobDetailComponent],
+  imports: [SharedModule, ComponentsModule, CronJobRoutingModule, CronJobListComponent, CronJobDetailComponent],
 })
 export class CronJobModule {}

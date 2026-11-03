@@ -20,13 +20,15 @@ import {NAMESPACE_STATE_PARAM} from '@common/params/params';
 import {CreateService} from '@common/services/create/service';
 import {HistoryService} from '@common/services/global/history';
 import {NamespaceService} from '@common/services/global/namespace';
+import {TextInputComponent} from '../../../common/components/textinput/component';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'kd-create-from-input',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [TextInputComponent, MatButton],
 })
 export class CreateFromInputComponent extends ICanDeactivate {
   inputData = '';

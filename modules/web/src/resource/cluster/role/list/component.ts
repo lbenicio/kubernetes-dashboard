@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {RoleListComponent as RoleListComponent_1} from '../../../../common/components/resourcelist/role/component';
 
 @Component({
   selector: 'kd-role-list-state',
   template: '<kd-role-list></kd-role-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [RoleListComponent_1],
 })
 export class RoleListComponent {}

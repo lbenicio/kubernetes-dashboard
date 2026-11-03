@@ -21,7 +21,6 @@ import {OverviewComponent} from './component';
 import {OverviewRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, OverviewRoutingModule],
-  declarations: [OverviewComponent],
+  imports: [SharedModule, ComponentsModule, OverviewRoutingModule, OverviewComponent],
 })
 export class OverviewModule {}

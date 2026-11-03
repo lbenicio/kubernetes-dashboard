@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {JobListComponent as JobListComponent_1} from '../../../../common/components/resourcelist/job/component';
 
 @Component({
   selector: 'kd-job-list-state',
   template: '<kd-job-list [showMetrics]="true"></kd-job-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [JobListComponent_1],
 })
 export class JobListComponent {}

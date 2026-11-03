@@ -14,12 +14,22 @@
 
 import {HttpClient, HttpEventType, HttpParams, HttpRequest, HttpResponse} from '@angular/common/http';
 import {Component, DestroyRef, inject, Inject, ChangeDetectionStrategy} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
 import {LogOptions} from '@api/root.api';
 
 import {LogService} from '../../services/global/logs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {saveBlob} from './save';
+import {CdkScrollable} from '@angular/cdk/scrolling';
+import {MatProgressBar} from '@angular/material/progress-bar';
+import {MatButton} from '@angular/material/button';
+import {MemoryFormatter} from '../../pipes/memoryformatter';
 
 export interface LogsDownloadDialogMeta {
   pod: string;
@@ -32,7 +42,15 @@ export interface LogsDownloadDialogMeta {
   templateUrl: 'template.html',
   styleUrls: ['style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    MatDialogTitle,
+    CdkScrollable,
+    MatDialogContent,
+    MatProgressBar,
+    MatDialogActions,
+    MatButton,
+    MemoryFormatter,
+  ],
 })
 export class LogsDownloadDialogComponent {
   loaded = 0;

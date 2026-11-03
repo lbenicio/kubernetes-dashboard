@@ -16,13 +16,17 @@ import {Component, DestroyRef, EventEmitter, inject, OnInit, ChangeDetectionStra
 import {ReplaySubject, Subject} from 'rxjs';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {AutofocusDirective} from '../../../directives/autofocus/directive';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {MatTooltip} from '@angular/material/tooltip';
 
 @Component({
   selector: 'kd-card-list-filter',
   templateUrl: './template.html',
   styleUrls: ['style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [AutofocusDirective, MatIconButton, MatIcon, MatTooltip],
 })
 export class CardListFilterComponent implements OnInit {
   query = '';

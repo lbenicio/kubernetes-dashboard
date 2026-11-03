@@ -22,7 +22,6 @@ import {EventListComponent} from './list/component';
 import {EventRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, EventRoutingModule],
-  declarations: [EventListComponent /* , EventDetailComponent */],
+  imports: [SharedModule, ComponentsModule, EventRoutingModule, EventListComponent /* , EventDetailComponent */],
 })
 export class EventModule {}

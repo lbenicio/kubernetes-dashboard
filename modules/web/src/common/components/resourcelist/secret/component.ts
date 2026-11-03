@@ -22,12 +22,56 @@ import {EndpointManager, Resource} from '@common/services/resource/endpoint';
 import {NamespacedResourceService} from '@common/services/resource/resource';
 import {MenuComponent} from '../../list/column/menu/component';
 import {ListGroupIdentifier, ListIdentifier} from '../groupids';
+import {CardComponent} from '../../card/component';
+import {CardListFilterComponent} from '../../list/filter/component';
+import {LoadingSpinnerComponent} from '../../list/spinner/component';
+import {
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow,
+} from '@angular/material/table';
+import {MatSort, MatSortHeader} from '@angular/material/sort';
+import {RouterLink} from '@angular/router';
+import {ChipsComponent} from '../../chips/component';
+import {DateComponent} from '../../date/component';
+import {ColumnComponent} from '../../list/column/component';
+import {MatPaginator} from '@angular/material/paginator';
+import {ListZeroStateComponent} from '../../list/zerostate/component';
 
 @Component({
   selector: 'kd-secret-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [
+    CardComponent,
+    CardListFilterComponent,
+    LoadingSpinnerComponent,
+    MatTable,
+    MatSort,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatSortHeader,
+    MatCellDef,
+    MatCell,
+    RouterLink,
+    ChipsComponent,
+    DateComponent,
+    ColumnComponent,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    MatPaginator,
+    ListZeroStateComponent,
+  ],
 })
 export class SecretListComponent extends ResourceListBase<SecretList, Secret> {
   @Input() title = 'Secrets';

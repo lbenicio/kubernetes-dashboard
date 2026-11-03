@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {NodeListComponent as NodeListComponent_1} from '../../../../common/components/resourcelist/node/component';
 
 @Component({
   selector: 'kd-node-list-state',
   template: '<kd-node-list [showMetrics]="true"></kd-node-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [NodeListComponent_1],
 })
 export class NodeListComponent {}

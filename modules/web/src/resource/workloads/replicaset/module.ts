@@ -21,7 +21,12 @@ import {ReplicaSetListComponent} from './list/component';
 import {ReplicaSetRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, ReplicaSetRoutingModule],
-  declarations: [ReplicaSetListComponent, ReplicaSetDetailComponent],
+  imports: [
+    SharedModule,
+    ComponentsModule,
+    ReplicaSetRoutingModule,
+    ReplicaSetListComponent,
+    ReplicaSetDetailComponent,
+  ],
 })
 export class ReplicaSetModule {}

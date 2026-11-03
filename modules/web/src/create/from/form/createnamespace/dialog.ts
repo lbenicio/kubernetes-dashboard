@@ -14,13 +14,33 @@
 
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Component, Inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import {AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {
+  AbstractControl,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
 import {IConfig} from '@api/root.ui';
 import {switchMap} from 'rxjs/operators';
 import {AlertDialogComponent, AlertDialogConfig} from '@common/dialogs/alert/dialog';
 import {CsrfTokenService} from '@common/services/global/csrftoken';
 import {CONFIG_DI_TOKEN} from '../../../../index.config';
+import {CdkScrollable} from '@angular/cdk/scrolling';
+import {HelpSectionComponent} from '../helpsection/component';
+import {MatFormField, MatHint, MatError} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {UserHelpComponent} from '../helpsection/userhelp/component';
+import {MatButton} from '@angular/material/button';
 
 export interface CreateNamespaceDialogMeta {
   namespaces: string[];
@@ -33,7 +53,21 @@ export interface CreateNamespaceDialogMeta {
   selector: 'kd-create-namespace-dialog',
   templateUrl: 'template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    MatDialogTitle,
+    CdkScrollable,
+    MatDialogContent,
+    FormsModule,
+    ReactiveFormsModule,
+    HelpSectionComponent,
+    MatFormField,
+    MatInput,
+    MatHint,
+    MatError,
+    UserHelpComponent,
+    MatDialogActions,
+    MatButton,
+  ],
 })
 export class CreateNamespaceDialogComponent implements OnInit {
   form: UntypedFormGroup;

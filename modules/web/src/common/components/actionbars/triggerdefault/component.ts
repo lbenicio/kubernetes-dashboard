@@ -15,12 +15,14 @@
 import {Component, DestroyRef, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {ActionbarService, ResourceMeta} from '@common/services/global/actionbar';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ActionbarDetailTriggerComponent} from '../../actionbar/detailactions/trigger/component';
+import {ActionbarDetailActionsComponent} from '../../actionbar/detailactions/component';
 
 @Component({
   selector: '',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [ActionbarDetailTriggerComponent, ActionbarDetailActionsComponent],
 })
 export class TriggerDefaultActionbarComponent implements OnInit {
   isInitialized = false;

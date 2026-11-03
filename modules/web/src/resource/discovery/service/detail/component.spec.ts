@@ -30,6 +30,7 @@ import {ObjectMetaComponent} from '@common/components/objectmeta/component';
 import {PropertyComponent} from '@common/components/property/component';
 import {PipesModule} from '@common/pipes/module';
 import {ConfigService} from '@common/services/global/config';
+import {GlobalServicesModule} from '@common/services/global/module';
 import {MESSAGES, MESSAGES_DI_TOKEN} from '../../../../index.messages';
 
 import {ServiceDetailComponent} from './component';
@@ -140,8 +141,12 @@ describe('ServiceDetailComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ObjectMetaComponent, MaxiTestComponent, CardComponent, PropertyComponent, ServiceDetailComponent],
+      declarations: [MaxiTestComponent],
       imports: [
+        ObjectMetaComponent,
+        CardComponent,
+        PropertyComponent,
+        ServiceDetailComponent,
         MatIconModule,
         MatCardModule,
         MatDividerModule,
@@ -152,6 +157,7 @@ describe('ServiceDetailComponent', () => {
         PipesModule,
         HttpClientTestingModule,
         RouterModule,
+        GlobalServicesModule,
       ],
       providers: [
         ConfigService,

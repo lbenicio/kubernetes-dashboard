@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {DeploymentListComponent as DeploymentListComponent_1} from '../../../../common/components/resourcelist/deployment/component';
 
 @Component({
   selector: 'kd-deployment-list-state',
   template: '<kd-deployment-list [showMetrics]="true"></kd-deployment-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [DeploymentListComponent_1],
 })
 export class DeploymentListComponent {}

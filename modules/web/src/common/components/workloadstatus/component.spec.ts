@@ -68,8 +68,9 @@ describe('WorkloadStatusComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [CardComponent, WorkloadStatusComponent],
       imports: [
+        CardComponent,
+        WorkloadStatusComponent,
         MatIconModule,
         MatCardModule,
         MatDividerModule,

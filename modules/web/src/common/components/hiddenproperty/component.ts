@@ -13,6 +13,9 @@
 // limitations under the License.
 
 import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
+import {PropertyComponent} from '../property/component';
+import {MatIcon} from '@angular/material/icon';
+import {NgClass} from '@angular/common';
 
 export enum HiddenPropertyMode {
   Hidden = 'hidden',
@@ -25,7 +28,7 @@ export enum HiddenPropertyMode {
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [PropertyComponent, MatIcon, NgClass],
 })
 export class HiddenPropertyComponent {
   @Input() mode = HiddenPropertyMode.Hidden;

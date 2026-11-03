@@ -22,7 +22,12 @@ import {StorageClassListComponent} from './list/component';
 import {StorageClassRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, StorageClassRoutingModule],
-  declarations: [StorageClassListComponent, StorageClassDetailComponent],
+  imports: [
+    SharedModule,
+    ComponentsModule,
+    StorageClassRoutingModule,
+    StorageClassListComponent,
+    StorageClassDetailComponent,
+  ],
 })
 export class StorageClassModule {}

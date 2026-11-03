@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import {Component, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
 
 @Component({
   selector: '[kdLoadingSpinner]',
@@ -22,7 +23,7 @@ import {Component, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
     '[class.kd-loading-shade]': 'isLoading',
   },
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [MatProgressSpinner],
 })
 export class LoadingSpinnerComponent implements OnInit {
   @Input() isLoading: boolean;

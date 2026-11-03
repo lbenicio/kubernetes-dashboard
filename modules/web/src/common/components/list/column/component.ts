@@ -30,7 +30,6 @@ import {CRDDetail, Resource} from 'typings/root.api';
   selector: 'kd-dynamic-cell',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
 })
 export class ColumnComponent<T extends ActionColumn> implements OnChanges {
   @Input() component: Type<T>;

@@ -22,7 +22,6 @@ import {RoleListComponent} from './list/component';
 import {RoleRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, RoleRoutingModule],
-  declarations: [RoleListComponent, RoleDetailComponent],
+  imports: [SharedModule, ComponentsModule, RoleRoutingModule, RoleListComponent, RoleDetailComponent],
 })
 export class RoleModule {}

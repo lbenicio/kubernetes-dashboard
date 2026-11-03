@@ -23,7 +23,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {MatButtonToggleGroup} from '@angular/material/button-toggle';
+import {MatButtonToggleGroup, MatButtonToggle} from '@angular/material/button-toggle';
 import {HttpClient} from '@angular/common/http';
 import {dump as toYaml, load as fromYaml} from 'js-yaml';
 import {CRDObjectDetail} from '@api/root.api';
@@ -35,12 +35,23 @@ import {NotificationsService} from '@common/services/global/notifications';
 import {RawResource} from '@common/resources/rawresource';
 import {firstValueFrom} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ObjectMetaComponent} from '../../common/components/objectmeta/component';
+import {CardComponent} from '../../common/components/card/component';
+import {TextInputComponent} from '../../common/components/textinput/component';
+import {EventListComponent} from '../../common/components/resourcelist/event/component';
 
 @Component({
   selector: 'kd-crd-object-detail',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    ObjectMetaComponent,
+    CardComponent,
+    MatButtonToggleGroup,
+    MatButtonToggle,
+    TextInputComponent,
+    EventListComponent,
+  ],
 })
 export class CRDObjectDetailComponent implements OnInit, OnDestroy {
   @ViewChild('group', {static: true}) buttonToggleGroup: MatButtonToggleGroup;

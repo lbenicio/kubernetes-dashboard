@@ -21,7 +21,6 @@ import {PodListComponent} from './list/component';
 import {PodRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, PodRoutingModule],
-  declarations: [PodListComponent, PodDetailComponent],
+  imports: [SharedModule, ComponentsModule, PodRoutingModule, PodListComponent, PodDetailComponent],
 })
 export class PodModule {}

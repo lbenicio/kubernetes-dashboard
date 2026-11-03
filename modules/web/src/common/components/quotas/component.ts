@@ -13,14 +13,45 @@
 // limitations under the License.
 
 import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
-import {MatTableDataSource} from '@angular/material/table';
+import {
+  MatTableDataSource,
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderCell,
+  MatCellDef,
+  MatCell,
+  MatHeaderRowDef,
+  MatHeaderRow,
+  MatRowDef,
+  MatRow,
+} from '@angular/material/table';
 import {ResourceQuotaDetail} from 'typings/root.api';
+import {CardComponent} from '../card/component';
+import {DateComponent} from '../date/component';
+import {ListZeroStateComponent} from '../list/zerostate/component';
+import {JsonPipe} from '@angular/common';
 
 @Component({
   selector: 'kd-resource-quota-list',
   templateUrl: './template.html',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [
+    CardComponent,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    DateComponent,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    ListZeroStateComponent,
+    JsonPipe,
+  ],
 })
 export class ResourceQuotaListComponent {
   @Input() initialized: boolean;

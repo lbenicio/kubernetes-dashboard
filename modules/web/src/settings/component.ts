@@ -13,11 +13,13 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {GlobalSettingsComponent} from './global/component';
+import {LocalSettingsComponent} from './local/component';
 
 @Component({
   selector: 'kd-settings',
   template: '<kd-global-settings></kd-global-settings>' + '<kd-local-settings></kd-local-settings>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [GlobalSettingsComponent, LocalSettingsComponent],
 })
 export class SettingsComponent {}

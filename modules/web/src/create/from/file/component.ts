@@ -22,13 +22,15 @@ import {NAMESPACE_STATE_PARAM} from '@common/params/params';
 import {CreateService} from '@common/services/create/service';
 import {HistoryService} from '@common/services/global/history';
 import {NamespaceService} from '@common/services/global/namespace';
+import {UploadFileComponent} from '../../../common/components/uploadfile/component';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'kd-create-from-file',
   templateUrl: './template.html',
   styleUrls: ['./style.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [UploadFileComponent, MatButton],
 })
 export class CreateFromFileComponent extends ICanDeactivate {
   file: KdFile;

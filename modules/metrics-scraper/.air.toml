@@ -18,7 +18,7 @@ tmp_dir = ".tmp"
 
 [build]
   cmd = "CGO_ENABLED=0 go build -o .tmp/metrics-scraper ."
-  bin = ".tmp/metrics-scraper"
+  entrypoint = ".tmp/metrics-scraper"
   delay = 2000
   exclude_dir = ["hack"]
   exclude_file = []

@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {ConfigMapListComponent as ConfigMapListComponent_1} from '../../../../common/components/resourcelist/configmap/component';
 
 @Component({
   selector: 'kd-config-map-list-state',
   template: '<kd-config-map-list></kd-config-map-list>',
   changeDetection: ChangeDetectionStrategy.Eager,
-  standalone: false,
+  imports: [ConfigMapListComponent_1],
 })
 export class ConfigMapListComponent {}

@@ -21,7 +21,6 @@ import {ErrorComponent} from './component';
 import {ErrorRoutingModule} from './routing';
 
 @NgModule({
-  imports: [SharedModule, ComponentsModule, NavServiceModule, ErrorRoutingModule],
-  declarations: [ErrorComponent],
+  imports: [SharedModule, ComponentsModule, NavServiceModule, ErrorRoutingModule, ErrorComponent],
 })
 export class ErrorModule {}
