@@ -13,12 +13,11 @@
 // limitations under the License.
 
 import eslint from '@eslint/js';
-import {fixupPluginRules} from '@eslint/compat';
 import angular from 'angular-eslint';
 import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import eslintN from 'eslint-plugin-n';
 import prettier from 'eslint-plugin-prettier';
-import rxjs from 'eslint-plugin-rxjs';
+import rxjs from 'eslint-plugin-rxjs-x';
 import tseslint from 'typescript-eslint';
 
 const tsOnly = config => ({...config, files: ['**/*.ts']});
@@ -42,7 +41,7 @@ export default [
     plugins: {
       node: eslintN,
       prettier,
-      rxjs: fixupPluginRules(rxjs),
+      'rxjs-x': rxjs,
     },
     rules: {
       '@typescript-eslint/no-unused-vars': [
@@ -101,11 +100,11 @@ export default [
       'no-extra-boolean-cast': 'error',
       'no-else-return': 'error',
       'prefer-rest-params': 'error',
-      'rxjs/ban-operators': ['error', {first: 'use take(1) instead'}],
-      'rxjs/no-ignored-observable': 'error',
-      'rxjs/no-unbound-methods': 'error',
-      'rxjs/no-unsafe-takeuntil': 'error',
-      'rxjs/no-nested-subscribe': 'error',
+      'rxjs-x/ban-operators': ['error', {first: 'use take(1) instead'}],
+      'rxjs-x/no-floating-observables': 'error',
+      'rxjs-x/no-unbound-methods': 'error',
+      'rxjs-x/no-unsafe-takeuntil': 'error',
+      'rxjs-x/no-nested-subscribe': 'error',
     },
   },
 ];

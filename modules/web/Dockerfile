@@ -47,8 +47,6 @@ WORKDIR /workspace/modules/web
 
 # Setup yarn and install web dependencies
 RUN npm install --global corepack@0.36.0 && corepack enable
-RUN corepack yarn set version 3.3.0
-RUN corepack yarn plugin import workspace-tools
 RUN SKIP_POSTINSTALL=true corepack yarn workspaces focus
 
 # Build prod version of web app
