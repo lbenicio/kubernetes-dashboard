@@ -105,7 +105,7 @@
     "concurrently": "10.0.6",
     "cypress": "15.21.1",
     "cypress-fail-fast": "8.2.0",
-    "del": "8.0.0",
+    "del": "9.0.1",
     "esbuild-visualizer": "0.7.0",
     "eslint": "10.14.0",
     "eslint-config-prettier": "10.1.8",
