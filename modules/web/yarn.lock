@@ -11754,7 +11754,7 @@ __metadata:
     prettier: "npm:3.9.10"
     q: "npm:1.5.1"
     roboto-fontface: "npm:0.10.0"
-    run-node: "npm:2.0.0"
+    run-node: "npm:3.0.0"
     rxjs: "npm:7.8.2"
     sass: "npm:1.107.1"
     sass-loader: "npm:16.0.8"
@@ -14130,12 +14130,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"run-node@npm:2.0.0":
-  version: 2.0.0
-  resolution: "run-node@npm:2.0.0"
+"run-node@npm:3.0.0":
+  version: 3.0.0
+  resolution: "run-node@npm:3.0.0"
   bin:
     run-node: run-node
-  checksum: 10c0/550226cb74eddd7b488a85044ed98929fdb914d29df54399730b02a507430eb22c60befde725050ab2e00c5de99f38cf768931617a91360f6c1fe64e4908195d
+    run-npx: run-npx
+  checksum: 10c0/fa5ee661ff95c5be8b363abf99e822b98f9cda448b28df7668746c79fc8ebc511281588393e01b9dc31812cc7fd0f6c14920fe7fa1db86765c21aab0381aa8b8
   languageName: node
   linkType: hard
 
