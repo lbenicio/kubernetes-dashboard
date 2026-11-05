@@ -99,6 +99,7 @@ Temporary Items
 AGENTS.md
 .agents/
 CLAUDE.md
+*_PLAN.md
 
 # Temporary files
 .cached_tools/
