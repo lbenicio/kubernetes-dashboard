@@ -129,7 +129,7 @@
     "ng-extract-i18n-merge": "3.5.0",
     "node-gyp": "11.2.0",
     "postcss": "8.5.32",
-    "prettier": "3.5.3",
+    "prettier": "3.9.10",
     "q": "1.5.1",
     "run-node": "2.0.0",
     "sass": "1.90.0",
