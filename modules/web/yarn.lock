@@ -6108,10 +6108,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jasmine@npm:5.1.7":
-  version: 5.1.7
-  resolution: "@types/jasmine@npm:5.1.7"
-  checksum: 10c0/f8df11fb8c8dce20088bfbaf5f805878b1228b4522f6ef100ea539e2f363537304095200ea8e856a0795e45d18803970d12683bc5afa35ccb475cc8ec5ea6d54
+"@types/jasmine@npm:7.0.0":
+  version: 7.0.0
+  resolution: "@types/jasmine@npm:7.0.0"
+  checksum: 10c0/165dd685981ee34a451ab6d16065531fc6b1789af382ce7186bda1fe814fef319c88f757ac9c267272f213771186a518fe59878f936f490cd8591fb602349e66
   languageName: node
   linkType: hard
 
@@ -11798,7 +11798,7 @@ __metadata:
     "@swimlane/ngx-charts": "npm:25.0.3"
     "@types/d3": "npm:7.4.3"
     "@types/d3-scale": "npm:4.0.9"
-    "@types/jasmine": "npm:5.1.7"
+    "@types/jasmine": "npm:7.0.0"
     "@types/jasminewd2": "npm:2.0.13"
     "@types/jest": "npm:30.0.0"
     "@types/js-yaml": "npm:4.0.9"
