@@ -11495,10 +11495,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-base64@npm:3.7.7":
-  version: 3.7.7
-  resolution: "js-base64@npm:3.7.7"
-  checksum: 10c0/3c905a7e78b601e4751b5e710edd0d6d045ce2d23eb84c9df03515371e1b291edc72808dc91e081cb9855aef6758292a2407006f4608ec3705373dd8baf2f80f
+"js-base64@npm:3.9.6":
+  version: 3.9.6
+  resolution: "js-base64@npm:3.9.6"
+  checksum: 10c0/2e8966ab4cbe58c7cf4f7d0e89905bf6f6d8b2184db670960da4a3263c7f42e0021729008e943c0f2fdd3185ca92eec95359b28701795ace56a9313799c0f9bd
   languageName: node
   linkType: hard
 
@@ -11831,7 +11831,7 @@ __metadata:
     jest: "npm:30.5.2"
     jest-environment-jsdom: "npm:30.5.2"
     jest-preset-angular: "npm:17.0.3"
-    js-base64: "npm:3.7.7"
+    js-base64: "npm:3.9.6"
     js-yaml: "npm:5.5.0"
     jsdom: "npm:26.1.0"
     jwt-decode: "npm:4.0.0"
