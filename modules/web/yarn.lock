@@ -11851,7 +11851,7 @@ __metadata:
     rxjs: "npm:7.8.2"
     sass: "npm:1.90.0"
     sass-loader: "npm:16.0.5"
-    semver: "npm:7.7.1"
+    semver: "npm:7.8.5"
     sockjs-client: "npm:1.6.1"
     strip-ansi: "npm:7.1.0"
     stylelint: "npm:16.19.1"
@@ -14557,15 +14557,6 @@ __metadata:
   bin:
     schema-utils: bin/schema-utils.js
   checksum: 10c0/2b882206924e75b31c2319abd102dc591942e2549761b1e730851feb3aec55bd091ef681242fb043dff1f64c796598d27ebb3bcd569d69a39daa5a8f2761305a
-  languageName: node
-  linkType: hard
-
-"semver@npm:7.7.1":
-  version: 7.7.1
-  resolution: "semver@npm:7.7.1"
-  bin:
-    semver: bin/semver.js
-  checksum: 10c0/fd603a6fb9c399c6054015433051bdbe7b99a940a8fb44b85c2b524c4004b023d7928d47cb22154f8d054ea7ee8597f586605e05b52047f048278e4ac56ae958
   languageName: node
   linkType: hard
 
