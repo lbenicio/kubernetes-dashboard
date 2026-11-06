@@ -333,8 +333,8 @@ router-outlet::after {
 .kd-pre-block {
   margin: 0;
   min-width: 0;
+  overflow-wrap: break-word;
   white-space: pre-wrap;
-  word-wrap: break-word;
 }
 
 .kd-loading-shade {

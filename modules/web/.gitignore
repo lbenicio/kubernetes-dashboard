@@ -23,6 +23,7 @@ node_modules/
 
 # Dist
 .dist/
+dist/
 
 # Yarn
 .yarn/*
