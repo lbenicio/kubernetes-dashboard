@@ -137,7 +137,7 @@
     "semver": "7.8.5",
     "stylelint": "16.19.1",
     "stylelint-config-standard-scss": "14.0.0",
-    "stylelint-order": "6.0.4",
+    "stylelint-order": "8.1.2",
     "stylelint-prettier": "5.0.3",
     "tar": "7.5.21",
     "through2": "5.0.12",
