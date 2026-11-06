@@ -104,7 +104,7 @@
     "@typescript-eslint/utils": "8.72.1",
     "angular-eslint": "22.6.0",
     "concurrently": "10.0.6",
-    "cypress": "15.21.1",
+    "cypress": "16.2.1",
     "cypress-fail-fast": "8.2.0",
     "del": "9.0.1",
     "esbuild-visualizer": "0.7.0",
