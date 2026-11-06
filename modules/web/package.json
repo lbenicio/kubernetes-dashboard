@@ -103,7 +103,7 @@
     "@typescript-eslint/parser": "8.72.1",
     "@typescript-eslint/utils": "8.72.1",
     "angular-eslint": "22.6.0",
-    "concurrently": "9.1.2",
+    "concurrently": "10.0.6",
     "cypress": "15.21.1",
     "cypress-fail-fast": "8.2.0",
     "del": "8.0.0",
