@@ -36,6 +36,7 @@ import {ServiceDetailComponent} from './component';
 import {KdStateService} from '@common/services/global/state';
 import {CONFIG_DI_TOKEN} from '../../../../index.config';
 import {IConfig} from '@api/root.ui';
+import {of} from 'rxjs';
 
 const maxiName = 'my-maxi-service';
 const MOCK_CONFIG_DI_TOKEN = new InjectionToken<IConfig>('kd.config');
@@ -185,5 +186,37 @@ describe('ServiceDetailComponent', () => {
 
     const htmlElement = debugElement.nativeElement;
     expect(htmlElement.innerHTML).toBe(maxiName);
+  });
+
+  it('loads service details, publishes related endpoints, and leaves the action bar on destroy', () => {
+    const detail = {
+      objectMeta: {name: 'web', namespace: 'default'},
+      typeMeta: {kind: 'Service'},
+      errors: [],
+    } as unknown as ServiceDetail;
+    const service = {get: jest.fn().mockReturnValue(of(detail))};
+    const actionbar = {
+      onInit: {emit: jest.fn()},
+      onDetailsLeave: {emit: jest.fn()},
+    };
+    const route = {snapshot: {params: {resourceName: 'web', resourceNamespace: 'default'}}};
+    const notifications = {pushErrors: jest.fn()};
+    const component = TestBed.runInInjectionContext(
+      () => new ServiceDetailComponent(service as never, actionbar as never, route as never, notifications as never)
+    );
+
+    component.ngOnInit();
+
+    expect(service.get).toHaveBeenCalledWith('api/v1/service/:namespace/:name', 'web', 'default');
+    expect(component.podListEndpoint).toBe('api/v1/service/default/web/pod');
+    expect(component.ingressListEndpoint).toBe('api/v1/service/default/web/ingress');
+    expect(component.eventListEndpoint).toBe('api/v1/service/default/web/event');
+    expect(component.service).toBe(detail);
+    expect(component.isInitialized).toBe(true);
+    expect(notifications.pushErrors).toHaveBeenCalledWith([]);
+    expect(actionbar.onInit.emit).toHaveBeenCalledWith(expect.objectContaining({displayName: 'Service'}));
+
+    component.ngOnDestroy();
+    expect(actionbar.onDetailsLeave.emit).toHaveBeenCalled();
   });
 });

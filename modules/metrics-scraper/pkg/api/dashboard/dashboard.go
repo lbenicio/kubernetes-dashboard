@@ -59,6 +59,7 @@ func nodeHandler(db *sql.DB) http.HandlerFunc {
 			if err != nil {
 				klog.Errorf("Error cannot write response: %v", err)
 			}
+			return
 		}
 
 		j, err := json.Marshal(resp)
@@ -69,6 +70,7 @@ func nodeHandler(db *sql.DB) http.HandlerFunc {
 			if err != nil {
 				klog.Errorf("Error cannot write response: %v", err)
 			}
+			return
 		}
 
 		_, err = w.Write(j)
@@ -95,6 +97,7 @@ func podHandler(db *sql.DB) http.HandlerFunc {
 			if err != nil {
 				klog.Errorf("Error cannot write response: %v", err)
 			}
+			return
 		}
 
 		j, err := json.Marshal(resp)
@@ -105,6 +108,7 @@ func podHandler(db *sql.DB) http.HandlerFunc {
 			if err != nil {
 				klog.Errorf("Error cannot write response: %v", err)
 			}
+			return
 		}
 
 		_, err = w.Write(j)

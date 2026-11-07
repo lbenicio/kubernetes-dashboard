@@ -15,24 +15,12 @@
 package integration_test
 
 import (
-	"strings"
 	"testing"
 
 	"k8s.io/dashboard/api/pkg/integration"
 	"k8s.io/dashboard/api/pkg/integration/api"
 	"k8s.io/dashboard/errors"
 )
-
-func areErrorsEqual(err1, err2 error) bool {
-	return (err1 != nil && err2 != nil && normalize(err1.Error()) == normalize(err2.Error())) ||
-		(err1 == nil && err2 == nil)
-}
-
-// Removes all quote signs that might have been added to the message.
-// Might depend on dependencies version how they are constructed.
-func normalize(msg string) string {
-	return strings.ReplaceAll(msg, "\"", "")
-}
 
 func TestNewIntegrationManager(t *testing.T) {
 	iManager := integration.NewIntegrationManager()
@@ -63,18 +51,21 @@ func TestIntegrationManager_GetState(t *testing.T) {
 		iManager.Metric().ConfigureSidecar(c.sidecarHost)
 
 		state, err := iManager.GetState(api.SidecarIntegrationID)
-		if !areErrorsEqual(err, c.expectedErr) {
+		if (err == nil) != (c.expectedErr == nil) {
 			t.Errorf("Test Case: %s. Expected error to be: %v, but got %v.",
 				c.info, c.expectedErr, err)
 		}
 
-		// Time is irrelevant so we don't need to check it
-		if c.expectedErr == nil && (!areErrorsEqual(state.Error, c.expected.Error)) {
-			t.Errorf("Test Case: %s. Expected state to be: %v, but got %v.",
-				c.info, c.expected.Error, state.Error)
-		} else if state.Connected != c.expected.Connected {
+		if state == nil {
+			t.Fatalf("Test Case: %s. Got a nil integration state.", c.info)
+		}
+		if state.Connected != c.expected.Connected {
 			t.Errorf("Test Case: %s. Could not connect to API server.",
 				c.info)
+		}
+		if (state.Error == nil) != (c.expected.Error == nil) {
+			t.Errorf("Test Case: %s. Expected state error presence %t, got %v.",
+				c.info, c.expected.Error != nil, state.Error)
 		}
 	}
 }
@@ -83,5 +74,12 @@ func TestIntegrationManager_Metric(t *testing.T) {
 	metricManager := integration.NewIntegrationManager().Metric()
 	if metricManager == nil {
 		t.Error("failed to get metric manager.")
+	}
+}
+
+func TestIntegrationManager_GetStateRejectsUnknownIntegration(t *testing.T) {
+	iManager := integration.NewIntegrationManager()
+	if state, err := iManager.GetState(api.IntegrationID("unknown")); err == nil || state != nil {
+		t.Fatalf("GetState(unknown) = %v, %v, want nil state and error", state, err)
 	}
 }

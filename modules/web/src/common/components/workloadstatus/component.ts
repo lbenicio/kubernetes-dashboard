@@ -15,7 +15,7 @@
 import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {ResourcesRatio} from '@api/root.ui';
 
-export const emptyResourcesRatio: ResourcesRatio = {
+export const createEmptyResourcesRatio = (): ResourcesRatio => ({
   cronJobRatio: [],
   daemonSetRatio: [],
   deploymentRatio: [],
@@ -24,7 +24,9 @@ export const emptyResourcesRatio: ResourcesRatio = {
   replicaSetRatio: [],
   replicationControllerRatio: [],
   statefulSetRatio: [],
-};
+});
+
+export const emptyResourcesRatio = createEmptyResourcesRatio();
 
 @Component({
   selector: 'kd-workload-statuses',
@@ -34,7 +36,7 @@ export const emptyResourcesRatio: ResourcesRatio = {
   standalone: false,
 })
 export class WorkloadStatusComponent {
-  @Input() resourcesRatio = emptyResourcesRatio;
+  @Input() resourcesRatio = createEmptyResourcesRatio();
   colors: string[] = [];
   animations = false;
   labels = true;

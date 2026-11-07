@@ -28,10 +28,10 @@ import {OnListChangeEvent, ResourcesRatio} from '@api/root.ui';
 
 import {Helper, ResourceRatioModes} from '../../overview/helper';
 import {ListGroupIdentifier, ListIdentifier} from '../components/resourcelist/groupids';
-import {emptyResourcesRatio} from '../components/workloadstatus/component';
+import {createEmptyResourcesRatio} from '../components/workloadstatus/component';
 
 export class GroupedResourceList {
-  resourcesRatio: ResourcesRatio = emptyResourcesRatio;
+  resourcesRatio: ResourcesRatio = createEmptyResourcesRatio();
   cumulativeMetrics: Metric[] = [];
 
   private readonly items_: {[id: string]: number} = {};

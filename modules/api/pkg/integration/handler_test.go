@@ -1,31 +1,74 @@
-// Copyright 2017 The Kubernetes Authors.
+// Copyright 2026 The Kubernetes Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// http://www.apache.org/licenses/LICENSE-2.0
 
 package integration
 
 import (
+	"errors"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/emicklei/go-restful/v3"
+
+	"k8s.io/dashboard/api/pkg/integration/api"
+	"k8s.io/dashboard/api/pkg/integration/metric"
 )
 
-func TestIntegrationHandler_Install(t *testing.T) {
-	iHandler := NewHandler(nil)
-	ws := new(restful.WebService)
-	iHandler.Install(ws)
+type testIntegrationManager struct {
+	state *api.IntegrationState
+	err   error
+	id    api.IntegrationID
+}
 
-	if len(ws.Routes()) == 0 {
-		t.Error("Failed to install routes.")
+func (m *testIntegrationManager) GetState(id api.IntegrationID) (*api.IntegrationState, error) {
+	m.id = id
+	return m.state, m.err
+}
+
+func (*testIntegrationManager) List() []api.Integration { return nil }
+
+func (*testIntegrationManager) Metric() metric.MetricManager { return nil }
+
+func serveIntegrationState(t *testing.T, manager Manager) *httptest.ResponseRecorder {
+	t.Helper()
+	ws := new(restful.WebService)
+	ws.Path("/api/v1").Produces(restful.MIME_JSON)
+	NewHandler(manager).Install(ws)
+	container := restful.NewContainer()
+	container.Add(ws)
+	response := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodGet, "/api/v1/integration/sidecar/state", nil)
+	request.Header.Set("Accept", restful.MIME_JSON)
+	container.ServeHTTP(response, request)
+	return response
+}
+
+func TestIntegrationStateHandlerReturnsState(t *testing.T) {
+	manager := &testIntegrationManager{state: &api.IntegrationState{Connected: true}}
+	response := serveIntegrationState(t, manager)
+	if response.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d: %s", response.Code, http.StatusOK, response.Body.String())
+	}
+	if response.Body.Len() == 0 {
+		t.Error("successful response body is empty")
+	}
+	if manager.id != api.SidecarIntegrationID {
+		t.Errorf("manager received integration ID %q, want %q", manager.id, api.SidecarIntegrationID)
+	}
+}
+
+func TestIntegrationStateHandlerReturnsManagerError(t *testing.T) {
+	response := serveIntegrationState(t, &testIntegrationManager{err: errors.New("unknown integration")})
+	if response.Code != http.StatusInternalServerError {
+		t.Fatalf("status = %d, want %d", response.Code, http.StatusInternalServerError)
+	}
+	if response.Body.String() != "unknown integration\n" {
+		t.Errorf("body = %q, want manager error", response.Body.String())
 	}
 }

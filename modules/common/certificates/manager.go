@@ -64,11 +64,11 @@ func (in *Manager) GetCertificatePaths() (string, string, error) {
 		key := in.creator.GenerateKey()
 		cert := in.creator.GenerateCertificate(key)
 		log.Println("Successfully created certificates")
-		keyPEM, certPEM, err := in.creator.KeyCertPEMBytes(key, cert)
+		_, _, err := in.creator.KeyCertPEMBytes(key, cert)
 		if err != nil {
 			return "", "", err
 		}
-		certPath, keyPath := in.creator.StoreCertificates(in.certDir, certPEM, keyPEM)
+		certPath, keyPath := in.creator.StoreCertificates(in.certDir, key, cert)
 		return certPath, keyPath, nil
 	}
 

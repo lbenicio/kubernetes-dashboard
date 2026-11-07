@@ -16,6 +16,7 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {CUSTOM_ELEMENTS_SCHEMA, InjectionToken} from '@angular/core';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {HttpErrorResponse} from '@angular/common/http';
 import {MatButtonModule} from '@angular/material/button';
 import {MatRadioModule} from '@angular/material/radio';
 import {By} from '@angular/platform-browser';
@@ -42,9 +43,20 @@ const loginToken =
 const MOCK_CONFIG_DI_TOKEN = new InjectionToken<IConfig>('kd.config');
 
 class MockAuthService {
+  loginConfigurationResponse: Observable<{oidcEnabled: boolean; anonymousAdmin: boolean}> = of({
+    oidcEnabled: false,
+    anonymousAdmin: false,
+  });
+
   loginConfiguration(): Observable<{oidcEnabled: boolean; anonymousAdmin: boolean}> {
-    return of({oidcEnabled: false, anonymousAdmin: false});
+    return this.loginConfigurationResponse;
   }
+
+  beginOidcLogin(): Observable<{url: string}> {
+    return of({url: 'https://identity.example.test/authorize'});
+  }
+
+  removeTokenCookie(): void {}
 
   login(loginSpec: LoginSpec): Observable<K8SError[]> {
     const errors = [
@@ -91,6 +103,7 @@ class MockHistoryService {
 
 describe('LoginComponent', () => {
   let fixture: ComponentFixture<LoginComponent>;
+  let authService: MockAuthService;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -117,7 +130,7 @@ describe('LoginComponent', () => {
           // useClass: MockActivatedRoute,
           useValue: {
             paramMap: from([]),
-          queryParamMap: from([convertToParamMap({})]),
+            queryParamMap: from([convertToParamMap({})]),
             snapshot: {
               queryParamMap: convertToParamMap({}),
             },
@@ -140,12 +153,51 @@ describe('LoginComponent', () => {
   }));
 
   beforeEach(() => {
+    authService = TestBed.inject(AuthService) as unknown as MockAuthService;
     fixture = TestBed.createComponent(LoginComponent);
+    fixture.detectChanges();
   });
 
   describe('options', () => {
     it('renders token inputs', async () => {
       expect(fixture.debugElement.query(By.css('#token'))).toBeTruthy();
+    });
+
+    it('shows SSO first and reveals token login only when selected', () => {
+      fixture.destroy();
+      authService.loginConfigurationResponse = of({oidcEnabled: true, anonymousAdmin: false});
+      fixture = TestBed.createComponent(LoginComponent);
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('.kd-login-sso')).toBeTruthy();
+      expect(fixture.debugElement.query(By.css('#token'))).toBeNull();
+
+      fixture.nativeElement.querySelector('.kd-login-secondary-link').click();
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(By.css('#token'))).toBeTruthy();
+
+      fixture.nativeElement.querySelector('.kd-login-secondary-link').click();
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(By.css('#token'))).toBeNull();
+    });
+
+    it('does not show token login when login options fail to load', () => {
+      fixture.destroy();
+      authService.loginConfigurationResponse = throwError(
+        () => new HttpErrorResponse({status: 503, statusText: 'Unavailable'})
+      );
+      fixture = TestBed.createComponent(LoginComponent);
+      fixture.detectChanges();
+
+      expect(fixture.debugElement.query(By.css('#token'))).toBeNull();
+      expect(fixture.debugElement.query(By.css(queries.errorText))).toBeTruthy();
+    });
+
+    it('shows the OIDC callback error', () => {
+      fixture.componentInstance.oidcLoginError = true;
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.textContent).toContain('Single sign-on could not be completed');
     });
   });
 
@@ -159,6 +211,7 @@ describe('LoginComponent', () => {
       const token = fixture.debugElement.query(By.css(queries.token)).nativeElement;
       token.value = loginToken;
       token.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
 
       submit();
 
@@ -175,7 +228,8 @@ describe('LoginComponent', () => {
       // set inputs and fire change events to trigger onChange()
       const token = fixture.debugElement.query(By.css(queries.token)).nativeElement;
       token.value = loginToken;
-      token.dispatchEvent(new Event('change'));
+      token.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
 
       submit();
 

@@ -1,234 +1,46 @@
-// Copyright 2017 The Kubernetes Authors.
+// Copyright 2026 The Kubernetes Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// http://www.apache.org/licenses/LICENSE-2.0
 
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {Component, CUSTOM_ELEMENTS_SCHEMA, InjectionToken} from '@angular/core';
-import {TestBed, waitForAsync} from '@angular/core/testing';
-import {MatCardModule} from '@angular/material/card';
-import {MatChipsModule} from '@angular/material/chips';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatDividerModule} from '@angular/material/divider';
-import {MatIconModule} from '@angular/material/icon';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import {By} from '@angular/platform-browser';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {RouterModule} from '@angular/router';
-import {AppConfig, IngressDetail} from '@api/root.api';
-import {CardComponent} from '@common/components/card/component';
-import {ObjectMetaComponent} from '@common/components/objectmeta/component';
-import {PropertyComponent} from '@common/components/property/component';
-import {PipesModule} from '@common/pipes/module';
-import {ConfigService} from '@common/services/global/config';
-import {MESSAGES, MESSAGES_DI_TOKEN} from '../../../../index.messages';
-import {KdStateService} from '@common/services/global/state';
-
+import {TestBed} from '@angular/core/testing';
+import {IngressDetail} from '@api/root.api';
+import {of} from 'rxjs';
 import {IngressDetailComponent} from './component';
-import {GlobalServicesModule} from '@common/services/global/module';
-import {CONFIG_DI_TOKEN} from '../../../../index.config';
-import {IConfig} from '@api/root.ui';
-
-const miniName = 'my-mini-ingress';
-const maxiName = 'my-maxi-ingress';
-const MOCK_CONFIG_DI_TOKEN = new InjectionToken<IConfig>('kd.config');
-
-@Component({selector: 'mini-ingress-test', templateUrl: './template.html', standalone: false})
-class MiniTestComponent {
-  isInitialized = true;
-  ingress: IngressDetail = {
-    objectMeta: {
-      name: miniName,
-      namespace: 'my-namespace',
-      labels: {},
-      creationTimestamp: '2018-05-18T22:27:42Z',
-    },
-    typeMeta: {kind: 'Ingress'},
-    errors: [],
-    endpoints: [],
-    spec: {
-      rules: [
-        {
-          http: {
-            paths: [
-              {
-                path: '/testpath',
-                pathType: 'Prefix',
-                backend: {
-                  service: {
-                    name: 'test',
-                    port: {
-                      number: 80,
-                    },
-                  },
-                },
-              },
-            ],
-          },
-        },
-        {
-          host: 'foo.bar.com',
-          http: {
-            paths: [
-              {
-                path: '/bar',
-                pathType: 'Prefix',
-                backend: {
-                  service: {
-                    name: 'test',
-                    port: {
-                      name: 'a_port_name',
-                    },
-                  },
-                },
-              },
-            ],
-          },
-        },
-      ],
-    },
-  };
-}
-
-@Component({selector: 'maxi-ingress-test', templateUrl: './template.html', standalone: false})
-class MaxiTestComponent {
-  isInitialized = true;
-  ingress: IngressDetail = {
-    objectMeta: {
-      name: maxiName,
-      namespace: 'my-namespace',
-      labels: {
-        'addonmanager.kubernetes.io/mode': 'Reconcile',
-        app: 'kubernetes-dashboard',
-        'pod-template-hash': '1054779233',
-        version: 'v1.8.1',
-      },
-      creationTimestamp: '2018-05-18T22:27:42Z',
-    },
-    typeMeta: {kind: 'Ingress'},
-    errors: [],
-    endpoints: [],
-    spec: {
-      rules: [
-        {
-          host: 'foox.bar.com',
-          http: {
-            paths: [
-              {
-                path: '/',
-                pathType: 'Prefix',
-                backend: {
-                  service: {
-                    name: 'service1',
-                    port: {
-                      number: 80,
-                    },
-                  },
-                },
-              },
-            ],
-          },
-        },
-        {
-          host: 'barx.foo.com',
-          http: {
-            paths: [
-              {
-                path: '/',
-                pathType: 'Prefix',
-                backend: {
-                  service: {
-                    name: 'service2',
-                    port: {
-                      number: 80,
-                    },
-                  },
-                },
-              },
-            ],
-          },
-        },
-      ],
-    },
-  };
-}
 
 describe('IngressDetailComponent', () => {
-  let httpMock: HttpTestingController;
-  let configService: ConfigService;
+  beforeEach(() => TestBed.configureTestingModule({}));
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        ObjectMetaComponent,
-        MaxiTestComponent,
-        MiniTestComponent,
-        CardComponent,
-        PropertyComponent,
-        IngressDetailComponent,
-      ],
-      imports: [
-        MatCardModule,
-        MatDividerModule,
-        MatTooltipModule,
-        MatDialogModule,
-        MatChipsModule,
-        NoopAnimationsModule,
-        PipesModule,
-        HttpClientTestingModule,
-        MatIconModule,
-        RouterModule,
-        GlobalServicesModule,
-      ],
-      providers: [
-        ConfigService,
-        KdStateService,
-        {provide: MESSAGES_DI_TOKEN, useValue: MESSAGES},
-        {provide: CONFIG_DI_TOKEN, useValue: MOCK_CONFIG_DI_TOKEN},
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    }).compileComponents();
-    httpMock = TestBed.inject(HttpTestingController);
-    configService = TestBed.inject(ConfigService);
-  }));
-
-  beforeEach(() => {
-    configService.init();
-    const configRequest = httpMock.expectOne('config');
-    const config: AppConfig = {
-      serverTime: new Date().getTime(),
-      version: '0.0.0-dev',
-      userAgent: 'dashboard-web-go:0.0.0-dev',
+  it('loads ingress details, builds its event endpoint, and leaves the action bar on destroy', () => {
+    const detail = {
+      objectMeta: {name: 'public', namespace: 'default'},
+      typeMeta: {kind: 'Ingress'},
+      errors: [],
+    } as unknown as IngressDetail;
+    const ingress = {get: jest.fn().mockReturnValue(of(detail))};
+    const actionbar = {
+      onInit: {emit: jest.fn()},
+      onDetailsLeave: {emit: jest.fn()},
     };
-    configRequest.flush(config);
-  });
+    const route = {snapshot: {params: {resourceName: 'public', resourceNamespace: 'default'}}};
+    const notifications = {pushErrors: jest.fn()};
+    const component = TestBed.runInInjectionContext(
+      () => new IngressDetailComponent(ingress as never, actionbar as never, route as never, notifications as never)
+    );
 
-  it('shows a mini ingress', () => {
-    const fixture = TestBed.createComponent(MiniTestComponent);
-    fixture.detectChanges();
-    const debugElement = fixture.debugElement.query(By.css('kd-property.object-meta-name div.kd-property-value div'));
-    expect(debugElement).toBeTruthy();
+    component.ngOnInit();
 
-    const htmlElement = debugElement.nativeElement;
-    expect(htmlElement.innerHTML).toBe(miniName);
-  });
+    expect(ingress.get).toHaveBeenCalledWith('api/v1/ingress/:namespace/:name', 'public', 'default');
+    expect(component.eventListEndpoint).toBe('api/v1/ingress/default/public/event');
+    expect(component.ingress).toBe(detail);
+    expect(component.isInitialized).toBe(true);
+    expect(notifications.pushErrors).toHaveBeenCalledWith([]);
+    expect(actionbar.onInit.emit).toHaveBeenCalledWith(expect.objectContaining({displayName: 'Ingress'}));
 
-  it('shows a maxi ingress', () => {
-    const fixture = TestBed.createComponent(MaxiTestComponent);
-    fixture.detectChanges();
-    const debugElement = fixture.debugElement.query(By.css('kd-property.object-meta-name div.kd-property-value div'));
-    expect(debugElement).toBeTruthy();
-
-    const htmlElement = debugElement.nativeElement;
-    expect(htmlElement.innerHTML).toBe(maxiName);
+    component.ngOnDestroy();
+    expect(actionbar.onDetailsLeave.emit).toHaveBeenCalled();
   });
 });

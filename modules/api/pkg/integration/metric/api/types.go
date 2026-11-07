@@ -145,6 +145,7 @@ func (in Label) AddMetricLabel(other Label) Label {
 		for _, t := range v {
 			if _, exists := uniqueMap[t]; !exists {
 				in[k] = append(in[k], t)
+				uniqueMap[t] = true
 			}
 		}
 	}
@@ -230,7 +231,7 @@ func NewMetricPromise() MetricPromise {
 type MetricPromises []MetricPromise
 
 // GetMetrics returns all metrics from MetricPromises.
-// In case of no metrics were downloaded it does not initialise []Metric and returns nil.
+// When no metrics were downloaded it returns an empty result slice.
 func (in MetricPromises) GetMetrics() ([]Metric, error) {
 	result := make([]Metric, 0)
 

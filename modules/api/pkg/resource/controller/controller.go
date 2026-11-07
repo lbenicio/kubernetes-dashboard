@@ -217,13 +217,14 @@ func (in ReplicationControllerController) Get(allPods []v1.Pod,
 	matchingPods := common.FilterPodsByControllerRef(&in, allPods)
 	podInfo := common.GetPodInfo(in.Status.Replicas, in.Spec.Replicas, matchingPods)
 	podInfo.Warnings = event.GetPodsEventWarnings(allEvents, matchingPods)
+	podSpec := getReplicationControllerPodSpec(in.Spec.Template)
 
 	return ResourceOwner{
 		TypeMeta:            types.NewTypeMeta(types.ResourceKindReplicationController),
 		ObjectMeta:          types.NewObjectMeta(in.ObjectMeta),
 		Pods:                podInfo,
-		ContainerImages:     common.GetContainerImages(&in.Spec.Template.Spec),
-		InitContainerImages: common.GetInitContainerImages(&in.Spec.Template.Spec),
+		ContainerImages:     common.GetContainerImages(podSpec),
+		InitContainerImages: common.GetInitContainerImages(podSpec),
 	}
 }
 
@@ -235,11 +236,20 @@ func (in ReplicationControllerController) UID() apimachinery.UID {
 // GetLogSources is an implementation of the GetLogSources method from ResourceController interface.
 func (in ReplicationControllerController) GetLogSources(allPods []v1.Pod) LogSources {
 	controlledPods := common.FilterPodsByControllerRef(&in, allPods)
+	podSpec := getReplicationControllerPodSpec(in.Spec.Template)
 	return LogSources{
 		PodNames:           getPodNames(controlledPods),
-		ContainerNames:     common.GetContainerNames(&in.Spec.Template.Spec),
-		InitContainerNames: common.GetInitContainerNames(&in.Spec.Template.Spec),
+		ContainerNames:     common.GetContainerNames(podSpec),
+		InitContainerNames: common.GetInitContainerNames(podSpec),
 	}
+}
+
+func getReplicationControllerPodSpec(template *v1.PodTemplateSpec) *v1.PodSpec {
+	if template == nil {
+		return &v1.PodSpec{}
+	}
+
+	return &template.Spec
 }
 
 // DaemonSetController is an alias-type for Kubernetes API Daemon Set type. It allows to provide

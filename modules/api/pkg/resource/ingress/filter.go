@@ -15,6 +15,8 @@
 package ingress
 
 import (
+	"strings"
+
 	networkingv1 "k8s.io/api/networking/v1"
 
 	"k8s.io/dashboard/types"
@@ -58,7 +60,7 @@ func ingressBackendMatchesServiceName(ingressBackend *networkingv1.IngressBacken
 		return true
 	}
 
-	if ingressBackend.Resource != nil && ingressBackend.Resource.Kind == types.ResourceKindService && ingressBackend.Resource.Name == serviceName {
+	if ingressBackend.Resource != nil && strings.EqualFold(ingressBackend.Resource.Kind, string(types.ResourceKindService)) && ingressBackend.Resource.Name == serviceName {
 		return true
 	}
 	return false

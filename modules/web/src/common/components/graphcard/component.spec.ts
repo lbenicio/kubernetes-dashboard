@@ -59,6 +59,30 @@ describe('GraphCardComponent', () => {
     expect(component.selectedMetric).toBeUndefined();
   });
 
+  it('selects the metric named by the graph card input', () => {
+    const component = testHostFixture.componentInstance;
+    component.selectedMetricName = 'cpu/usage';
+
+    component.ngOnChanges({metrics: {currentValue: testMetrics}} as never);
+
+    expect(component.metrics).toBe(testMetrics);
+    expect(component.selectedMetric).toBe(testMetrics[0]);
+    expect(component.shouldShowGraph()).toBe(true);
+  });
+
+  it('does not select a graph when no metric matches and handles empty data points', () => {
+    const component = testHostFixture.componentInstance;
+    component.selectedMetricName = 'unknown';
+    component.ngOnChanges({metrics: {currentValue: testMetrics}} as never);
+    expect(component.selectedMetric).toBeUndefined();
+    expect(component.shouldShowGraph()).toBe(false);
+
+    component.selectedMetricName = 'cpu/usage';
+    const emptyMetrics = [{metricName: 'cpu/usage', dataPoints: []}] as Metric[];
+    component.ngOnChanges({metrics: {currentValue: emptyMetrics}} as never);
+    expect(component.selectedMetric).toBeNull();
+  });
+
   // TODO: fix this spec
   xit('should show graph when metrics are provided', () => {
     const component = testHostFixture.componentInstance;

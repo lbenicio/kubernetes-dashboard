@@ -167,4 +167,34 @@ describe('OverviewComponent', () => {
 
     expect(instance.showWorkloadStatuses()).toEqual(true);
   });
+
+  it('reports visible groups and zero state from list updates', () => {
+    const instance = testHostFixture.componentInstance;
+    expect(instance.shouldShowZeroState()).toBe(false);
+    expect(instance.showWorkloadStatuses()).toBe(false);
+    expect(instance.hasCluster()).toBe(false);
+    expect(instance.hasWorkloads()).toBe(false);
+    expect(instance.hasDiscovery()).toBe(false);
+    expect(instance.hasConfig()).toBe(false);
+
+    instance.onListUpdate({
+      id: ListIdentifier.service,
+      groupId: ListGroupIdentifier.discovery,
+      items: 0,
+      filtered: false,
+      resourceList: {} as never,
+    });
+    expect(instance.shouldShowZeroState()).toBe(true);
+    expect(instance.hasDiscovery()).toBe(false);
+
+    instance.onListUpdate({
+      id: ListIdentifier.service,
+      groupId: ListGroupIdentifier.discovery,
+      items: 1,
+      filtered: false,
+      resourceList: {} as never,
+    });
+    expect(instance.shouldShowZeroState()).toBe(false);
+    expect(instance.hasDiscovery()).toBe(true);
+  });
 });

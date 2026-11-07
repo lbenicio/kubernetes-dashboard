@@ -2638,21 +2638,21 @@
         <source>Loading login options</source>
         <target>Chargement des options de connexion</target>
       </trans-unit>
-      <trans-unit id="7079021766637439081" datatype="html">
-        <source>Sign in with SSO</source>
-        <target>Se connecter avec SSO</target>
+      <trans-unit id="512261711502076281" datatype="html">
+        <source> Sign in with SSO </source>
+        <target> Se connecter avec SSO </target>
       </trans-unit>
-      <trans-unit id="4863266209264084992" datatype="html">
-        <source>Sign in with a bearer token instead</source>
-        <target>Se connecter avec un jeton Bearer</target>
+      <trans-unit id="8630354028503631594" datatype="html">
+        <source> Sign in with a bearer token instead </source>
+        <target> Se connecter avec un jeton Bearer </target>
       </trans-unit>
-      <trans-unit id="3938912012279623462" datatype="html">
-        <source>Single sign-on could not be completed. Please try again.</source>
-        <target>La connexion unique n’a pas pu être effectuée. Veuillez réessayer.</target>
+      <trans-unit id="2932954775188822115" datatype="html">
+        <source> Single sign-on could not be completed. Please try again. </source>
+        <target> La connexion unique n’a pas pu être effectuée. Veuillez réessayer. </target>
       </trans-unit>
-      <trans-unit id="1782339444830473469" datatype="html">
-        <source>Back to single sign-on</source>
-        <target>Retour à la connexion unique</target>
+      <trans-unit id="3465957953205678542" datatype="html">
+        <source> Back to single sign-on </source>
+        <target> Retour à la connexion unique </target>
       </trans-unit>
       <trans-unit id="450792550417770774" datatype="html">
         <source>Logged in with SSO </source>

@@ -1,0 +1,30 @@
+// Copyright 2026 The Kubernetes Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+
+package router
+
+import (
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
+	"github.com/gin-gonic/gin"
+)
+
+func TestRouterAndV1AreConfigured(t *testing.T) {
+	engine := Router()
+	if engine == nil || V1() == nil {
+		t.Fatal("router or versioned route group is nil")
+	}
+	engine.GET("/router-test/panic", func(*gin.Context) { panic("test panic") })
+	response := httptest.NewRecorder()
+	engine.ServeHTTP(response, httptest.NewRequest(http.MethodGet, "/router-test/panic", nil))
+	if response.Code != http.StatusInternalServerError {
+		t.Fatalf("recovery middleware status = %d, want %d", response.Code, http.StatusInternalServerError)
+	}
+}

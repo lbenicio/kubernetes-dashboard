@@ -85,7 +85,11 @@ func (in *GoRestfulCSRFMiddleware) build() restful.FilterFunction {
 
 		klog.V(4).InfoS("[GinCSRFMiddleware] Got request", "path", req.SelectedRoutePath(), "actionID", actionID)
 		if actionID == nil || !xsrftoken.Valid(req.HeaderParameter(csrfTokenHeader), Key(), "none", *actionID) {
-			klog.Errorf("CSRF validation failed, actionID: %s", *actionID)
+			action := "<nil>"
+			if actionID != nil {
+				action = *actionID
+			}
+			klog.Errorf("CSRF validation failed, actionID: %s", action)
 
 			resp.AddHeader("Content-Type", "text/plain")
 			_ = resp.WriteError(http.StatusUnauthorized, errors.NewCSRFValidationFailed())

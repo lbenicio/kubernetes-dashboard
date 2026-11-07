@@ -1,0 +1,45 @@
+// Copyright 2026 The Kubernetes Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+
+package common
+
+import (
+	"testing"
+
+	apps "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
+)
+
+func TestFilterDeploymentPodsByOwnerReference(t *testing.T) {
+	controlled := true
+	deployment := apps.Deployment{ObjectMeta: metav1.ObjectMeta{Name: "web", UID: types.UID("deployment")}}
+	replicaSets := []apps.ReplicaSet{
+		{ObjectMeta: metav1.ObjectMeta{Name: "web-rs", UID: types.UID("rs"), OwnerReferences: []metav1.OwnerReference{{Kind: "Deployment", Name: "web", UID: deployment.UID, Controller: &controlled}}}},
+		{ObjectMeta: metav1.ObjectMeta{Name: "unrelated-rs", UID: types.UID("unrelated")}},
+	}
+	pods := []corev1.Pod{
+		{ObjectMeta: metav1.ObjectMeta{Name: "web-pod", OwnerReferences: []metav1.OwnerReference{{Kind: "ReplicaSet", Name: "web-rs", UID: "rs", Controller: &controlled}}}},
+		{ObjectMeta: metav1.ObjectMeta{Name: "other-pod"}},
+	}
+	got := FilterDeploymentPodsByOwnerReference(deployment, replicaSets, pods)
+	if len(got) != 1 || got[0].Name != "web-pod" {
+		t.Fatalf("FilterDeploymentPodsByOwnerReference() = %#v", got)
+	}
+}
+
+func TestEqualIgnoreHash(t *testing.T) {
+	first := corev1.PodTemplateSpec{ObjectMeta: metav1.ObjectMeta{Labels: map[string]string{"app": "web", apps.DefaultDeploymentUniqueLabelKey: "one"}}, Spec: corev1.PodSpec{Containers: []corev1.Container{{Name: "web", Image: "nginx"}}}}
+	second := first.DeepCopy()
+	second.Labels[apps.DefaultDeploymentUniqueLabelKey] = "two"
+	if !EqualIgnoreHash(first, *second) {
+		t.Fatal("EqualIgnoreHash() returned false for templates differing only by pod-template-hash")
+	}
+	second.Spec.Containers[0].Image = "other"
+	if EqualIgnoreHash(first, *second) {
+		t.Fatal("EqualIgnoreHash() returned true for templates with different container images")
+	}
+}

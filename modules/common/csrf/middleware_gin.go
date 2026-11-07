@@ -89,7 +89,11 @@ func (in *GinCSRFMiddleware) build() gin.HandlerFunc {
 
 		klog.V(4).InfoS("[GinCSRFMiddleware] Got request", "path", c.Request.URL.Path, "actionID", actionID)
 		if actionID == nil || !xsrftoken.Valid(c.Request.Header.Get(csrfTokenHeader), Key(), "none", *actionID) {
-			klog.Errorf("CSRF validation failed, actionID: %s", *actionID)
+			action := "<nil>"
+			if actionID != nil {
+				action = *actionID
+			}
+			klog.Errorf("CSRF validation failed, actionID: %s", action)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, errors.NewCSRFValidationFailed())
 			return
 		}

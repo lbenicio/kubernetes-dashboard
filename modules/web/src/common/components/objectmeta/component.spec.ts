@@ -100,4 +100,18 @@ describe('ObjectMetaComponent', () => {
     expect(metaName).toBeTruthy();
     expect(metaName.nativeElement.textContent === miniName);
   });
+
+  it('resolves supported owner links and handles missing or unsupported metadata', () => {
+    const state = {href: jest.fn().mockReturnValue('/pod/web')};
+    const component = new ObjectMetaComponent(state as never);
+    component.objectMeta = {namespace: 'default'} as ObjectMeta;
+
+    expect(component.getOwnerHref('Pod', 'web')).toBe('/pod/web');
+    expect(state.href).toHaveBeenCalledWith('pod', 'web', 'default');
+    expect(component.getOwnerHref('UnknownOwner', 'web')).toBe('');
+    expect(state.href).toHaveBeenCalledTimes(1);
+
+    component.objectMeta = undefined;
+    expect(component.objectMeta).toEqual({});
+  });
 });

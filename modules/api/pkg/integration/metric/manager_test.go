@@ -131,3 +131,30 @@ func TestMetricManager_List(t *testing.T) {
 		}
 	}
 }
+
+func TestMetricManagerEnableAndConfigureFailures(t *testing.T) {
+	manager := NewMetricManager()
+	manager.AddClient(nil)
+	if len(manager.List()) != 0 {
+		t.Fatal("AddClient(nil) should not register a client")
+	}
+	if err := manager.Enable("missing"); err == nil {
+		t.Fatal("Enable() succeeded for an unknown integration")
+	}
+	if manager.ConfigureSidecar("%") != manager || len(manager.List()) != 0 {
+		t.Fatal("ConfigureSidecar() should retain the manager and leave invalid host unregistered")
+	}
+
+	healthy := &FakeMetricClient{healthOk: true}
+	manager.AddClient(healthy)
+	if err := manager.Enable(fakeMetricClientID); err != nil || manager.Client() != healthy {
+		t.Fatalf("Enable(healthy) error = %v; active client = %v", err, manager.Client())
+	}
+	manager.AddClient(&FakeMetricClient{healthOk: false})
+	if err := manager.Enable(fakeMetricClientID); err == nil {
+		t.Fatal("Enable() succeeded when health check failed")
+	}
+	if manager.Client() != healthy {
+		t.Fatal("failed health check replaced the active client")
+	}
+}

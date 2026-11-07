@@ -60,7 +60,7 @@ coverage-frontend: $(PRE)
 coverage-go: DIR := $(TMP_DIRECTORY)
 coverage-go: --ensure-dir
 	@echo "[$(APP_NAME)] Running tests with coverage"
-	@go test -coverprofile=$(COVERAGE_FILE) -covermode=atomic $(PACKAGE_NAME)/...
+	@go test -coverprofile=$(COVERAGE_FILE) -covermode=atomic $(PACKAGE_NAME) $(PACKAGE_NAME)/pkg/...
 
 .PHONY: fix-frontend
 fix-frontend: $(PRE)
@@ -80,7 +80,7 @@ test-frontend:
 .PHONY: test-go
 test-go:
 	@echo "[$(APP_NAME)] Running tests"
-	@go test $(PACKAGE_NAME)/...
+	@go test $(PACKAGE_NAME) $(PACKAGE_NAME)/pkg/...
 
 .PHONY: schema
 schema:

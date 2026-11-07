@@ -100,7 +100,7 @@ func main() {
 /**
 * Update the Node and Pod metrics in the provided DB
  */
-func update(client *metricsclient.Clientset, db *sql.DB, metricDuration time.Duration, metricNamespaces []string) error {
+func update(client metricsclient.Interface, db *sql.DB, metricDuration time.Duration, metricNamespaces []string) error {
 	nodeMetrics := &v1beta1.NodeMetricsList{}
 	podMetrics := &v1beta1.PodMetricsList{}
 	ctx := context.TODO()

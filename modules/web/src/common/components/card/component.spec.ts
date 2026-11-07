@@ -97,4 +97,44 @@ describe('CardComponent', () => {
     const titleNative = card.query(By.css('div[title] ')).nativeElement;
     expect(titleNative.innerHTML).toBe(title);
   });
+
+  it('toggles expansion only when the card is expandable', () => {
+    const card = new CardComponent(MESSAGES);
+
+    card.expanded = true;
+    card.expand();
+    expect(card.expanded).toBe(false);
+
+    card.expandable = false;
+    card.expand();
+    expect(card.expanded).toBe(false);
+
+    card.expanded = false;
+    card.onCardHeaderClick();
+    expect(card.expanded).toBe(false);
+
+    card.expandable = true;
+    card.onCardHeaderClick();
+    expect(card.expanded).toBe(true);
+    card.onCardHeaderClick();
+    expect(card.expanded).toBe(true);
+  });
+
+  it('combines configured title classes with expanded state classes', () => {
+    const card = new CardComponent(MESSAGES);
+    card.titleClasses = 'custom-title emphasized';
+    expect(card.getTitleClasses()).toEqual({
+      'kd-card-header': true,
+      'custom-title': true,
+      emphasized: true,
+    });
+
+    card.expanded = false;
+    card.expandable = false;
+    expect(card.getTitleClasses()).toEqual({
+      'kd-minimized-card-header': true,
+      'custom-title': true,
+      emphasized: true,
+    });
+  });
 });

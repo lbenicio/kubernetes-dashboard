@@ -18,8 +18,11 @@ import (
 	"reflect"
 	"testing"
 
+	apps "k8s.io/api/apps/v1"
+	batch "k8s.io/api/batch/v1"
 	v1 "k8s.io/api/core/v1"
 	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes/fake"
 
 	"k8s.io/dashboard/types"
@@ -86,6 +89,76 @@ func TestNewResourceController(t *testing.T) {
 	podCtrl.Get([]v1.Pod{pod}, []v1.Event{})
 	podCtrl.UID()
 	podCtrl.GetLogSources([]v1.Pod{pod})
+}
+
+func TestNewResourceControllerSupportsEachOwnerKind(t *testing.T) {
+	tests := []struct {
+		name     string
+		kind     string
+		object   runtime.Object
+		uid      string
+		wantType string
+	}{
+		{name: "job", kind: types.ResourceKindJob, object: &batch.Job{TypeMeta: meta.TypeMeta{Kind: "Job", APIVersion: "batch/v1"}, ObjectMeta: meta.ObjectMeta{Name: "job", Namespace: "ns", UID: "job-uid"}}, uid: "job-uid", wantType: types.ResourceKindJob},
+		{name: "pod", kind: types.ResourceKindPod, object: &v1.Pod{TypeMeta: meta.TypeMeta{Kind: "Pod", APIVersion: "v1"}, ObjectMeta: meta.ObjectMeta{Name: "pod", Namespace: "ns", UID: "pod-uid"}}, uid: "pod-uid", wantType: types.ResourceKindPod},
+		{name: "replicaset", kind: types.ResourceKindReplicaSet, object: &apps.ReplicaSet{TypeMeta: meta.TypeMeta{Kind: "ReplicaSet", APIVersion: "apps/v1"}, ObjectMeta: meta.ObjectMeta{Name: "replicaset", Namespace: "ns", UID: "replicaset-uid"}}, uid: "replicaset-uid", wantType: types.ResourceKindReplicaSet},
+		{name: "replicationcontroller", kind: types.ResourceKindReplicationController, object: &v1.ReplicationController{TypeMeta: meta.TypeMeta{Kind: "ReplicationController", APIVersion: "v1"}, ObjectMeta: meta.ObjectMeta{Name: "replicationcontroller", Namespace: "ns", UID: "rc-uid"}}, uid: "rc-uid", wantType: types.ResourceKindReplicationController},
+		{name: "daemonset", kind: types.ResourceKindDaemonSet, object: &apps.DaemonSet{TypeMeta: meta.TypeMeta{Kind: "DaemonSet", APIVersion: "apps/v1"}, ObjectMeta: meta.ObjectMeta{Name: "daemonset", Namespace: "ns", UID: "daemonset-uid"}}, uid: "daemonset-uid", wantType: types.ResourceKindDaemonSet},
+		{name: "statefulset", kind: types.ResourceKindStatefulSet, object: &apps.StatefulSet{TypeMeta: meta.TypeMeta{Kind: "StatefulSet", APIVersion: "apps/v1"}, ObjectMeta: meta.ObjectMeta{Name: "statefulset", Namespace: "ns", UID: "statefulset-uid"}}, uid: "statefulset-uid", wantType: types.ResourceKindStatefulSet},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			object := tc.object
+			controller, err := NewResourceController(meta.OwnerReference{Kind: tc.kind, Name: tc.kind}, "ns", fake.NewClientset(object))
+			if err != nil {
+				t.Fatalf("NewResourceController() error = %v", err)
+			}
+			if got := string(controller.UID()); got != string(tc.uid) {
+				t.Errorf("UID() = %q; want %q", got, tc.uid)
+			}
+			owner := controller.Get(nil, nil)
+			if string(owner.TypeMeta.Kind) != tc.wantType {
+				t.Errorf("Get().TypeMeta.Kind = %q; want %q", owner.TypeMeta.Kind, tc.wantType)
+			}
+			_ = controller.GetLogSources(nil)
+		})
+	}
+}
+
+func TestNewResourceControllerReportsUnknownAndMissingOwners(t *testing.T) {
+	if controller, err := NewResourceController(meta.OwnerReference{Kind: "Unknown", Name: "missing"}, "ns", fake.NewClientset()); err == nil || controller != nil {
+		t.Fatalf("unknown kind returned %v, %v; want nil controller and error", controller, err)
+	}
+	for _, kind := range []string{
+		types.ResourceKindJob,
+		types.ResourceKindPod,
+		types.ResourceKindReplicaSet,
+		types.ResourceKindReplicationController,
+		types.ResourceKindDaemonSet,
+		types.ResourceKindStatefulSet,
+	} {
+		t.Run(kind, func(t *testing.T) {
+			if controller, err := NewResourceController(meta.OwnerReference{Kind: kind, Name: "missing"}, "ns", fake.NewClientset()); err == nil || controller != nil {
+				t.Fatalf("missing %s returned %v, %v; want nil controller and error", kind, controller, err)
+			}
+		})
+	}
+}
+
+func TestReplicationControllerControllerHandlesEmptyTemplate(t *testing.T) {
+	controller := ReplicationControllerController(v1.ReplicationController{})
+	owner := controller.Get(nil, nil)
+	if string(owner.TypeMeta.Kind) != types.ResourceKindReplicationController {
+		t.Errorf("Get().TypeMeta.Kind = %q", owner.TypeMeta.Kind)
+	}
+	if owner.ContainerImages != nil || owner.InitContainerImages != nil {
+		t.Errorf("empty pod template images = %v and %v; want nil", owner.ContainerImages, owner.InitContainerImages)
+	}
+	sources := controller.GetLogSources(nil)
+	if sources.ContainerNames != nil || sources.InitContainerNames != nil {
+		t.Errorf("empty pod template names = %v and %v; want nil", sources.ContainerNames, sources.InitContainerNames)
+	}
 }
 
 func newPod(name string) v1.Pod {
