@@ -40,6 +40,25 @@ func TestCreateHTTPAPIHandler(t *testing.T) {
 	}
 }
 
+func TestParseNamespacePathParameterTrimsAndDropsEmptyEntries(t *testing.T) {
+	ws := new(restful.WebService)
+	ws.Path("/probe")
+	container := restful.NewContainer()
+	container.Add(ws.Route(ws.GET("/{namespace}").To(func(request *restful.Request, response *restful.Response) {
+		query := parseNamespacePathParameter(request)
+		if !query.Matches("default") || !query.Matches("team-a") || query.Matches(" ") {
+			t.Errorf("namespace query did not trim/drop values")
+		}
+		response.WriteHeader(http.StatusOK)
+	})))
+	request := httptest.NewRequest(http.MethodGet, "/probe/default,%20%20,team-a%20", nil)
+	response := httptest.NewRecorder()
+	container.ServeHTTP(response, request)
+	if response.Code != http.StatusOK {
+		t.Fatalf("namespace probe returned %d: %s", response.Code, response.Body.String())
+	}
+}
+
 func TestCsrfTokenEndpoint(t *testing.T) {
 	response := serveAPIRequest(t, http.MethodGet, "/api/v1/csrftoken/login", "")
 	if response.Code != http.StatusOK {

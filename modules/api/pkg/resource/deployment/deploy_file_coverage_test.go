@@ -1,0 +1,101 @@
+// Copyright 2026 The Kubernetes Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+
+package deployment
+
+import (
+	"io"
+	"net/http"
+	"strings"
+	"testing"
+
+	"k8s.io/client-go/rest"
+)
+
+type deploymentRoundTripper func(*http.Request) (*http.Response, error)
+
+func (f deploymentRoundTripper) RoundTrip(request *http.Request) (*http.Response, error) {
+	return f(request)
+}
+
+func TestDeployAppFromFileCreatesNamespacedAndClusterResources(t *testing.T) {
+	for _, test := range []struct {
+		name           string
+		kind           string
+		namespaced     bool
+		namespace      string
+		manifest       string
+		wantCreatePath string
+	}{
+		{
+			name:           "namespace supplied by request",
+			kind:           "Pod",
+			namespaced:     true,
+			namespace:      "team-a",
+			manifest:       "apiVersion: v1\nkind: Pod\nmetadata:\n  name: web\n",
+			wantCreatePath: "/api/v1/namespaces/team-a/pods",
+		},
+		{
+			name:           "all namespaces uses manifest namespace",
+			kind:           "Pod",
+			namespaced:     true,
+			namespace:      "_all",
+			manifest:       "apiVersion: v1\nkind: Pod\nmetadata:\n  name: web\n  namespace: manifest-ns\n",
+			wantCreatePath: "/api/v1/namespaces/manifest-ns/pods",
+		},
+		{
+			name:           "cluster scoped resource",
+			kind:           "Node",
+			namespaced:     false,
+			namespace:      "ignored",
+			manifest:       "apiVersion: v1\nkind: Node\nmetadata:\n  name: worker\n",
+			wantCreatePath: "/api/v1/nodes",
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			var createPath string
+			config := &rest.Config{
+				Host: "http://kubernetes.test",
+				Transport: deploymentRoundTripper(func(request *http.Request) (*http.Response, error) {
+					var statusCode int
+					var body string
+					if request.Method == http.MethodGet && request.URL.Path == "/api/v1" {
+						statusCode = http.StatusOK
+						body = `{"kind":"APIResourceList","apiVersion":"v1","resources":[{"name":"pods","singularName":"pod","namespaced":true,"kind":"Pod"},{"name":"nodes","singularName":"node","namespaced":false,"kind":"Node"}]}`
+					} else if request.Method == http.MethodPost {
+						createPath = request.URL.Path
+						statusCode = http.StatusCreated
+						body = `{"apiVersion":"v1","kind":"` + test.kind + `","metadata":{"name":"created"}}`
+					} else {
+						statusCode = http.StatusNotFound
+						body = `{"kind":"Status","apiVersion":"v1","status":"Failure","code":404}`
+					}
+					return &http.Response{StatusCode: statusCode, Header: http.Header{"Content-Type": []string{"application/json"}}, Body: io.NopCloser(strings.NewReader(body)), Request: request}, nil
+				}),
+			}
+			deployed, err := DeployAppFromFile(config, &AppDeploymentFromFileSpec{Namespace: test.namespace, Content: test.manifest})
+			if err != nil || !deployed {
+				t.Fatalf("DeployAppFromFile() = %v, %v", deployed, err)
+			}
+			if createPath != test.wantCreatePath {
+				t.Errorf("dynamic create path = %q, want %q", createPath, test.wantCreatePath)
+			}
+		})
+	}
+}
+
+func TestDeployAppFromFileRejectsUnknownResourceKind(t *testing.T) {
+	config := &rest.Config{
+		Host: "http://kubernetes.test",
+		Transport: deploymentRoundTripper(func(request *http.Request) (*http.Response, error) {
+			body := `{"kind":"APIResourceList","apiVersion":"v1","resources":[{"name":"pods","singularName":"pod","namespaced":true,"kind":"Pod"}]}`
+			return &http.Response{StatusCode: http.StatusOK, Header: http.Header{"Content-Type": []string{"application/json"}}, Body: io.NopCloser(strings.NewReader(body)), Request: request}, nil
+		}),
+	}
+	deployed, err := DeployAppFromFile(config, &AppDeploymentFromFileSpec{Namespace: "default", Content: "apiVersion: v1\nkind: Unknown\nmetadata:\n  name: object\n"})
+	if deployed || err == nil || !strings.Contains(err.Error(), "unknown resource kind: Unknown") {
+		t.Errorf("DeployAppFromFile(unknown kind) = %v, %v", deployed, err)
+	}
+}

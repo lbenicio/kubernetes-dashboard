@@ -107,3 +107,17 @@ func TestDaemonSetClientBackedListDetailsPodsAndRestart(t *testing.T) {
 		t.Fatal("RestartDaemonSet() succeeded for missing daemon set")
 	}
 }
+
+func TestGetDaemonSetServicesFiltersBySelector(t *testing.T) {
+	daemonSet := &apps.DaemonSet{ObjectMeta: metav1.ObjectMeta{Name: "agent", Namespace: "default"}, Spec: apps.DaemonSetSpec{Selector: &metav1.LabelSelector{MatchLabels: map[string]string{"app": "agent"}}}}
+	matching := &corev1.Service{ObjectMeta: metav1.ObjectMeta{Name: "agent-service", Namespace: "default"}, Spec: corev1.ServiceSpec{Selector: map[string]string{"app": "agent"}}}
+	unmatched := &corev1.Service{ObjectMeta: metav1.ObjectMeta{Name: "other-service", Namespace: "default"}, Spec: corev1.ServiceSpec{Selector: map[string]string{"app": "other"}}}
+	client := fake.NewSimpleClientset(daemonSet, matching, unmatched)
+	services, err := GetDaemonSetServices(client, dataselect.NoDataSelect, "default", "agent")
+	if err != nil || services.ListMeta.TotalItems != 1 || services.Services[0].ObjectMeta.Name != "agent-service" {
+		t.Fatalf("GetDaemonSetServices() = %#v, %v", services, err)
+	}
+	if _, err := GetDaemonSetServices(client, dataselect.NoDataSelect, "default", "missing"); err == nil {
+		t.Fatal("GetDaemonSetServices() succeeded for missing daemon set")
+	}
+}

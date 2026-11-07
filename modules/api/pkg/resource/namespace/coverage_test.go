@@ -142,3 +142,17 @@ func TestGetNamespaceListFromChannelsReturnsAndPropagatesErrors(t *testing.T) {
 		t.Error("GetNamespaceListFromChannels(error) error = nil")
 	}
 }
+
+func TestGetNamespaceListUsesClient(t *testing.T) {
+	client := fake.NewSimpleClientset(&corev1.Namespace{ObjectMeta: metav1.ObjectMeta{Name: "default"}, Status: corev1.NamespaceStatus{Phase: corev1.NamespaceActive}})
+	got, err := GetNamespaceList(client, dataselect.NoDataSelect)
+	if err != nil || got.ListMeta.TotalItems != 1 || got.Namespaces[0].ObjectMeta.Name != "default" || got.Namespaces[0].Phase != corev1.NamespaceActive {
+		t.Fatalf("GetNamespaceList() = %#v, %v", got, err)
+	}
+	client.PrependReactor("list", "namespaces", func(clienttesting.Action) (bool, runtime.Object, error) {
+		return true, nil, errors.New("list failed")
+	})
+	if _, err := GetNamespaceList(client, dataselect.NoDataSelect); err == nil || err.Error() != "list failed" {
+		t.Fatalf("GetNamespaceList() error = %v; want list failed", err)
+	}
+}

@@ -28,6 +28,7 @@ import (
 
 	apimachinery "k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/kubernetes/fake"
 	"k8s.io/client-go/rest"
 
 	integrationapi "k8s.io/dashboard/api/pkg/integration/api"
@@ -481,5 +482,44 @@ func TestCreateSidecarClient(t *testing.T) {
 			t.Errorf("Test Case: %s. Expected client to be of type: %v, but got %v",
 				c.info, reflect.TypeOf(c.expected), reflect.TypeOf(sidecarClient.client))
 		}
+	}
+}
+
+func TestSidecarClientHealthIdentityAndMultiMetricDownload(t *testing.T) {
+	var unconfigured sidecarClient
+	if err := unconfigured.HealthCheck(); err == nil {
+		t.Fatal("HealthCheck() succeeded without a configured REST client")
+	}
+
+	client := sidecarClient{client: fakeSidecarClient}
+	if err := client.HealthCheck(); err != nil {
+		t.Fatalf("HealthCheck() error = %v", err)
+	}
+	if got := client.ID(); got != integrationapi.SidecarIntegrationID {
+		t.Errorf("ID() = %q, want %q", got, integrationapi.SidecarIntegrationID)
+	}
+
+	selectors := []metricapi.ResourceSelector{getResourceSelector("a", types.ResourceKindPod, "P1", "U1")}
+	promises := client.DownloadMetrics(selectors, []string{"cpu-usage", "memory-usage"}, &metricapi.CachedResources{})
+	metrics, err := promises.GetMetrics()
+	if err != nil {
+		t.Fatalf("DownloadMetrics() error = %v", err)
+	}
+	if len(metrics) != 2 || metrics[0].MetricName != "cpu-usage" || metrics[1].MetricName != "memory-usage" {
+		t.Errorf("DownloadMetrics() = %#v", metrics)
+	}
+}
+
+func TestCreateInClusterSidecarClient(t *testing.T) {
+	metricClient, err := CreateSidecarClient("", fake.NewClientset())
+	if err != nil {
+		t.Fatalf("CreateSidecarClient() error = %v", err)
+	}
+	client, ok := metricClient.(sidecarClient)
+	if !ok {
+		t.Fatalf("client type = %T, want sidecarClient", metricClient)
+	}
+	if _, ok := client.client.(inClusterSidecarClient); !ok {
+		t.Errorf("REST client type = %T, want inClusterSidecarClient", client.client)
 	}
 }
