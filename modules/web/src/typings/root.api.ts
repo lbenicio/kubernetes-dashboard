@@ -1307,4 +1307,9 @@ export interface SJSMessageEvent extends SockJSSimpleEvent {
 export interface User {
   name: string;
   authenticated: boolean;
+  email?: string;
+  picture?: string;
+  groups?: string[];
+  scopes?: string[];
+  authMethod?: 'header' | 'token' | 'oidc' | 'anonymous';
 }
