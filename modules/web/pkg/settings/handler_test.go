@@ -30,8 +30,10 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/pflag"
 	v1 "k8s.io/api/authorization/v1"
 	"k8s.io/client-go/kubernetes"
+	dashboardclient "k8s.io/dashboard/client"
 )
 
 func TestToSelfSubjectAccessReview(t *testing.T) {
@@ -150,6 +152,113 @@ func invokeSettingsHandler(handler gin.HandlerFunc, method, path string) *httpte
 	response := httptest.NewRecorder()
 	context, _ := gin.CreateTestContext(response)
 	context.Request = httptest.NewRequest(method, path, nil)
+	handler(context)
+	return response
+}
+
+func TestSettingsMutationHandlersSaveAndDelete(t *testing.T) {
+	cacheFlag := pflag.Lookup("cache-enabled")
+	previousCache := cacheFlag.Value.String()
+	if err := cacheFlag.Value.Set("false"); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = cacheFlag.Value.Set(previousCache) })
+	dashboardclient.Init(dashboardclient.WithMasterUrl("https://kubernetes.example.test"))
+
+	recording := &recordingSettingsManager{}
+	previousManager := manager
+	manager = recording
+	t.Cleanup(func() { manager = previousManager })
+
+	settingsBody := `{"itemsPerPage":25,"defaultNamespace":"staging"}`
+	settingsResponse := invokeSettingsMutation(t, handleSettingsGlobalSave, http.MethodPut, "/settings", settingsBody, nil)
+	if settingsResponse.Code != http.StatusNoContent {
+		t.Fatalf("settings PUT status = %d, want %d: %s", settingsResponse.Code, http.StatusNoContent, settingsResponse.Body.String())
+	}
+	if recording.savedSettings == nil || recording.savedSettings.ItemsPerPage == nil || *recording.savedSettings.ItemsPerPage != 25 || recording.savedSettings.DefaultNamespace == nil || *recording.savedSettings.DefaultNamespace != "staging" {
+		t.Fatalf("saved settings = %#v", recording.savedSettings)
+	}
+
+	pinnedBody := `{"kind":"Pod","name":"web","namespace":"default","namespaced":true}`
+	pinnedResponse := invokeSettingsMutation(t, handleSettingsSavePinned, http.MethodPut, "/settings/pinnedresources", pinnedBody, nil)
+	if pinnedResponse.Code != http.StatusNoContent {
+		t.Fatalf("pinned resource PUT status = %d, want %d: %s", pinnedResponse.Code, http.StatusNoContent, pinnedResponse.Body.String())
+	}
+	if recording.savedPinned == nil || *recording.savedPinned != (PinnedResource{Kind: "Pod", Name: "web", Namespace: "default", Namespaced: true}) {
+		t.Fatalf("saved pinned resource = %#v", recording.savedPinned)
+	}
+
+	for _, test := range []struct {
+		name   string
+		params gin.Params
+		want   PinnedResource
+	}{
+		{
+			name:   "namespaced resource",
+			params: gin.Params{{Key: "kind", Value: "Pod"}, {Key: "nameOrNamespace", Value: "default"}, {Key: "name", Value: "web"}},
+			want:   PinnedResource{Kind: "Pod", Name: "web", Namespace: "default"},
+		},
+		{
+			name:   "cluster scoped resource",
+			params: gin.Params{{Key: "kind", Value: "Node"}, {Key: "nameOrNamespace", Value: "node-1"}},
+			want:   PinnedResource{Kind: "Node", Name: "node-1"},
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			response := httptest.NewRecorder()
+			context, _ := gin.CreateTestContext(response)
+			context.Request = httptest.NewRequest(http.MethodDelete, "/settings/pinnedresources", nil)
+			context.Request.Header.Set("Authorization", "Bearer settings-test-token")
+			context.Params = test.params
+			handleSettingsDeletePinned(context)
+			if response.Code != http.StatusNoContent {
+				t.Fatalf("pinned resource DELETE status = %d, want %d: %s", response.Code, http.StatusNoContent, response.Body.String())
+			}
+			if recording.deletedPinned == nil || *recording.deletedPinned != test.want {
+				t.Fatalf("deleted pinned resource = %#v, want %#v", recording.deletedPinned, test.want)
+			}
+		})
+	}
+}
+
+type recordingSettingsManager struct {
+	savedSettings *Settings
+	savedPinned   *PinnedResource
+	deletedPinned *PinnedResource
+}
+
+func (in *recordingSettingsManager) GetGlobalSettings(kubernetes.Interface) *Settings {
+	return nil
+}
+
+func (in *recordingSettingsManager) SaveGlobalSettings(_ kubernetes.Interface, settings *Settings) error {
+	in.savedSettings = settings
+	return nil
+}
+
+func (in *recordingSettingsManager) GetPinnedResources(kubernetes.Interface) []PinnedResource {
+	return nil
+}
+
+func (in *recordingSettingsManager) SavePinnedResource(_ kubernetes.Interface, resource *PinnedResource) error {
+	in.savedPinned = resource
+	return nil
+}
+
+func (in *recordingSettingsManager) DeletePinnedResource(_ kubernetes.Interface, resource *PinnedResource) error {
+	copy := *resource
+	in.deletedPinned = &copy
+	return nil
+}
+
+func invokeSettingsMutation(t *testing.T, handler gin.HandlerFunc, method, path, body string, params gin.Params) *httptest.ResponseRecorder {
+	t.Helper()
+	response := httptest.NewRecorder()
+	context, _ := gin.CreateTestContext(response)
+	context.Request = httptest.NewRequest(method, path, strings.NewReader(body))
+	context.Request.Header.Set("Content-Type", "application/json")
+	context.Request.Header.Set("Authorization", "Bearer settings-test-token")
+	context.Params = params
 	handler(context)
 	return response
 }

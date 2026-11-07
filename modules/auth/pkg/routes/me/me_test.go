@@ -31,8 +31,10 @@ package login
 import (
 	"encoding/base64"
 	"encoding/json"
+	"io"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -160,6 +162,85 @@ func TestOIDCMeUsesSessionTokenForClientRequest(t *testing.T) {
 	}
 }
 
+func TestMeReturnsAuthenticatedBearerUserAfterDiscovery(t *testing.T) {
+	setAnonymousAdminForMeTest(t, false)
+	token := unsignedJWT(t, map[string]interface{}{
+		"kubernetes.io": map[string]interface{}{
+			"serviceaccount": map[string]interface{}{"name": "dashboard", "uid": "uid-123"},
+		},
+	})
+	initializeMeKubernetesClient(t, "Bearer "+token)
+
+	request := httptest.NewRequest(http.MethodGet, "/api/v1/me", nil)
+	request.Header.Set("Authorization", "Bearer "+token)
+	user, status, err := me(request, httptest.NewRecorder())
+	if err != nil || status != http.StatusOK {
+		t.Fatalf("me() = (%#v, %d, %v), want an authenticated response", user, status, err)
+	}
+	if user.Name != "dashboard" || user.AuthMethod != "header" || !user.Authenticated {
+		t.Fatalf("me() user = %#v", user)
+	}
+}
+
+func TestAnonymousMeReturnsAdministratorAfterDiscovery(t *testing.T) {
+	setAnonymousAdminForMeTest(t, true)
+	initializeMeKubernetesClient(t, "")
+	request := httptest.NewRequest(http.MethodGet, "/api/v1/me", nil)
+	request.AddCookie(&http.Cookie{Name: "kd-session-0", Value: "stale"})
+	request.AddCookie(&http.Cookie{Name: "kd-oidc-state", Value: "stale"})
+	response := httptest.NewRecorder()
+
+	user, status, err := me(request, response)
+	if err != nil || status != http.StatusOK {
+		t.Fatalf("anonymous me() = (%#v, %d, %v), want success", user, status, err)
+	}
+	if user.Name != "Administrator" || user.AuthMethod != "anonymous" || !user.Authenticated {
+		t.Fatalf("anonymous me() user = %#v", user)
+	}
+	assertMeCookiesCleared(t, response)
+}
+
+func TestOIDCMeReturnsSessionProfileAfterDiscovery(t *testing.T) {
+	setAnonymousAdminForMeTest(t, false)
+	key := base64.StdEncoding.EncodeToString([]byte(strings.Repeat("o", 32)))
+	if err := client.ConfigureSessionKey(key); err != nil {
+		t.Fatalf("ConfigureSessionKey() error = %v", err)
+	}
+	initializeMeKubernetesClient(t, "Bearer verified-id-token")
+	seedRequest := httptest.NewRequest(http.MethodGet, "/api/v1/me", nil)
+	seedResponse := httptest.NewRecorder()
+	session := client.BrowserSession{
+		OIDC:            true,
+		KubernetesToken: "verified-id-token",
+		Name:            "Alice Example",
+		Email:           "alice@example.test",
+		Picture:         "https://images.example.test/alice.png",
+		Groups:          []string{"developers"},
+		Scopes:          []string{"openid", "profile"},
+		Subject:         "subject-1",
+		ExpiresAt:       time.Now().Add(time.Hour),
+		TokenExpiry:     time.Now().Add(time.Hour),
+	}
+	if err := client.SetBrowserSessionCookie(seedResponse, seedRequest, session); err != nil {
+		t.Fatalf("SetBrowserSessionCookie() error = %v", err)
+	}
+	request := httptest.NewRequest(http.MethodGet, "/api/v1/me", nil)
+	for _, cookie := range seedResponse.Result().Cookies() {
+		request.AddCookie(cookie)
+	}
+
+	user, status, err := me(request, httptest.NewRecorder())
+	if err != nil || status != http.StatusOK {
+		t.Fatalf("OIDC me() = (%#v, %d, %v), want success", user, status, err)
+	}
+	if user.Name != session.Name || user.Email != session.Email || user.Picture != session.Picture || user.AuthMethod != "oidc" || !user.Authenticated {
+		t.Fatalf("OIDC me() user = %#v", user)
+	}
+	if len(user.Groups) != 1 || user.Groups[0] != "developers" || len(user.Scopes) != 2 {
+		t.Fatalf("OIDC groups/scopes = %#v/%#v", user.Groups, user.Scopes)
+	}
+}
+
 func unsignedJWT(t *testing.T, claims map[string]interface{}) string {
 	t.Helper()
 	header, err := json.Marshal(map[string]string{"alg": "none", "typ": "JWT"})
@@ -171,4 +252,64 @@ func unsignedJWT(t *testing.T, claims map[string]interface{}) string {
 		t.Fatalf("marshal JWT claims: %v", err)
 	}
 	return base64.RawURLEncoding.EncodeToString(header) + "." + base64.RawURLEncoding.EncodeToString(body) + "."
+}
+
+func setAnonymousAdminForMeTest(t *testing.T, enabled bool) {
+	t.Helper()
+	flag := pflag.Lookup("anonymous-admin")
+	previous := flag.Value.String()
+	if err := flag.Value.Set(strconv.FormatBool(enabled)); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = flag.Value.Set(previous) })
+}
+
+func initializeMeKubernetesClient(t *testing.T, wantAuthorization string) {
+	t.Helper()
+	cacheFlag := pflag.Lookup("cache-enabled")
+	previousCache := cacheFlag.Value.String()
+	if err := cacheFlag.Value.Set("false"); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = cacheFlag.Value.Set(previousCache) })
+	client.Init(
+		client.WithMasterUrl("https://kubernetes.example.test"),
+		client.WithWrapTransport(func(http.RoundTripper) http.RoundTripper {
+			return meRoundTripFunc(func(request *http.Request) (*http.Response, error) {
+				if request.URL.Path != "/version" || request.Header.Get("Authorization") != wantAuthorization {
+					return &http.Response{
+						StatusCode: http.StatusUnauthorized,
+						Header:     http.Header{"Content-Type": []string{"application/json"}},
+						Body:       io.NopCloser(strings.NewReader(`{"message":"unexpected request"}`)),
+						Request:    request,
+					}, nil
+				}
+				return &http.Response{
+					StatusCode: http.StatusOK,
+					Header:     http.Header{"Content-Type": []string{"application/json"}},
+					Body:       io.NopCloser(strings.NewReader(`{"major":"1","minor":"37","gitVersion":"v1.37.0"}`)),
+					Request:    request,
+				}, nil
+			})
+		}),
+	)
+}
+
+type meRoundTripFunc func(*http.Request) (*http.Response, error)
+
+func (in meRoundTripFunc) RoundTrip(request *http.Request) (*http.Response, error) {
+	return in(request)
+}
+
+func assertMeCookiesCleared(t *testing.T, response *httptest.ResponseRecorder) {
+	t.Helper()
+	cleared := map[string]bool{}
+	for _, cookie := range response.Result().Cookies() {
+		if cookie.MaxAge < 0 {
+			cleared[cookie.Name] = true
+		}
+	}
+	if !cleared["kd-session-0"] || !cleared["kd-oidc-state"] {
+		t.Fatalf("stale cookies were not cleared: %v", cleared)
+	}
 }
