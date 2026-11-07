@@ -25,6 +25,7 @@ package provider
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -152,6 +153,53 @@ func TestDashboardRouterAndHandlers(t *testing.T) {
 			t.Errorf("GET %s with broken DB status = %d", path, recorder.Code)
 		}
 	}
+}
+
+func TestDashboardHandlersLogResponseWriteErrors(t *testing.T) {
+	db := newDashboardTestDB(t)
+	insertMetric(t, db, `INSERT INTO nodes(uid, name, cpu, memory, time) VALUES (?, ?, ?, ?, ?)`, "node-uid", "node-a", "25", "100", "2026-11-07T00:00:00Z")
+	insertMetric(t, db, `INSERT INTO pods(uid, name, namespace, container, cpu, memory, time) VALUES (?, ?, ?, ?, ?, ?, ?)`, "pod-uid", "pod-a", "default", "container-a", "10", "100", "2026-11-07T00:00:00Z")
+	for _, test := range []struct {
+		name    string
+		handler http.HandlerFunc
+		request *http.Request
+	}{
+		{
+			name:    "node metrics",
+			handler: nodeHandler(db),
+			request: mux.SetURLVars(httptest.NewRequest(http.MethodGet, "/nodes/node-a/metrics/cpu/last", nil), map[string]string{"Name": "node-a", "MetricName": "cpu"}),
+		},
+		{
+			name:    "pod metrics",
+			handler: podHandler(db),
+			request: mux.SetURLVars(httptest.NewRequest(http.MethodGet, "/namespaces/default/pod-list/pod-a/metrics/cpu/last", nil), map[string]string{"Namespace": "default", "Name": "pod-a", "MetricName": "cpu"}),
+		},
+		{
+			name:    "default route",
+			handler: defaultHandler,
+			request: httptest.NewRequest(http.MethodGet, "/unknown", nil),
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			writer := &failingResponseWriter{header: make(http.Header)}
+			test.handler(writer, test.request)
+			if !writer.writeCalled {
+				t.Fatal("handler did not attempt to write its response")
+			}
+		})
+	}
+}
+
+type failingResponseWriter struct {
+	header      http.Header
+	writeCalled bool
+}
+
+func (in *failingResponseWriter) Header() http.Header { return in.header }
+func (in *failingResponseWriter) WriteHeader(int)     {}
+func (in *failingResponseWriter) Write([]byte) (int, error) {
+	in.writeCalled = true
+	return 0, errors.New("response write failed")
 }
 
 func newDashboardTestDB(t *testing.T) *sql.DB {

@@ -348,6 +348,7 @@ func RefreshSession(ctx context.Context, session *client.BrowserSession) (bool, 
 		AccessToken:  session.AccessToken,
 		RefreshToken: session.RefreshToken,
 		TokenType:    "Bearer",
+		Expiry:       time.Now(),
 	}
 	refreshed, err := instance.oauthConfig.TokenSource(ctx, previousToken).Token()
 	if err != nil {

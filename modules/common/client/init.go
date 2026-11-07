@@ -43,6 +43,7 @@ type configBuilder struct {
 	insecure       bool
 	caBundlePath   string
 	sessionKey     string
+	wrapTransport  func(http.RoundTripper) http.RoundTripper
 }
 
 func (in *configBuilder) buildBaseConfig() (config *rest.Config, err error) {
@@ -76,6 +77,9 @@ func (in *configBuilder) buildBaseConfig() (config *rest.Config, err error) {
 func (in *configBuilder) setConfigDefaults(config *rest.Config) *rest.Config {
 	if config == nil {
 		return nil
+	}
+	if in.wrapTransport != nil {
+		config.WrapTransport = in.wrapTransport
 	}
 
 	config.ContentType = DefaultContentType
@@ -142,6 +146,13 @@ func WithSessionEncryptionKey(key string) Option {
 	}
 }
 
+// WithWrapTransport wraps Kubernetes API requests made by clients configured through this package.
+func WithWrapTransport(wrap func(http.RoundTripper) http.RoundTripper) Option {
+	return func(c *configBuilder) {
+		c.wrapTransport = wrap
+	}
+}
+
 func configFromRequest(request *http.Request) (*rest.Config, error) {
 	if args.AnonymousAdminEnabled() {
 		return rest.CopyConfig(baseConfig), nil
@@ -174,10 +185,16 @@ func buildConfigFromAuthInfo(authInfo *api.AuthInfo) (*rest.Config, error) {
 
 	cmdCfg.CurrentContext = DefaultCmdConfigName
 
-	return clientcmd.NewDefaultClientConfig(
+	config, err := clientcmd.NewDefaultClientConfig(
 		*cmdCfg,
 		&clientcmd.ConfigOverrides{},
 	).ClientConfig()
+	if err != nil {
+		return nil, err
+	}
+	config.Transport = baseConfig.Transport
+	config.WrapTransport = baseConfig.WrapTransport
+	return config, nil
 }
 
 func buildAuthInfo(request *http.Request) (*api.AuthInfo, error) {

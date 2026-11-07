@@ -35,6 +35,55 @@ func TestMetricsUtil(t *testing.T) {
 	ginkgo.RunSpecs(t, "Sidecar Database Test")
 }
 
+func TestDatabaseOperationsReturnTransactionAndTableErrors(t *testing.T) {
+	db, err := sql.Open("sqlite", ":memory:")
+	if err != nil {
+		t.Fatal(err)
+	}
+	db.SetMaxOpenConns(1)
+	if err := database.CreateDatabase(db); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.Exec("DROP TABLE nodes"); err != nil {
+		t.Fatal(err)
+	}
+	nodes := nodeMetrics()
+	if err := database.UpdateDatabase(db, &nodes, &v1beta1.PodMetricsList{}); err == nil {
+		t.Fatal("UpdateDatabase() succeeded without the nodes table")
+	}
+	_ = db.Close()
+
+	cullDB, err := sql.Open("sqlite", ":memory:")
+	if err != nil {
+		t.Fatal(err)
+	}
+	cullDB.SetMaxOpenConns(1)
+	if err := database.CreateDatabase(cullDB); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := cullDB.Exec("DROP TABLE pods"); err != nil {
+		t.Fatal(err)
+	}
+	if err := database.CullDatabase(cullDB, time.Minute); err == nil {
+		t.Fatal("CullDatabase() succeeded without the pods table")
+	}
+	_ = cullDB.Close()
+
+	closedDB, err := sql.Open("sqlite", ":memory:")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := closedDB.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if err := database.UpdateDatabase(closedDB, &v1beta1.NodeMetricsList{}, &v1beta1.PodMetricsList{}); err == nil {
+		t.Fatal("UpdateDatabase() succeeded with a closed database")
+	}
+	if err := database.CullDatabase(closedDB, time.Minute); err == nil {
+		t.Fatal("CullDatabase() succeeded with a closed database")
+	}
+}
+
 func nodeMetrics() v1beta1.NodeMetricsList {
 	tmp := v1beta1.NodeMetrics{}
 	tmp.SetName("testing")

@@ -118,6 +118,24 @@ func TestSetAndReadBrowserSessionCookie(t *testing.T) {
 	}
 }
 
+func TestWriteProtectedCookieUsesSecureSessionAttributes(t *testing.T) {
+	previousSecure := cookieSecure
+	SetSessionCookieSecure(true)
+	t.Cleanup(func() { SetSessionCookieSecure(previousSecure) })
+	response := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodGet, "https://dashboard.example.test/", nil)
+	WriteProtectedCookie(response, request, "state", "protected-value", 60)
+	cookies := response.Result().Cookies()
+	if len(cookies) != 1 {
+		t.Fatalf("WriteProtectedCookie() wrote %d cookies, want 1", len(cookies))
+	}
+	cookie := cookies[0]
+	if cookie.Name != "state" || cookie.Value != "protected-value" || cookie.MaxAge != 60 ||
+		!cookie.HttpOnly || !cookie.Secure || cookie.Path != "/" || cookie.SameSite != http.SameSiteLaxMode {
+		t.Fatalf("protected cookie attributes = %#v", cookie)
+	}
+}
+
 func TestSetBrowserSessionCookieRejectsInvalidOrOversizedSessions(t *testing.T) {
 	configureTestSessionKey(t)
 	request := httptest.NewRequest(http.MethodGet, "https://dashboard.example.test/", nil)

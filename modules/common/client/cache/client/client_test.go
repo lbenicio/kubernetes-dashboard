@@ -30,6 +30,7 @@ import (
 	"testing"
 
 	corev1 "k8s.io/api/core/v1"
+	extensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
 
@@ -70,6 +71,34 @@ func TestNewCachedClientPerformsCoreListThroughTransport(t *testing.T) {
 		}
 	default:
 		t.Error("cached client did not issue a request")
+	}
+}
+
+func TestNewCachedExtensionsClientWrapsTypedAndDiscoveryClients(t *testing.T) {
+	cache.Clear[extensionsv1.CustomResourceDefinitionList]()
+	config := &rest.Config{
+		Host: "https://kubernetes.example.test",
+		WrapTransport: func(http.RoundTripper) http.RoundTripper {
+			return roundTripFunc(func(request *http.Request) (*http.Response, error) {
+				return &http.Response{
+					StatusCode: http.StatusOK,
+					Header:     http.Header{"Content-Type": []string{"application/json"}},
+					Body:       io.NopCloser(strings.NewReader(`{"items":[]}`)),
+					Request:    request,
+				}, nil
+			})
+		},
+	}
+	client, err := cacheclient.NewCachedExtensionsClient(config, nil, common.CachedClientOptions{Token: "extensions-client-test-token"})
+	if err != nil {
+		t.Fatalf("NewCachedExtensionsClient() error = %v", err)
+	}
+	if client.ApiextensionsV1() == nil || client.Discovery() == nil {
+		t.Fatal("cached extensions client did not expose its typed API and discovery clients")
+	}
+	definitions, err := client.ApiextensionsV1().CustomResourceDefinitions().List(context.Background(), metav1.ListOptions{})
+	if err != nil || definitions == nil || len(definitions.Items) != 0 {
+		t.Fatalf("CustomResourceDefinitions().List() = %#v, %v", definitions, err)
 	}
 }
 

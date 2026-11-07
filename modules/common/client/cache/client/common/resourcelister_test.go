@@ -94,6 +94,36 @@ func TestNewCachedResourceLister(t *testing.T) {
 	})
 }
 
+func TestCachedResourceListerPassesGroupAndVersionInAccessReview(t *testing.T) {
+	defer cache.Clear[TestResource]()
+	var gotGroup, gotVersion string
+	auth := &authorizationv1fake.FakeAuthorizationV1{Fake: &k8stesting.Fake{}}
+	auth.AddReactor("create", "selfsubjectaccessreviews", func(action k8stesting.Action) (bool, runtime.Object, error) {
+		review := action.(k8stesting.CreateAction).GetObject().(*authorizationapiv1.SelfSubjectAccessReview)
+		gotGroup = review.Spec.ResourceAttributes.Group
+		gotVersion = review.Spec.ResourceAttributes.Version
+		review.Status.Allowed = true
+		return true, review, nil
+	})
+	lister := common.NewCachedResourceLister[TestResource](
+		auth,
+		common.WithResourceKind[TestResource]("widgets"),
+		common.WithToken[TestResource]("test-token-with-group-version"),
+		common.WithGroup[TestResource]("widgets.example.test"),
+		common.WithVersion[TestResource]("v1"),
+	)
+	mockLister := &MockLister{returnVal: &TestResource{Items: []string{"widget"}}}
+	if _, err := lister.List(context.Background(), mockLister, metav1.ListOptions{}); err != nil {
+		t.Fatalf("initial List() error = %v", err)
+	}
+	if _, err := lister.List(context.Background(), mockLister, metav1.ListOptions{}); err != nil {
+		t.Fatalf("cached List() error = %v", err)
+	}
+	if gotGroup != "widgets.example.test" || gotVersion != "v1" {
+		t.Fatalf("access review group/version = %q/%q", gotGroup, gotVersion)
+	}
+}
+
 func TestCachedResourceLister_List(t *testing.T) {
 	ctx := context.Background()
 	auth := &authorizationv1fake.FakeAuthorizationV1{Fake: &k8stesting.Fake{}}

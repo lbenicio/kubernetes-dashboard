@@ -23,6 +23,7 @@
 package client
 
 import (
+	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
@@ -35,6 +36,7 @@ import (
 )
 
 func TestConfigBuilderOptionsAndDefaults(t *testing.T) {
+	transportWrapper := func(next http.RoundTripper) http.RoundTripper { return next }
 	builder := newConfigBuilder(
 		WithUserAgent("coverage-test"),
 		WithMasterUrl("https://kubernetes.example.test"),
@@ -42,8 +44,9 @@ func TestConfigBuilderOptionsAndDefaults(t *testing.T) {
 		WithInsecureTLSSkipVerify(true),
 		WithCaBundle("ca.pem"),
 		WithSessionEncryptionKey("session-key"),
+		WithWrapTransport(transportWrapper),
 	)
-	if builder.userAgent != "coverage-test" || builder.masterUrl != "https://kubernetes.example.test" || builder.kubeconfigPath != "test-kubeconfig" || !builder.insecure || builder.caBundlePath != "ca.pem" || builder.sessionKey != "session-key" {
+	if builder.userAgent != "coverage-test" || builder.masterUrl != "https://kubernetes.example.test" || builder.kubeconfigPath != "test-kubeconfig" || !builder.insecure || builder.caBundlePath != "ca.pem" || builder.sessionKey != "session-key" || builder.wrapTransport == nil {
 		t.Fatalf("newConfigBuilder() = %#v", builder)
 	}
 	if builder.setConfigDefaults(nil) != nil || setConfigRateLimitDefaults(nil) != nil {
@@ -55,11 +58,12 @@ func TestConfigBuilderOptionsAndDefaults(t *testing.T) {
 		WithMasterUrl("https://kubernetes.example.test"),
 		WithInsecureTLSSkipVerify(true),
 		WithCaBundle("ca.pem"),
+		WithWrapTransport(transportWrapper),
 	).buildBaseConfig()
 	if err != nil {
 		t.Fatalf("buildBaseConfig() error = %v", err)
 	}
-	if config.Host != "https://kubernetes.example.test" || config.UserAgent != "dashboard/coverage-test" || config.ContentType != DefaultContentType || !config.Insecure || config.CAFile != "ca.pem" || config.QPS != DefaultQPS || config.Burst != DefaultBurst {
+	if config.Host != "https://kubernetes.example.test" || config.UserAgent != "dashboard/coverage-test" || config.ContentType != DefaultContentType || !config.Insecure || config.CAFile != "ca.pem" || config.QPS != DefaultQPS || config.Burst != DefaultBurst || config.WrapTransport == nil {
 		t.Fatalf("buildBaseConfig() = %#v", config)
 	}
 }
@@ -72,6 +76,24 @@ func TestConfigBuilderReturnsMalformedKubeconfigErrorWithCABundle(t *testing.T) 
 	_, err := newConfigBuilder(WithKubeconfig(kubeconfig), WithCaBundle("ca.pem")).buildBaseConfig()
 	if err == nil {
 		t.Fatal("buildBaseConfig() accepted malformed kubeconfig")
+	}
+}
+
+func TestInitStoresConfiguredBaseClientConfig(t *testing.T) {
+	previousConfig := baseConfig
+	baseConfig = nil
+	t.Cleanup(func() { baseConfig = previousConfig })
+
+	clusterContextFlag := pflag.Lookup("cluster-context-enabled")
+	previousClusterContext := clusterContextFlag.Value.String()
+	if err := clusterContextFlag.Value.Set("false"); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = clusterContextFlag.Value.Set(previousClusterContext) })
+
+	Init(WithMasterUrl("https://kubernetes.example.test"), WithUserAgent("init-test"))
+	if baseConfig == nil || baseConfig.Host != "https://kubernetes.example.test" || baseConfig.UserAgent != DefaultUserAgent+"/init-test" {
+		t.Fatalf("Init() baseConfig = %#v", baseConfig)
 	}
 }
 
@@ -105,13 +127,17 @@ func TestBuildAuthInfoAndImpersonation(t *testing.T) {
 
 func TestConfigFromRequestUsesTokenAndAnonymousBaseConfig(t *testing.T) {
 	previous := baseConfig
-	baseConfig = &rest.Config{Host: "https://kubernetes.example.test", Insecure: true}
+	baseConfig = &rest.Config{
+		Host:          "https://kubernetes.example.test",
+		Insecure:      true,
+		WrapTransport: func(next http.RoundTripper) http.RoundTripper { return next },
+	}
 	t.Cleanup(func() { baseConfig = previous })
 
 	request := httptest.NewRequest("GET", "http://dashboard.test", nil)
 	SetAuthorizationHeader(request, "access-token")
 	config, err := configFromRequest(request)
-	if err != nil || config.Host != baseConfig.Host || config.BearerToken != "access-token" || !config.Insecure {
+	if err != nil || config.Host != baseConfig.Host || config.BearerToken != "access-token" || !config.Insecure || config.WrapTransport == nil {
 		t.Fatalf("configFromRequest() = %#v, %v", config, err)
 	}
 
