@@ -164,10 +164,10 @@
   "resolutions": {
     "@graphql-tools/utils": "npm:12.1.0",
     "deepmerge@^4.3.1": "patch:deepmerge@npm%3A4.3.1#./.yarn/patches/deepmerge-npm-4.3.1-4f751a0844.patch",
-    "minimatch@^10.2.2": "patch:minimatch@npm%3A10.2.6#./.yarn/patches/minimatch-npm-10.2.6-fd0d1cf467.patch",
-    "minimatch@^10.2.4": "patch:minimatch@npm%3A10.2.6#./.yarn/patches/minimatch-npm-10.2.6-fd0d1cf467.patch",
-    "minimatch@^10.2.6": "patch:minimatch@npm%3A10.2.6#./.yarn/patches/minimatch-npm-10.2.6-fd0d1cf467.patch",
-    "minimatch@^9.0.4": "patch:minimatch@npm%3A9.0.9#./.yarn/patches/minimatch-npm-9.0.9-3ee8f15008.patch"
+    "minimatch@^10.2.2": "npm:11.0.2",
+    "minimatch@^10.2.4": "npm:11.0.2",
+    "minimatch@^10.2.6": "npm:11.0.2",
+    "minimatch@^9.0.4": "npm:11.0.2"
   },
   "overrides": {
     "colors": "1.4.0"

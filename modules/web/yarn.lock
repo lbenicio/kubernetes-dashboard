@@ -7407,13 +7407,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"balanced-match@npm:^1.0.0":
-  version: 1.0.2
-  resolution: "balanced-match@npm:1.0.2"
-  checksum: 10c0/9308baf0a7e4838a82bbfd11e01b1cb0f0cf2893bc1676c27c2a8c0e70cbae1c59120c3268517a8ae7fb6376b4639ef81ca22582611dbee4ed28df945134aaee
-  languageName: node
-  linkType: hard
-
 "balanced-match@npm:^3.0.1":
   version: 3.0.1
   resolution: "balanced-match@npm:3.0.1"
@@ -7491,16 +7484,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"brace-expansion@npm:^2.0.2":
-  version: 2.1.7
-  resolution: "brace-expansion@npm:2.1.7"
-  dependencies:
-    balanced-match: "npm:^1.0.0"
-  checksum: 10c0/17ee4194c85b05cde0a7b7c068eeef664440c027116ef42c3d35c13ebabdc9fd3eaf05c5c8a06dd0ca20ae012d652561d8ac2a699daa5cbee1f0510e5134ab4d
-  languageName: node
-  linkType: hard
-
-"brace-expansion@npm:^5.0.12, brace-expansion@npm:^5.0.8":
+"brace-expansion@npm:^5.0.12":
   version: 5.0.12
   resolution: "brace-expansion@npm:5.0.12"
   dependencies:
@@ -12423,15 +12407,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:10.2.6":
-  version: 10.2.6
-  resolution: "minimatch@npm:10.2.6"
-  dependencies:
-    brace-expansion: "npm:^5.0.8"
-  checksum: 10c0/4559a836243b98bd4d17ea9f7edae698717c76399eea7be374f3737f33164e4907f19e9726891ddeb122f750a5a7fa80d2ac43e851d6e5984dc4ff42ec127d3a
-  languageName: node
-  linkType: hard
-
 "minimatch@npm:11.0.2":
   version: 11.0.2
   resolution: "minimatch@npm:11.0.2"
@@ -12439,33 +12414,6 @@ __metadata:
     "@isaacs/nonrecursive-glob-match": "npm:^1.0.2"
     brace-expansion: "npm:^5.0.12"
   checksum: 10c0/d51bad3e041232d23bf5f3f3858153b273e43c72deecab4528db9c61cff78d16e914cf551a1bcae05d10bf942ebf9d16ce8d9467cc3d289bee939401b405895e
-  languageName: node
-  linkType: hard
-
-"minimatch@npm:9.0.9":
-  version: 9.0.9
-  resolution: "minimatch@npm:9.0.9"
-  dependencies:
-    brace-expansion: "npm:^2.0.2"
-  checksum: 10c0/0b6a58530dbb00361745aa6c8cffaba4c90f551afe7c734830bd95fd88ebf469dd7355a027824ea1d09e37181cfeb0a797fb17df60c15ac174303ac110eb7e86
-  languageName: node
-  linkType: hard
-
-"minimatch@patch:minimatch@npm%3A10.2.6#./.yarn/patches/minimatch-npm-10.2.6-fd0d1cf467.patch::locator=kubernetes-dashboard%40workspace%3A.":
-  version: 10.2.6
-  resolution: "minimatch@patch:minimatch@npm%3A10.2.6#./.yarn/patches/minimatch-npm-10.2.6-fd0d1cf467.patch::version=10.2.6&hash=bb86a8&locator=kubernetes-dashboard%40workspace%3A."
-  dependencies:
-    brace-expansion: "npm:^5.0.8"
-  checksum: 10c0/32385d95bb4feb913e28c8fbd61b9326223d09bb2647fe90de6e8de65777ce5742ad59aa9e13e269c5c7344ad8d195326000a3bc838842b2af52dfd196a67a40
-  languageName: node
-  linkType: hard
-
-"minimatch@patch:minimatch@npm%3A9.0.9#./.yarn/patches/minimatch-npm-9.0.9-3ee8f15008.patch::locator=kubernetes-dashboard%40workspace%3A.":
-  version: 9.0.9
-  resolution: "minimatch@patch:minimatch@npm%3A9.0.9#./.yarn/patches/minimatch-npm-9.0.9-3ee8f15008.patch::version=9.0.9&hash=4f8c87&locator=kubernetes-dashboard%40workspace%3A."
-  dependencies:
-    brace-expansion: "npm:^2.0.2"
-  checksum: 10c0/63be8d85c1282bb5f76c525ceb9d8e4b9bb11b70d4809a52a16146695c34f476679cb1d907e332d7c0fde4fd6c2c88ca7902810baee34775b0d62468d6d7eb1b
   languageName: node
   linkType: hard
 
