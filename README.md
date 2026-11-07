@@ -1,6 +1,6 @@
 # Kubernetes Dashboard
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/lbenicio/kubernetes-dashboard)](https://goreportcard.com/report/github.com/lbenicio/kubernetes-dashboard)
+[![Go Report Card](https://goreportcard.lbenicio.dev/badge/github.com/lbenicio/kubernetes-dashboard)](https://goreportcard.lbenicio.dev/report/github.com/lbenicio/kubernetes-dashboard)
 [![Coverage Status](https://codecov.io/github/lbenicio/kubernetes-dashboard/coverage.svg?branch=main)](https://codecov.io/github/lbenicio/kubernetes-dashboard?branch=main)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/kubernetes/dashboard/blob/master/LICENSE)
 
