@@ -15,6 +15,8 @@
 package router
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 
 	"k8s.io/dashboard/auth/pkg/environment"
@@ -38,6 +40,10 @@ func init() {
 	v1 = router.Group("/api/v1")
 	v1.Use(csrf.Gin().CSRF(
 		csrf.Gin().WithCSRFActionGetter(helpers.GetResourceFromPath),
+		csrf.Gin().WithCSRFRunCondition(func(request *http.Request) bool {
+			// OIDC form_post callbacks are protected by the encrypted state, PKCE, and nonce checks.
+			return request.Method == http.MethodPost && request.URL.Path != "/api/v1/oidc/callback"
+		}),
 	))
 }
 

@@ -29,7 +29,7 @@ func init() {
 
 func handleMe(c *gin.Context) {
 	c.Header("Cache-Control", "no-store")
-	response, code, err := me(c.Request)
+	response, code, err := me(c.Request, c.Writer)
 	if err != nil {
 		klog.ErrorS(err, "Could not get user")
 		c.JSON(code, err)

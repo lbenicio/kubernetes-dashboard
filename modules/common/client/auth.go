@@ -31,7 +31,8 @@ const (
 func HasAuthorizationHeader(req *http.Request) bool {
 	header := req.Header.Get(authorizationHeader)
 	if len(header) == 0 {
-		return false
+		_, err := ReadBrowserSession(req)
+		return err == nil
 	}
 
 	token := extractBearerToken(header)
@@ -41,7 +42,14 @@ func HasAuthorizationHeader(req *http.Request) bool {
 
 func GetBearerToken(req *http.Request) string {
 	header := req.Header.Get(authorizationHeader)
-	return extractBearerToken(header)
+	if strings.HasPrefix(header, authorizationTokenPrefix) {
+		return extractBearerToken(header)
+	}
+	session, err := ReadBrowserSession(req)
+	if err != nil {
+		return ""
+	}
+	return session.KubernetesToken
 }
 
 func SetAuthorizationHeader(req *http.Request, token string) {

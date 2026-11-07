@@ -31,6 +31,11 @@ export class AuthInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    if (this._authService.isAnonymousAdmin()) {
+      this._authService.removeTokenCookie();
+      return next.handle(req);
+    }
+
     if (this._authService.isAuthenticated() && !this._authService.hasTokenCookie()) {
       return next.handle(req);
     }

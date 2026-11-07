@@ -42,6 +42,10 @@ const loginToken =
 const MOCK_CONFIG_DI_TOKEN = new InjectionToken<IConfig>('kd.config');
 
 class MockAuthService {
+  loginConfiguration(): Observable<{oidcEnabled: boolean; anonymousAdmin: boolean}> {
+    return of({oidcEnabled: false, anonymousAdmin: false});
+  }
+
   login(loginSpec: LoginSpec): Observable<K8SError[]> {
     const errors = [
       {
@@ -113,6 +117,7 @@ describe('LoginComponent', () => {
           // useClass: MockActivatedRoute,
           useValue: {
             paramMap: from([]),
+          queryParamMap: from([convertToParamMap({})]),
             snapshot: {
               queryParamMap: convertToParamMap({}),
             },

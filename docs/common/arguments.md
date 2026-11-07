@@ -81,5 +81,29 @@ Dashboard containers accept multiple arguments that can be used to customize the
 | kubeconfig                 | -                             | Path to `kubeconfig` file.                                                                                                                                                |
 | v                          | 1                             | Number for the log level verbosity (default 1)                                                                                                                            |                                                                                                                                                                                                                                                                                                |
 
+## Authentication environment variables
+
+The API and Auth services read the following shared settings:
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `DASHBOARD_SESSION_KEY` | unset | Base64-encoded 32-byte encryption key. Set the same value on API and Auth when using encrypted browser sessions or OIDC. |
+| `DASHBOARD_ANONYMOUS_ADMIN` | `false` | Use the Dashboard service credentials when a request has no user token. All reachable visitors receive those credentials' permissions. |
+
+The Auth service reads these OIDC settings:
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `OIDC_ISSUER_URL` | unset | HTTPS issuer URL used for provider discovery. |
+| `OIDC_CLIENT_ID` | unset | Confidential OIDC client ID. |
+| `OIDC_CLIENT_SECRET` | unset | Confidential OIDC client secret. Keep it in a secret manager. Leave unset only for a provider-registered public client that supports PKCE. |
+| `OIDC_REDIRECT_URL` | unset | Exact callback URL registered at the issuer. |
+| `OIDC_SCOPES` | `openid profile email` | Space-separated scopes requested during login. |
+| `OIDC_GROUPS_CLAIM` | `groups` | Claim that contains group names. |
+| `OIDC_PICTURE_CLAIM` | `picture` | Claim that contains the user picture URL. |
+| `DASHBOARD_SESSION_COOKIE_SECURE` | `true` | Adds the `Secure` attribute to session cookies. Disable only for local HTTP development. |
+
+See the [OIDC login guide](../user/access-control/oidc.md) for end-to-end setup and Kubernetes RBAC requirements.
+
 ----
 _Copyright 2019 [The Kubernetes Dashboard Authors](https://github.com/kubernetes/dashboard/graphs/contributors)_

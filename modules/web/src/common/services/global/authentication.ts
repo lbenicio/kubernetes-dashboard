@@ -26,6 +26,11 @@ import {KdStateService} from './state';
 import isEmpty from 'lodash-es/isEmpty';
 import {MeService} from '@common/services/global/me';
 
+export interface LoginConfiguration {
+  oidcEnabled: boolean;
+  anonymousAdmin: boolean;
+}
+
 @Injectable()
 export class AuthService {
   private _hasAuthHeader = false;
@@ -57,7 +62,7 @@ export class AuthService {
       )
       .pipe(
         switchMap((authResponse: AuthResponse) => {
-          if (authResponse.token.length !== 0) {
+          if (authResponse.token) {
             this.setTokenCookie_(authResponse.token);
           }
 
@@ -66,10 +71,50 @@ export class AuthService {
       );
   }
 
+  loginConfiguration(): Observable<LoginConfiguration> {
+    return this.http_.get<LoginConfiguration>('api/v1/login/config', {
+      headers: new HttpHeaders().set('Cache-Control', 'no-cache'),
+    });
+  }
+
+  beginOidcLogin(): Observable<{url: string}> {
+    return this.csrfTokenService_
+      .getTokenForAction('oidc')
+      .pipe(
+        switchMap((csrfToken: CsrfToken) =>
+          this.http_.post<{url: string}>(
+            'api/v1/oidc/login',
+            {},
+            {headers: new HttpHeaders().set(this.config_.csrfHeaderName, csrfToken.token)}
+          )
+        )
+      );
+  }
+
   logout(): void {
+    const isAnonymous = this.isAnonymousAdmin();
     this.removeTokenCookie();
     this._meService.reset();
-    this.router_.navigate(['login']);
+    if (isAnonymous) {
+      this.router_.navigate(['/']);
+      return;
+    }
+
+    this.csrfTokenService_
+      .getTokenForAction('logout')
+      .pipe(
+        switchMap((csrfToken: CsrfToken) =>
+          this.http_.post<void>(
+            'api/v1/logout',
+            {},
+            {headers: new HttpHeaders().set(this.config_.csrfHeaderName, csrfToken.token)}
+          )
+        )
+      )
+      .subscribe({
+        complete: () => this.router_.navigate(['login']),
+        error: () => this.router_.navigate(['login']),
+      });
   }
 
   /**
@@ -105,7 +150,20 @@ export class AuthService {
   }
 
   hasAuthHeader(): boolean {
-    return this._meService.getUser().authenticated && !this.hasTokenCookie();
+    return this._meService.getUser().authMethod === 'header' && !this.hasTokenCookie();
+  }
+
+  hasOidcSession(): boolean {
+    return this._meService.getUser().authMethod === 'oidc';
+  }
+
+  hasBrowserSession(): boolean {
+    const method = this._meService.getUser().authMethod;
+    return method === 'oidc' || method === 'token';
+  }
+
+  isAnonymousAdmin(): boolean {
+    return this._meService.getUser().authMethod === 'anonymous';
   }
 
   private getTokenCookie(): string {

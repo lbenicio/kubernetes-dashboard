@@ -27,6 +27,25 @@
   margin-right: 3.5 * $baseline-grid;
 }
 
+.kd-login-sso {
+  align-items: center;
+  gap: 2 * $baseline-grid;
+  padding: 0 (3.5 * $baseline-grid);
+}
+
+.kd-login-sso .kd-login-button {
+  margin-right: 0;
+}
+
+.kd-login-secondary-link {
+  align-self: center;
+  font-size: $caption-font-size-base;
+}
+
+.kd-login-loading {
+  min-height: 120px;
+}
+
 .kd-error-text {
   text-align: left;
 }

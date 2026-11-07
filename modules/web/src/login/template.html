@@ -31,6 +31,55 @@ limitations under the License.
       Kubernetes Dashboard
     </div>
     <div content>
+      @if (isLoadingConfiguration) {
+      <div
+        class="kd-login-loading"
+        fxLayoutAlign="center center"
+      >
+        <mat-spinner
+          diameter="32"
+          aria-label="Loading login options"
+          i18n-aria-label
+        ></mat-spinner>
+      </div>
+      } @else { @if (errors.length > 0) { @for (error of errors; track error) {
+      <mat-error class="kd-login-input kd-error kd-error-text">
+        {{ error.status }} ({{ error.code }}): {{ error.message }}
+      </mat-error>
+      } } @if (oidcLoginError) {
+      <mat-error
+        class="kd-login-input kd-error kd-error-text"
+        i18n
+      >
+        Single sign-on could not be completed. Please try again.
+      </mat-error>
+      } @if (loginConfiguration?.oidcEnabled && !tokenLoginExpanded) {
+      <div
+        class="kd-login-sso"
+        fxLayout="column"
+        fxLayoutAlign="center stretch"
+      >
+        <button
+          mat-raised-button
+          color="primary"
+          type="button"
+          class="kd-login-button"
+          (click)="beginOidcLogin()"
+          i18n
+        >
+          Sign in with SSO
+        </button>
+        <button
+          mat-button
+          type="button"
+          class="kd-login-secondary-link"
+          (click)="showTokenLogin()"
+          i18n
+        >
+          Sign in with a bearer token instead
+        </button>
+      </div>
+      } @else if (loginConfiguration && (!loginConfiguration.oidcEnabled || tokenLoginExpanded)) {
       <form
         fxLayout="column"
         (ngSubmit)="login()"
@@ -50,11 +99,6 @@ limitations under the License.
             (input)="onChange($event)"
           />
         </mat-form-field>
-        @for (error of errors; track error) {
-        <mat-error class="kd-login-input kd-error kd-error-text">
-          {{ error.status }} ({{ error.code }}): {{ error.message }}
-        </mat-error>
-        }
 
         <div
           class="kd-login-mode-description"
@@ -63,7 +107,7 @@ limitations under the License.
         >
           <div
             class="kd-equivalent-block kd-muted kd-bg-card-dark"
-            fxLayoutAlign=" center"
+            fxLayoutAlign="center center"
           >
             <mat-icon>info</mat-icon>
             <div>
@@ -71,7 +115,6 @@ limitations under the License.
               <code>kubectl -n NAMESPACE create token SERVICE_ACCOUNT</code>
             </div>
           </div>
-
           <div i18n>
             To find out more on how to configure and use bearer tokens, please refer to the
             <a href="https://kubernetes.io/docs/reference/access-authn-authz/authentication/">documentation</a>.
@@ -93,7 +136,19 @@ limitations under the License.
             Sign in
           </button>
         </div>
+        @if (loginConfiguration?.oidcEnabled) {
+        <button
+          mat-button
+          type="button"
+          class="kd-login-secondary-link"
+          (click)="showSsoLogin()"
+          i18n
+        >
+          Back to single sign-on
+        </button>
+        }
       </form>
+      } }
     </div>
   </kd-card>
 </div>

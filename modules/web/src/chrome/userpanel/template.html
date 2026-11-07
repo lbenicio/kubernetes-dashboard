@@ -26,10 +26,29 @@ limitations under the License.
       <div class="kd-auth-status-method method kd-muted-light">
         @if (hasAuthHeader()) {
         <ng-container i18n>Logged in with auth header </ng-container>
-        } @if (hasTokenCookie()) {
+        } @if (hasOidcSession()) {
+        <ng-container i18n>Logged in with SSO </ng-container>
+        } @if (hasTokenCookie() || (hasBrowserSession() && !hasOidcSession())) {
         <ng-container i18n>Logged in with token </ng-container>
+        } @if (isAnonymousAdmin()) {
+        <ng-container i18n>Administrator access without login </ng-container>
         }
         <span class="username kd-muted">{{ username }}</span>
+        @if (email) {
+        <span class="kd-user-metadata kd-muted">{{ email }}</span>
+        } @if (groups.length > 0) {
+        <span
+          class="kd-user-metadata kd-muted"
+          [title]="groups.join(', ')"
+          >{{ groups.join(', ') }}</span
+        >
+        } @if (scopes.length > 0) {
+        <span
+          class="kd-user-metadata kd-muted"
+          [title]="scopes.join(' ')"
+          >{{ scopes.join(' ') }}</span
+        >
+        }
       </div>
 
       <button
@@ -52,7 +71,7 @@ limitations under the License.
   >
     Sign in
   </button>
-  } @if (isAuthenticated() && !hasAuthHeader()) {
+  } @if (isAuthenticated() && !hasAuthHeader() && !isAnonymousAdmin()) {
   <button
     mat-menu-item
     (click)="logout()"
@@ -69,8 +88,17 @@ limitations under the License.
   [matMenuTriggerFor]="actions"
   (click)="$event.stopPropagation()"
 >
+  @if (hasPicture()) {
+  <img
+    class="kd-user-avatar"
+    [src]="picture"
+    referrerpolicy="no-referrer"
+    alt=""
+    (error)="onPictureError()"
+  />
+  } @else {
   <mat-icon class="kd-user-panel-icon kd-primary-toolbar-icon">account_circle</mat-icon>
-  @if (!isAuthenticated()) {
+  } @if (!isAuthenticated()) {
   <svg
     class="kd-cross-style"
     width="40px"

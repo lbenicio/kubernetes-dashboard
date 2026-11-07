@@ -39,6 +39,17 @@ services:
         VERSION: ${VERSION:?}
     command:
       - "--kubeconfig=${KUBECONFIG:?}"
+    environment:
+      DASHBOARD_SESSION_KEY: ${DASHBOARD_SESSION_KEY:-}
+      DASHBOARD_SESSION_COOKIE_SECURE: ${DASHBOARD_SESSION_COOKIE_SECURE:-true}
+      DASHBOARD_ANONYMOUS_ADMIN: ${DASHBOARD_ANONYMOUS_ADMIN:-false}
+      OIDC_ISSUER_URL: ${OIDC_ISSUER_URL:-}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:-}
+      OIDC_REDIRECT_URL: ${OIDC_REDIRECT_URL:-}
+      OIDC_SCOPES: ${OIDC_SCOPES:-openid profile email}
+      OIDC_GROUPS_CLAIM: ${OIDC_GROUPS_CLAIM:-groups}
+      OIDC_PICTURE_CLAIM: ${OIDC_PICTURE_CLAIM:-picture}
     volumes:
       - ${KUBECONFIG:?}:${KUBECONFIG:?} # Required - tmp kubeconfig path resolves to $DASHBOARD_DIR/.tmp/kubeconfig
     tmpfs:
@@ -54,6 +65,9 @@ services:
     command:
       --kubeconfig=${KUBECONFIG:?}
       --sidecar-host=${SIDECAR_HOST:?}
+    environment:
+      DASHBOARD_SESSION_KEY: ${DASHBOARD_SESSION_KEY:-}
+      DASHBOARD_ANONYMOUS_ADMIN: ${DASHBOARD_ANONYMOUS_ADMIN:-false}
     volumes:
       - ${KUBECONFIG:?}:${KUBECONFIG:?} # Required - tmp kubeconfig path resolves to $DASHBOARD_DIR/.tmp/kubeconfig
     tmpfs:

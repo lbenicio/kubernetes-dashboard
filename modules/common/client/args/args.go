@@ -15,12 +15,16 @@
 package args
 
 import (
+	"os"
+	"strconv"
 	"time"
 
 	"github.com/spf13/pflag"
 )
 
 var (
+	argSessionKey            = pflag.String("session-key", os.Getenv("DASHBOARD_SESSION_KEY"), "base64-encoded 32-byte key shared by the auth and API services for encrypted browser sessions")
+	argAnonymousAdmin        = pflag.Bool("anonymous-admin", envBool("DASHBOARD_ANONYMOUS_ADMIN", false), "serve requests without login using the Dashboard service credentials; every reachable user receives those permissions")
 	argCacheEnabled          = pflag.Bool("cache-enabled", true, "whether client cache should be enabled or not")
 	argClusterContextEnabled = pflag.Bool("cluster-context-enabled", false, "whether multi-cluster cache context support should be enabled or not")
 	argTokenExchangeEndpoint = pflag.String("token-exchange-endpoint", "", "endpoint used in multi-cluster cache to exchange tokens for context identifiers")
@@ -29,10 +33,30 @@ var (
 	argCacheRefreshDebounce  = pflag.Duration("cache-refresh-debounce", 5*time.Second, "minimal time between cache refreshes in the background")
 )
 
+func envBool(name string, fallback bool) bool {
+	value := os.Getenv(name)
+	if value == "" {
+		return fallback
+	}
+	parsed, err := strconv.ParseBool(value)
+	if err != nil {
+		return fallback
+	}
+	return parsed
+}
+
 func Ensure() {
 	if *argClusterContextEnabled && len(*argTokenExchangeEndpoint) == 0 {
 		panic("token-exchange-endpoint must be set when cluster-context-enabled is set to true")
 	}
+}
+
+func SessionKey() string {
+	return *argSessionKey
+}
+
+func AnonymousAdminEnabled() bool {
+	return *argAnonymousAdmin
 }
 
 func CacheEnabled() bool {

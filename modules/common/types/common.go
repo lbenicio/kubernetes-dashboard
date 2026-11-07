@@ -15,6 +15,11 @@
 package types
 
 type User struct {
-	Name          string `json:"name,omitempty"`
-	Authenticated bool   `json:"authenticated"`
+	Name          string   `json:"name,omitempty"`
+	Email         string   `json:"email,omitempty"`
+	Picture       string   `json:"picture,omitempty"`
+	Groups        []string `json:"groups,omitempty"`
+	Scopes        []string `json:"scopes,omitempty"`
+	AuthMethod    string   `json:"authMethod,omitempty"`
+	Authenticated bool     `json:"authenticated"`
 }

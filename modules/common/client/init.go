@@ -42,6 +42,7 @@ type configBuilder struct {
 	masterUrl      string
 	insecure       bool
 	caBundlePath   string
+	sessionKey     string
 }
 
 func (in *configBuilder) buildBaseConfig() (config *rest.Config, err error) {
@@ -136,7 +137,17 @@ func WithCaBundle(caBundlePath string) Option {
 	}
 }
 
+func WithSessionEncryptionKey(key string) Option {
+	return func(c *configBuilder) {
+		c.sessionKey = key
+	}
+}
+
 func configFromRequest(request *http.Request) (*rest.Config, error) {
+	if args.AnonymousAdminEnabled() {
+		return rest.CopyConfig(baseConfig), nil
+	}
+
 	authInfo, err := buildAuthInfo(request)
 	if err != nil {
 		return nil, err
@@ -214,6 +225,19 @@ func Init(options ...Option) {
 	args.Ensure()
 
 	builder := newConfigBuilder(options...)
+	if builder.sessionKey == "" {
+		builder.sessionKey = args.SessionKey()
+	}
+	if builder.sessionKey != "" {
+		if err := ConfigureSessionKey(builder.sessionKey); err != nil {
+			klog.Errorf("Could not configure browser session encryption: %s", err)
+			os.Exit(1)
+		}
+	}
+	if args.AnonymousAdminEnabled() {
+		klog.Warning("Anonymous admin mode is enabled; all requests use the Dashboard service credentials")
+	}
+
 	config, err := builder.buildBaseConfig()
 	if err != nil {
 		klog.Errorf("Could not init kubernetes client config: %s", err)

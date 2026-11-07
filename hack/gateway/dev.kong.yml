@@ -30,6 +30,8 @@ services:
       - name: authCsrf
         paths:
           - /api/v1/csrftoken/login
+          - /api/v1/csrftoken/logout
+          - /api/v1/csrftoken/oidc
         protocols:
           - http
           - https
@@ -37,6 +39,27 @@ services:
       - name: authMe
         paths:
           - /api/v1/me
+        protocols:
+          - http
+          - https
+        strip_path: false
+      - name: authLoginConfig
+        paths:
+          - /api/v1/login/config
+        protocols:
+          - http
+          - https
+        strip_path: false
+      - name: authLogout
+        paths:
+          - /api/v1/logout
+        protocols:
+          - http
+          - https
+        strip_path: false
+      - name: authOIDC
+        paths:
+          - /api/v1/oidc
         protocols:
           - http
           - https

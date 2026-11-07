@@ -21,6 +21,7 @@ import (
 
 	"k8s.io/dashboard/auth/pkg/args"
 	"k8s.io/dashboard/auth/pkg/environment"
+	"k8s.io/dashboard/auth/pkg/oidc"
 	"k8s.io/dashboard/auth/pkg/router"
 	"k8s.io/dashboard/client"
 
@@ -28,10 +29,12 @@ import (
 	_ "k8s.io/dashboard/auth/pkg/routes/csrftoken"
 	_ "k8s.io/dashboard/auth/pkg/routes/login"
 	_ "k8s.io/dashboard/auth/pkg/routes/me"
+	_ "k8s.io/dashboard/auth/pkg/routes/oidc"
 )
 
 func main() {
 	klog.InfoS("Starting Kubernetes Dashboard Auth", "version", environment.Version)
+	client.SetSessionCookieSecure(args.SessionCookieSecure())
 
 	client.Init(
 		client.WithUserAgent(environment.UserAgent()),
@@ -40,6 +43,10 @@ func main() {
 		client.WithInsecureTLSSkipVerify(args.ApiServerSkipTLSVerify()),
 		client.WithCaBundle(args.ApiServerCaBundle()),
 	)
+	if err := oidc.Initialize(); err != nil {
+		klog.ErrorS(err, "Could not initialize OpenID Connect")
+		os.Exit(1)
+	}
 
 	klog.V(1).InfoS("Listening and serving insecurely on", "address", args.Address())
 	if err := router.Router().Run(args.Address()); err != nil {

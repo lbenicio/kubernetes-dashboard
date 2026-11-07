@@ -16,19 +16,30 @@ package login
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"k8s.io/klog/v2"
 
 	v1 "k8s.io/dashboard/auth/api/v1"
+	"k8s.io/dashboard/auth/pkg/args"
+	"k8s.io/dashboard/auth/pkg/oidc"
 	"k8s.io/dashboard/auth/pkg/router"
+	"k8s.io/dashboard/client"
 )
 
 func init() {
 	router.V1().POST("/login", handleLogin)
+	router.V1().GET("/login/config", handleLoginConfig)
+	router.V1().POST("/logout", handleLogout)
 }
 
 func handleLogin(c *gin.Context) {
+	c.Header("Cache-Control", "no-store")
+	if args.AnonymousAdminEnabled() {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
 	loginRequest := new(v1.LoginRequest)
 	err := c.Bind(loginRequest)
 	if err != nil {
@@ -43,6 +54,31 @@ func handleLogin(c *gin.Context) {
 		c.JSON(code, err)
 		return
 	}
+	if client.HasSessionKey() {
+		if err := client.SetBrowserSessionCookie(c.Writer, c.Request, client.BrowserSession{
+			KubernetesToken: response.Token,
+			ExpiresAt:       time.Now().Add(12 * time.Hour),
+		}); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create a secure login session"})
+			return
+		}
+		response.Token = ""
+	}
 
 	c.JSON(code, response)
+}
+
+func handleLoginConfig(c *gin.Context) {
+	c.Header("Cache-Control", "no-store")
+	c.JSON(http.StatusOK, gin.H{
+		"oidcEnabled":    oidc.Enabled(),
+		"anonymousAdmin": args.AnonymousAdminEnabled(),
+	})
+}
+
+func handleLogout(c *gin.Context) {
+	client.ClearBrowserSessionCookie(c.Writer, c.Request)
+	client.ClearProtectedCookie(c.Writer, c.Request, "kd-oidc-state")
+	c.Header("Cache-Control", "no-store")
+	c.Status(http.StatusNoContent)
 }

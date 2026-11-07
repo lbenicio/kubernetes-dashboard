@@ -19,6 +19,13 @@
   @include kd-icon-size;
 }
 
+.kd-user-avatar {
+  border-radius: 50%;
+  height: 32px;
+  object-fit: cover;
+  width: 32px;
+}
+
 .kd-auth-status {
   font-family: $font-family-sans;
   padding: $baseline-grid (2 * $baseline-grid) (2 * $baseline-grid);
@@ -56,6 +63,12 @@
 .username {
   font-size: $caption-font-size-base;
   margin-top: 0.5 * $baseline-grid;
+}
+
+.kd-user-metadata {
+  font-size: $caption-font-size-base;
+  margin-top: 0.5 * $baseline-grid;
+  overflow-wrap: anywhere;
 }
 
 .method {

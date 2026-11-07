@@ -26,10 +26,12 @@ Dashboard only acts as a proxy and passes all auth information to it. In case of
 
 ## Authentication
 
-Kubernetes Dashboard supports two different ways of authenticating users:
+Kubernetes Dashboard supports these ways of authenticating users:
 
 * [Authorization header](#authorization-header) passed in every request to Dashboard. Supported from release 1.6. Has the highest priority. If present, login view will be skipped.
 * [Bearer Token](#bearer-token) that can be used on Dashboard [login view](#login-view).
+* [OpenID Connect](./oidc.md) single sign-on using the OAuth 2.0 authorization code flow with PKCE.
+* Optional anonymous mode using the Dashboard service credentials. See [OpenID Connect and other login modes](./oidc.md#other-login-modes) for its access implications.
 
 ### Login view
 

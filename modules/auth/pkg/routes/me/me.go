@@ -21,7 +21,9 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 
+	"k8s.io/dashboard/auth/pkg/oidc"
 	"k8s.io/dashboard/client"
+	"k8s.io/dashboard/client/args"
 	"k8s.io/dashboard/errors"
 	"k8s.io/dashboard/types"
 )
@@ -35,7 +37,41 @@ type ServiceAccount struct {
 	UID  string `json:"uid"`
 }
 
-func me(request *http.Request) (*types.User, int, error) {
+func me(request *http.Request, response http.ResponseWriter) (*types.User, int, error) {
+	if args.AnonymousAdminEnabled() {
+		if _, err := request.Cookie("kd-session-0"); err == nil {
+			client.ClearBrowserSessionCookie(response, request)
+		}
+		if _, err := request.Cookie("kd-oidc-state"); err == nil {
+			client.ClearProtectedCookie(response, request, "kd-oidc-state")
+		}
+		k8sClient, err := client.Client(request)
+		if err != nil {
+			code, err := errors.HandleError(err)
+			return nil, code, err
+		}
+		if _, err = k8sClient.Discovery().ServerVersion(); err != nil {
+			code, err := errors.HandleError(err)
+			return nil, code, err
+		}
+		return &types.User{Name: "Administrator", AuthMethod: "anonymous", Authenticated: true}, http.StatusOK, nil
+	}
+
+	if session, err := client.ReadBrowserSession(request); err == nil && session.OIDC {
+		refreshed, refreshErr := oidc.RefreshSession(request.Context(), session)
+		if refreshErr != nil {
+			client.ClearBrowserSessionCookie(response, request)
+			return nil, http.StatusUnauthorized, errors.NewUnauthorized(errors.MsgLoginUnauthorizedError)
+		}
+		if refreshed {
+			if err := client.SetBrowserSessionCookie(response, request, *session); err != nil {
+				return nil, http.StatusInternalServerError, err
+			}
+		}
+		request = request.Clone(request.Context())
+		client.SetAuthorizationHeader(request, session.KubernetesToken)
+	}
+
 	k8sClient, err := client.Client(request)
 	if err != nil {
 		code, err := errors.HandleError(err)
@@ -48,7 +84,27 @@ func me(request *http.Request) (*types.User, int, error) {
 		return nil, code, err
 	}
 
-	return getUserFromToken(client.GetBearerToken(request)), http.StatusOK, nil
+	if session, err := client.ReadBrowserSession(request); err == nil {
+		method := "token"
+		name := session.Name
+		if session.OIDC {
+			method = "oidc"
+		} else if name == "" {
+			name = getUserFromToken(session.KubernetesToken).Name
+		}
+		return &types.User{
+			Name:          name,
+			Email:         session.Email,
+			Picture:       session.Picture,
+			Groups:        session.Groups,
+			Scopes:        session.Scopes,
+			AuthMethod:    method,
+			Authenticated: true,
+		}, http.StatusOK, nil
+	}
+	user := getUserFromToken(client.GetBearerToken(request))
+	user.AuthMethod = "header"
+	return user, http.StatusOK, nil
 }
 
 func getUserFromToken(token string) *types.User {

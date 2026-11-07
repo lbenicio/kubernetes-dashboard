@@ -2638,6 +2638,34 @@
         <source>Hides all-namespaces option from the namespaces dropdown list in UI.</source>
         <target state="new">Hides all-namespaces option from the namespaces dropdown list in UI.</target>
       </trans-unit>
+      <trans-unit id="4906455870971321780" datatype="html">
+        <source>Loading login options</source>
+        <target>正在加载登录选项</target>
+      </trans-unit>
+      <trans-unit id="7079021766637439081" datatype="html">
+        <source>Sign in with SSO</source>
+        <target>使用 SSO 登录</target>
+      </trans-unit>
+      <trans-unit id="4863266209264084992" datatype="html">
+        <source>Sign in with a bearer token instead</source>
+        <target>改用承载令牌登录</target>
+      </trans-unit>
+      <trans-unit id="3938912012279623462" datatype="html">
+        <source>Single sign-on could not be completed. Please try again.</source>
+        <target>无法完成单点登录。请重试。</target>
+      </trans-unit>
+      <trans-unit id="1782339444830473469" datatype="html">
+        <source>Back to single sign-on</source>
+        <target>返回单点登录</target>
+      </trans-unit>
+      <trans-unit id="450792550417770774" datatype="html">
+        <source>Logged in with SSO </source>
+        <target>已通过 SSO 登录 </target>
+      </trans-unit>
+      <trans-unit id="5223018932791631533" datatype="html">
+        <source>Administrator access without login </source>
+        <target>无需登录的管理员访问 </target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -3,10 +3,12 @@ module k8s.io/dashboard/auth
 go 1.27.3
 
 require (
+	github.com/coreos/go-oidc/v3 v3.21.0
 	github.com/gin-gonic/gin v1.12.0
 	github.com/golang-jwt/jwt/v4 v4.5.2
 	github.com/spf13/pflag v1.0.10
 	golang.org/x/net v0.62.0
+	golang.org/x/oauth2 v0.36.0
 	k8s.io/dashboard/client v0.0.0-00010101000000-000000000000
 	k8s.io/dashboard/csrf v0.0.0-00010101000000-000000000000
 	k8s.io/dashboard/errors v0.0.0-00010101000000-000000000000
@@ -27,6 +29,7 @@ require (
 	github.com/fxamacker/cbor/v2 v2.9.1 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.12 // indirect
 	github.com/gin-contrib/sse v1.1.0 // indirect
+	github.com/go-jose/go-jose/v4 v4.1.4 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-openapi/jsonpointer v1.0.0 // indirect
 	github.com/go-openapi/jsonreference v1.0.0 // indirect
@@ -71,7 +74,6 @@ require (
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/arch v0.22.0 // indirect
 	golang.org/x/crypto v0.58.0 // indirect
-	golang.org/x/oauth2 v0.36.0 // indirect
 	golang.org/x/sys v0.49.0 // indirect
 	golang.org/x/term v0.47.0 // indirect
 	golang.org/x/text v0.43.0 // indirect

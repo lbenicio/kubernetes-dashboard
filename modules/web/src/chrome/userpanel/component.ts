@@ -37,12 +37,50 @@ export class UserPanelComponent /* implements OnInit */ {
     return this._meService.getUserName();
   }
 
+  get picture(): string {
+    return this._meService.getUser().picture || '';
+  }
+
+  get email(): string {
+    return this._meService.getUser().email || '';
+  }
+
+  get groups(): string[] {
+    return this._meService.getUser().groups || [];
+  }
+
+  get scopes(): string[] {
+    return this._meService.getUser().scopes || [];
+  }
+
+  private failedPicture_ = '';
+
+  hasPicture(): boolean {
+    return !!this.picture && this.picture !== this.failedPicture_;
+  }
+
+  onPictureError(): void {
+    this.failedPicture_ = this.picture;
+  }
+
   hasAuthHeader(): boolean {
     return this.authService_.hasAuthHeader();
   }
 
   hasTokenCookie(): boolean {
     return this.authService_.hasTokenCookie();
+  }
+
+  hasOidcSession(): boolean {
+    return this.authService_.hasOidcSession();
+  }
+
+  hasBrowserSession(): boolean {
+    return this.authService_.hasBrowserSession();
+  }
+
+  isAnonymousAdmin(): boolean {
+    return this.authService_.isAnonymousAdmin();
   }
 
   isAuthenticated(): boolean {

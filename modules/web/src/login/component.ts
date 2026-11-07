@@ -19,7 +19,7 @@ import {LoginSpec} from '@api/root.api';
 import {KdError} from '@api/root.shared';
 import {IConfig, StateError} from '@api/root.ui';
 import {AsKdError} from '@common/errors/errors';
-import {AuthService} from '@common/services/global/authentication';
+import {AuthService, LoginConfiguration} from '@common/services/global/authentication';
 import {HistoryService} from '@common/services/global/history';
 import {map} from 'rxjs/operators';
 import {CONFIG_DI_TOKEN} from '../index.config';
@@ -33,6 +33,10 @@ import {CONFIG_DI_TOKEN} from '../index.config';
 })
 export class LoginComponent implements OnInit {
   errors: KdError[] = [];
+  loginConfiguration?: LoginConfiguration;
+  isLoadingConfiguration = true;
+  tokenLoginExpanded = false;
+  oidcLoginError = false;
   private token_: string;
   constructor(
     private readonly authService_: AuthService,
@@ -48,6 +52,42 @@ export class LoginComponent implements OnInit {
         this.errors = [state.error];
       }
     });
+
+    this.route_.queryParamMap.subscribe(params => {
+      this.oidcLoginError = params.get('auth_error') === 'oidc';
+    });
+
+    this.authService_.loginConfiguration().subscribe({
+      next: configuration => {
+        this.loginConfiguration = configuration;
+        this.isLoadingConfiguration = false;
+        if (configuration.anonymousAdmin) {
+          window.location.replace('/');
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        this.errors = [AsKdError(err)];
+        this.isLoadingConfiguration = false;
+      },
+    });
+  }
+
+  beginOidcLogin(): void {
+    this.authService_.beginOidcLogin().subscribe({
+      next: response => {
+        this.authService_.removeTokenCookie();
+        window.location.assign(response.url);
+      },
+      error: (err: HttpErrorResponse) => (this.errors = [AsKdError(err)]),
+    });
+  }
+
+  showTokenLogin(): void {
+    this.tokenLoginExpanded = true;
+  }
+
+  showSsoLogin(): void {
+    this.tokenLoginExpanded = false;
   }
 
   login(): void {

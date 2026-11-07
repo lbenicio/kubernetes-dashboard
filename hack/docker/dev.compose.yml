@@ -36,6 +36,17 @@ services:
       dockerfile: auth/dev.Dockerfile
     command:
       - "--kubeconfig=${KUBECONFIG:?}"
+    environment:
+      DASHBOARD_SESSION_KEY: ${DASHBOARD_SESSION_KEY:-}
+      DASHBOARD_SESSION_COOKIE_SECURE: ${DASHBOARD_SESSION_COOKIE_SECURE:-false}
+      DASHBOARD_ANONYMOUS_ADMIN: ${DASHBOARD_ANONYMOUS_ADMIN:-false}
+      OIDC_ISSUER_URL: ${OIDC_ISSUER_URL:-}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:-}
+      OIDC_REDIRECT_URL: ${OIDC_REDIRECT_URL:-}
+      OIDC_SCOPES: ${OIDC_SCOPES:-openid profile email}
+      OIDC_GROUPS_CLAIM: ${OIDC_GROUPS_CLAIM:-groups}
+      OIDC_PICTURE_CLAIM: ${OIDC_PICTURE_CLAIM:-picture}
     volumes:
       - ${PWD}/modules/common:/workspace/common # Required - Common dir watched by AIR
       - ${PWD}/modules/auth/pkg:/workspace/auth/pkg # Required - Source dir watched by AIR
@@ -55,6 +66,9 @@ services:
       --kubeconfig=${KUBECONFIG:?}
       --sidecar-host=${SIDECAR_HOST:?}
       --v=4
+    environment:
+      DASHBOARD_SESSION_KEY: ${DASHBOARD_SESSION_KEY:-}
+      DASHBOARD_ANONYMOUS_ADMIN: ${DASHBOARD_ANONYMOUS_ADMIN:-false}
     volumes:
       - ${PWD}/modules/common:/workspace/common # Required - Common dir watched by AIR
       - ${PWD}/modules/api/pkg:/workspace/api/pkg # Required - Source dir watched by AIR

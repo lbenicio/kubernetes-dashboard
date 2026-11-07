@@ -2638,6 +2638,34 @@
         <source>Hides all-namespaces option from the namespaces dropdown list in UI.</source>
         <target state="new">Hides all-namespaces option from the namespaces dropdown list in UI.</target>
       </trans-unit>
+      <trans-unit id="4906455870971321780" datatype="html">
+        <source>Loading login options</source>
+        <target>Cargando opciones de inicio de sesión</target>
+      </trans-unit>
+      <trans-unit id="7079021766637439081" datatype="html">
+        <source>Sign in with SSO</source>
+        <target>Iniciar sesión con SSO</target>
+      </trans-unit>
+      <trans-unit id="4863266209264084992" datatype="html">
+        <source>Sign in with a bearer token instead</source>
+        <target>Iniciar sesión con un token bearer</target>
+      </trans-unit>
+      <trans-unit id="3938912012279623462" datatype="html">
+        <source>Single sign-on could not be completed. Please try again.</source>
+        <target>No se pudo completar el inicio de sesión único. Inténtelo de nuevo.</target>
+      </trans-unit>
+      <trans-unit id="1782339444830473469" datatype="html">
+        <source>Back to single sign-on</source>
+        <target>Volver al inicio de sesión único</target>
+      </trans-unit>
+      <trans-unit id="450792550417770774" datatype="html">
+        <source>Logged in with SSO </source>
+        <target>Sesión iniciada con SSO </target>
+      </trans-unit>
+      <trans-unit id="5223018932791631533" datatype="html">
+        <source>Administrator access without login </source>
+        <target>Acceso de administrador sin iniciar sesión </target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

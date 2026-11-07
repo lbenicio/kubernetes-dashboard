@@ -2,6 +2,7 @@
 
 * [Accessing Dashboard](accessing-dashboard/README.md)
 * [Access control](access-control/README.md)
+  * [OpenID Connect login](access-control/oidc.md)
   * [Creating sample user](access-control/creating-sample-user.md)
 * [Integrations](integrations.md)
 * [Labels](labels.md)

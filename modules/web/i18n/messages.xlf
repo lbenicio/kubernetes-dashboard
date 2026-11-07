@@ -1958,6 +1958,27 @@
       <trans-unit id="8967487471439603323" datatype="html">
         <source>Hides all-namespaces option from the namespaces dropdown list in UI.</source>
       </trans-unit>
+      <trans-unit id="4906455870971321780" datatype="html">
+        <source>Loading login options</source>
+      </trans-unit>
+      <trans-unit id="7079021766637439081" datatype="html">
+        <source>Sign in with SSO</source>
+      </trans-unit>
+      <trans-unit id="4863266209264084992" datatype="html">
+        <source>Sign in with a bearer token instead</source>
+      </trans-unit>
+      <trans-unit id="3938912012279623462" datatype="html">
+        <source>Single sign-on could not be completed. Please try again.</source>
+      </trans-unit>
+      <trans-unit id="1782339444830473469" datatype="html">
+        <source>Back to single sign-on</source>
+      </trans-unit>
+      <trans-unit id="450792550417770774" datatype="html">
+        <source>Logged in with SSO </source>
+      </trans-unit>
+      <trans-unit id="5223018932791631533" datatype="html">
+        <source>Administrator access without login </source>
+      </trans-unit>
     </body>
   </file>
 </xliff>
