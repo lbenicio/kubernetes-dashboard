@@ -55,7 +55,8 @@ func TestStatusErrorConstructors(t *testing.T) {
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			status, ok := tc.err.(*k8serrors.StatusError)
+			var status *k8serrors.StatusError
+			ok := errors.As(tc.err, &status)
 			if !ok {
 				t.Fatalf("constructor returned %T, want StatusError", tc.err)
 			}
@@ -157,7 +158,7 @@ func TestErrorAggregationAndHandling(t *testing.T) {
 		t.Errorf("HandleError(forbidden) = %d, %v", code, err)
 	}
 	ordinary := errors.New("ordinary")
-	if code, err := HandleError(ordinary); code != http.StatusInternalServerError || err != ordinary {
+	if code, err := HandleError(ordinary); code != http.StatusInternalServerError || !errors.Is(err, ordinary) {
 		t.Errorf("HandleError(ordinary) = %d, %v", code, err)
 	}
 

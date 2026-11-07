@@ -42,7 +42,7 @@ type scaleRoundTripper struct {
 
 func (in *scaleRoundTripper) RoundTrip(request *http.Request) (*http.Response, error) {
 	status := http.StatusOK
-	body := "{}"
+	var body string
 	switch request.URL.Path {
 	case "/apis":
 		body = `{"kind":"APIGroupList","apiVersion":"v1","groups":[{"name":"apps","versions":[{"groupVersion":"apps/v1","version":"v1"}],"preferredVersion":{"groupVersion":"apps/v1","version":"v1"}}]}`

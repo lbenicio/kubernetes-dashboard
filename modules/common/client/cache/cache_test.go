@@ -25,6 +25,7 @@ package cache
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -124,7 +125,7 @@ func TestSyncedLoadInitializesOnceAndReusesValue(t *testing.T) {
 	}
 
 	loadError := context.Canceled
-	if value, err := SyncedLoad(testCacheKey("failed"), func() (*cacheTestValue, error) { return nil, loadError }); err != loadError || value == nil {
+	if value, err := SyncedLoad(testCacheKey("failed"), func() (*cacheTestValue, error) { return nil, loadError }); !stderrors.Is(err, loadError) || value == nil {
 		t.Fatalf("SyncedLoad() error result = %#v, %v", value, err)
 	}
 }

@@ -245,35 +245,14 @@ func CompleteLogin(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "no-store")
 	w.Header().Set("Referrer-Policy", "no-referrer")
 	client.ClearProtectedCookie(w, r, stateCookieName)
-	if r.Method == http.MethodPost {
-		r.Body = http.MaxBytesReader(w, r.Body, 64<<10)
-		mediaType, _, mediaTypeErr := mime.ParseMediaType(r.Header.Get("Content-Type"))
-		if err := r.ParseForm(); err != nil || mediaTypeErr != nil || mediaType != "application/x-www-form-urlencoded" {
-			redirectLoginError(w, r)
-			return
-		}
-	}
-	callbackValues := r.URL.Query()
-	if r.Method == http.MethodPost {
-		callbackValues = r.PostForm
-	}
-	if callbackValues.Get("error") != "" {
+	callbackValues, valid := callbackValues(w, r)
+	if !valid || callbackValues.Get("error") != "" {
 		redirectLoginError(w, r)
 		return
 	}
 
-	stateCookie, err := r.Cookie(stateCookieName)
-	if err != nil {
-		redirectLoginError(w, r)
-		return
-	}
-	statePayload, err := client.OpenSessionData(statePurpose, stateCookie.Value)
-	if err != nil {
-		redirectLoginError(w, r)
-		return
-	}
-	var state authorizationState
-	if json.Unmarshal(statePayload, &state) != nil || state.State == "" || state.Nonce == "" || state.Verifier == "" || state.ResponseMode != instance.responseMode || (state.ResponseMode == "form_post" && r.Method != http.MethodPost) || (state.ResponseMode == "query" && r.Method != http.MethodGet) || time.Since(state.CreatedAt) > stateLifetime || time.Since(state.CreatedAt) < 0 || !constantTimeEquals(state.State, callbackValues.Get("state")) {
+	state, valid := authorizationStateFromCallback(r, callbackValues, instance)
+	if !valid {
 		redirectLoginError(w, r)
 		return
 	}
@@ -281,27 +260,7 @@ func CompleteLogin(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 15*time.Second)
 	defer cancel()
 	ctx = context.WithValue(ctx, oauth2.HTTPClient, instance.httpClient)
-	token, err := instance.oauthConfig.Exchange(ctx, callbackValues.Get("code"), oauth2.VerifierOption(state.Verifier))
-	if err != nil {
-		redirectLoginError(w, r)
-		return
-	}
-	if token.AccessToken == "" || !strings.EqualFold(token.TokenType, "Bearer") {
-		redirectLoginError(w, r)
-		return
-	}
-	rawIDToken, ok := token.Extra("id_token").(string)
-	if !ok || rawIDToken == "" {
-		redirectLoginError(w, r)
-		return
-	}
-	idToken, err := instance.verifyIDToken(ctx, rawIDToken, token.AccessToken)
-	if err != nil || !constantTimeEquals(idToken.Nonce, state.Nonce) {
-		redirectLoginError(w, r)
-		return
-	}
-
-	session, err := instance.newBrowserSession(ctx, token, rawIDToken, idToken)
+	session, err := exchangeCallback(ctx, instance, callbackValues, state)
 	if err != nil {
 		redirectLoginError(w, r)
 		return
@@ -311,6 +270,62 @@ func CompleteLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func callbackValues(w http.ResponseWriter, r *http.Request) (url.Values, bool) {
+	if r.Method != http.MethodPost {
+		return r.URL.Query(), true
+	}
+
+	r.Body = http.MaxBytesReader(w, r.Body, 64<<10)
+	mediaType, _, mediaTypeErr := mime.ParseMediaType(r.Header.Get("Content-Type"))
+	if err := r.ParseForm(); err != nil || mediaTypeErr != nil || mediaType != "application/x-www-form-urlencoded" {
+		return nil, false
+	}
+	return r.PostForm, true
+}
+
+func authorizationStateFromCallback(r *http.Request, callbackValues url.Values, instance *Manager) (authorizationState, bool) {
+	stateCookie, err := r.Cookie(stateCookieName)
+	if err != nil {
+		return authorizationState{}, false
+	}
+	statePayload, err := client.OpenSessionData(statePurpose, stateCookie.Value)
+	if err != nil {
+		return authorizationState{}, false
+	}
+	var state authorizationState
+	if json.Unmarshal(statePayload, &state) != nil || state.State == "" || state.Nonce == "" || state.Verifier == "" ||
+		state.ResponseMode != instance.responseMode ||
+		(state.ResponseMode == "form_post" && r.Method != http.MethodPost) ||
+		(state.ResponseMode == "query" && r.Method != http.MethodGet) ||
+		time.Since(state.CreatedAt) > stateLifetime || time.Since(state.CreatedAt) < 0 ||
+		!constantTimeEquals(state.State, callbackValues.Get("state")) {
+		return authorizationState{}, false
+	}
+	return state, true
+}
+
+func exchangeCallback(ctx context.Context, instance *Manager, callbackValues url.Values, state authorizationState) (client.BrowserSession, error) {
+	token, err := instance.oauthConfig.Exchange(ctx, callbackValues.Get("code"), oauth2.VerifierOption(state.Verifier))
+	if err != nil {
+		return client.BrowserSession{}, err
+	}
+	if token.AccessToken == "" || !strings.EqualFold(token.TokenType, "Bearer") {
+		return client.BrowserSession{}, errors.New("OIDC token response did not contain a bearer access token")
+	}
+	rawIDToken, ok := token.Extra("id_token").(string)
+	if !ok || rawIDToken == "" {
+		return client.BrowserSession{}, errors.New("OIDC token response did not contain an ID token")
+	}
+	idToken, err := instance.verifyIDToken(ctx, rawIDToken, token.AccessToken)
+	if err != nil {
+		return client.BrowserSession{}, err
+	}
+	if !constantTimeEquals(idToken.Nonce, state.Nonce) {
+		return client.BrowserSession{}, errors.New("OIDC ID token nonce did not match the authorization request")
+	}
+	return instance.newBrowserSession(ctx, token, rawIDToken, idToken)
 }
 
 func RefreshSession(ctx context.Context, session *client.BrowserSession) (bool, error) {

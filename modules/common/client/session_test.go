@@ -30,6 +30,7 @@ package client
 
 import (
 	"encoding/base64"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -143,7 +144,7 @@ func TestSetBrowserSessionCookieRejectsInvalidOrOversizedSessions(t *testing.T) 
 func TestReadBrowserSessionRejectsMissingMalformedAndExpiredCookies(t *testing.T) {
 	configureTestSessionKey(t)
 	t.Run("missing", func(t *testing.T) {
-		if _, err := ReadBrowserSession(httptest.NewRequest(http.MethodGet, "https://dashboard.example.test/", nil)); err != http.ErrNoCookie {
+		if _, err := ReadBrowserSession(httptest.NewRequest(http.MethodGet, "https://dashboard.example.test/", nil)); !errors.Is(err, http.ErrNoCookie) {
 			t.Fatalf("ReadBrowserSession() error = %v, want http.ErrNoCookie", err)
 		}
 	})
