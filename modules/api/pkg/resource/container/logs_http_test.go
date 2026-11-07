@@ -1,3 +1,17 @@
+// Copyright 2017 The Kubernetes Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 // Copyright 2026 The Kubernetes Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,7 +51,8 @@ func newLogTestClient(t *testing.T, logStatus int) kubernetes.Interface {
 			status := http.StatusOK
 			contentType := "application/json"
 			body := ""
-			if r.URL.Path == "/api/v1/namespaces/ns/pods/pod" {
+			switch r.URL.Path {
+			case "/api/v1/namespaces/ns/pods/pod":
 				pod, err := json.Marshal(&corev1.Pod{
 					TypeMeta:   metaV1.TypeMeta{APIVersion: "v1", Kind: "Pod"},
 					ObjectMeta: metaV1.ObjectMeta{Name: "pod", Namespace: "ns"},
@@ -47,7 +62,7 @@ func newLogTestClient(t *testing.T, logStatus int) kubernetes.Interface {
 					return nil, err
 				}
 				body = string(pod)
-			} else if r.URL.Path == "/api/v1/namespaces/ns/pods/pod/log" {
+			case "/api/v1/namespaces/ns/pods/pod/log":
 				contentType = "text/plain"
 				if r.URL.Query().Get("container") != "main" {
 					status = http.StatusBadRequest
@@ -58,7 +73,7 @@ func newLogTestClient(t *testing.T, logStatus int) kubernetes.Interface {
 				} else {
 					body = "2026-11-07T12:00:00Z started\n"
 				}
-			} else {
+			default:
 				status = http.StatusNotFound
 				body = "not found"
 			}
