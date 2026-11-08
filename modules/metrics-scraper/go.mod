@@ -5,7 +5,7 @@ go 1.27.3
 require (
 	github.com/gorilla/handlers v1.5.2
 	github.com/gorilla/mux v1.8.1
-	github.com/onsi/ginkgo v1.16.4
+	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.38.2
 	github.com/spf13/pflag v1.1.0
 	k8s.io/api v0.37.2
