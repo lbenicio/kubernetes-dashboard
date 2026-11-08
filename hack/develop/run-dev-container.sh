@@ -82,6 +82,7 @@ docker run \
   -e LOCAL_UID="${LOCAL_UID}" \
   -e LOCAL_GID="${LOCAL_GID}" \
   -e DOCKER_GID="${DOCKER_GID}" \
-  -p 8080:8080 \
+  -p 127.0.0.1:8080:8080 \
+  -p '[::1]:8080:8080' \
   ${DOCKER_RUN_OPTS} \
   ${KD_DEV_IMAGE_NAME}

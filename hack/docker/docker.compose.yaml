@@ -24,11 +24,18 @@ services:
       - "KONG_PROXY_ERROR_LOG=/dev/stderr"
       - "KONG_ADMIN_ERROR_LOG=/dev/stderr"
       - "KONG_DNS_ORDER=LAST,A,CNAME"
+      - >-
+        KONG_PROXY_LISTEN=0.0.0.0:8000 reuseport backlog=16384,
+        [::]:8000 ipv6only=on reuseport backlog=16384,
+        0.0.0.0:8443 http2 ssl reuseport backlog=16384,
+        [::]:8443 ipv6only=on http2 ssl reuseport backlog=16384
     volumes:
       - ${PWD}/hack/gateway/prod.kong.yml:/kong/declarative/kong.yml
     ports:
-      - "8080:8000"
-      - "8443:8443"
+      - "127.0.0.1:8080:8000"
+      - "[::1]:8080:8000"
+      - "127.0.0.1:8443:8443"
+      - "[::1]:8443:8443"
 
   auth:
     container_name: dashboard-auth
