@@ -42,3 +42,13 @@ func TestRouterAndV1AreConfigured(t *testing.T) {
 		t.Fatalf("recovery middleware status = %d, want %d", response.Code, http.StatusInternalServerError)
 	}
 }
+
+func TestNewRouterUsesReleaseModeOutsideDevelopment(t *testing.T) {
+	previousMode := gin.Mode()
+	t.Cleanup(func() { gin.SetMode(previousMode) })
+
+	engine, versioned := newRouter(false)
+	if engine == nil || versioned == nil || gin.Mode() != gin.ReleaseMode {
+		t.Fatalf("newRouter(false) = %v, %v; Gin mode = %q", engine, versioned, gin.Mode())
+	}
+}

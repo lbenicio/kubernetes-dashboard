@@ -181,6 +181,35 @@ func TestDeferredLoadUpdatesAndSkipsConcurrentRefresh(t *testing.T) {
 	}
 }
 
+func TestDeferredLoadReleasesItsRefreshLock(t *testing.T) {
+	setCacheArg(t, "cache-refresh-debounce", "0s")
+	Clear[cacheTestValue]()
+	t.Cleanup(func() { Clear[cacheTestValue]() })
+	key := testCacheKey("release-lock")
+	cacheKey, err := key.SHA()
+	if err != nil {
+		t.Fatal(err)
+	}
+	loaded := make(chan struct{})
+	DeferredLoad[*cacheTestValue](key, func() (*cacheTestValue, error) {
+		close(loaded)
+		return &cacheTestValue{Name: "loaded"}, nil
+	})
+	select {
+	case <-loaded:
+	case <-time.After(time.Second):
+		t.Fatal("deferred loader did not run")
+	}
+	deadline := time.Now().Add(time.Second)
+	for time.Now().Before(deadline) {
+		if _, locked := cacheLocks.Load(cacheKey); !locked {
+			return
+		}
+		time.Sleep(time.Millisecond)
+	}
+	t.Fatal("deferred refresh lock was not released")
+}
+
 func TestKeyHashAndJSON(t *testing.T) {
 	key := NewKey(types.ResourceKindPod, "default", "token", metav1.ListOptions{
 		LabelSelector:   "app=dashboard",

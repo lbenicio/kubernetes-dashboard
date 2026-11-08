@@ -9,7 +9,7 @@ include $(API_DIRECTORY)/hack/include/config.mk
 include $(WEB_DIRECTORY)/hack/include/config.mk
 
 # List of targets that should be executed before other targets
-PRE = --ensure-tools clean
+PRE = --ensure-tools
 
 .PHONY: help
 help:
@@ -39,6 +39,7 @@ clean: --clean ## Clean up all temporary directories
 .PHONY: coverage
 coverage: $(PRE) ## Runs all available test coverage scripts
 	@$(MAKE) --no-print-directory -C $(MODULES_DIRECTORY) TARGET=coverage
+	@node $(ROOT_DIRECTORY)/hack/scripts/check-coverage.mjs
 
 .PHONY: fix
 fix: $(PRE) fix-license ## Runs all available fix scripts

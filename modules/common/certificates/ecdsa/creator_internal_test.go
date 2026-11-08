@@ -23,12 +23,18 @@
 package ecdsa
 
 import (
+	"crypto/ecdsa"
 	"crypto/elliptic"
+	"crypto/rand"
 	"crypto/tls"
 	"crypto/x509"
+	"errors"
+	"io"
 	"net"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -87,3 +93,51 @@ func TestECDSACreatorDefaultsAndFallbackSubject(t *testing.T) {
 		t.Fatalf("fallback certificate identity = %#v, DNS=%v IP=%v", certificate.Subject, certificate.DNSNames, certificate.IPAddresses)
 	}
 }
+
+func TestECDSACreatorKeyPEMRejectsInvalidKey(t *testing.T) {
+	creator := NewECDSACreator("key.pem", "cert.pem", elliptic.P256()).(*ecdsaCreator)
+	if _, _, err := creator.KeyCertPEMBytes(&ecdsa.PrivateKey{}, nil); err == nil {
+		t.Fatal("KeyCertPEMBytes() accepted an invalid private key")
+	}
+}
+
+func TestECDSACreatorFatalPaths(t *testing.T) {
+	if fatalPath := os.Getenv("DASHBOARD_ECDSA_FATAL_PATH"); fatalPath != "" {
+		creator := NewECDSACreator("key.pem", "cert.pem", elliptic.P256()).(*ecdsaCreator)
+		switch fatalPath {
+		case "generate-key":
+			creator.keyGenerator = func(elliptic.Curve, io.Reader) (*ecdsa.PrivateKey, error) {
+				return nil, errors.New("key generation failed")
+			}
+			creator.GenerateKey()
+		case "generate-certificate":
+			creator.GenerateCertificate(&ecdsa.PrivateKey{})
+		case "store-certificate":
+			creator.StoreCertificates(filepath.Join(os.Getenv("DASHBOARD_ECDSA_TEST_DIR"), "missing"), creator.GenerateKey(), []byte("der"))
+		case "store-key":
+			creator = NewECDSACreator("missing/key.pem", "cert.pem", elliptic.P256()).(*ecdsaCreator)
+			creator.StoreCertificates(os.Getenv("DASHBOARD_ECDSA_TEST_DIR"), creator.GenerateKey(), []byte("der"))
+		case "invalid-key-type":
+			creator.getKey("not an ECDSA key")
+		case "serial-number":
+			rand.Reader = failingRandomReader{}
+			creator.generateSerialNumber()
+		}
+		t.Fatal("fatal path returned instead of terminating the process")
+	}
+
+	for _, fatalPath := range []string{"generate-key", "generate-certificate", "store-certificate", "store-key", "invalid-key-type", "serial-number"} {
+		t.Run(fatalPath, func(t *testing.T) {
+			cmd := exec.Command(os.Args[0], "-test.run=^TestECDSACreatorFatalPaths$")
+			cmd.Env = append(os.Environ(), "DASHBOARD_ECDSA_FATAL_PATH="+fatalPath, "DASHBOARD_ECDSA_TEST_DIR="+t.TempDir())
+			output, err := cmd.CombinedOutput()
+			if err == nil || !strings.Contains(string(output), "ECDSAManager") {
+				t.Fatalf("fatal path %q returned %v with output %q", fatalPath, err, output)
+			}
+		})
+	}
+}
+
+type failingRandomReader struct{}
+
+func (failingRandomReader) Read([]byte) (int, error) { return 0, errors.New("random source failed") }

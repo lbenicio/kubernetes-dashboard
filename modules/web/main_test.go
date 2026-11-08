@@ -28,6 +28,82 @@ import (
 	"github.com/spf13/pflag"
 )
 
+type testWebHTTPServer struct {
+	tlsCalls  int
+	httpCalls int
+}
+
+func (server *testWebHTTPServer) RunTLS(string, string, string) error {
+	server.tlsCalls++
+	return nil
+}
+
+func (server *testWebHTTPServer) Run(...string) error {
+	server.httpCalls++
+	return nil
+}
+
+func TestRunWebMainWiresTLSAndInsecureListeners(t *testing.T) {
+	for _, test := range []struct {
+		name     string
+		cert     string
+		key      string
+		wantTLS  int
+		wantHTTP int
+	}{
+		{name: "TLS", cert: "cert.pem", key: "key.pem", wantTLS: 1},
+		{name: "insecure", wantHTTP: 1},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			server := &testWebHTTPServer{}
+			initialized := false
+			runWebMain(func() { initialized = true }, func() (string, string, error) {
+				return test.cert, test.key, nil
+			}, server, ":8443", ":8000", func(string, ...interface{}) {
+				t.Fatal("fatal callback called during successful startup")
+			})
+			if !initialized || server.tlsCalls != test.wantTLS || server.httpCalls != test.wantHTTP {
+				t.Fatalf("initialized=%t TLS calls=%d HTTP calls=%d", initialized, server.tlsCalls, server.httpCalls)
+			}
+		})
+	}
+}
+
+func TestRunWebMainReportsInitializationAndRouterFailures(t *testing.T) {
+	for _, initialized := range []bool{false, true} {
+		var messages []string
+		server := &testWebHTTPServer{}
+		certificateError := errors.New("certificate error")
+		serverError := errors.New("router error")
+		certificatePaths := func() (string, string, error) {
+			if initialized {
+				return "cert.pem", "key.pem", nil
+			}
+			return "", "", certificateError
+		}
+		fatalf := func(message string, _ ...interface{}) { messages = append(messages, message) }
+		runWebMain(func() {}, certificatePaths, serverWithError{testWebHTTPServer: server, err: serverError}, ":8443", ":8000", fatalf)
+		if len(messages) != 1 {
+			t.Fatalf("fatal callback count for initialized=%t: %d", initialized, len(messages))
+		}
+		if initialized && messages[0] != "Router error: %s" {
+			t.Errorf("router failure message = %q", messages[0])
+		}
+		if !initialized && messages[0] != "Error while loading dashboard server certificates. Reason: %s" {
+			t.Errorf("certificate failure message = %q", messages[0])
+		}
+	}
+}
+
+type serverWithError struct {
+	*testWebHTTPServer
+	err error
+}
+
+func (server serverWithError) RunTLS(string, string, string) error { return server.err }
+
+func (server serverWithError) Run(...string) error { return server.err }
+
 func TestRunWebSelectsServerModeAndPropagatesFailures(t *testing.T) {
 	certificateErr := errors.New("certificate paths unavailable")
 	serverErr := errors.New("listener failed")

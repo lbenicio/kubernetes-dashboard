@@ -21,6 +21,7 @@ import (
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
+	"io"
 	"log"
 	"math/big"
 	"net"
@@ -35,14 +36,19 @@ import (
 
 // Implements certificate Creator interface. See Creator for more information.
 type ecdsaCreator struct {
-	keyFile  string
-	certFile string
-	curve    elliptic.Curve
+	keyFile      string
+	certFile     string
+	curve        elliptic.Curve
+	keyGenerator func(elliptic.Curve, io.Reader) (*ecdsa.PrivateKey, error)
 }
 
 // GenerateKey implements certificate Creator interface. See Creator for more information.
 func (in *ecdsaCreator) GenerateKey() interface{} {
-	key, err := ecdsa.GenerateKey(in.curve, rand.Reader)
+	keyGenerator := in.keyGenerator
+	if keyGenerator == nil {
+		keyGenerator = ecdsa.GenerateKey
+	}
+	key, err := keyGenerator(in.curve, rand.Reader)
 	if err != nil {
 		log.Fatalf("[ECDSAManager] Failed to generate certificate key: %s", err)
 	}

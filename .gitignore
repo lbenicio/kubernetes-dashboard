@@ -105,3 +105,4 @@ CLAUDE.md
 .cached_tools/
 .tmp/
 screenshots/
+.dist/

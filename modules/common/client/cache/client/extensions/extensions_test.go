@@ -26,6 +26,7 @@ import (
 	"context"
 	"io"
 	"net/http"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -53,6 +54,20 @@ func TestCachedCustomResourceDefinitionLister(t *testing.T) {
 func TestNewClientRejectsMalformedRESTConfig(t *testing.T) {
 	if _, err := extensionsclient.NewClient(&rest.Config{Host: "http://%"}, nil, common.CachedClientOptions{}); err == nil {
 		t.Fatal("NewClient() accepted a malformed REST config")
+	}
+}
+
+func TestNewClientReturnsTransportConfigurationErrors(t *testing.T) {
+	missingCertificate := filepath.Join(t.TempDir(), "missing.crt")
+	config := &rest.Config{
+		Host: "https://kubernetes.example.test",
+		TLSClientConfig: rest.TLSClientConfig{
+			CertFile: missingCertificate,
+			KeyFile:  missingCertificate,
+		},
+	}
+	if _, err := extensionsclient.NewClient(config, nil, common.CachedClientOptions{}); err == nil {
+		t.Fatal("NewClient() accepted missing TLS client certificate files")
 	}
 }
 

@@ -26,14 +26,18 @@ var (
 )
 
 func init() {
-	if !environment.IsDev() {
+	router, root = newRouter(environment.IsDev())
+}
+
+func newRouter(isDevelopment bool) (*gin.Engine, *gin.RouterGroup) {
+	if !isDevelopment {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	router = gin.New()
-	router.Use(gin.Recovery())
-	_ = router.SetTrustedProxies(nil)
-	root = router.Group("/")
+	engine := gin.New()
+	engine.Use(gin.Recovery())
+	_ = engine.SetTrustedProxies(nil)
+	return engine, engine.Group("/")
 }
 
 func Root() *gin.RouterGroup {

@@ -18,9 +18,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
+	"net/http/httptest"
+	"strings"
 	"testing"
 
+	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	authorizationapiv1 "k8s.io/api/authorization/v1"
@@ -154,6 +158,64 @@ func TestCachedResourceListerReturnsAuthorizationReviewErrors(t *testing.T) {
 	if _, err := reader.List(ctx, &MockLister{returnVal: &TestResource{Items: []string{"must-not-load"}}}, metav1.ListOptions{}); !errors.Is(err, wantErr) {
 		t.Fatalf("cached List() error = %v, want %v", err, wantErr)
 	}
+}
+
+func TestCachedResourceListerReturnsTokenExchangeErrors(t *testing.T) {
+	defer cache.Clear[TestResource]()
+	previousTransport := http.DefaultTransport
+	http.DefaultTransport = resourceListerTransport(func(request *http.Request) (*http.Response, error) {
+		return &http.Response{
+			Status:     "502 Bad Gateway",
+			StatusCode: http.StatusBadGateway,
+			Header:     make(http.Header),
+			Body:       io.NopCloser(strings.NewReader("context exchange failed")),
+			Request:    request,
+		}, nil
+	})
+	t.Cleanup(func() { http.DefaultTransport = previousTransport })
+	setResourceListerFlag(t, "cluster-context-enabled", "true")
+	setResourceListerFlag(t, "token-exchange-endpoint", "http://token.exchange.invalid/login")
+
+	for _, test := range []struct {
+		name string
+		req  *http.Request
+	}{
+		{name: "cache read failure with no request", req: nil},
+		{name: "cache invalidation failure", req: httptest.NewRequest(http.MethodGet, "http://dashboard.test", nil)},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			if test.req != nil {
+				test.req.Header.Set("Cache-Control", "no-cache")
+			}
+			auth := &authorizationv1fake.FakeAuthorizationV1{Fake: &k8stesting.Fake{}}
+			lister := common.NewCachedResourceLister[TestResource](
+				auth,
+				common.WithResourceKind[TestResource]("pods"),
+				common.WithToken[TestResource]("exchange-error-"+test.name),
+				common.WithRequestGetter[TestResource](func() *http.Request { return test.req }),
+			)
+			_, err := lister.List(context.Background(), &MockLister{}, metav1.ListOptions{})
+			if err == nil || !strings.Contains(err.Error(), "502 Bad Gateway") {
+				t.Fatalf("List() error = %v; want token exchange failure", err)
+			}
+		})
+	}
+}
+
+type resourceListerTransport func(*http.Request) (*http.Response, error)
+
+func (transport resourceListerTransport) RoundTrip(request *http.Request) (*http.Response, error) {
+	return transport(request)
+}
+
+func setResourceListerFlag(t *testing.T, name, value string) {
+	t.Helper()
+	flag := pflag.Lookup(name)
+	previous := flag.Value.String()
+	if err := flag.Value.Set(value); err != nil {
+		t.Fatalf("set %s: %v", name, err)
+	}
+	t.Cleanup(func() { _ = flag.Value.Set(previous) })
 }
 
 func TestCachedResourceLister_List(t *testing.T) {

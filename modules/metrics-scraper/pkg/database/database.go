@@ -88,10 +88,6 @@ func UpdateDatabase(db *sql.DB, nodeMetrics *v1beta1.NodeMetricsList, podMetrics
 	err = tx.Commit()
 
 	if err != nil {
-		rberr := tx.Rollback()
-		if rberr != nil {
-			return rberr
-		}
 		return err
 	}
 
@@ -140,10 +136,6 @@ func CullDatabase(db *sql.DB, window time.Duration) error {
 	err = tx.Commit()
 
 	if err != nil {
-		rberr := tx.Rollback()
-		if rberr != nil {
-			return rberr
-		}
 		return err
 	}
 

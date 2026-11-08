@@ -62,21 +62,7 @@ func nodeHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		j, err := json.Marshal(resp)
-
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			_, err := fmt.Fprintf(w, "JSON Error - %v", err.Error())
-			if err != nil {
-				klog.Errorf("Error cannot write response: %v", err)
-			}
-			return
-		}
-
-		_, err = w.Write(j)
-		if err != nil {
-			klog.Errorf("Error cannot write response: %v", err)
-		}
+		writeJSONResponse(w, resp)
 	}
 
 	return fn
@@ -100,24 +86,25 @@ func podHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		j, err := json.Marshal(resp)
-
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			_, err := fmt.Fprintf(w, "JSON Error - %v", err.Error())
-			if err != nil {
-				klog.Errorf("Error cannot write response: %v", err)
-			}
-			return
-		}
-
-		_, err = w.Write(j)
-		if err != nil {
-			klog.Errorf("Error cannot write response: %v", err)
-		}
+		writeJSONResponse(w, resp)
 	}
 
 	return fn
+}
+
+func writeJSONResponse(w http.ResponseWriter, response any) {
+	payload, err := json.Marshal(response)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		if _, writeErr := fmt.Fprintf(w, "JSON Error - %v", err); writeErr != nil {
+			klog.Errorf("Error cannot write response: %v", writeErr)
+		}
+		return
+	}
+
+	if _, err := w.Write(payload); err != nil {
+		klog.Errorf("Error cannot write response: %v", err)
+	}
 }
 
 func getRows(db *sql.DB, table string, metricName string, selector ResourceSelector) (*sql.Rows, error) {

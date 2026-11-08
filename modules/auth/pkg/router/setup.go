@@ -30,21 +30,26 @@ var (
 )
 
 func init() {
-	if !environment.IsDev() {
+	router, v1 = newRouter(environment.IsDev())
+}
+
+func newRouter(isDevelopment bool) (*gin.Engine, *gin.RouterGroup) {
+	if !isDevelopment {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	router = gin.New()
-	router.Use(gin.Recovery())
-	_ = router.SetTrustedProxies(nil)
-	v1 = router.Group("/api/v1")
-	v1.Use(csrf.Gin().CSRF(
+	engine := gin.New()
+	engine.Use(gin.Recovery())
+	_ = engine.SetTrustedProxies(nil)
+	versioned := engine.Group("/api/v1")
+	versioned.Use(csrf.Gin().CSRF(
 		csrf.Gin().WithCSRFActionGetter(helpers.GetResourceFromPath),
 		csrf.Gin().WithCSRFRunCondition(func(request *http.Request) bool {
 			// OIDC form_post callbacks are protected by the encrypted state, PKCE, and nonce checks.
 			return request.Method == http.MethodPost && request.URL.Path != "/api/v1/oidc/callback"
 		}),
 	))
+	return engine, versioned
 }
 
 func V1() *gin.RouterGroup {

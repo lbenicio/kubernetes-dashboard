@@ -34,19 +34,36 @@ import (
 )
 
 func main() {
-	runWebProcess(initializeWebClient, getWebCertificatePaths,
-		func(address, certPath, keyPath string) error {
-			return router.Router().RunTLS(address, certPath, keyPath)
-		},
-		func(address string) error { return router.Router().Run(address) },
-		args.Address(), args.InsecureAddress(), func(initialized bool, err error) {
-			if err != nil {
-				if initialized {
-					klog.Fatalf("Router error: %s", err)
-				}
-				klog.Fatalf("Error while loading dashboard server certificates. Reason: %s", err)
-			}
-		})
+	runWebMain(initializeWebClient, getWebCertificatePaths, router.Router(), args.Address(), args.InsecureAddress(), klog.Fatalf)
+}
+
+type webHTTPServer interface {
+	RunTLS(string, string, string) error
+	Run(...string) error
+}
+
+func runWebMain(
+	initializeClient func(),
+	certificatePaths func() (string, string, error),
+	server webHTTPServer,
+	secureAddress, insecureAddress string,
+	fatalf func(string, ...interface{}),
+) {
+	serveTLS := func(address, certPath, keyPath string) error {
+		return server.RunTLS(address, certPath, keyPath)
+	}
+	serve := func(address string) error { return server.Run(address) }
+	onFatal := func(initialized bool, err error) {
+		if err == nil {
+			return
+		}
+		if initialized {
+			fatalf("Router error: %s", err)
+			return
+		}
+		fatalf("Error while loading dashboard server certificates. Reason: %s", err)
+	}
+	runWebProcess(initializeClient, certificatePaths, serveTLS, serve, secureAddress, insecureAddress, onFatal)
 }
 
 func initializeWebClient() {

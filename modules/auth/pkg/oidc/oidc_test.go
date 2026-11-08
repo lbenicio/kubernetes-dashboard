@@ -162,6 +162,33 @@ func TestBeginLoginBuildsPKCERequestAndProtectedState(t *testing.T) {
 	}
 }
 
+func TestOIDCSettingsRequireSharedSessionKey(t *testing.T) {
+	settings := oidcSettings{
+		issuerURL:   "https://identity.example.test",
+		clientID:    "dashboard-test-client",
+		redirectURL: "https://dashboard.example.test/api/v1/oidc/callback",
+	}
+	if err := validateOIDCSettingsWithSessionKey(settings, false); err == nil || !strings.Contains(err.Error(), "DASHBOARD_SESSION_KEY") {
+		t.Fatalf("OIDC settings without a shared session key error = %v", err)
+	}
+	if err := validateOIDCSettingsWithSessionKey(settings, true); err != nil {
+		t.Fatalf("OIDC settings with a shared session key error = %v", err)
+	}
+}
+
+func TestWriteBrowserSessionCookieReportsSerializationFailure(t *testing.T) {
+	response := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodGet, "https://dashboard.example.test/", nil)
+	if writeBrowserSessionCookie(response, request, client.BrowserSession{}, func(http.ResponseWriter, *http.Request, client.BrowserSession) error {
+		return errors.New("session cookie unavailable")
+	}) {
+		t.Fatal("writeBrowserSessionCookie() reported success after a cookie error")
+	}
+	if response.Code != http.StatusInternalServerError || !strings.Contains(response.Body.String(), "Could not complete sign in") {
+		t.Fatalf("cookie error response = %d %q", response.Code, response.Body.String())
+	}
+}
+
 func TestBeginLoginUsesFormPostWhenConfigured(t *testing.T) {
 	configureOIDCTestSessionKey(t)
 	client.SetSessionCookieSecure(true)
@@ -219,6 +246,17 @@ func TestBeginLoginReturnsServerErrorWhenEntropyFails(t *testing.T) {
 				t.Fatalf("BeginLogin() = %d %q", response.Code, response.Body.String())
 			}
 		})
+	}
+}
+
+func TestBeginLoginReturnsServerErrorWhenStateProtectionFails(t *testing.T) {
+	setManagerForTest(t, testManager("query"))
+	response := httptest.NewRecorder()
+	beginLogin(response, httptest.NewRequest(http.MethodPost, "/api/v1/oidc/login", nil), func(string, []byte) (string, error) {
+		return "", errors.New("state protection unavailable")
+	})
+	if response.Code != http.StatusInternalServerError || !strings.Contains(response.Body.String(), "Could not start sign in") {
+		t.Fatalf("BeginLogin() = %d %q", response.Code, response.Body.String())
 	}
 }
 

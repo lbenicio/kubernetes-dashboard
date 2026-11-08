@@ -90,6 +90,9 @@ func TestDatabaseTransactionsReturnFailuresAtEachStage(t *testing.T) {
 			if err == nil {
 				t.Fatalf("operation unexpectedly succeeded at %s", test.stage)
 			}
+			if test.stage == stageCommit && err.Error() != "transaction commit rejected" {
+				t.Fatalf("operation error = %v; want original commit error", err)
+			}
 			if test.rollbackError && !strings.Contains(err.Error(), "statement preparation rejected") {
 				t.Fatalf("operation error = %v, want original statement preparation error", err)
 			}

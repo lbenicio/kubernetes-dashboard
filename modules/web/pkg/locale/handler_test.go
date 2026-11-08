@@ -143,6 +143,14 @@ func TestLocaleHandlerDisablesDirectoryListingAndDisablesHTMLCache(t *testing.T)
 	if indexResponse.Code == 0 {
 		t.Error("index request did not produce a response")
 	}
+
+	prefixedResponse := httptest.NewRecorder()
+	prefixedContext, _ := gin.CreateTestContext(prefixedResponse)
+	prefixedContext.Request = httptest.NewRequest(http.MethodGet, "/dashboard/index.html", nil)
+	localeHandler("/dashboard")(prefixedContext)
+	if prefixedResponse.Code == 0 {
+		t.Error("prefixed index request did not produce a response")
+	}
 }
 
 func equalTags(left, right []language.Tag) bool {

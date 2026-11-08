@@ -193,6 +193,16 @@ func TestBuildAuthInfoAndImpersonation(t *testing.T) {
 	}
 }
 
+func TestBuildConfigFromAuthInfoReturnsInvalidClusterErrors(t *testing.T) {
+	previous := baseConfig
+	baseConfig = &rest.Config{}
+	t.Cleanup(func() { baseConfig = previous })
+
+	if _, err := buildConfigFromAuthInfo(&clientcmdapi.AuthInfo{Token: "test-token"}); err == nil {
+		t.Fatal("buildConfigFromAuthInfo() accepted an empty API server address")
+	}
+}
+
 func TestConfigFromRequestUsesTokenAndAnonymousBaseConfig(t *testing.T) {
 	previous := baseConfig
 	baseConfig = &rest.Config{

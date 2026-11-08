@@ -142,10 +142,14 @@ func configuredOIDCSettings() (oidcSettings, bool, error) {
 }
 
 func validateOIDCSettings(settings oidcSettings) error {
+	return validateOIDCSettingsWithSessionKey(settings, client.HasSessionKey())
+}
+
+func validateOIDCSettingsWithSessionKey(settings oidcSettings, sessionKeyConfigured bool) error {
 	if settings.issuerURL == "" || settings.clientID == "" || settings.redirectURL == "" {
 		return errors.New("OIDC requires issuer URL, client ID, and redirect URL")
 	}
-	if !client.HasSessionKey() {
+	if !sessionKeyConfigured {
 		return errors.New("OIDC requires DASHBOARD_SESSION_KEY to be shared by the Auth and API services")
 	}
 	if err := validateEndpointURL(settings.issuerURL); err != nil {
@@ -248,6 +252,10 @@ func Enabled() bool {
 }
 
 func BeginLogin(w http.ResponseWriter, r *http.Request) {
+	beginLogin(w, r, client.SealSessionData)
+}
+
+func beginLogin(w http.ResponseWriter, r *http.Request, protectState func(string, []byte) (string, error)) {
 	instance := current()
 	if instance == nil {
 		http.NotFound(w, r)
@@ -270,7 +278,7 @@ func BeginLogin(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Could not start sign in", http.StatusInternalServerError)
 		return
 	}
-	protected, err := client.SealSessionData(statePurpose, encoded)
+	protected, err := protectState(statePurpose, encoded)
 	if err != nil {
 		http.Error(w, "Could not start sign in", http.StatusInternalServerError)
 		return
@@ -318,11 +326,23 @@ func CompleteLogin(w http.ResponseWriter, r *http.Request) {
 		redirectLoginError(w, r)
 		return
 	}
-	if err := client.SetBrowserSessionCookie(w, r, session); err != nil {
-		http.Error(w, "Could not complete sign in", http.StatusInternalServerError)
+	if !writeBrowserSessionCookie(w, r, session, client.SetBrowserSessionCookie) {
 		return
 	}
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func writeBrowserSessionCookie(
+	w http.ResponseWriter,
+	r *http.Request,
+	session client.BrowserSession,
+	setCookie func(http.ResponseWriter, *http.Request, client.BrowserSession) error,
+) bool {
+	if err := setCookie(w, r, session); err != nil {
+		http.Error(w, "Could not complete sign in", http.StatusInternalServerError)
+		return false
+	}
+	return true
 }
 
 func callbackValues(w http.ResponseWriter, r *http.Request) (url.Values, bool) {

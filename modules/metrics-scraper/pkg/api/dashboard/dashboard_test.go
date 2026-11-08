@@ -319,6 +319,20 @@ func TestDashboardHandlersLogResponseWriteErrors(t *testing.T) {
 	}
 }
 
+func TestWriteJSONResponseReportsSerializationAndWriteErrors(t *testing.T) {
+	recorder := httptest.NewRecorder()
+	writeJSONResponse(recorder, make(chan int))
+	if recorder.Code != http.StatusInternalServerError || !strings.Contains(recorder.Body.String(), "JSON Error - json: unsupported type") {
+		t.Fatalf("JSON error response = %d %q", recorder.Code, recorder.Body.String())
+	}
+
+	writer := &failingResponseWriter{header: make(http.Header)}
+	writeJSONResponse(writer, make(chan int))
+	if !writer.writeCalled {
+		t.Fatal("JSON error handler did not attempt to write its error response")
+	}
+}
+
 type failingResponseWriter struct {
 	header      http.Header
 	writeCalled bool

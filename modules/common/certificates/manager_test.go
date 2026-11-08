@@ -24,6 +24,7 @@ package certificates
 
 import (
 	"crypto/elliptic"
+	"errors"
 	"os"
 	"path/filepath"
 	"testing"
@@ -31,6 +32,26 @@ import (
 	"k8s.io/dashboard/certificates/api"
 	"k8s.io/dashboard/certificates/ecdsa"
 )
+
+type certificateCreatorWithPEMError struct {
+	api.Creator
+}
+
+func (certificateCreatorWithPEMError) GenerateKey() interface{} { return struct{}{} }
+
+func (certificateCreatorWithPEMError) GenerateCertificate(interface{}) []byte { return nil }
+
+func (certificateCreatorWithPEMError) KeyCertPEMBytes(interface{}, []byte) ([]byte, []byte, error) {
+	return nil, nil, errors.New("certificate serialization failed")
+}
+
+func (certificateCreatorWithPEMError) StoreCertificates(string, interface{}, []byte) (string, string) {
+	return "", ""
+}
+
+func (certificateCreatorWithPEMError) GetKeyFileName() string { return "key" }
+
+func (certificateCreatorWithPEMError) GetCertFileName() string { return "cert" }
 
 func TestCertificateManagerAutogenerate(t *testing.T) {
 	t.Setenv("POD_NAME", "dashboard-test")
@@ -103,5 +124,16 @@ func TestCertificateManagerReportsInvalidExistingPair(t *testing.T) {
 	manager := NewCertManager(creator, certDir, false)
 	if _, err := manager.GetCertificates(); err == nil {
 		t.Fatal("GetCertificates() accepted an invalid certificate pair")
+	}
+}
+
+func TestCertificateManagerReturnsCertificateSerializationErrors(t *testing.T) {
+	creator := certificateCreatorWithPEMError{}
+	manager := NewCertManager(creator, t.TempDir(), true)
+	if _, err := manager.GetCertificates(); err == nil || err.Error() != "certificate serialization failed" {
+		t.Fatalf("GetCertificates() error = %v, want certificate serialization failure", err)
+	}
+	if certPath, keyPath, err := manager.GetCertificatePaths(); err == nil || err.Error() != "certificate serialization failed" || certPath != "" || keyPath != "" {
+		t.Fatalf("GetCertificatePaths() = %q, %q, %v; want serialization error", certPath, keyPath, err)
 	}
 }

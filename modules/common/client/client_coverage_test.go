@@ -214,6 +214,12 @@ func TestClientFactoriesReturnConfigurationErrors(t *testing.T) {
 	if _, err := APIExtensionsClient(request); err == nil {
 		t.Fatal("APIExtensionsClient() accepted malformed Kubernetes configuration")
 	}
+	if _, err := RestClientForHost("%"); err == nil {
+		t.Fatal("RestClientForHost() accepted a malformed host")
+	}
+	if _, err := APIExtensionsClient(httptest.NewRequest(http.MethodGet, "https://dashboard.example.test", nil)); err == nil {
+		t.Fatal("APIExtensionsClient() accepted a request without authorization")
+	}
 }
 
 func TestCachedClientFactoriesUseRequestGetterForNoCacheLists(t *testing.T) {

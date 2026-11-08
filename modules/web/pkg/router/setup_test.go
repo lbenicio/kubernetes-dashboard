@@ -22,7 +22,11 @@
 
 package router
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/gin-gonic/gin"
+)
 
 func TestRouterAccessors(t *testing.T) {
 	if Root() == nil {
@@ -30,5 +34,20 @@ func TestRouterAccessors(t *testing.T) {
 	}
 	if Router() == nil {
 		t.Fatal("Router() returned nil")
+	}
+}
+
+func TestNewRouterSelectsReleaseModeOutsideDevelopment(t *testing.T) {
+	previousMode := gin.Mode()
+	t.Cleanup(func() { gin.SetMode(previousMode) })
+
+	engine, root := newRouter(false)
+	if engine == nil || root == nil || gin.Mode() != gin.ReleaseMode {
+		t.Fatalf("newRouter(false) = %v, %v; Gin mode = %q", engine, root, gin.Mode())
+	}
+
+	gin.SetMode(gin.DebugMode)
+	if engine, root = newRouter(true); engine == nil || root == nil || gin.Mode() != gin.DebugMode {
+		t.Fatalf("newRouter(true) = %v, %v; Gin mode = %q", engine, root, gin.Mode())
 	}
 }
