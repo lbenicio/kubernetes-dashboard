@@ -29,7 +29,8 @@ coverage:
         informational: true
     # We use codecov for information described as above. So it is enough to check only `project` as of now.
     patch: off
-    changes: false
+    changes:
+      default: off
 
 parsers:
   gcov:

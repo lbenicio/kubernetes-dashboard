@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ROOT_DIR="$(cd $(dirname "${BASH_SOURCE}")/../.. && pwd -P)"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd -P)"
 
 # Create `kind` cluster if kubeconfig for own cluster is not set.
 if [[ "${K8S_OWN_CLUSTER}" != true ]] ; then
@@ -61,10 +61,10 @@ if [[ "${K8S_OWN_CLUSTER}" != true ]] ; then
 fi
 
 # Clean install dependencies
-cd modules/web
+cd modules/web || exit
 rm -fr node_modules
 yarn
-cd ${ROOT_DIR}
+cd ${ROOT_DIR} || exit
 
 # Start dashboard.
 echo "Start dashboard in production mode"
