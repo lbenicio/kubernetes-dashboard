@@ -2,7 +2,7 @@
 
 [![Go Report Card](https://goreportcard.lbenicio.dev/badge/github.com/lbenicio/kubernetes-dashboard)](https://goreportcard.lbenicio.dev/report/github.com/lbenicio/kubernetes-dashboard)
 [![Coverage Status](https://codecov.io/github/lbenicio/kubernetes-dashboard/coverage.svg?branch=main)](https://codecov.io/github/lbenicio/kubernetes-dashboard?branch=main)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/kubernetes/dashboard/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/kubernetes/dashboard/blob/master/LICENSE.txt)
 
 ## Introduction
 
@@ -65,7 +65,7 @@ Participation in the Kubernetes community is governed by the [Kubernetes Code of
 
 ## License
 
-[Apache License 2.0](https://github.com/kubernetes/dashboard/blob/master/LICENSE)
+[Apache License 2.0](https://github.com/kubernetes/dashboard/blob/master/LICENSE.txt)
 
 ----
 _Copyright 2019 [The Kubernetes Dashboard Authors](https://github.com/kubernetes/dashboard/graphs/contributors)_

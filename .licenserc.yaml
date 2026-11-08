@@ -68,7 +68,7 @@ header:
     - "modules/web/.yarn/**"
     - "modules/web/dist/**"
     - "modules/web/src/coverage/**"
-    - "LICENSE"
+    - "LICENSE.txt"
     - "OWNERS_ALIASES"
     - "SECURITY_CONTACTS"
     - "charts/kubernetes-dashboard/templates/networking/post-install-ingress-issuer.yaml"
