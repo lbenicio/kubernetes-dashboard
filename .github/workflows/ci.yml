@@ -15,15 +15,15 @@
 name: CI
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - development
     paths-ignore:
       - "**/*.md"
   pull_request:
     branches: [main]
     paths-ignore:
       - "**/*.md"
-  schedule:
-    - cron: "0 0 * * 1"
 permissions:
   contents: read
 env:
@@ -223,7 +223,7 @@ jobs:
       - uses: helm/kind-action@v1.15.2
         with:
           version: v0.33.0
-          kubectl_version: v1.37.1
+          kubectl_version: v1.37.2
           cluster_name: kubernetes-dashboard-v137
           config: hack/include/kind.config.yml
           node_image: docker.io/kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5
