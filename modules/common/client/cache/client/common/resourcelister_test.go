@@ -16,6 +16,7 @@ package common_test
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"testing"
@@ -150,7 +151,7 @@ func TestCachedResourceListerReturnsAuthorizationReviewErrors(t *testing.T) {
 		return true, nil, wantErr
 	})
 	reader := common.NewCachedResourceLister[TestResource](denied, options...)
-	if _, err := reader.List(ctx, &MockLister{returnVal: &TestResource{Items: []string{"must-not-load"}}}, metav1.ListOptions{}); err != wantErr {
+	if _, err := reader.List(ctx, &MockLister{returnVal: &TestResource{Items: []string{"must-not-load"}}}, metav1.ListOptions{}); !errors.Is(err, wantErr) {
 		t.Fatalf("cached List() error = %v, want %v", err, wantErr)
 	}
 }
