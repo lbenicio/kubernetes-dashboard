@@ -46,6 +46,31 @@ func assertListChannel[T any](t *testing.T, list <-chan *T, errs <-chan error, r
 	}
 }
 
+func assertFilteredListChannel[List, Item any](
+	t *testing.T,
+	name string,
+	list <-chan *List,
+	errs <-chan error,
+	items func(*List) []Item,
+	itemName func(Item) string,
+) {
+	t.Helper()
+	got := <-list
+	if got == nil {
+		t.Fatalf("%s list is nil", name)
+	}
+	gotItems := items(got)
+	if len(gotItems) != 1 {
+		t.Fatalf("%s items = %#v; want only the selected namespace's item", name, gotItems)
+	}
+	if gotName := itemName(gotItems[0]); gotName != "keep" {
+		t.Errorf("%s item name = %q; want %q", name, gotName, "keep")
+	}
+	if err := <-errs; err != nil {
+		t.Fatalf("%s list error = %v", name, err)
+	}
+}
+
 func TestResourceListChannelsBroadcastListsAndErrors(t *testing.T) {
 	client := clientfake.NewSimpleClientset()
 	extensionsClient := apiextensionsfake.NewSimpleClientset()
@@ -174,80 +199,47 @@ func TestResourceListChannelsFilterAllNamespacedWorkloads(t *testing.T) {
 	namespaces := NewNamespaceQuery([]string{"one", "two"})
 
 	ingresses := GetIngressListChannel(client, namespaces, 1)
-	if got := <-ingresses.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
-		t.Errorf("ingresses = %#v; want only the selected namespace's item", got.Items)
-	}
-	if err := <-ingresses.Error; err != nil {
-		t.Fatalf("ingress list error = %v", err)
-	}
+	assertFilteredListChannel(t, "ingresses", ingresses.List, ingresses.Error,
+		func(list *networkingv1.IngressList) []networkingv1.Ingress { return list.Items },
+		func(item networkingv1.Ingress) string { return item.Name })
 	events := GetEventListChannel(client, namespaces, 1)
-	if got := <-events.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
-		t.Errorf("events = %#v; want only the selected namespace's item", got.Items)
-	}
-	if err := <-events.Error; err != nil {
-		t.Fatalf("event list error = %v", err)
-	}
+	assertFilteredListChannel(t, "events", events.List, events.Error,
+		func(list *corev1.EventList) []corev1.Event { return list.Items },
+		func(item corev1.Event) string { return item.Name })
 	controllers := GetReplicationControllerListChannel(client, namespaces, 1)
-	if got := <-controllers.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
-		t.Errorf("replication controllers = %#v; want only the selected namespace's item", got.Items)
-	}
-	if err := <-controllers.Error; err != nil {
-		t.Fatalf("replication controller list error = %v", err)
-	}
+	assertFilteredListChannel(t, "replication controllers", controllers.List, controllers.Error,
+		func(list *corev1.ReplicationControllerList) []corev1.ReplicationController { return list.Items },
+		func(item corev1.ReplicationController) string { return item.Name })
 	deployments := GetDeploymentListChannel(client, namespaces, 1)
-	if got := <-deployments.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
-		t.Errorf("deployments = %#v; want only the selected namespace's item", got.Items)
-	}
-	if err := <-deployments.Error; err != nil {
-		t.Fatalf("deployment list error = %v", err)
-	}
+	assertFilteredListChannel(t, "deployments", deployments.List, deployments.Error,
+		func(list *appsv1.DeploymentList) []appsv1.Deployment { return list.Items },
+		func(item appsv1.Deployment) string { return item.Name })
 	replicaSets := GetReplicaSetListChannel(client, namespaces, 1)
-	if got := <-replicaSets.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
-		t.Errorf("replica sets = %#v; want only the selected namespace's item", got.Items)
-	}
-	if err := <-replicaSets.Error; err != nil {
-		t.Fatalf("replica set list error = %v", err)
-	}
+	assertFilteredListChannel(t, "replica sets", replicaSets.List, replicaSets.Error,
+		func(list *appsv1.ReplicaSetList) []appsv1.ReplicaSet { return list.Items },
+		func(item appsv1.ReplicaSet) string { return item.Name })
 	daemonSets := GetDaemonSetListChannel(client, namespaces, 1)
-	if got := <-daemonSets.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
-		t.Errorf("daemon sets = %#v; want only the selected namespace's item", got.Items)
-	}
-	if err := <-daemonSets.Error; err != nil {
-		t.Fatalf("daemon set list error = %v", err)
-	}
+	assertFilteredListChannel(t, "daemon sets", daemonSets.List, daemonSets.Error,
+		func(list *appsv1.DaemonSetList) []appsv1.DaemonSet { return list.Items },
+		func(item appsv1.DaemonSet) string { return item.Name })
 	jobs := GetJobListChannel(client, namespaces, 1)
-	if got := <-jobs.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
-		t.Errorf("jobs = %#v; want only the selected namespace's item", got.Items)
-	}
-	if err := <-jobs.Error; err != nil {
-		t.Fatalf("job list error = %v", err)
-	}
+	assertFilteredListChannel(t, "jobs", jobs.List, jobs.Error,
+		func(list *batchv1.JobList) []batchv1.Job { return list.Items },
+		func(item batchv1.Job) string { return item.Name })
 	cronJobs := GetCronJobListChannel(client, namespaces, 1)
-	if got := <-cronJobs.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
-		t.Errorf("cron jobs = %#v; want only the selected namespace's item", got.Items)
-	}
-	if err := <-cronJobs.Error; err != nil {
-		t.Fatalf("cron job list error = %v", err)
-	}
+	assertFilteredListChannel(t, "cron jobs", cronJobs.List, cronJobs.Error,
+		func(list *batchv1.CronJobList) []batchv1.CronJob { return list.Items },
+		func(item batchv1.CronJob) string { return item.Name })
 	statefulSets := GetStatefulSetListChannel(client, namespaces, 1)
-	if got := <-statefulSets.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
-		t.Errorf("stateful sets = %#v; want only the selected namespace's item", got.Items)
-	}
-	if err := <-statefulSets.Error; err != nil {
-		t.Fatalf("stateful set list error = %v", err)
-	}
+	assertFilteredListChannel(t, "stateful sets", statefulSets.List, statefulSets.Error,
+		func(list *appsv1.StatefulSetList) []appsv1.StatefulSet { return list.Items },
+		func(item appsv1.StatefulSet) string { return item.Name })
 	configMaps := GetConfigMapListChannel(client, namespaces, 1)
-	if got := <-configMaps.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
-		t.Errorf("config maps = %#v; want only the selected namespace's item", got.Items)
-	}
-	if err := <-configMaps.Error; err != nil {
-		t.Fatalf("config map list error = %v", err)
-	}
+	assertFilteredListChannel(t, "config maps", configMaps.List, configMaps.Error,
+		func(list *corev1.ConfigMapList) []corev1.ConfigMap { return list.Items },
+		func(item corev1.ConfigMap) string { return item.Name })
 	secrets := GetSecretListChannel(client, namespaces, 1)
-	if got := <-secrets.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
-		t.Errorf("secrets = %#v; want only the selected namespace's item", got.Items)
-	}
-	if err := <-secrets.Error; err != nil {
-		t.Fatalf("secret list error = %v", err)
-	}
+	assertFilteredListChannel(t, "secrets", secrets.List, secrets.Error,
+		func(list *corev1.SecretList) []corev1.Secret { return list.Items },
+		func(item corev1.Secret) string { return item.Name })
 }

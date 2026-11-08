@@ -158,8 +158,7 @@ func TestGetDeploymentNewReplicaSetReturnsEmptyViewWhenNoneExists(t *testing.T) 
 }
 
 func deploymentClientFixtureWithSelector(selector *metav1.LabelSelector) *fake.Clientset {
-	client, deployment := deploymentClientFixture()
+	_, deployment := deploymentClientFixture()
 	deployment.Spec.Selector = selector
-	client = fake.NewSimpleClientset(deployment)
-	return client
+	return fake.NewSimpleClientset(deployment)
 }

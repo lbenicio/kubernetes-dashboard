@@ -16,6 +16,7 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 
@@ -41,6 +42,12 @@ func CreateDatabase(db *sql.DB) error {
 	return nil
 }
 
+func rollbackTransaction(tx *sql.Tx) {
+	if err := tx.Rollback(); err != nil && !errors.Is(err, sql.ErrTxDone) {
+		klog.ErrorS(err, "Failed to roll back database transaction")
+	}
+}
+
 /*
 UpdateDatabase updates nodeMetrics and podMetrics with scraped data
 */
@@ -49,7 +56,7 @@ func UpdateDatabase(db *sql.DB, nodeMetrics *v1beta1.NodeMetricsList, podMetrics
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer rollbackTransaction(tx)
 	stmt, err := tx.Prepare("insert into nodes(uid, name, cpu, memory, storage, time) values(?, ?, ?, ?, ?, datetime('now'))")
 	if err != nil {
 		return err
@@ -99,7 +106,7 @@ func CullDatabase(db *sql.DB, window time.Duration) error {
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer rollbackTransaction(tx)
 
 	windowStr := fmt.Sprintf("-%.0f seconds", window.Seconds())
 

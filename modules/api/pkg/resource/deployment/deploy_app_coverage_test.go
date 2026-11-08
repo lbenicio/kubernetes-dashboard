@@ -43,6 +43,22 @@ import (
 )
 
 func TestDeployAppCreatesConfiguredDeploymentAndService(t *testing.T) {
+	for _, test := range []struct {
+		name        string
+		external    bool
+		serviceType corev1.ServiceType
+	}{
+		{name: "cluster IP", serviceType: corev1.ServiceTypeClusterIP},
+		{name: "load balancer", external: true, serviceType: corev1.ServiceTypeLoadBalancer},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			assertDeployAppConfiguration(t, test.external, test.serviceType)
+		})
+	}
+}
+
+func assertDeployAppConfiguration(t *testing.T, external bool, serviceType corev1.ServiceType) {
+	t.Helper()
 	description := "web frontend"
 	pullSecret := "registry-secret"
 	command := "/bin/server"
@@ -50,64 +66,120 @@ func TestDeployAppCreatesConfiguredDeploymentAndService(t *testing.T) {
 	cpu := resource.MustParse("250m")
 	memory := resource.MustParse("64Mi")
 
-	for _, external := range []bool{false, true} {
-		t.Run(map[bool]string{false: "cluster IP", true: "load balancer"}[external], func(t *testing.T) {
-			client := fake.NewSimpleClientset()
-			spec := &AppDeploymentSpec{
-				Name: "web", ContainerImage: "example/web:v1", Namespace: "team-a", Replicas: 3,
-				RunAsPrivileged: true, IsExternal: external, Description: &description, ImagePullSecret: &pullSecret,
-				ContainerCommand: &command, ContainerCommandArgs: &commandArgs,
-				CpuRequirement: &cpu, MemoryRequirement: &memory,
-				Variables:    []EnvironmentVariable{{Name: "ENV", Value: "test"}},
-				Labels:       []Label{{Key: "app", Value: "old"}, {Key: "app", Value: "web"}, {Key: "team", Value: "platform"}},
-				PortMappings: []PortMapping{{Port: 80, TargetPort: 8080, Protocol: corev1.ProtocolTCP}, {Port: 53, TargetPort: 5353, Protocol: corev1.ProtocolUDP}},
-			}
-			if err := DeployApp(spec, client); err != nil {
-				t.Fatalf("DeployApp() error = %v", err)
-			}
+	client := fake.NewSimpleClientset()
+	spec := &AppDeploymentSpec{
+		Name: "web", ContainerImage: "example/web:v1", Namespace: "team-a", Replicas: 3,
+		RunAsPrivileged: true, IsExternal: external, Description: &description, ImagePullSecret: &pullSecret,
+		ContainerCommand: &command, ContainerCommandArgs: &commandArgs,
+		CpuRequirement: &cpu, MemoryRequirement: &memory,
+		Variables:    []EnvironmentVariable{{Name: "ENV", Value: "test"}},
+		Labels:       []Label{{Key: "app", Value: "old"}, {Key: "app", Value: "web"}, {Key: "team", Value: "platform"}},
+		PortMappings: []PortMapping{{Port: 80, TargetPort: 8080, Protocol: corev1.ProtocolTCP}, {Port: 53, TargetPort: 5353, Protocol: corev1.ProtocolUDP}},
+	}
+	if err := DeployApp(spec, client); err != nil {
+		t.Fatalf("DeployApp() error = %v", err)
+	}
 
-			actions := client.Actions()
-			if len(actions) != 2 || actions[0].GetResource().Resource != "deployments" || actions[1].GetResource().Resource != "services" {
-				t.Fatalf("client actions = %#v; want deployment then service creation", actions)
-			}
-			deployed := actions[0].(clienttesting.CreateAction).GetObject().(*apps.Deployment)
-			if deployed.Namespace != "" { // Namespace is carried by the create action, not object metadata.
-				t.Errorf("deployment object namespace = %q; want unset", deployed.Namespace)
-			}
-			if actions[0].GetNamespace() != "team-a" || deployed.Name != "web" || *deployed.Spec.Replicas != 3 {
-				t.Errorf("deployment action/object = namespace %q, %#v", actions[0].GetNamespace(), deployed)
-			}
-			if deployed.Labels["app"] != "web" || deployed.Labels["team"] != "platform" || deployed.Annotations[DescriptionAnnotationKey] != description {
-				t.Errorf("deployment metadata = %#v", deployed.ObjectMeta)
-			}
-			container := deployed.Spec.Template.Spec.Containers[0]
-			if container.Image != "example/web:v1" || container.Command[0] != command || strings.Join(container.Args, " ") != commandArgs {
-				t.Errorf("deployment container command/image = %#v", container)
-			}
-			cpuRequest := container.Resources.Requests[corev1.ResourceCPU]
-			memoryRequest := container.Resources.Requests[corev1.ResourceMemory]
-			if cpuRequest.Cmp(cpu) != 0 || memoryRequest.Cmp(memory) != 0 {
-				t.Errorf("deployment resource requests = %#v", container.Resources.Requests)
-			}
-			if len(deployed.Spec.Template.Spec.ImagePullSecrets) != 1 || deployed.Spec.Template.Spec.ImagePullSecrets[0].Name != pullSecret || len(container.Env) != 1 || container.Env[0] != (corev1.EnvVar{Name: "ENV", Value: "test"}) {
-				t.Errorf("deployment pod configuration = %#v", deployed.Spec.Template.Spec)
-			}
+	actions := client.Actions()
+	if len(actions) != 2 {
+		t.Fatalf("client actions = %#v; want deployment then service creation", actions)
+	}
+	assertCreateActionResource(t, actions[0], "deployments")
+	assertCreateActionResource(t, actions[1], "services")
+	deploymentAction := actions[0].(clienttesting.CreateAction)
+	serviceAction := actions[1].(clienttesting.CreateAction)
+	assertConfiguredDeployment(t, deploymentAction, description, pullSecret, command, commandArgs, cpu, memory)
+	assertConfiguredService(t, serviceAction, serviceType)
+}
 
-			service := actions[1].(clienttesting.CreateAction).GetObject().(*corev1.Service)
-			wantType := corev1.ServiceTypeClusterIP
-			if external {
-				wantType = corev1.ServiceTypeLoadBalancer
-			}
-			if actions[1].GetNamespace() != "team-a" || service.Spec.Type != wantType || service.Spec.Selector["app"] != "web" || len(service.Spec.Ports) != 2 {
-				t.Errorf("service = %#v, namespace %q; want type %s and two ports", service, actions[1].GetNamespace(), wantType)
-			}
-			if service.Spec.Ports[0].Port != 80 || service.Spec.Ports[0].TargetPort.IntVal != 8080 || service.Spec.Ports[0].Protocol != corev1.ProtocolTCP || !strings.HasPrefix(service.Spec.Ports[0].Name, "tcp-80-8080-") {
-				t.Errorf("first service port = %#v", service.Spec.Ports[0])
-			}
-			if service.Spec.Ports[1].Port != 53 || service.Spec.Ports[1].TargetPort.IntVal != 5353 || service.Spec.Ports[1].Protocol != corev1.ProtocolUDP || !strings.HasPrefix(service.Spec.Ports[1].Name, "udp-53-5353-") {
-				t.Errorf("second service port = %#v", service.Spec.Ports[1])
-			}
-		})
+func assertCreateActionResource(t *testing.T, action clienttesting.Action, resource string) {
+	t.Helper()
+	if got := action.GetResource().Resource; got != resource {
+		t.Fatalf("created resource = %q; want %q", got, resource)
+	}
+}
+
+func assertConfiguredDeployment(
+	t *testing.T,
+	action clienttesting.CreateAction,
+	description, pullSecret, command, commandArgs string,
+	cpu, memory resource.Quantity,
+) {
+	t.Helper()
+	deployed := action.GetObject().(*apps.Deployment)
+	if deployed.Namespace != "" { // Namespace is carried by the create action, not object metadata.
+		t.Errorf("deployment object namespace = %q; want unset", deployed.Namespace)
+	}
+	if action.GetNamespace() != "team-a" || deployed.Name != "web" || *deployed.Spec.Replicas != 3 {
+		t.Errorf("deployment action/object = namespace %q, %#v", action.GetNamespace(), deployed)
+	}
+	assertDeploymentMetadata(t, deployed, description)
+	container := deployed.Spec.Template.Spec.Containers[0]
+	assertContainerCommand(t, container, command, commandArgs)
+	assertContainerResources(t, container, cpu, memory)
+	assertContainerSecretsAndEnvironment(t, deployed, container, pullSecret)
+}
+
+func assertDeploymentMetadata(t *testing.T, deployed *apps.Deployment, description string) {
+	t.Helper()
+	if deployed.Labels["app"] != "web" || deployed.Labels["team"] != "platform" {
+		t.Errorf("deployment labels = %#v", deployed.Labels)
+	}
+	if got := deployed.Annotations[DescriptionAnnotationKey]; got != description {
+		t.Errorf("deployment description annotation = %q; want %q", got, description)
+	}
+}
+
+func assertContainerCommand(t *testing.T, container corev1.Container, command, commandArgs string) {
+	t.Helper()
+	if container.Image != "example/web:v1" || container.Command[0] != command || strings.Join(container.Args, " ") != commandArgs {
+		t.Errorf("deployment container command/image = %#v", container)
+	}
+}
+
+func assertContainerResources(t *testing.T, container corev1.Container, cpu, memory resource.Quantity) {
+	t.Helper()
+	cpuRequest := container.Resources.Requests[corev1.ResourceCPU]
+	memoryRequest := container.Resources.Requests[corev1.ResourceMemory]
+	if cpuRequest.Cmp(cpu) != 0 || memoryRequest.Cmp(memory) != 0 {
+		t.Errorf("deployment resource requests = %#v", container.Resources.Requests)
+	}
+}
+
+func assertContainerSecretsAndEnvironment(t *testing.T, deployed *apps.Deployment, container corev1.Container, pullSecret string) {
+	t.Helper()
+	imagePullSecrets := deployed.Spec.Template.Spec.ImagePullSecrets
+	if len(imagePullSecrets) != 1 || imagePullSecrets[0].Name != pullSecret {
+		t.Errorf("deployment image pull secrets = %#v", imagePullSecrets)
+	}
+	if len(container.Env) != 1 || container.Env[0] != (corev1.EnvVar{Name: "ENV", Value: "test"}) {
+		t.Errorf("deployment container environment = %#v", container.Env)
+	}
+}
+
+func assertConfiguredService(t *testing.T, action clienttesting.CreateAction, serviceType corev1.ServiceType) {
+	t.Helper()
+	service := action.GetObject().(*corev1.Service)
+	if action.GetNamespace() != "team-a" {
+		t.Errorf("service namespace = %q; want team-a", action.GetNamespace())
+	}
+	if service.Spec.Type != serviceType {
+		t.Errorf("service type = %q; want %q", service.Spec.Type, serviceType)
+	}
+	if service.Spec.Selector["app"] != "web" {
+		t.Errorf("service selector = %#v; want app=web", service.Spec.Selector)
+	}
+	if len(service.Spec.Ports) != 2 {
+		t.Fatalf("service ports = %#v; want two ports", service.Spec.Ports)
+	}
+	assertServicePort(t, "first", service.Spec.Ports[0], 80, 8080, corev1.ProtocolTCP, "tcp-80-8080-")
+	assertServicePort(t, "second", service.Spec.Ports[1], 53, 5353, corev1.ProtocolUDP, "udp-53-5353-")
+}
+
+func assertServicePort(t *testing.T, name string, port corev1.ServicePort, portNumber, targetPort int32, protocol corev1.Protocol, namePrefix string) {
+	t.Helper()
+	if port.Port != portNumber || port.TargetPort.IntVal != targetPort || port.Protocol != protocol || !strings.HasPrefix(port.Name, namePrefix) {
+		t.Errorf("%s service port = %#v", name, port)
 	}
 }
 

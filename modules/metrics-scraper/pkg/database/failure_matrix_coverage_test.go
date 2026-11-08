@@ -98,7 +98,7 @@ type databaseFailureConnector struct {
 }
 
 func (in databaseFailureConnector) Connect(context.Context) (driver.Conn, error) {
-	return databaseFailureConn{behavior: in.behavior}, nil
+	return databaseFailureConn(in), nil
 }
 
 func (databaseFailureConnector) Driver() driver.Driver { return databaseFailureDriver{} }
@@ -129,7 +129,7 @@ func (in databaseFailureConn) Begin() (driver.Tx, error) {
 	if in.behavior.stage == "begin" {
 		return nil, errors.New("transaction begin rejected")
 	}
-	return databaseFailureTx{behavior: in.behavior}, nil
+	return databaseFailureTx(in), nil
 }
 
 type databaseFailureTx struct {

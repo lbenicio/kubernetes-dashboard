@@ -26,6 +26,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"io"
 	"math/big"
 	"net/http"
@@ -377,7 +378,7 @@ func TestOIDCLoginAndRefreshAgainstSignedProvider(t *testing.T) {
 func TestOIDCProviderRedirectPolicyAndRefreshNoopCases(t *testing.T) {
 	fixture := newProtocolFixture(t, []string{"query"})
 	instance := initializeProtocolFixture(t, fixture)
-	if err := instance.httpClient.CheckRedirect(httptest.NewRequest(http.MethodGet, fixture.issuer, nil), nil); err != http.ErrUseLastResponse {
+	if err := instance.httpClient.CheckRedirect(httptest.NewRequest(http.MethodGet, fixture.issuer, nil), nil); !errors.Is(err, http.ErrUseLastResponse) {
 		t.Fatalf("OIDC redirect policy error = %v, want ErrUseLastResponse", err)
 	}
 
