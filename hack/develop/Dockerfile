@@ -72,10 +72,10 @@ ENV PATH=${GOPATH}/bin:${PATH}
 ENV NG_CLI_ANALYTICS=false
 
 # Download architecture-matched Docker CLI, Compose, and kubectl binaries.
-# Keep kubectl aligned with the Kubernetes version used by the local Kind cluster.
+# Keep kubectl on the latest stable patch within the Kind cluster's Kubernetes minor.
 ARG DOCKER_CLI_VERSION=29.9.2
 ARG DOCKER_COMPOSE_VERSION=v5.7.0
-ARG KUBECTL_VERSION=v1.37.0
+ARG KUBECTL_VERSION=v1.37.2
 RUN set -eu; \
   case "$(dpkg --print-architecture)" in \
     amd64) DOCKER_ARCH=x86_64; COMPOSE_ARCH=x86_64; KUBECTL_ARCH=amd64 ;; \

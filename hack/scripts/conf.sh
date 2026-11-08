@@ -27,6 +27,7 @@ ARCH=$(uname | awk '{print tolower($0)}')
 
 # Local cluster configuration (check start-cluster.sh script for more details).
 KIND_VERSION="v0.33.0"
+# Latest Kubernetes patch is 1.37.2; Kind v0.33.0 currently publishes node image 1.37.0.
 K8S_VERSION="v1.37.0"
 KIND_BIN=${CACHE_DIR}/kind-${KIND_VERSION}
 

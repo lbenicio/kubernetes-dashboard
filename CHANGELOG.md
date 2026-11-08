@@ -4,6 +4,10 @@ All notable changes to this project are documented in this file. The format foll
 
 ## [Unreleased]
 
+### Changed
+
+- Updated the development container's `kubectl` to Kubernetes v1.37.2. The local Kind test cluster remains on the latest node image published by Kind v0.33.0 (Kubernetes v1.37.0).
+
 ## [7.14.10] - 2026-11-05
 
 ### Added

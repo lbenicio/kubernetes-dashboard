@@ -21,6 +21,8 @@ DOCKER_COMPOSE_DEV_PATH := $(DOCKER_DIRECTORY)/dev.compose.yml
 TMP_DIRECTORY := $(ROOT_DIRECTORY)/.tmp
 # Kind
 KIND_CLUSTER_NAME := kubernetes-dashboard-v137
+# Kind v0.33.0 currently publishes its Kubernetes 1.37 node image at 1.37.0.
+# Keep the local test cluster on that digest-pinned image until Kind publishes a newer patch image.
 KIND_CLUSTER_VERSION := 1.37.0
 KIND_CLUSTER_IMAGE := docker.io/kindest/node:v${KIND_CLUSTER_VERSION}@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5
 KIND_CLUSTER_HOST_KUBECONFIG_PATH := $(TMP_DIRECTORY)/kubeconfig-host
