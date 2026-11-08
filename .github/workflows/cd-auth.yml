@@ -23,7 +23,7 @@ on:
       - hack/docker
       - hack/gateway
     tags:
-      - "auth/v*.*.*"
+      - "v*.*.*"
 permissions:
   contents: write
   id-token: write
