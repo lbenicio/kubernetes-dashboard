@@ -46,9 +46,10 @@ func TestDatabaseTransactionsReturnFailuresAtEachStage(t *testing.T) {
 	)
 
 	for _, test := range []struct {
-		name      string
-		operation func(*sql.DB) error
-		stage     string
+		name          string
+		operation     func(*sql.DB) error
+		stage         string
+		rollbackError bool
 	}{
 		{name: "update begin", operation: func(db *sql.DB) error {
 			return database.UpdateDatabase(db, &v1beta1.NodeMetricsList{}, &v1beta1.PodMetricsList{})
@@ -56,6 +57,9 @@ func TestDatabaseTransactionsReturnFailuresAtEachStage(t *testing.T) {
 		{name: "update node prepare", operation: func(db *sql.DB) error {
 			return database.UpdateDatabase(db, &v1beta1.NodeMetricsList{}, &v1beta1.PodMetricsList{})
 		}, stage: stagePrepareNode},
+		{name: "update logs rollback error after prepare failure", operation: func(db *sql.DB) error {
+			return database.UpdateDatabase(db, &v1beta1.NodeMetricsList{}, &v1beta1.PodMetricsList{})
+		}, stage: stagePrepareNode, rollbackError: true},
 		{name: "update node insert", operation: func(db *sql.DB) error {
 			metrics := nodeMetrics()
 			return database.UpdateDatabase(db, &metrics, &v1beta1.PodMetricsList{})
@@ -78,19 +82,24 @@ func TestDatabaseTransactionsReturnFailuresAtEachStage(t *testing.T) {
 		{name: "cull commit", operation: func(db *sql.DB) error { return database.CullDatabase(db, time.Minute) }, stage: stageCommit},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			behavior := &databaseFailureBehavior{stage: test.stage}
+			behavior := &databaseFailureBehavior{stage: test.stage, rollbackError: test.rollbackError}
 			db := sql.OpenDB(databaseFailureConnector{behavior: behavior})
 			db.SetMaxOpenConns(1)
 			t.Cleanup(func() { _ = db.Close() })
-			if err := test.operation(db); err == nil {
+			err := test.operation(db)
+			if err == nil {
 				t.Fatalf("operation unexpectedly succeeded at %s", test.stage)
+			}
+			if test.rollbackError && !strings.Contains(err.Error(), "statement preparation rejected") {
+				t.Fatalf("operation error = %v, want original statement preparation error", err)
 			}
 		})
 	}
 }
 
 type databaseFailureBehavior struct {
-	stage string
+	stage         string
+	rollbackError bool
 }
 
 type databaseFailureConnector struct {
@@ -143,7 +152,12 @@ func (in databaseFailureTx) Commit() error {
 	return nil
 }
 
-func (databaseFailureTx) Rollback() error { return nil }
+func (in databaseFailureTx) Rollback() error {
+	if in.behavior.rollbackError {
+		return errors.New("transaction rollback rejected")
+	}
+	return nil
+}
 
 type databaseFailureStmt struct {
 	behavior *databaseFailureBehavior

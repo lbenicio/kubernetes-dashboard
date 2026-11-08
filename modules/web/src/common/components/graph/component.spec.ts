@@ -170,6 +170,7 @@ describe('GraphComponent', () => {
     expect(internals.timeScale_).toBe(1);
 
     internals.timeScale_ = 0;
+    internals._findTimeScale([]);
     internals._findTimeScale(makePoints(Array.from({length: 20}, (_, index) => index)));
     expect(internals.timeScale_).toBe(0);
   });

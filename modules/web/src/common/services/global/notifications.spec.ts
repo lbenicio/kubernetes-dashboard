@@ -44,6 +44,7 @@ describe('NotificationsService', () => {
     expect(service.getNotifications()[0]).toMatchObject({message: 'Failure', icon: 'error', cssClass: 'kd-error'});
     expect(new Notification('Info', NotificationSeverity.info).cssClass).toBe('kd-success');
     expect(new Notification('Warning', NotificationSeverity.warning).cssClass).toBe('kd-warning');
+    expect(new Notification('Custom', 'custom' as NotificationSeverity).cssClass).toBe('');
     expect(service.getUnreadCount()).toBe(3);
 
     service.getNotifications()[0].read = true;

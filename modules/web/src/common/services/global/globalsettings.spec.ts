@@ -68,6 +68,22 @@ describe('GlobalSettingsService', () => {
     expect(service.getLogsAutoRefreshTimeInterval()).toBe(12);
   });
 
+  it('invokes the successful settings callback with merged settings', async () => {
+    const serverSettings = {clusterName: 'staging'};
+    const http = {get: jest.fn().mockReturnValue(of(serverSettings))};
+    const service = new GlobalSettingsService(http as never, {} as never);
+    const onLoad = jest.fn();
+
+    await service.load(onLoad);
+
+    expect(onLoad).toHaveBeenCalledWith(
+      expect.objectContaining({
+        ...DEFAULT_SETTINGS,
+        clusterName: 'staging',
+      })
+    );
+  });
+
   it('returns defaults and invokes the failure callback when settings cannot load', async () => {
     const error = new Error('settings unavailable');
     const http = {get: jest.fn().mockReturnValue(throwError(() => error))};
@@ -82,6 +98,13 @@ describe('GlobalSettingsService', () => {
     expect(service.getLabelsLimit()).toBe(DEFAULT_SETTINGS.labelsLimit);
     expect(service.getDisableAccessDeniedNotifications()).toBe(false);
     expect(service.getHideAllNamespaces()).toBe(false);
+  });
+
+  it('returns defaults when settings fail and no failure callback is supplied', async () => {
+    const http = {get: jest.fn().mockReturnValue(throwError(() => new Error('settings unavailable')))};
+    const service = new GlobalSettingsService(http as never, {} as never);
+
+    await expect(service.load()).resolves.toEqual(DEFAULT_SETTINGS);
   });
 
   it('falls back to the configured namespace when the server fallback list is invalid', async () => {

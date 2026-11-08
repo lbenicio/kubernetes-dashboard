@@ -82,6 +82,27 @@ describe('MeService', () => {
     expect(service.getUser()).toEqual({authenticated: false});
   });
 
+  it('uses an unauthenticated user when a periodic refresh fails', async () => {
+    const initialResponse = new Subject<{authenticated: boolean}>();
+    const interval = new Subject<number>();
+    const http = {
+      get: jest
+        .fn()
+        .mockReturnValueOnce(initialResponse)
+        .mockReturnValue(throwError(() => new Error('unavailable'))),
+    };
+    const service = new MeService(http as never);
+    (service as unknown as {_interval: unknown})._interval = interval;
+    (service as unknown as {_initialized: EventEmitter<void>})._initialized = new EventEmitter<void>(false);
+
+    const initialized = service.init();
+    initialResponse.next({authenticated: true});
+    await initialized;
+    interval.next(0);
+
+    expect(service.getUser()).toEqual({authenticated: false});
+  });
+
   it('refreshes and stores a user, resets it, and propagates refresh errors', async () => {
     const user = {authenticated: true, name: 'Lin'};
     const http = {get: jest.fn().mockReturnValue(of(user))};

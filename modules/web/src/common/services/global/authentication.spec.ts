@@ -30,7 +30,7 @@
 
 import {HttpHeaders} from '@angular/common/http';
 import {AuthService} from './authentication';
-import {of, throwError} from 'rxjs';
+import {of, Subject, throwError} from 'rxjs';
 
 describe('AuthService', () => {
   let auth: AuthService;
@@ -113,6 +113,54 @@ describe('AuthService', () => {
     expect(url).toBe('api/v1/oidc/login');
     expect(body).toEqual({});
     expect(options.headers.get('X-CSRF-TOKEN')).toBe('csrf');
+  });
+
+  it('sets and removes secure cookies when the page uses HTTPS', () => {
+    const internals = auth as unknown as {
+      setTokenCookie_: (token: string) => void;
+      isCurrentProtocolSecure_: () => boolean;
+    };
+    jest.spyOn(internals, 'isCurrentProtocolSecure_').mockReturnValue(true);
+
+    internals.setTokenCookie_('secure-token');
+    auth.removeTokenCookie();
+
+    expect(cookies.set).toHaveBeenCalledWith('kd-token', 'secure-token', null, null, null, true, 'Strict');
+    expect(cookies.delete).toHaveBeenCalledWith('kd-token', null, null, true, 'Strict');
+  });
+
+  it('does not set cookies on non-local HTTP hosts', () => {
+    const internals = auth as unknown as {
+      setTokenCookie_: (token: string) => void;
+      isCurrentProtocolSecure_: () => boolean;
+      isCurrentDomainSecure_: () => boolean;
+    };
+    jest.spyOn(internals, 'isCurrentProtocolSecure_').mockReturnValue(false);
+    jest.spyOn(internals, 'isCurrentDomainSecure_').mockReturnValue(false);
+
+    internals.setTokenCookie_('remote-token');
+    auth.removeTokenCookie();
+
+    expect(cookies.set).not.toHaveBeenCalled();
+    expect(cookies.delete).not.toHaveBeenCalled();
+  });
+
+  it('refreshes the token when navigation begins', () => {
+    const onBefore = new Subject<void>();
+    const service = new AuthService(
+      cookies as never,
+      router as never,
+      http as never,
+      csrf as never,
+      {onBefore} as never,
+      me as never,
+      config
+    );
+    const refresh = jest.spyOn(service, 'refreshToken');
+
+    onBefore.next();
+
+    expect(refresh).toHaveBeenCalledTimes(1);
   });
 
   it('routes anonymous logout directly to the dashboard', () => {

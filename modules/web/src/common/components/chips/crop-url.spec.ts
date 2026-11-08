@@ -31,9 +31,23 @@ describe('cropUrl', () => {
 
   it('shortens query parameters from the end', () => {
     expect(cropUrl('http://www.foobar.com/search/?q=foo&page=bar', 20)).toBe('foobar.com/…/?q=foo…');
+    expect(cropUrl('http://www.foobar.com/?query=reallylong', 15)).toBe('foobar.com/?…');
   });
 
   it('shortens hyphenated values when other parts cannot be cropped', () => {
     expect(cropUrl('http://www.foobar.com/foo-bar-foo-bar.html', 12)).toBe('foobar.com/foo…');
+  });
+
+  it('validates the input types', () => {
+    expect(() => cropUrl(null as never, 10)).toThrow(new TypeError('Expected url to be a string'));
+    expect(() => cropUrl('https://example.com', '10' as never)).toThrow(
+      new TypeError('Expected length to be a number')
+    );
+  });
+
+  it('keeps an unbreakable URL intact when no shortening point is available', () => {
+    const url = 'longstringwithoutseparators';
+
+    expect(cropUrl(url, 5)).toBe(url);
   });
 });
