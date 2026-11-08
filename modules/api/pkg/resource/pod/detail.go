@@ -376,50 +376,66 @@ func evalValueFrom(src *v1.EnvVarSource, container *v1.Container, pod *v1.Pod,
 	configMaps *v1.ConfigMapList, secrets *v1.SecretList) string {
 	switch {
 	case src.ConfigMapKeyRef != nil:
-		name := src.ConfigMapKeyRef.Name
-		for _, configMap := range configMaps.Items {
-			if configMap.Name == name {
-				return configMap.Data[src.ConfigMapKeyRef.Key]
-			}
-		}
+		return configMapValueFrom(src.ConfigMapKeyRef, configMaps)
 	case src.SecretKeyRef != nil:
-		name := src.SecretKeyRef.Name
-		for _, secret := range secrets.Items {
-			if secret.Name == name {
-				return base64.StdEncoding.EncodeToString([]byte(
-					secret.Data[src.SecretKeyRef.Key]))
-			}
-		}
+		return secretValueFrom(src.SecretKeyRef, secrets)
 	case src.ResourceFieldRef != nil:
-		valueFrom, err := extractContainerResourceValue(src.ResourceFieldRef, container)
-		if err != nil {
-			valueFrom = ""
-		}
-		resource := src.ResourceFieldRef.Resource
-		if valueFrom == "0" && (resource == "limits.cpu" || resource == "limits.memory") {
-			valueFrom = "node allocatable"
-		}
-		return valueFrom
+		return resourceValueFrom(src.ResourceFieldRef, container)
 	case src.FieldRef != nil:
-		gv, err := schema.ParseGroupVersion(src.FieldRef.APIVersion)
-		if err != nil {
-			klog.Error(err)
-			return ""
-		}
-		gvk := gv.WithKind("Pod")
-		internalFieldPath, _, err := runtime.NewScheme().ConvertFieldLabel(gvk, src.FieldRef.FieldPath, "")
-		if err != nil {
-			klog.Error(err)
-			return ""
-		}
-		valueFrom, err := ExtractFieldPathAsString(pod, internalFieldPath)
-		if err != nil {
-			klog.Error(err)
-			return ""
-		}
-		return valueFrom
+		return podFieldValueFrom(src.FieldRef, pod)
 	}
 	return ""
+}
+
+func configMapValueFrom(ref *v1.ConfigMapKeySelector, configMaps *v1.ConfigMapList) string {
+	for _, configMap := range configMaps.Items {
+		if configMap.Name == ref.Name {
+			return configMap.Data[ref.Key]
+		}
+	}
+	return ""
+}
+
+func secretValueFrom(ref *v1.SecretKeySelector, secrets *v1.SecretList) string {
+	for _, secret := range secrets.Items {
+		if secret.Name == ref.Name {
+			return base64.StdEncoding.EncodeToString([]byte(secret.Data[ref.Key]))
+		}
+	}
+	return ""
+}
+
+func resourceValueFrom(ref *v1.ResourceFieldSelector, container *v1.Container) string {
+	value, err := extractContainerResourceValue(ref, container)
+	if err != nil {
+		return ""
+	}
+	if value == "0" && (ref.Resource == "limits.cpu" || ref.Resource == "limits.memory") {
+		return "node allocatable"
+	}
+	return value
+}
+
+func podFieldValueFrom(ref *v1.ObjectFieldSelector, pod *v1.Pod) string {
+	gv, err := schema.ParseGroupVersion(ref.APIVersion)
+	if err != nil {
+		klog.Error(err)
+		return ""
+	}
+
+	gvk := gv.WithKind("Pod")
+	internalFieldPath, _, err := runtime.NewScheme().ConvertFieldLabel(gvk, ref.FieldPath, "")
+	if err != nil {
+		klog.Error(err)
+		return ""
+	}
+
+	value, err := ExtractFieldPathAsString(pod, internalFieldPath)
+	if err != nil {
+		klog.Error(err)
+		return ""
+	}
+	return value
 }
 
 // extractContainerResourceValue extracts the value of a resource in an already known container.

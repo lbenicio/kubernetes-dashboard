@@ -38,95 +38,121 @@ func getRestartCount(pod v1.Pod) int32 {
 
 // getPodStatus returns status string calculated based on the same logic as kubectl
 // Base code: https://github.com/kubernetes/kubernetes/blob/v1.31.1/pkg/printers/internalversion/printers.go
-//
-// nolint:gocyclo // disable cyclo check as this function is copied from kubectl
 func getPodStatus(pod v1.Pod) string {
 	podPhase := pod.Status.Phase
-	reason := string(podPhase)
+	reason := initialPodStatusReason(pod)
+	initializing, reason := getInitContainerStatus(pod, reason)
+
+	if !initializing || isPodInitializedConditionTrue(&pod.Status) {
+		reason = regularContainerStatus(pod, reason)
+	}
+
+	return podDeletionStatus(pod, podPhase, reason)
+}
+
+func initialPodStatusReason(pod v1.Pod) string {
+	reason := string(pod.Status.Phase)
 	if pod.Status.Reason != "" {
 		reason = pod.Status.Reason
 	}
 
-	// If the Pod carries {type:PodScheduled, reason:SchedulingGated}, set reason to 'SchedulingGated'.
+	// If the Pod carries {type:PodScheduled, reason:SchedulingGated}, use that reason.
 	for _, condition := range pod.Status.Conditions {
 		if condition.Type == v1.PodScheduled && condition.Reason == v1.PodReasonSchedulingGated {
 			reason = v1.PodReasonSchedulingGated
 		}
 	}
 
+	return reason
+}
+
+func getInitContainerStatus(pod v1.Pod, reason string) (bool, string) {
 	initContainers := make(map[string]*v1.Container)
 	for i := range pod.Spec.InitContainers {
 		initContainers[pod.Spec.InitContainers[i].Name] = &pod.Spec.InitContainers[i]
 	}
 
-	initializing := false
-	for i := range pod.Status.InitContainerStatuses {
-		container := pod.Status.InitContainerStatuses[i]
-		switch {
-		case container.State.Terminated != nil && container.State.Terminated.ExitCode == 0:
+	for i, container := range pod.Status.InitContainerStatuses {
+		nextReason, initializing, skip := initContainerStatusReason(container, initContainers[container.Name], i, len(pod.Spec.InitContainers))
+		if skip {
 			continue
-		case isRestartableInitContainer(initContainers[container.Name]) &&
-			container.Started != nil && *container.Started:
-			continue
-		case container.State.Terminated != nil:
-			// initialization is failed
-			if len(container.State.Terminated.Reason) == 0 {
-				if container.State.Terminated.Signal != 0 {
-					reason = fmt.Sprintf("Init: Signal %d", container.State.Terminated.Signal)
-				} else {
-					reason = fmt.Sprintf("Init: ExitCode %d", container.State.Terminated.ExitCode)
-				}
-			} else {
-				reason = "Init:" + container.State.Terminated.Reason
-			}
-			initializing = true
-		case container.State.Waiting != nil && len(container.State.Waiting.Reason) > 0 && container.State.Waiting.Reason != "PodInitializing":
-			reason = fmt.Sprintf("Init: %s", container.State.Waiting.Reason)
-			initializing = true
-		default:
-			reason = fmt.Sprintf("Init: %d/%d", i, len(pod.Spec.InitContainers))
-			initializing = true
 		}
-		break
+		return initializing, nextReason
 	}
 
-	if !initializing || isPodInitializedConditionTrue(&pod.Status) {
-		hasRunning := false
-		for i := len(pod.Status.ContainerStatuses) - 1; i >= 0; i-- {
-			container := pod.Status.ContainerStatuses[i]
+	return false, reason
+}
 
-			if container.State.Waiting != nil && container.State.Waiting.Reason != "" {
-				reason = container.State.Waiting.Reason
-			} else if container.State.Terminated != nil && container.State.Terminated.Reason != "" {
-				reason = container.State.Terminated.Reason
-			} else if container.State.Terminated != nil && container.State.Terminated.Reason == "" {
-				if container.State.Terminated.Signal != 0 {
-					reason = fmt.Sprintf("Signal: %d", container.State.Terminated.Signal)
-				} else {
-					reason = fmt.Sprintf("ExitCode: %d", container.State.Terminated.ExitCode)
-				}
-			} else if container.Ready && container.State.Running != nil {
-				hasRunning = true
-			}
+func initContainerStatusReason(status v1.ContainerStatus, container *v1.Container, index, total int) (string, bool, bool) {
+	switch {
+	case status.State.Terminated != nil && status.State.Terminated.ExitCode == 0:
+		return "", false, true
+	case isRestartableInitContainer(container) && status.Started != nil && *status.Started:
+		return "", false, true
+	case status.State.Terminated != nil:
+		terminated := status.State.Terminated
+		if terminated.Reason != "" {
+			return "Init:" + terminated.Reason, true, false
 		}
+		if terminated.Signal != 0 {
+			return fmt.Sprintf("Init: Signal %d", terminated.Signal), true, false
+		}
+		return fmt.Sprintf("Init: ExitCode %d", terminated.ExitCode), true, false
+	case status.State.Waiting != nil && status.State.Waiting.Reason != "" && status.State.Waiting.Reason != "PodInitializing":
+		return fmt.Sprintf("Init: %s", status.State.Waiting.Reason), true, false
+	default:
+		return fmt.Sprintf("Init: %d/%d", index, total), true, false
+	}
+}
 
-		// change pod status back to "Running" if there is at least one container still reporting as "Running" status
-		if reason == "Completed" && hasRunning {
-			if hasPodReadyCondition(pod.Status.Conditions) {
-				reason = string(v1.PodRunning)
-			} else {
-				reason = "NotReady"
-			}
+func regularContainerStatus(pod v1.Pod, reason string) string {
+	hasRunning := false
+	for i := len(pod.Status.ContainerStatuses) - 1; i >= 0; i-- {
+		containerReason, running := containerStatusReason(pod.Status.ContainerStatuses[i], reason)
+		reason = containerReason
+		if running {
+			hasRunning = true
 		}
 	}
 
-	if pod.DeletionTimestamp != nil && pod.Status.Reason == types.NodeUnreachablePodReason {
-		reason = string(v1.PodUnknown)
-	} else if pod.DeletionTimestamp != nil && !IsPodPhaseTerminal(podPhase) {
-		reason = "Terminating"
+	// change pod status back to "Running" if there is at least one container still reporting as "Running" status
+	if reason == "Completed" && hasRunning {
+		if hasPodReadyCondition(pod.Status.Conditions) {
+			return string(v1.PodRunning)
+		}
+		return "NotReady"
 	}
 
 	return reason
+}
+
+func containerStatusReason(status v1.ContainerStatus, reason string) (string, bool) {
+	switch {
+	case status.State.Waiting != nil && status.State.Waiting.Reason != "":
+		return status.State.Waiting.Reason, false
+	case status.State.Terminated != nil && status.State.Terminated.Reason != "":
+		return status.State.Terminated.Reason, false
+	case status.State.Terminated != nil:
+		if status.State.Terminated.Signal != 0 {
+			return fmt.Sprintf("Signal: %d", status.State.Terminated.Signal), false
+		}
+		return fmt.Sprintf("ExitCode: %d", status.State.Terminated.ExitCode), false
+	case status.Ready && status.State.Running != nil:
+		return reason, true
+	default:
+		return reason, false
+	}
+}
+
+func podDeletionStatus(pod v1.Pod, phase v1.PodPhase, reason string) string {
+	switch {
+	case pod.DeletionTimestamp != nil && pod.Status.Reason == types.NodeUnreachablePodReason:
+		return string(v1.PodUnknown)
+	case pod.DeletionTimestamp != nil && !IsPodPhaseTerminal(phase):
+		return "Terminating"
+	default:
+		return reason
+	}
 }
 
 func hasPodReadyCondition(conditions []v1.PodCondition) bool {
