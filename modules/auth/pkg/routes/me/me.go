@@ -44,72 +44,94 @@ func me(request *http.Request, response http.ResponseWriter) (*types.User, int, 
 
 func meWithRefresh(request *http.Request, response http.ResponseWriter, refreshSession func(context.Context, *client.BrowserSession) (bool, error)) (*types.User, int, error) {
 	if args.AnonymousAdminEnabled() {
-		if _, err := request.Cookie("kd-session-0"); err == nil {
-			client.ClearBrowserSessionCookie(response, request)
-		}
-		if _, err := request.Cookie("kd-oidc-state"); err == nil {
-			client.ClearProtectedCookie(response, request, "kd-oidc-state")
-		}
-		k8sClient, err := client.Client(request)
-		if err != nil {
-			code, err := errors.HandleError(err)
-			return nil, code, err
-		}
-		if _, err = k8sClient.Discovery().ServerVersion(); err != nil {
-			code, err := errors.HandleError(err)
-			return nil, code, err
-		}
-		return &types.User{Name: "Administrator", AuthMethod: "anonymous", Authenticated: true}, http.StatusOK, nil
+		return anonymousAdminUser(request, response)
 	}
 
-	if session, err := client.ReadBrowserSession(request); err == nil && session.OIDC {
-		refreshed, refreshErr := refreshSession(request.Context(), session)
-		if refreshErr != nil {
-			client.ClearBrowserSessionCookie(response, request)
-			return nil, http.StatusUnauthorized, errors.NewUnauthorized(errors.MsgLoginUnauthorizedError)
-		}
-		if refreshed {
-			if err := client.SetBrowserSessionCookie(response, request, *session); err != nil {
-				return nil, http.StatusInternalServerError, err
-			}
+	session, err := client.ReadBrowserSession(request)
+	if err == nil && session.OIDC {
+		status, err := refreshOIDCSession(request, response, session, refreshSession)
+		if err != nil {
+			return nil, status, err
 		}
 		request = request.Clone(request.Context())
 		client.SetAuthorizationHeader(request, session.KubernetesToken)
 	}
 
+	if status, err := verifyKubernetesAccess(request); err != nil {
+		return nil, status, err
+	}
+	return authenticatedUser(request)
+}
+
+func anonymousAdminUser(request *http.Request, response http.ResponseWriter) (*types.User, int, error) {
+	clearAuthenticationCookies(request, response)
+	if status, err := verifyKubernetesAccess(request); err != nil {
+		return nil, status, err
+	}
+	return &types.User{Name: "Administrator", AuthMethod: "anonymous", Authenticated: true}, http.StatusOK, nil
+}
+
+func clearAuthenticationCookies(request *http.Request, response http.ResponseWriter) {
+	if _, err := request.Cookie("kd-session-0"); err == nil {
+		client.ClearBrowserSessionCookie(response, request)
+	}
+	if _, err := request.Cookie("kd-oidc-state"); err == nil {
+		client.ClearProtectedCookie(response, request, "kd-oidc-state")
+	}
+}
+
+func refreshOIDCSession(request *http.Request, response http.ResponseWriter, session *client.BrowserSession, refreshSession func(context.Context, *client.BrowserSession) (bool, error)) (int, error) {
+	refreshed, err := refreshSession(request.Context(), session)
+	if err != nil {
+		client.ClearBrowserSessionCookie(response, request)
+		return http.StatusUnauthorized, errors.NewUnauthorized(errors.MsgLoginUnauthorizedError)
+	}
+	if refreshed {
+		if err := client.SetBrowserSessionCookie(response, request, *session); err != nil {
+			return http.StatusInternalServerError, err
+		}
+	}
+	return http.StatusOK, nil
+}
+
+func verifyKubernetesAccess(request *http.Request) (int, error) {
 	k8sClient, err := client.Client(request)
 	if err != nil {
-		code, err := errors.HandleError(err)
-		return nil, code, err
+		return errors.HandleError(err)
 	}
-
-	// Make sure that authorization token is valid
-	if _, err = k8sClient.Discovery().ServerVersion(); err != nil {
-		code, err := errors.HandleError(err)
-		return nil, code, err
+	// Make sure that authorization token is valid.
+	if _, err := k8sClient.Discovery().ServerVersion(); err != nil {
+		return errors.HandleError(err)
 	}
+	return http.StatusOK, nil
+}
 
+func authenticatedUser(request *http.Request) (*types.User, int, error) {
 	if session, err := client.ReadBrowserSession(request); err == nil {
-		method := "token"
-		name := session.Name
-		if session.OIDC {
-			method = "oidc"
-		} else if name == "" {
-			name = getUserFromToken(session.KubernetesToken).Name
-		}
-		return &types.User{
-			Name:          name,
-			Email:         session.Email,
-			Picture:       session.Picture,
-			Groups:        session.Groups,
-			Scopes:        session.Scopes,
-			AuthMethod:    method,
-			Authenticated: true,
-		}, http.StatusOK, nil
+		return browserSessionUser(session), http.StatusOK, nil
 	}
 	user := getUserFromToken(client.GetBearerToken(request))
 	user.AuthMethod = "header"
 	return user, http.StatusOK, nil
+}
+
+func browserSessionUser(session *client.BrowserSession) *types.User {
+	method := "token"
+	name := session.Name
+	if session.OIDC {
+		method = "oidc"
+	} else if name == "" {
+		name = getUserFromToken(session.KubernetesToken).Name
+	}
+	return &types.User{
+		Name:          name,
+		Email:         session.Email,
+		Picture:       session.Picture,
+		Groups:        session.Groups,
+		Scopes:        session.Scopes,
+		AuthMethod:    method,
+		Authenticated: true,
+	}
 }
 
 func getUserFromToken(token string) *types.User {

@@ -88,6 +88,13 @@ type Manager struct {
 	responseMode string
 }
 
+type oidcSettings struct {
+	issuerURL    string
+	clientID     string
+	clientSecret string
+	redirectURL  string
+}
+
 var (
 	managerMu sync.RWMutex
 	manager   *Manager
@@ -97,34 +104,64 @@ var (
 // error for partial or insecure configuration instead of silently falling
 // back to token authentication.
 func Initialize() error {
-	issuer := args.OIDCIssuerURL()
-	clientID := args.OIDCClientID()
-	clientSecret := args.OIDCClientSecret()
-	redirectURL := args.OIDCRedirectURL()
-	configured := issuer != "" || clientID != "" || clientSecret != "" || redirectURL != ""
-	if args.AnonymousAdminEnabled() && configured {
-		return errors.New("anonymous admin mode and OIDC cannot be enabled at the same time")
+	settings, configured, err := configuredOIDCSettings()
+	if err != nil {
+		return err
 	}
 	if !configured {
 		return nil
 	}
-	if issuer == "" || clientID == "" || redirectURL == "" {
+	instance, err := buildManager(settings)
+	if err != nil {
+		return err
+	}
+	managerMu.Lock()
+	manager = instance
+	managerMu.Unlock()
+	return nil
+}
+
+func configuredOIDCSettings() (oidcSettings, bool, error) {
+	settings := oidcSettings{
+		issuerURL:    args.OIDCIssuerURL(),
+		clientID:     args.OIDCClientID(),
+		clientSecret: args.OIDCClientSecret(),
+		redirectURL:  args.OIDCRedirectURL(),
+	}
+	configured := settings.issuerURL != "" || settings.clientID != "" || settings.clientSecret != "" || settings.redirectURL != ""
+	if args.AnonymousAdminEnabled() && configured {
+		return oidcSettings{}, false, errors.New("anonymous admin mode and OIDC cannot be enabled at the same time")
+	}
+	if !configured {
+		return settings, false, nil
+	}
+	if err := validateOIDCSettings(settings); err != nil {
+		return oidcSettings{}, false, err
+	}
+	return settings, true, nil
+}
+
+func validateOIDCSettings(settings oidcSettings) error {
+	if settings.issuerURL == "" || settings.clientID == "" || settings.redirectURL == "" {
 		return errors.New("OIDC requires issuer URL, client ID, and redirect URL")
 	}
 	if !client.HasSessionKey() {
 		return errors.New("OIDC requires DASHBOARD_SESSION_KEY to be shared by the Auth and API services")
 	}
-	if err := validateEndpointURL(issuer); err != nil {
+	if err := validateEndpointURL(settings.issuerURL); err != nil {
 		return fmt.Errorf("invalid OIDC issuer URL: %w", err)
 	}
-	if err := validateEndpointURL(redirectURL); err != nil {
+	if err := validateEndpointURL(settings.redirectURL); err != nil {
 		return fmt.Errorf("invalid OIDC redirect URL: %w", err)
 	}
-	callback, err := url.Parse(redirectURL)
+	callback, err := url.Parse(settings.redirectURL)
 	if err != nil || callback.Path != "/api/v1/oidc/callback" || callback.RawQuery != "" {
 		return errors.New("OIDC redirect URL must use the /api/v1/oidc/callback path without a query string")
 	}
+	return nil
+}
 
+func buildManager(settings oidcSettings) (*Manager, error) {
 	httpClient := &http.Client{
 		Timeout: 15 * time.Second,
 		CheckRedirect: func(_ *http.Request, _ []*http.Request) error {
@@ -134,58 +171,74 @@ func Initialize() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 	ctx = context.WithValue(ctx, oauth2.HTTPClient, httpClient)
-	metadata, err := fetchProviderMetadata(ctx, httpClient, issuer)
+	metadata, err := fetchProviderMetadata(ctx, httpClient, settings.issuerURL)
 	if err != nil {
-		return fmt.Errorf("validate OIDC discovery metadata: %w", err)
+		return nil, fmt.Errorf("validate OIDC discovery metadata: %w", err)
 	}
 	provider := metadata.NewProvider(ctx)
+	config, scopes, responseMode, err := buildOAuthConfig(settings, metadata, provider)
+	if err != nil {
+		return nil, err
+	}
+	return &Manager{
+		provider:     provider,
+		verifier:     provider.VerifierContext(context.WithValue(context.Background(), oauth2.HTTPClient, httpClient), &oidc.Config{ClientID: settings.clientID}),
+		oauthConfig:  config,
+		httpClient:   httpClient,
+		clientID:     settings.clientID,
+		groupsClaim:  args.OIDCGroupsClaim(),
+		pictureClaim: args.OIDCPictureClaim(),
+		scopes:       scopes,
+		responseMode: responseMode,
+	}, nil
+}
 
+func buildOAuthConfig(settings oidcSettings, metadata *providerMetadata, provider *oidc.Provider) (oauth2.Config, []string, string, error) {
 	scopes := args.OIDCScopeList()
 	if !slices.Contains(scopes, oidc.ScopeOpenID) {
 		scopes = append([]string{oidc.ScopeOpenID}, scopes...)
 	}
 	endpoint := provider.Endpoint()
+	if err := configureTokenAuth(&endpoint, settings.clientSecret, metadata.TokenAuthMethods); err != nil {
+		return oauth2.Config{}, nil, "", err
+	}
+	if args.OIDCGroupsClaim() == "" || args.OIDCPictureClaim() == "" {
+		return oauth2.Config{}, nil, "", errors.New("OIDC groups and picture claim names must not be empty")
+	}
+	config := oauth2.Config{
+		ClientID:     settings.clientID,
+		ClientSecret: settings.clientSecret,
+		Endpoint:     endpoint,
+		RedirectURL:  settings.redirectURL,
+		Scopes:       scopes,
+	}
+	return config, scopes, responseMode(metadata.ResponseModesSupported), nil
+}
+
+func configureTokenAuth(endpoint *oauth2.Endpoint, clientSecret string, methods []string) error {
 	if clientSecret == "" {
-		if len(metadata.TokenAuthMethods) > 0 && !slices.Contains(metadata.TokenAuthMethods, "none") {
+		if len(methods) > 0 && !slices.Contains(methods, "none") {
 			return errors.New("OIDC issuer does not advertise public-client token authentication")
 		}
 		endpoint.AuthStyle = oauth2.AuthStyleInParams
-	} else if len(metadata.TokenAuthMethods) == 0 || slices.Contains(metadata.TokenAuthMethods, "client_secret_basic") {
+		return nil
+	}
+	switch {
+	case len(methods) == 0 || slices.Contains(methods, "client_secret_basic"):
 		endpoint.AuthStyle = oauth2.AuthStyleInHeader
-	} else if slices.Contains(metadata.TokenAuthMethods, "client_secret_post") {
+	case slices.Contains(methods, "client_secret_post"):
 		endpoint.AuthStyle = oauth2.AuthStyleInParams
-	} else {
+	default:
 		return errors.New("OIDC issuer does not advertise a supported confidential-client token authentication method")
 	}
-	config := oauth2.Config{
-		ClientID:     clientID,
-		ClientSecret: clientSecret,
-		Endpoint:     endpoint,
-		RedirectURL:  redirectURL,
-		Scopes:       scopes,
-	}
-	responseMode := "query"
-	if args.SessionCookieSecure() && slices.Contains(metadata.ResponseModesSupported, "form_post") {
-		responseMode = "form_post"
-	}
-	if args.OIDCGroupsClaim() == "" || args.OIDCPictureClaim() == "" {
-		return errors.New("OIDC groups and picture claim names must not be empty")
-	}
-	instance := &Manager{
-		provider:     provider,
-		verifier:     provider.VerifierContext(context.WithValue(context.Background(), oauth2.HTTPClient, httpClient), &oidc.Config{ClientID: clientID}),
-		oauthConfig:  config,
-		httpClient:   httpClient,
-		clientID:     clientID,
-		groupsClaim:  args.OIDCGroupsClaim(),
-		pictureClaim: args.OIDCPictureClaim(),
-		scopes:       scopes,
-		responseMode: responseMode,
-	}
-	managerMu.Lock()
-	manager = instance
-	managerMu.Unlock()
 	return nil
+}
+
+func responseMode(supportedModes []string) string {
+	if args.SessionCookieSecure() && slices.Contains(supportedModes, "form_post") {
+		return "form_post"
+	}
+	return "query"
 }
 
 func Enabled() bool {
