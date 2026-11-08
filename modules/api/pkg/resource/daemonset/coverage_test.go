@@ -20,14 +20,17 @@
 package daemonset
 
 import (
+	"errors"
 	"testing"
 	"time"
 
 	apps "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes/fake"
+	clienttesting "k8s.io/client-go/testing"
 
 	"k8s.io/dashboard/api/pkg/resource/common"
 	"k8s.io/dashboard/api/pkg/resource/dataselect"
@@ -120,4 +123,38 @@ func TestGetDaemonSetServicesFiltersBySelector(t *testing.T) {
 	if _, err := GetDaemonSetServices(client, dataselect.NoDataSelect, "default", "missing"); err == nil {
 		t.Fatal("GetDaemonSetServices() succeeded for missing daemon set")
 	}
+}
+
+func TestGetDaemonSetPodsReturnsClientAndSelectorErrors(t *testing.T) {
+	selector := &metav1.LabelSelector{MatchLabels: map[string]string{"app": "agent"}}
+	daemonSet := &apps.DaemonSet{ObjectMeta: metav1.ObjectMeta{Name: "agent", Namespace: "default"}, Spec: apps.DaemonSetSpec{Selector: selector}}
+
+	t.Run("daemon set lookup error", func(t *testing.T) {
+		client := fake.NewSimpleClientset()
+		client.PrependReactor("get", "daemonsets", func(clienttesting.Action) (bool, runtime.Object, error) {
+			return true, nil, errors.New("daemon set lookup failed")
+		})
+		if _, err := GetDaemonSetPods(client, nil, dataselect.NoDataSelect, daemonSet.Name, daemonSet.Namespace); err == nil {
+			t.Fatal("GetDaemonSetPods() error = nil; want daemon set lookup error")
+		}
+	})
+
+	t.Run("invalid selector", func(t *testing.T) {
+		invalid := daemonSet.DeepCopy()
+		invalid.Spec.Selector = &metav1.LabelSelector{MatchExpressions: []metav1.LabelSelectorRequirement{{Key: "app", Operator: "Invalid"}}}
+		client := fake.NewSimpleClientset(invalid)
+		if _, err := GetDaemonSetPods(client, nil, dataselect.NoDataSelect, invalid.Name, invalid.Namespace); err == nil {
+			t.Fatal("GetDaemonSetPods() error = nil; want invalid selector error")
+		}
+	})
+
+	t.Run("pod list error", func(t *testing.T) {
+		client := fake.NewSimpleClientset(daemonSet)
+		client.PrependReactor("list", "pods", func(clienttesting.Action) (bool, runtime.Object, error) {
+			return true, nil, errors.New("pod list failed")
+		})
+		if _, err := GetDaemonSetPods(client, nil, dataselect.NoDataSelect, daemonSet.Name, daemonSet.Namespace); err == nil {
+			t.Fatal("GetDaemonSetPods() error = nil; want pod list error")
+		}
+	})
 }

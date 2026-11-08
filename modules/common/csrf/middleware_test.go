@@ -29,6 +29,7 @@
 package csrf
 
 import (
+	"encoding/base64"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -41,6 +42,22 @@ import (
 func initializeTestCSRFKey(t *testing.T) {
 	t.Helper()
 	Ensure()
+}
+
+func TestEnsureKeepsDecodedKeyWhenLengthIsInvalid(t *testing.T) {
+	previous := *argCSRFKey
+	previousDecoded := decodedCSRFKey
+	t.Cleanup(func() {
+		*argCSRFKey = previous
+		decodedCSRFKey = previousDecoded
+	})
+
+	shortKey := []byte("short-key")
+	*argCSRFKey = base64.StdEncoding.EncodeToString(shortKey)
+	Ensure()
+	if got := Key(); got != string(shortKey) {
+		t.Fatalf("Key() = %q, want decoded key %q", got, shortKey)
+	}
 }
 
 func TestGinCSRFMiddleware(t *testing.T) {

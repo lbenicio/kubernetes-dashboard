@@ -25,7 +25,10 @@ package common
 import (
 	"testing"
 
+	appsv1 "k8s.io/api/apps/v1"
+	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
+	networkingv1 "k8s.io/api/networking/v1"
 	apiextensionsfake "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/fake"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	clientfake "k8s.io/client-go/kubernetes/fake"
@@ -140,5 +143,111 @@ func TestResourceListChannelsFilterNamespacedResults(t *testing.T) {
 	}
 	if err := <-podChannel.Error; err != nil {
 		t.Fatalf("pod list error = %v", err)
+	}
+}
+
+func TestResourceListChannelsFilterAllNamespacedWorkloads(t *testing.T) {
+	client := clientfake.NewSimpleClientset(
+		&networkingv1.Ingress{ObjectMeta: metaV1.ObjectMeta{Name: "keep", Namespace: "one"}},
+		&networkingv1.Ingress{ObjectMeta: metaV1.ObjectMeta{Name: "drop", Namespace: "excluded"}},
+		&corev1.Event{ObjectMeta: metaV1.ObjectMeta{Name: "keep", Namespace: "one"}},
+		&corev1.Event{ObjectMeta: metaV1.ObjectMeta{Name: "drop", Namespace: "excluded"}},
+		&corev1.ReplicationController{ObjectMeta: metaV1.ObjectMeta{Name: "keep", Namespace: "one"}},
+		&corev1.ReplicationController{ObjectMeta: metaV1.ObjectMeta{Name: "drop", Namespace: "excluded"}},
+		&appsv1.Deployment{ObjectMeta: metaV1.ObjectMeta{Name: "keep", Namespace: "one"}},
+		&appsv1.Deployment{ObjectMeta: metaV1.ObjectMeta{Name: "drop", Namespace: "excluded"}},
+		&appsv1.ReplicaSet{ObjectMeta: metaV1.ObjectMeta{Name: "keep", Namespace: "one"}},
+		&appsv1.ReplicaSet{ObjectMeta: metaV1.ObjectMeta{Name: "drop", Namespace: "excluded"}},
+		&appsv1.DaemonSet{ObjectMeta: metaV1.ObjectMeta{Name: "keep", Namespace: "one"}},
+		&appsv1.DaemonSet{ObjectMeta: metaV1.ObjectMeta{Name: "drop", Namespace: "excluded"}},
+		&batchv1.Job{ObjectMeta: metaV1.ObjectMeta{Name: "keep", Namespace: "one"}},
+		&batchv1.Job{ObjectMeta: metaV1.ObjectMeta{Name: "drop", Namespace: "excluded"}},
+		&batchv1.CronJob{ObjectMeta: metaV1.ObjectMeta{Name: "keep", Namespace: "one"}},
+		&batchv1.CronJob{ObjectMeta: metaV1.ObjectMeta{Name: "drop", Namespace: "excluded"}},
+		&appsv1.StatefulSet{ObjectMeta: metaV1.ObjectMeta{Name: "keep", Namespace: "one"}},
+		&appsv1.StatefulSet{ObjectMeta: metaV1.ObjectMeta{Name: "drop", Namespace: "excluded"}},
+		&corev1.ConfigMap{ObjectMeta: metaV1.ObjectMeta{Name: "keep", Namespace: "one"}},
+		&corev1.ConfigMap{ObjectMeta: metaV1.ObjectMeta{Name: "drop", Namespace: "excluded"}},
+		&corev1.Secret{ObjectMeta: metaV1.ObjectMeta{Name: "keep", Namespace: "one"}},
+		&corev1.Secret{ObjectMeta: metaV1.ObjectMeta{Name: "drop", Namespace: "excluded"}},
+	)
+	namespaces := NewNamespaceQuery([]string{"one", "two"})
+
+	ingresses := GetIngressListChannel(client, namespaces, 1)
+	if got := <-ingresses.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
+		t.Errorf("ingresses = %#v; want only the selected namespace's item", got.Items)
+	}
+	if err := <-ingresses.Error; err != nil {
+		t.Fatalf("ingress list error = %v", err)
+	}
+	events := GetEventListChannel(client, namespaces, 1)
+	if got := <-events.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
+		t.Errorf("events = %#v; want only the selected namespace's item", got.Items)
+	}
+	if err := <-events.Error; err != nil {
+		t.Fatalf("event list error = %v", err)
+	}
+	controllers := GetReplicationControllerListChannel(client, namespaces, 1)
+	if got := <-controllers.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
+		t.Errorf("replication controllers = %#v; want only the selected namespace's item", got.Items)
+	}
+	if err := <-controllers.Error; err != nil {
+		t.Fatalf("replication controller list error = %v", err)
+	}
+	deployments := GetDeploymentListChannel(client, namespaces, 1)
+	if got := <-deployments.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
+		t.Errorf("deployments = %#v; want only the selected namespace's item", got.Items)
+	}
+	if err := <-deployments.Error; err != nil {
+		t.Fatalf("deployment list error = %v", err)
+	}
+	replicaSets := GetReplicaSetListChannel(client, namespaces, 1)
+	if got := <-replicaSets.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
+		t.Errorf("replica sets = %#v; want only the selected namespace's item", got.Items)
+	}
+	if err := <-replicaSets.Error; err != nil {
+		t.Fatalf("replica set list error = %v", err)
+	}
+	daemonSets := GetDaemonSetListChannel(client, namespaces, 1)
+	if got := <-daemonSets.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
+		t.Errorf("daemon sets = %#v; want only the selected namespace's item", got.Items)
+	}
+	if err := <-daemonSets.Error; err != nil {
+		t.Fatalf("daemon set list error = %v", err)
+	}
+	jobs := GetJobListChannel(client, namespaces, 1)
+	if got := <-jobs.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
+		t.Errorf("jobs = %#v; want only the selected namespace's item", got.Items)
+	}
+	if err := <-jobs.Error; err != nil {
+		t.Fatalf("job list error = %v", err)
+	}
+	cronJobs := GetCronJobListChannel(client, namespaces, 1)
+	if got := <-cronJobs.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
+		t.Errorf("cron jobs = %#v; want only the selected namespace's item", got.Items)
+	}
+	if err := <-cronJobs.Error; err != nil {
+		t.Fatalf("cron job list error = %v", err)
+	}
+	statefulSets := GetStatefulSetListChannel(client, namespaces, 1)
+	if got := <-statefulSets.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
+		t.Errorf("stateful sets = %#v; want only the selected namespace's item", got.Items)
+	}
+	if err := <-statefulSets.Error; err != nil {
+		t.Fatalf("stateful set list error = %v", err)
+	}
+	configMaps := GetConfigMapListChannel(client, namespaces, 1)
+	if got := <-configMaps.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
+		t.Errorf("config maps = %#v; want only the selected namespace's item", got.Items)
+	}
+	if err := <-configMaps.Error; err != nil {
+		t.Fatalf("config map list error = %v", err)
+	}
+	secrets := GetSecretListChannel(client, namespaces, 1)
+	if got := <-secrets.List; len(got.Items) != 1 || got.Items[0].Name != "keep" {
+		t.Errorf("secrets = %#v; want only the selected namespace's item", got.Items)
+	}
+	if err := <-secrets.Error; err != nil {
+		t.Fatalf("secret list error = %v", err)
 	}
 }

@@ -97,7 +97,7 @@ func TestNewGenericResponse(t *testing.T) {
 }
 
 func TestErrorClassificationAndLocalization(t *testing.T) {
-	if !IsTokenExpired(NewTokenExpired(MsgTokenExpiredError)) || IsTokenExpired(NewBadRequest("other")) {
+	if !IsTokenExpired(NewTokenExpired(MsgTokenExpiredError)) || IsTokenExpired(NewBadRequest("other")) || IsTokenExpired(errors.New("plain error")) {
 		t.Fatal("token expiration classification was incorrect")
 	}
 	if !IsAlreadyExists(k8serrors.NewAlreadyExists(schema.GroupResource{Resource: "pods"}, "web")) || IsAlreadyExists(errors.New("other")) {
@@ -144,6 +144,9 @@ func TestErrorAggregationAndHandling(t *testing.T) {
 	}
 	if items, critical = ExtractErrors(errors.New("unexpected")); critical == nil || len(items) != 0 {
 		t.Fatalf("ExtractErrors(critical) = %v, %v", items, critical)
+	}
+	if items, critical = ExtractErrors(NewBadRequest("bad request")); critical == nil || len(items) != 0 {
+		t.Fatalf("ExtractErrors(bad request) = %v, %v", items, critical)
 	}
 
 	merged := MergeErrors(warnings, []error{nonCritical, fmt.Errorf("another")}, []error{fmt.Errorf("another")})

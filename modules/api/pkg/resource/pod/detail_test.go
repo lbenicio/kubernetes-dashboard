@@ -16,12 +16,15 @@ package pod
 
 import (
 	"encoding/base64"
+	"errors"
 	"reflect"
 	"testing"
 
 	v1 "k8s.io/api/core/v1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes/fake"
+	clienttesting "k8s.io/client-go/testing"
 
 	metricapi "k8s.io/dashboard/api/pkg/integration/metric/api"
 	"k8s.io/dashboard/api/pkg/resource/common"
@@ -75,6 +78,60 @@ func TestGetPodDetail(t *testing.T) {
 		if !reflect.DeepEqual(actual, c.expected) {
 			t.Errorf("GetPodDetail(%#v) == \ngot %#v, \nexpected %#v", c.pod, actual, c.expected)
 		}
+	}
+}
+
+func TestGetPodDetailReturnsCriticalRetrievalErrors(t *testing.T) {
+	getError := errors.New("pod lookup failed")
+	listError := errors.New("resource list failed")
+	tests := []struct {
+		name     string
+		verb     string
+		resource string
+		err      error
+	}{
+		{name: "pod get", verb: "get", resource: "pods", err: getError},
+		{name: "controller pod list", verb: "list", resource: "pods", err: listError},
+		{name: "configmap list", verb: "list", resource: "configmaps", err: listError},
+		{name: "secret list", verb: "list", resource: "secrets", err: listError},
+		{name: "event list", verb: "list", resource: "events", err: listError},
+		{name: "persistent volume claim list", verb: "list", resource: "persistentvolumeclaims", err: listError},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			client := fake.NewSimpleClientset(&v1.Pod{
+				ObjectMeta: metaV1.ObjectMeta{Name: "web", Namespace: "default"},
+				Spec: v1.PodSpec{Volumes: []v1.Volume{{
+					Name: "data",
+					VolumeSource: v1.VolumeSource{PersistentVolumeClaim: &v1.PersistentVolumeClaimVolumeSource{
+						ClaimName: "data-claim",
+					}},
+				}}},
+			})
+			client.PrependReactor(test.verb, test.resource, func(clienttesting.Action) (bool, runtime.Object, error) {
+				if test.verb == "get" {
+					return true, nil, test.err
+				}
+				switch test.resource {
+				case "pods":
+					return true, &v1.PodList{}, test.err
+				case "configmaps":
+					return true, &v1.ConfigMapList{}, test.err
+				case "secrets":
+					return true, &v1.SecretList{}, test.err
+				case "events":
+					return true, &v1.EventList{}, test.err
+				case "persistentvolumeclaims":
+					return true, &v1.PersistentVolumeClaimList{}, test.err
+				default:
+					return false, nil, nil
+				}
+			})
+			if result, err := GetPodDetail(client, nil, "default", "web"); err == nil || result != nil {
+				t.Fatalf("GetPodDetail() = (%#v, %v), want a critical retrieval error", result, err)
+			}
+		})
 	}
 }
 

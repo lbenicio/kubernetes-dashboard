@@ -29,10 +29,13 @@
 package client
 
 import (
+	cryptorand "crypto/rand"
 	"encoding/base64"
 	"errors"
+	"io"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -159,6 +162,24 @@ func TestSetBrowserSessionCookieRejectsInvalidOrOversizedSessions(t *testing.T) 
 	}
 }
 
+func TestBrowserSessionCookieReportsMissingEncryptionKey(t *testing.T) {
+	configureTestSessionKey(t)
+	sessionKeyMu.Lock()
+	previousKey := append([]byte(nil), sessionKey...)
+	sessionKey = nil
+	sessionKeyMu.Unlock()
+	t.Cleanup(func() {
+		sessionKeyMu.Lock()
+		sessionKey = previousKey
+		sessionKeyMu.Unlock()
+	})
+
+	session := BrowserSession{KubernetesToken: "token", ExpiresAt: time.Now().Add(time.Hour)}
+	if err := SetBrowserSessionCookie(httptest.NewRecorder(), httptest.NewRequest(http.MethodGet, "https://dashboard.example.test", nil), session); err == nil {
+		t.Fatal("SetBrowserSessionCookie() succeeded without an encryption key")
+	}
+}
+
 func TestReadBrowserSessionRejectsMissingMalformedAndExpiredCookies(t *testing.T) {
 	configureTestSessionKey(t)
 	t.Run("missing", func(t *testing.T) {
@@ -172,6 +193,21 @@ func TestReadBrowserSessionRejectsMissingMalformedAndExpiredCookies(t *testing.T
 		request.AddCookie(&http.Cookie{Name: browserSessionCookiePrefix + "1", Value: "part"})
 		if _, err := ReadBrowserSession(request); err == nil {
 			t.Fatal("ReadBrowserSession() accepted a cookie sequence without its first chunk")
+		}
+	})
+	t.Run("invalid base64", func(t *testing.T) {
+		request := httptest.NewRequest(http.MethodGet, "https://dashboard.example.test/", nil)
+		request.AddCookie(&http.Cookie{Name: browserSessionCookiePrefix + "0", Value: "%%%"})
+		if _, err := ReadBrowserSession(request); err == nil {
+			t.Fatal("ReadBrowserSession() accepted malformed base64 cookie data")
+		}
+	})
+	t.Run("missing middle chunk", func(t *testing.T) {
+		request := httptest.NewRequest(http.MethodGet, "https://dashboard.example.test/", nil)
+		request.AddCookie(&http.Cookie{Name: browserSessionCookiePrefix + "0", Value: "first"})
+		request.AddCookie(&http.Cookie{Name: browserSessionCookiePrefix + "2", Value: "third"})
+		if _, err := ReadBrowserSession(request); err == nil || !strings.Contains(err.Error(), "cookie sequence") {
+			t.Fatalf("ReadBrowserSession() error = %v, want invalid cookie sequence", err)
 		}
 	})
 
@@ -195,6 +231,64 @@ func TestReadBrowserSessionRejectsMissingMalformedAndExpiredCookies(t *testing.T
 			t.Fatal("ReadBrowserSession() accepted an expired session")
 		}
 	})
+	t.Run("oversized cookie data", func(t *testing.T) {
+		request := httptest.NewRequest(http.MethodGet, "https://dashboard.example.test/", nil)
+		for i := 0; i < maxSessionCookieChunks; i++ {
+			request.AddCookie(&http.Cookie{
+				Name:  browserSessionCookiePrefix + strconv.Itoa(i),
+				Value: strings.Repeat("x", sessionCookieChunkSize+1),
+			})
+		}
+		if _, err := ReadBrowserSession(request); err == nil || !strings.Contains(err.Error(), "too large") {
+			t.Fatalf("ReadBrowserSession() error = %v, want size rejection", err)
+		}
+	})
+	t.Run("invalid JSON payload", func(t *testing.T) {
+		sealed, err := sealSessionPayload(sessionCookiePurpose, []byte("{"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		request := httptest.NewRequest(http.MethodGet, "https://dashboard.example.test/", nil)
+		request.AddCookie(&http.Cookie{Name: browserSessionCookiePrefix + "0", Value: base64.RawURLEncoding.EncodeToString(sealed)})
+		if _, err := ReadBrowserSession(request); err == nil || !strings.Contains(err.Error(), "invalid browser session") {
+			t.Fatalf("ReadBrowserSession() error = %v, want invalid session payload", err)
+		}
+	})
+}
+
+func TestSessionCryptoReturnsErrorsForMissingKeyAndEntropyFailure(t *testing.T) {
+	sessionKeyMu.Lock()
+	previousKey := append([]byte(nil), sessionKey...)
+	sessionKey = nil
+	sessionKeyMu.Unlock()
+	t.Cleanup(func() {
+		sessionKeyMu.Lock()
+		sessionKey = previousKey
+		sessionKeyMu.Unlock()
+	})
+	if _, err := sessionAEAD(); err == nil {
+		t.Fatal("sessionAEAD() succeeded without a configured key")
+	}
+	if _, err := SealSessionData("test", []byte("payload")); err == nil {
+		t.Fatal("SealSessionData() succeeded without a configured key")
+	}
+	if _, err := OpenSessionData("test", base64.RawURLEncoding.EncodeToString(make([]byte, 64))); err == nil {
+		t.Fatal("OpenSessionData() succeeded without a configured key")
+	}
+
+	configureTestSessionKey(t)
+	previousReader := cryptorand.Reader
+	cryptorand.Reader = sessionEntropyFailureReader{}
+	t.Cleanup(func() { cryptorand.Reader = previousReader })
+	if _, err := sealSessionPayload("test", []byte("payload")); err == nil {
+		t.Fatal("sealSessionPayload() swallowed an entropy failure")
+	}
+}
+
+type sessionEntropyFailureReader struct{}
+
+func (sessionEntropyFailureReader) Read([]byte) (int, error) {
+	return 0, io.ErrUnexpectedEOF
 }
 
 func TestProtectedSessionDataUsesPurposeAndRejectsTampering(t *testing.T) {

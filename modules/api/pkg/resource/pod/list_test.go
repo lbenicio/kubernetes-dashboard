@@ -144,6 +144,21 @@ func TestGetPodListFromChannels(t *testing.T) {
 	}
 }
 
+func TestGetPodListFromChannelsReturnsEventListError(t *testing.T) {
+	wantErr := errors.NewInvalid("event list failed")
+	channels := &common.ResourceChannels{
+		PodList:   common.PodListChannel{List: make(chan *v1.PodList, 1), Error: make(chan error, 1)},
+		EventList: common.EventListChannel{List: make(chan *v1.EventList, 1), Error: make(chan error, 1)},
+	}
+	channels.PodList.List <- &v1.PodList{}
+	channels.PodList.Error <- nil
+	channels.EventList.List <- &v1.EventList{}
+	channels.EventList.Error <- wantErr
+	if _, err := pod.GetPodListFromChannels(channels, dataselect.NoDataSelect, nil); !reflect.DeepEqual(err, wantErr) {
+		t.Fatalf("GetPodListFromChannels() error = %v, want %v", err, wantErr)
+	}
+}
+
 func TestToGPU(t *testing.T) {
 	cases := []struct {
 		in  string

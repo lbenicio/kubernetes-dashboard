@@ -157,7 +157,10 @@ func GetNodeEvents(client kubernetes.Interface, dsQuery *dataselect.DataSelectQu
 
 // GetNamespaceEvents gets events associated to a namespace with given name.
 func GetNamespaceEvents(client kubernetes.Interface, dsQuery *dataselect.DataSelectQuery, namespace string) (common.EventList, error) {
-	events, _ := client.CoreV1().Events(namespace).List(context.TODO(), helpers.ListEverything)
+	events, err := client.CoreV1().Events(namespace).List(context.TODO(), helpers.ListEverything)
+	if err != nil {
+		return common.EventList{}, err
+	}
 	return CreateEventList(FillEventsType(events.Items), dsQuery), nil
 }
 

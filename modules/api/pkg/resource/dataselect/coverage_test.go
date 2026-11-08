@@ -76,6 +76,14 @@ func TestFilterAndDataSelectionHelpers(t *testing.T) {
 	}
 }
 
+func TestNewFilterQueryUsesNoFilterForMissingOrUnpairedValues(t *testing.T) {
+	for _, raw := range [][]string{nil, {"name"}} {
+		if got := NewFilterQuery(raw); got != NoFilter {
+			t.Errorf("NewFilterQuery(%v) = %#v; want NoFilter", raw, got)
+		}
+	}
+}
+
 func TestMetricSelectionHelpers(t *testing.T) {
 	query := NewDataSelectQuery(NewPaginationQuery(1, 0), NoSort, NoFilter, NewMetricQuery([]string{"cpu", "memory"}, nil))
 	cells := []DataCell{metricCell{TestDataCell{Name: "pod-a", Id: 1}}, TestDataCell{Name: "non-metric", Id: 2}}
@@ -112,5 +120,8 @@ func TestMetricSelectionSkipsNilClientAndMissingNames(t *testing.T) {
 	client := &recordingMetricClient{}
 	if got := selector.GetMetrics(client).MetricsPromises; len(got) != 0 {
 		t.Fatalf("GetMetrics() without metric names returned %d promises", len(got))
+	}
+	if got := selector.GetCumulativeMetrics(client).CumulativeMetricsPromises; len(got) != 0 {
+		t.Fatalf("GetCumulativeMetrics() without metric names returned %d promises", len(got))
 	}
 }

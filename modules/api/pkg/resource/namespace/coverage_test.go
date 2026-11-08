@@ -29,9 +29,11 @@ import (
 	"time"
 
 	corev1 "k8s.io/api/core/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/kubernetes/fake"
 	clienttesting "k8s.io/client-go/testing"
 
@@ -122,6 +124,14 @@ func TestNamespaceDetailPropagatesMissingNamespaceAndLimitRangeErrors(t *testing
 	})
 	if _, err := GetNamespaceDetail(client, "default"); err == nil {
 		t.Error("GetNamespaceDetail(limit range error) error = nil")
+	}
+
+	client = fake.NewSimpleClientset(&corev1.Namespace{ObjectMeta: metav1.ObjectMeta{Name: "default"}})
+	client.PrependReactor("list", "resourcequotas", func(clienttesting.Action) (bool, runtime.Object, error) {
+		return true, &corev1.ResourceQuotaList{}, apierrors.NewNotFound(schema.GroupResource{Resource: "resourcequotas"}, "quota")
+	})
+	if _, err := GetNamespaceDetail(client, "default"); err == nil {
+		t.Error("GetNamespaceDetail(resource quota forbidden) error = nil")
 	}
 }
 

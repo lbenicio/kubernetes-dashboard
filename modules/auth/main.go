@@ -33,7 +33,37 @@ import (
 )
 
 func main() {
+	runAuthProcess(initializeAuth, func(address string) error {
+		return router.Router().Run(address)
+	}, args.Address(), func(int) { os.Exit(1) })
+}
+
+func runAuthProcess(initialize func() error, serve func(string) error, address string, exit func(int)) {
 	klog.InfoS("Starting Kubernetes Dashboard Auth", "version", environment.Version)
+	initialized, err := runAuth(initialize, serve, address)
+	if err != nil {
+		if initialized {
+			klog.ErrorS(err, "Router error")
+		} else {
+			klog.ErrorS(err, "Could not initialize OpenID Connect")
+		}
+		exit(1)
+	}
+}
+
+func runAuth(initialize func() error, serve func(string) error, address string) (bool, error) {
+	if err := initialize(); err != nil {
+		return false, err
+	}
+
+	klog.V(1).InfoS("Listening and serving insecurely on", "address", address)
+	if err := serve(address); err != nil {
+		return true, err
+	}
+	return true, nil
+}
+
+func initializeAuth() error {
 	client.SetSessionCookieSecure(args.SessionCookieSecure())
 
 	client.Init(
@@ -43,14 +73,5 @@ func main() {
 		client.WithInsecureTLSSkipVerify(args.ApiServerSkipTLSVerify()),
 		client.WithCaBundle(args.ApiServerCaBundle()),
 	)
-	if err := oidc.Initialize(); err != nil {
-		klog.ErrorS(err, "Could not initialize OpenID Connect")
-		os.Exit(1)
-	}
-
-	klog.V(1).InfoS("Listening and serving insecurely on", "address", args.Address())
-	if err := router.Router().Run(args.Address()); err != nil {
-		klog.ErrorS(err, "Router error")
-		os.Exit(1)
-	}
+	return oidc.Initialize()
 }

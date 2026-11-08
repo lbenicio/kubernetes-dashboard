@@ -31,24 +31,33 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"slices"
 	"strings"
 	"sync"
 	"testing"
 	"time"
 
+	"golang.org/x/oauth2"
+
 	"k8s.io/dashboard/client"
 )
 
 type protocolFixture struct {
-	issuer        string
-	responseModes []string
-	key           *rsa.PrivateKey
-	mu            sync.RWMutex
-	state         authorizationState
-	tokenStatus   int
-	tokenType     string
-	omitIDToken   bool
-	nonceOverride string
+	issuer           string
+	responseModes    []string
+	tokenAuthMethods []string
+	metadataStatus   int
+	key              *rsa.PrivateKey
+	mu               sync.RWMutex
+	state            authorizationState
+	tokenStatus      int
+	tokenType        string
+	omitIDToken      bool
+	nonceOverride    string
+	userInfoStatus   int
+	userInfoSubject  string
+	userInfoBody     string
+	idTokenOverride  string
 }
 
 func newProtocolFixture(t *testing.T, responseModes []string) *protocolFixture {
@@ -57,7 +66,12 @@ func newProtocolFixture(t *testing.T, responseModes []string) *protocolFixture {
 	if err != nil {
 		t.Fatalf("generate OIDC signing key: %v", err)
 	}
-	fixture := &protocolFixture{issuer: "https://identity.example.test", responseModes: responseModes, key: key}
+	fixture := &protocolFixture{
+		issuer:           "https://identity.example.test",
+		responseModes:    responseModes,
+		tokenAuthMethods: []string{"client_secret_post"},
+		key:              key,
+	}
 	return fixture
 }
 
@@ -68,6 +82,11 @@ func (in *protocolFixture) roundTrip(request *http.Request) (*http.Response, err
 	)
 	switch request.URL.Path {
 	case "/.well-known/openid-configuration":
+		if in.metadataStatus != 0 {
+			status = in.metadataStatus
+			body = `{"error":"discovery_unavailable"}`
+			break
+		}
 		body = in.json(map[string]any{
 			"issuer":                                in.issuer,
 			"authorization_endpoint":                in.issuer + "/authorize",
@@ -77,7 +96,7 @@ func (in *protocolFixture) roundTrip(request *http.Request) (*http.Response, err
 			"response_types_supported":              []string{"code"},
 			"response_modes_supported":              in.responseModes,
 			"grant_types_supported":                 []string{"authorization_code", "refresh_token"},
-			"token_endpoint_auth_methods_supported": []string{"client_secret_post"},
+			"token_endpoint_auth_methods_supported": in.tokenAuthMethods,
 		})
 	case "/keys":
 		body = in.json(map[string]any{"keys": []map[string]string{{
@@ -91,9 +110,18 @@ func (in *protocolFixture) roundTrip(request *http.Request) (*http.Response, err
 		if request.Header.Get("Authorization") != "Bearer access-token-one" && request.Header.Get("Authorization") != "Bearer access-token-two" {
 			status = http.StatusUnauthorized
 			body = `{"error":"invalid_token"}`
+		} else if in.userInfoStatus != 0 {
+			status = in.userInfoStatus
+			body = `{"error":"userinfo_unavailable"}`
+		} else if in.userInfoBody != "" {
+			body = in.userInfoBody
 		} else {
+			subject := in.userInfoSubject
+			if subject == "" {
+				subject = "user-123"
+			}
 			body = in.json(map[string]any{
-				"sub": "user-123", "email": "ada@example.test", "preferred_username": "ada",
+				"sub": subject, "email": "ada@example.test", "preferred_username": "ada",
 				"groups": []string{"engineering", "cluster-admins"}, "picture": "https://images.example.test/ada.png",
 			})
 		}
@@ -158,6 +186,9 @@ func (in *protocolFixture) tokenResponse(request *http.Request) (int, string) {
 	if err != nil {
 		return http.StatusInternalServerError, `{"error":"server_error"}`
 	}
+	if in.idTokenOverride != "" {
+		idToken = in.idTokenOverride
+	}
 	response := map[string]any{
 		"access_token": accessToken, "token_type": "Bearer", "expires_in": 3600,
 		"scope": "openid profile email groups",
@@ -206,6 +237,15 @@ func (in *protocolFixture) json(value any) string {
 
 func initializeProtocolFixture(t *testing.T, fixture *protocolFixture) *Manager {
 	t.Helper()
+	configureProtocolFixture(t, fixture, "dashboard-test-secret")
+	if err := Initialize(); err != nil {
+		t.Fatalf("Initialize() against signed provider: %v", err)
+	}
+	return current()
+}
+
+func configureProtocolFixture(t *testing.T, fixture *protocolFixture, clientSecret string) {
+	t.Helper()
 	previousTransport := http.DefaultTransport
 	http.DefaultTransport = oidcRoundTripFunc(fixture.roundTrip)
 	t.Cleanup(func() { http.DefaultTransport = previousTransport })
@@ -214,7 +254,7 @@ func initializeProtocolFixture(t *testing.T, fixture *protocolFixture) *Manager 
 	t.Cleanup(func() { client.SetSessionCookieSecure(true) })
 	setOIDCFlag(t, "oidc-issuer-url", fixture.issuer)
 	setOIDCFlag(t, "oidc-client-id", "dashboard-test-client")
-	setOIDCFlag(t, "oidc-client-secret", "dashboard-test-secret")
+	setOIDCFlag(t, "oidc-client-secret", clientSecret)
 	setOIDCFlag(t, "oidc-redirect-url", "https://dashboard.example.test/api/v1/oidc/callback")
 	setOIDCFlag(t, "oidc-scopes", "profile email groups")
 	setOIDCFlag(t, "oidc-groups-claim", "groups")
@@ -222,10 +262,77 @@ func initializeProtocolFixture(t *testing.T, fixture *protocolFixture) *Manager 
 	setOIDCFlag(t, "session-cookie-secure", "true")
 	setOIDCFlag(t, "anonymous-admin", "false")
 	setManagerForTest(t, nil)
-	if err := Initialize(); err != nil {
-		t.Fatalf("Initialize() against signed provider: %v", err)
+}
+
+func TestInitializeNegotiatesTokenEndpointAuthentication(t *testing.T) {
+	tests := []struct {
+		name          string
+		clientSecret  string
+		authMethods   []string
+		wantAuthStyle oauth2.AuthStyle
+		wantError     string
+	}{
+		{name: "public client", authMethods: []string{"none"}, wantAuthStyle: oauth2.AuthStyleInParams},
+		{name: "public client rejected by confidential-only issuer", authMethods: []string{"client_secret_basic"}, wantError: "does not advertise public-client"},
+		{name: "confidential client defaults to basic when methods omitted", clientSecret: "secret", wantAuthStyle: oauth2.AuthStyleInHeader},
+		{name: "confidential client uses basic", clientSecret: "secret", authMethods: []string{"client_secret_basic"}, wantAuthStyle: oauth2.AuthStyleInHeader},
+		{name: "confidential client uses post", clientSecret: "secret", authMethods: []string{"client_secret_post"}, wantAuthStyle: oauth2.AuthStyleInParams},
+		{name: "confidential client rejects unsupported methods", clientSecret: "secret", authMethods: []string{"private_key_jwt"}, wantError: "does not advertise a supported confidential-client"},
 	}
-	return current()
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			fixture := newProtocolFixture(t, []string{"query"})
+			fixture.tokenAuthMethods = test.authMethods
+			configureProtocolFixture(t, fixture, test.clientSecret)
+
+			err := Initialize()
+			if test.wantError != "" {
+				if err == nil || !strings.Contains(err.Error(), test.wantError) {
+					t.Fatalf("Initialize() error = %v, want containing %q", err, test.wantError)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("Initialize() error = %v", err)
+			}
+			if got := current().oauthConfig.Endpoint.AuthStyle; got != test.wantAuthStyle {
+				t.Errorf("token endpoint auth style = %v, want %v", got, test.wantAuthStyle)
+			}
+			if !slices.Contains(current().oauthConfig.Scopes, "openid") {
+				t.Errorf("OIDC scopes do not include openid: %v", current().oauthConfig.Scopes)
+			}
+		})
+	}
+}
+
+func TestInitializeReturnsProviderDiscoveryFailure(t *testing.T) {
+	fixture := newProtocolFixture(t, []string{"query"})
+	fixture.metadataStatus = http.StatusServiceUnavailable
+	configureProtocolFixture(t, fixture, "dashboard-test-secret")
+	if err := Initialize(); err == nil || !strings.Contains(err.Error(), "validate OIDC discovery metadata") {
+		t.Fatalf("Initialize() error = %v, want wrapped provider discovery error", err)
+	}
+}
+
+func TestInitializeRejectsEmptyProfileClaimNames(t *testing.T) {
+	for _, test := range []struct {
+		name  string
+		flag  string
+		value string
+	}{
+		{name: "groups", flag: "oidc-groups-claim", value: ""},
+		{name: "picture", flag: "oidc-picture-claim", value: " "},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			fixture := newProtocolFixture(t, []string{"query"})
+			configureProtocolFixture(t, fixture, "dashboard-test-secret")
+			setOIDCFlag(t, test.flag, test.value)
+			if err := Initialize(); err == nil || !strings.Contains(err.Error(), "claim names must not be empty") {
+				t.Fatalf("Initialize() error = %v, want empty-claim validation", err)
+			}
+		})
+	}
 }
 
 func TestOIDCLoginAndRefreshAgainstSignedProvider(t *testing.T) {
@@ -262,6 +369,149 @@ func TestOIDCLoginAndRefreshAgainstSignedProvider(t *testing.T) {
 			if session.AccessToken != "access-token-two" || session.RefreshToken != "refresh-token-one" ||
 				session.Subject != "user-123" || session.TokenExpiry.Before(time.Now()) {
 				t.Errorf("refreshed session = %#v", session)
+			}
+		})
+	}
+}
+
+func TestOIDCProviderRedirectPolicyAndRefreshNoopCases(t *testing.T) {
+	fixture := newProtocolFixture(t, []string{"query"})
+	instance := initializeProtocolFixture(t, fixture)
+	if err := instance.httpClient.CheckRedirect(httptest.NewRequest(http.MethodGet, fixture.issuer, nil), nil); err != http.ErrUseLastResponse {
+		t.Fatalf("OIDC redirect policy error = %v, want ErrUseLastResponse", err)
+	}
+
+	for _, test := range []struct {
+		name    string
+		session *client.BrowserSession
+	}{
+		{name: "nil session"},
+		{name: "non OIDC session", session: &client.BrowserSession{OIDC: false}},
+		{name: "session outside refresh window", session: &client.BrowserSession{OIDC: true, TokenExpiry: time.Now().Add(time.Hour)}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			refreshed, err := RefreshSession(t.Context(), test.session)
+			if refreshed || err != nil {
+				t.Fatalf("RefreshSession() = %t, %v; want no-op", refreshed, err)
+			}
+		})
+	}
+}
+
+func TestRefreshSessionRequiresRefreshToken(t *testing.T) {
+	fixture := newProtocolFixture(t, []string{"query"})
+	initializeProtocolFixture(t, fixture)
+	session := &client.BrowserSession{
+		OIDC: true, Subject: "user-123", AccessToken: "access-token-one", TokenExpiry: time.Now().Add(-time.Second),
+	}
+	if refreshed, err := RefreshSession(t.Context(), session); refreshed || err == nil || !strings.Contains(err.Error(), "session expired") {
+		t.Fatalf("RefreshSession() = %t, %v; want expired-session error", refreshed, err)
+	}
+}
+
+func TestVerifyIDTokenRejectsMalformedToken(t *testing.T) {
+	fixture := newProtocolFixture(t, []string{"query"})
+	initializeProtocolFixture(t, fixture)
+	if _, err := current().verifyIDToken(t.Context(), "not-a-jwt", "access-token"); err == nil {
+		t.Fatal("verifyIDToken() accepted a malformed token")
+	}
+}
+
+func TestCompleteLoginRedirectsWhenTokenExchangeFails(t *testing.T) {
+	fixture := newProtocolFixture(t, []string{"query"})
+	initializeProtocolFixture(t, fixture)
+	state, stateCookie := beginProtocolLogin(t, fixture, "query")
+	fixture.tokenStatus = http.StatusBadRequest
+	callback := httptest.NewRequest(http.MethodGet,
+		"https://dashboard.example.test/api/v1/oidc/callback?state="+url.QueryEscape(state.State)+"&code=authorization-code", nil)
+	callback.AddCookie(stateCookie)
+	response := httptest.NewRecorder()
+	CompleteLogin(response, callback)
+	if response.Code != http.StatusSeeOther || response.Header().Get("Location") != "/login?auth_error=oidc" {
+		t.Fatalf("CompleteLogin() = %d %q, want login error redirect", response.Code, response.Header().Get("Location"))
+	}
+}
+
+func TestUserInfoClaimsAreAcceptedOnlyForMatchingSubject(t *testing.T) {
+	for _, test := range []struct {
+		name       string
+		status     int
+		subject    string
+		body       string
+		wantUpdate bool
+	}{
+		{name: "matching subject", wantUpdate: true},
+		{name: "provider unavailable", status: http.StatusUnauthorized},
+		{name: "different subject", subject: "attacker"},
+		{name: "missing subject", body: `{"email":"attacker@example.test"}`},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			fixture := newProtocolFixture(t, []string{"query"})
+			fixture.userInfoStatus = test.status
+			fixture.userInfoSubject = test.subject
+			fixture.userInfoBody = test.body
+			instance := initializeProtocolFixture(t, fixture)
+			session := &client.BrowserSession{Subject: "user-123"}
+			if !test.wantUpdate {
+				session.Name = "original"
+				session.Email = "original@example.test"
+			}
+			instance.applyUserInfo(t.Context(), session, &oauth2.Token{AccessToken: "access-token-one", TokenType: "Bearer"})
+			if test.wantUpdate {
+				if session.Name != "ada" || session.Email != "ada@example.test" {
+					t.Fatalf("matching userinfo claims were not applied: %#v", session)
+				}
+			} else if session.Name != "original" || session.Email != "original@example.test" {
+				t.Fatalf("unverified userinfo claims changed session: %#v", session)
+			}
+		})
+	}
+}
+
+func TestRefreshSessionRejectsInvalidRefreshResponses(t *testing.T) {
+	for _, test := range []struct {
+		name          string
+		configure     func(*protocolFixture)
+		subject       string
+		wantErrorText string
+	}{
+		{
+			name: "token endpoint error",
+			configure: func(fixture *protocolFixture) {
+				fixture.tokenStatus = http.StatusBadRequest
+			},
+			wantErrorText: "invalid_grant",
+		},
+		{
+			name: "missing ID token",
+			configure: func(fixture *protocolFixture) {
+				fixture.omitIDToken = true
+			},
+			wantErrorText: "did not return an ID token",
+		},
+		{
+			name:          "identity changed",
+			subject:       "different-subject",
+			wantErrorText: "invalid identity token",
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			fixture := newProtocolFixture(t, []string{"query"})
+			if test.configure != nil {
+				test.configure(fixture)
+			}
+			initializeProtocolFixture(t, fixture)
+			subject := test.subject
+			if subject == "" {
+				subject = "user-123"
+			}
+			session := &client.BrowserSession{
+				OIDC: true, Subject: subject, AccessToken: "access-token-one",
+				RefreshToken: "refresh-token-one", TokenExpiry: time.Now().Add(-time.Second),
+			}
+			refreshed, err := RefreshSession(t.Context(), session)
+			if err == nil || refreshed || !strings.Contains(err.Error(), test.wantErrorText) {
+				t.Fatalf("RefreshSession() = %t, %v; want error containing %q", refreshed, err, test.wantErrorText)
 			}
 		})
 	}
@@ -370,6 +620,7 @@ func TestExchangeCallbackRejectsInvalidTokenResponses(t *testing.T) {
 		{name: "token endpoint error", configure: func() { fixture.tokenStatus = http.StatusBadRequest }},
 		{name: "non bearer token", configure: func() { fixture.tokenType = "MAC" }, wantErr: "bearer access token"},
 		{name: "missing ID token", configure: func() { fixture.omitIDToken = true }, wantErr: "ID token"},
+		{name: "ID token verification error", configure: func() { fixture.idTokenOverride = "not-a-jwt" }},
 		{name: "nonce mismatch", configure: func() { fixture.nonceOverride = "unexpected-nonce" }, wantErr: "nonce"},
 	}
 	for _, test := range tests {
@@ -377,6 +628,7 @@ func TestExchangeCallbackRejectsInvalidTokenResponses(t *testing.T) {
 			fixture.tokenStatus = 0
 			fixture.tokenType = ""
 			fixture.omitIDToken = false
+			fixture.idTokenOverride = ""
 			fixture.nonceOverride = ""
 			test.configure()
 			_, err := exchangeCallback(t.Context(), instance, url.Values{"code": {"authorization-code"}}, state)

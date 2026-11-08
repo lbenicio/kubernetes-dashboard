@@ -15,12 +15,15 @@
 package node
 
 import (
+	"errors"
 	"reflect"
 	"testing"
 
 	v1 "k8s.io/api/core/v1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes/fake"
+	clienttesting "k8s.io/client-go/testing"
 
 	metricapi "k8s.io/dashboard/api/pkg/integration/metric/api"
 	"k8s.io/dashboard/api/pkg/resource/dataselect"
@@ -76,5 +79,16 @@ func TestGetNodeList(t *testing.T) {
 		if !reflect.DeepEqual(actual, c.expected) {
 			t.Errorf("GetNodeList() == \ngot: %#v, \nexpected %#v", actual, c.expected)
 		}
+	}
+}
+
+func TestGetNodeListReturnsKubernetesListFailures(t *testing.T) {
+	wantErr := errors.New("node list failed")
+	client := fake.NewSimpleClientset()
+	client.PrependReactor("list", "nodes", func(clienttesting.Action) (bool, runtime.Object, error) {
+		return true, &v1.NodeList{}, wantErr
+	})
+	if _, err := GetNodeList(client, dataselect.NoDataSelect, nil); !errors.Is(err, wantErr) {
+		t.Fatalf("GetNodeList() error = %v, want %v", err, wantErr)
 	}
 }

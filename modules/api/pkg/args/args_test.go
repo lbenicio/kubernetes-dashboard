@@ -86,3 +86,18 @@ func TestArgumentAccessors(t *testing.T) {
 		t.Fatal("period or log-level accessor returned an unexpected value")
 	}
 }
+
+func TestAPILogLevelUsesDefaultWhenFlagIsMissingOrInvalid(t *testing.T) {
+	originalFlagSet := pflag.CommandLine
+	t.Cleanup(func() { pflag.CommandLine = originalFlagSet })
+	pflag.CommandLine = pflag.NewFlagSet("empty", pflag.ContinueOnError)
+	if got := APILogLevel(); got != LogLevelDefault {
+		t.Errorf("APILogLevel() without the v flag = %d; want default %d", got, LogLevelDefault)
+	}
+
+	pflag.CommandLine = pflag.NewFlagSet("invalid", pflag.ContinueOnError)
+	pflag.CommandLine.String("v", "not-an-integer", "test invalid log level")
+	if got := APILogLevel(); got != LogLevelDefault {
+		t.Errorf("APILogLevel() with an invalid v flag = %d; want default %d", got, LogLevelDefault)
+	}
+}

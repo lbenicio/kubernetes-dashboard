@@ -162,3 +162,9 @@ func TestStdComparableRFC3339Timestamp(t *testing.T) {
 		}
 	}
 }
+
+func TestStdComparableRFC3339TimestampFallsBackToLexicalComparison(t *testing.T) {
+	if got := StdComparableRFC3339Timestamp("invalid-a").Compare(StdComparableRFC3339Timestamp("invalid-b")); got >= 0 {
+		t.Fatalf("invalid timestamp comparison = %d; want lexical ordering", got)
+	}
+}

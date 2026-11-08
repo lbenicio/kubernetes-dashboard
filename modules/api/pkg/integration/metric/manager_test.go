@@ -17,9 +17,11 @@ package metric
 import (
 	"reflect"
 	"testing"
+	"time"
 
 	integrationapi "k8s.io/dashboard/api/pkg/integration/api"
 	"k8s.io/dashboard/api/pkg/integration/metric/api"
+	"k8s.io/dashboard/client"
 	"k8s.io/dashboard/errors"
 )
 
@@ -156,5 +158,50 @@ func TestMetricManagerEnableAndConfigureFailures(t *testing.T) {
 	}
 	if manager.Client() != healthy {
 		t.Fatal("failed health check replaced the active client")
+	}
+}
+
+func TestMetricManagerRetryIgnoresUnknownIntegration(t *testing.T) {
+	NewMetricManager().(*metricManager).tryEnable("unknown", time.Second)
+}
+
+func TestMetricManagerConfigureSidecarRegistersClient(t *testing.T) {
+	client.Init(client.WithMasterUrl("https://kubernetes.example.test"))
+	manager := NewMetricManager()
+	if got := manager.ConfigureSidecar("http://metrics.example.test"); got != manager {
+		t.Fatal("ConfigureSidecar() did not return the manager")
+	}
+	clients := manager.List()
+	if len(clients) != 1 || clients[0].ID() != integrationapi.SidecarIntegrationID {
+		t.Fatalf("configured sidecar integrations = %v", clients)
+	}
+}
+
+func TestMetricManagerRetryAttemptSelectsOnlyHealthyClients(t *testing.T) {
+	manager := NewMetricManager().(*metricManager)
+	manager.tryEnable(fakeMetricClientID, time.Second)
+	if manager.Client() != nil {
+		t.Fatal("retry attempt activated a missing client")
+	}
+
+	active := &FakeMetricClient{healthOk: true}
+	manager.AddClient(&FakeMetricClient{healthOk: false})
+	manager.active = active
+	manager.tryEnable(fakeMetricClientID, time.Second)
+	if manager.Client() != nil {
+		t.Fatal("unhealthy client remained active after a retry")
+	}
+
+	manager.AddClient(active)
+	manager.tryEnable(fakeMetricClientID, time.Second)
+	if manager.Client() != active {
+		t.Fatal("healthy client was not activated after a retry")
+	}
+
+	other := &FakeMetricClient{healthOk: true}
+	manager.active = other
+	manager.tryEnable(fakeMetricClientID, time.Second)
+	if manager.Client() != other {
+		t.Fatal("retry replaced an already active healthy client")
 	}
 }

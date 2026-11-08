@@ -102,6 +102,16 @@ func TestNewCachedExtensionsClientWrapsTypedAndDiscoveryClients(t *testing.T) {
 	}
 }
 
+func TestCachedClientConstructorsRejectMalformedRESTConfig(t *testing.T) {
+	config := &rest.Config{Host: "http://%"}
+	if _, err := cacheclient.New(config, common.CachedClientOptions{}); err == nil {
+		t.Error("New() accepted a malformed REST config")
+	}
+	if _, err := cacheclient.NewCachedExtensionsClient(config, nil, common.CachedClientOptions{}); err == nil {
+		t.Error("NewCachedExtensionsClient() accepted a malformed REST config")
+	}
+}
+
 type roundTripFunc func(*http.Request) (*http.Response, error)
 
 func (in roundTripFunc) RoundTrip(request *http.Request) (*http.Response, error) {

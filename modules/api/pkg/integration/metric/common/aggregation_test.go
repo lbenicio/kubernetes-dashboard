@@ -30,6 +30,30 @@ func getMetricPromises(metrics []metricapi.Metric) metricapi.MetricPromises {
 	return metricPromises
 }
 
+func TestSortableInt64ImplementsSortOperations(t *testing.T) {
+	values := SortableInt64{9, 2}
+	if values.Len() != 2 {
+		t.Fatalf("Len() = %d, want 2", values.Len())
+	}
+	if !values.Less(1, 0) {
+		t.Fatal("Less(1, 0) = false for values 2 and 9")
+	}
+	values.Swap(0, 1)
+	if !reflect.DeepEqual([]int64(values), []int64{2, 9}) {
+		t.Fatalf("Swap() values = %v, want [2 9]", values)
+	}
+}
+
+func TestAggregateDataFallsBackToDefaultForUnknownMode(t *testing.T) {
+	got := AggregateData([]metricapi.Metric{{
+		MetricName: "cpu",
+		DataPoints: []metricapi.DataPoint{{X: 1, Y: 7}, {X: 1, Y: 3}},
+	}}, "cpu", metricapi.AggregationMode("unknown"))
+	if got.Aggregate != metricapi.DefaultAggregation || len(got.DataPoints) != 1 || got.DataPoints[0].Y != 10 {
+		t.Fatalf("AggregateData(unknown mode) = %#v; want default sum aggregation", got)
+	}
+}
+
 func TestAggregateMetricPromises(t *testing.T) {
 	cases := []struct {
 		info         string

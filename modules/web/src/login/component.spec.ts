@@ -21,14 +21,14 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatRadioModule} from '@angular/material/radio';
 import {By} from '@angular/platform-browser';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {ActivatedRoute, convertToParamMap, Router} from '@angular/router';
+import {ActivatedRoute, convertToParamMap, ParamMap, Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {LoginSpec} from '@api/root.api';
 import {IConfig} from '@api/root.ui';
 import {K8SError, KdError} from '@common/errors/errors';
 import {AuthService} from '@common/services/global/authentication';
 import {HistoryService} from '@common/services/global/history';
-import {from, Observable, of, throwError} from 'rxjs';
+import {Observable, of, Subject, throwError} from 'rxjs';
 import {CONFIG_DI_TOKEN} from '../index.config';
 import {LoginComponent} from './component';
 
@@ -104,8 +104,12 @@ class MockHistoryService {
 describe('LoginComponent', () => {
   let fixture: ComponentFixture<LoginComponent>;
   let authService: MockAuthService;
+  let routeParamMap: Subject<ParamMap>;
+  let routeQueryParamMap: Subject<ParamMap>;
 
   beforeEach(waitForAsync(() => {
+    routeParamMap = new Subject<ParamMap>();
+    routeQueryParamMap = new Subject<ParamMap>();
     TestBed.configureTestingModule({
       declarations: [LoginComponent],
       imports: [
@@ -127,10 +131,9 @@ describe('LoginComponent', () => {
         },
         {
           provide: ActivatedRoute,
-          // useClass: MockActivatedRoute,
           useValue: {
-            paramMap: from([]),
-            queryParamMap: from([convertToParamMap({})]),
+            paramMap: routeParamMap,
+            queryParamMap: routeQueryParamMap,
             snapshot: {
               queryParamMap: convertToParamMap({}),
             },
@@ -194,10 +197,36 @@ describe('LoginComponent', () => {
     });
 
     it('shows the OIDC callback error', () => {
-      fixture.componentInstance.oidcLoginError = true;
+      routeQueryParamMap.next(convertToParamMap({auth_error: 'oidc'}));
       fixture.detectChanges();
 
       expect(fixture.nativeElement.textContent).toContain('Single sign-on could not be completed');
+    });
+
+    it('restores navigation errors from browser history state', () => {
+      const error = new KdError('Unauthorized', 401, 'Session expired');
+      const previousState = window.history.state;
+      try {
+        window.history.replaceState({error}, '', '/');
+        routeParamMap.next(convertToParamMap({}));
+        fixture.detectChanges();
+      } finally {
+        window.history.replaceState(previousState ?? {}, '', '/');
+      }
+
+      expect(fixture.componentInstance.errors).toEqual([error]);
+      expect(fixture.nativeElement.textContent).toContain('Session expired');
+    });
+
+    it('renders errors when OIDC login cannot be started', () => {
+      const error = new HttpErrorResponse({status: 502, statusText: 'Bad Gateway'});
+      jest.spyOn(authService, 'beginOidcLogin').mockReturnValue(throwError(() => error));
+
+      fixture.componentInstance.beginOidcLogin();
+      fixture.detectChanges();
+
+      expect(fixture.componentInstance.errors).toHaveLength(1);
+      expect(fixture.debugElement.query(By.css(queries.errorText))).toBeTruthy();
     });
   });
 

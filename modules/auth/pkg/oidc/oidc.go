@@ -575,7 +575,7 @@ func claimStrings(raw json.RawMessage) []string {
 
 func randomValue(size int) (string, error) {
 	value := make([]byte, size)
-	if _, err := rand.Read(value); err != nil {
+	if _, err := io.ReadFull(rand.Reader, value); err != nil {
 		return "", err
 	}
 	return base64.RawURLEncoding.EncodeToString(value), nil

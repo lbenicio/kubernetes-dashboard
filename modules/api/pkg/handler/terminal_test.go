@@ -26,10 +26,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 
+	"github.com/emicklei/go-restful/v3"
 	"gopkg.in/igm/sockjs-go.v2/sockjs"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/remotecommand"
 )
 
@@ -125,6 +130,15 @@ func TestTerminalSessionRead(t *testing.T) {
 			t.Fatalf("Read(error) = %q, %d, %v; want EOT and error", buffer, n, err)
 		}
 	})
+
+	t.Run("malformed message terminates input", func(t *testing.T) {
+		session := &testSockJSSession{received: []string{"{"}}
+		buffer := make([]byte, len(END_OF_TRANSMISSION))
+		n, err := (TerminalSession{sockJSSession: session}).Read(buffer)
+		if err == nil || n != 1 || string(buffer[:n]) != END_OF_TRANSMISSION {
+			t.Fatalf("Read(malformed message) = %q, %d, %v; want EOT and error", buffer, n, err)
+		}
+	})
 }
 
 func TestTerminalSessionWriteAndToast(t *testing.T) {
@@ -180,6 +194,19 @@ func TestSessionMapGetSetClose(t *testing.T) {
 	}
 }
 
+func TestSessionMapCloseRemovesSessionAfterSocketCloseError(t *testing.T) {
+	session := &testSockJSSession{closeErr: errors.New("socket close failed")}
+	store := SessionMap{Sessions: make(map[string]TerminalSession)}
+	store.Set("close-error", TerminalSession{id: "close-error", sockJSSession: session, sizeChan: make(chan remotecommand.TerminalSize)})
+	store.Close("close-error", 2, "failed")
+	if !session.closed {
+		t.Fatal("Close() did not attempt to close the SockJS session")
+	}
+	if got := store.Get("close-error"); got.id != "" {
+		t.Fatalf("Close() left the session in the map: %#v", got)
+	}
+}
+
 func TestHandleTerminalSession(t *testing.T) {
 	tests := []struct {
 		name    string
@@ -228,5 +255,90 @@ func TestTerminalSessionIDAndShellValidation(t *testing.T) {
 	}
 	if isValidShell([]string{"bash", "sh"}, "zsh") {
 		t.Error("isValidShell(zsh) = true; want false")
+	}
+}
+
+func TestCreateAttachHandlerServesSockJSInfo(t *testing.T) {
+	handler := CreateAttachHandler("/api/sockjs")
+	response := httptest.NewRecorder()
+	handler.ServeHTTP(response, httptest.NewRequest(http.MethodGet, "/api/sockjs/info", nil))
+	if response.Code != http.StatusOK {
+		t.Fatalf("SockJS info status = %d; want %d: %s", response.Code, http.StatusOK, response.Body.String())
+	}
+	if response.Body.Len() == 0 {
+		t.Fatal("SockJS info response is empty")
+	}
+}
+
+func TestWaitForTerminalReportsRemoteExecFailures(t *testing.T) {
+	for _, test := range []struct {
+		name  string
+		shell string
+	}{
+		{name: "requested shell", shell: "bash"},
+		{name: "unsupported shell tries fallbacks", shell: "zsh"},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			clientConfig := &rest.Config{Host: "https://kubernetes.example.test"}
+			k8sClient, err := kubernetes.NewForConfig(clientConfig)
+			if err != nil {
+				t.Fatalf("create Kubernetes client: %v", err)
+			}
+			// Invalid SPDY configuration returns before any network request, while
+			// still exercising the terminal cleanup path for both shell branches.
+			execConfig := &rest.Config{Host: "%"}
+
+			id := "exec-failure-" + test.shell
+			sockSession := &testSockJSSession{}
+			bound := make(chan struct{}, 1)
+			bound <- struct{}{}
+			terminalSessions.Set(id, TerminalSession{
+				id: id, bound: bound, sockJSSession: sockSession,
+				sizeChan: make(chan remotecommand.TerminalSize),
+			})
+
+			request := restful.NewRequest(httptest.NewRequest(http.MethodGet, "/?shell="+test.shell, nil))
+			request.PathParameters()["namespace"] = "default"
+			request.PathParameters()["pod"] = "web"
+			request.PathParameters()["container"] = "app"
+			WaitForTerminal(k8sClient, execConfig, request, id)
+
+			if !sockSession.closed {
+				t.Fatal("WaitForTerminal() did not close the SockJS session after exec failure")
+			}
+			if got := terminalSessions.Get(id); got.id != "" {
+				t.Fatalf("terminal session remains registered after exec failure: %#v", got)
+			}
+		})
+	}
+}
+
+func TestWaitForTerminalRemovesUnboundSessionAfterTimeout(t *testing.T) {
+	id := "unbound-terminal-session"
+	session := &testSockJSSession{}
+	terminalSessions.Set(id, TerminalSession{
+		id: id, bound: make(chan struct{}), sockJSSession: session,
+		sizeChan: make(chan remotecommand.TerminalSize),
+	})
+	request := restful.NewRequest(httptest.NewRequest(http.MethodGet, "/", nil))
+
+	WaitForTerminal(nil, nil, request, id)
+
+	if got := terminalSessions.Get(id); got.id != "" {
+		t.Fatalf("timed out session remains registered: %#v", got)
+	}
+	if session.closed {
+		t.Fatal("unbound session should be removed without closing a SockJS connection")
+	}
+}
+
+func TestStartProcessReturnsSPDYConfigurationErrors(t *testing.T) {
+	k8sClient, err := kubernetes.NewForConfig(&rest.Config{Host: "https://kubernetes.example.test"})
+	if err != nil {
+		t.Fatalf("create Kubernetes client: %v", err)
+	}
+	request := restful.NewRequest(httptest.NewRequest(http.MethodGet, "/", nil))
+	if err := startProcess(k8sClient, &rest.Config{Host: "%"}, request, []string{"sh"}, TerminalSession{}); err == nil {
+		t.Fatal("startProcess() returned no error for an invalid SPDY configuration")
 	}
 }

@@ -33,6 +33,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	k8stypes "k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/discovery"
+	"k8s.io/client-go/dynamic"
 	dynamicfake "k8s.io/client-go/dynamic/fake"
 	"k8s.io/client-go/rest"
 	k8stesting "k8s.io/client-go/testing"
@@ -104,6 +105,14 @@ func TestBuildGroupVersionResourceCacheRejectsMalformedGroupVersion(t *testing.T
 	err := verber.buildGroupVersionResourceCache([]*metav1.APIResourceList{{GroupVersion: "bad/group/version"}})
 	if err == nil {
 		t.Fatal("buildGroupVersionResourceCache() accepted malformed group version")
+	}
+}
+
+func TestGroupVersionResourceFromKindReturnsDiscoveryCacheBuildErrors(t *testing.T) {
+	resetKindMapping(t)
+	verber := &resourceVerber{discovery: discoveryStub{resources: []*metav1.APIResourceList{{GroupVersion: "invalid/group/version"}}}}
+	if _, err := verber.groupVersionResourceFromKind("pod"); err == nil {
+		t.Fatal("groupVersionResourceFromKind() accepted malformed discovery metadata")
 	}
 }
 
@@ -195,6 +204,112 @@ func TestResourceVerberUpdateUsesMergePatchForCustomResources(t *testing.T) {
 	}
 }
 
+func TestResourceVerberUpdateReturnsPatchErrors(t *testing.T) {
+	resource := testUnstructuredResource("widgets.example.test/v1", "Widget", "testing", "one")
+	resource.Object["spec"] = map[string]any{"version": "old"}
+	modified := resource.DeepCopy()
+	modified.Object["spec"] = map[string]any{"version": "new"}
+	fakeClient := dynamicfake.NewSimpleDynamicClient(runtime.NewScheme(), resource)
+	fakeClient.PrependReactor("patch", "*", func(k8stesting.Action) (bool, runtime.Object, error) {
+		return true, nil, errors.New("patch denied")
+	})
+	verber := &resourceVerber{client: fakeClient}
+	if err := verber.Update(modified); err == nil || err.Error() != "patch denied" {
+		t.Fatalf("Update() patch error = %v, want patch denied", err)
+	}
+}
+
+func TestResourceVerberUpdateUsesStrategicMergePatchForBuiltInResources(t *testing.T) {
+	object := testUnstructuredResource("v1", "Pod", "testing", "one")
+	object.Object["spec"] = map[string]any{"containers": []any{map[string]any{"name": "web", "image": "nginx:old"}}}
+	modified := object.DeepCopy()
+	modified.Object["spec"] = map[string]any{"containers": []any{map[string]any{"name": "web", "image": "nginx:new"}}}
+	fakeClient := dynamicfake.NewSimpleDynamicClient(runtime.NewScheme(), object)
+	fakeClient.PrependReactor("patch", "*", func(k8stesting.Action) (bool, runtime.Object, error) {
+		return true, modified.DeepCopy(), nil
+	})
+	verber := &resourceVerber{client: fakeClient}
+	if err := verber.Update(modified); err != nil {
+		t.Fatalf("Update() error = %v", err)
+	}
+	var patchAction k8stesting.PatchAction
+	for _, action := range fakeClient.Actions() {
+		if candidate, ok := action.(k8stesting.PatchAction); ok {
+			patchAction = candidate
+		}
+	}
+	if patchAction == nil || patchAction.GetPatchType() != k8stypes.StrategicMergePatchType {
+		t.Fatalf("Update() patch action = %#v, want strategic merge patch", patchAction)
+	}
+}
+
+func TestResourceVerberUpdateReportsInvalidStrategicMergePatch(t *testing.T) {
+	resource := testUnstructuredResource("v1", "Pod", "testing", "one")
+	resource.Object["spec"] = map[string]any{"containers": []any{map[string]any{"name": "web", "image": "nginx:old"}}}
+	modified := resource.DeepCopy()
+	modified.Object["spec"] = map[string]any{"containers": "not-a-container-list"}
+	fakeClient := dynamicfake.NewSimpleDynamicClient(runtime.NewScheme(), resource)
+	verber := &resourceVerber{client: fakeClient}
+	if err := verber.Update(modified); err == nil || !strings.Contains(err.Error(), "api field") {
+		t.Fatalf("Update() malformed strategic patch error = %v; want a Kubernetes strategic-merge schema error", err)
+	}
+}
+
+func TestResourceVerberUpdateReportsMarshalErrors(t *testing.T) {
+	t.Run("latest resource", func(t *testing.T) {
+		latest := testUnstructuredResource("widgets.example.test/v1", "Widget", "testing", "one")
+		latest.Object["unencodable"] = func() {}
+		modified := testUnstructuredResource("widgets.example.test/v1", "Widget", "testing", "one")
+		verber := &resourceVerber{client: marshalErrorDynamicClient{latest: latest}}
+		if err := verber.Update(modified); err == nil || !strings.Contains(err.Error(), "failed to marshal original data") {
+			t.Fatalf("Update() latest marshal error = %v", err)
+		}
+	})
+
+	t.Run("modified resource", func(t *testing.T) {
+		latest := testUnstructuredResource("widgets.example.test/v1", "Widget", "testing", "one")
+		modified := testUnstructuredResource("widgets.example.test/v1", "Widget", "testing", "one")
+		modified.Object["unencodable"] = func() {}
+		verber := &resourceVerber{client: marshalErrorDynamicClient{latest: latest}}
+		if err := verber.Update(modified); err == nil || !strings.Contains(err.Error(), "failed to marshal modified data") {
+			t.Fatalf("Update() modified marshal error = %v", err)
+		}
+	})
+}
+
+type marshalErrorDynamicClient struct {
+	dynamic.Interface
+	latest *unstructured.Unstructured
+}
+
+func (in marshalErrorDynamicClient) Resource(schema.GroupVersionResource) dynamic.NamespaceableResourceInterface {
+	return marshalErrorResource{latest: in.latest}
+}
+
+type marshalErrorResource struct {
+	dynamic.ResourceInterface
+	latest *unstructured.Unstructured
+}
+
+func (in marshalErrorResource) Namespace(string) dynamic.ResourceInterface { return in }
+func (in marshalErrorResource) Get(context.Context, string, metav1.GetOptions, ...string) (*unstructured.Unstructured, error) {
+	return in.latest, nil
+}
+
+func TestResourceVerberReturnsDiscoveryFailuresForGetAndDelete(t *testing.T) {
+	resetKindMapping(t)
+	verber := &resourceVerber{
+		client:    dynamicfake.NewSimpleDynamicClient(runtime.NewScheme()),
+		discovery: discoveryStub{},
+	}
+	if _, err := verber.Get("missing", "testing", "one"); err == nil {
+		t.Fatal("Get() succeeded for a kind absent from discovery")
+	}
+	if err := verber.Delete("missing", "testing", "one", "", false); err == nil {
+		t.Fatal("Delete() succeeded for a kind absent from discovery")
+	}
+}
+
 func TestResourceVerberUpdateSkipsUnchangedResourcesAndWrapsReadErrors(t *testing.T) {
 	resource := testUnstructuredResource("widgets.example.test/v1", "Widget", "testing", "one")
 	unchangedClient := dynamicfake.NewSimpleDynamicClient(runtime.NewScheme(), resource)
@@ -236,6 +351,11 @@ func TestVerberClientRequiresConfigurationAndBuildsClients(t *testing.T) {
 	verber, err := VerberClient(request)
 	if err != nil || verber == nil {
 		t.Fatalf("VerberClient() = %v, %v", verber, err)
+	}
+
+	baseConfig = &rest.Config{Host: "%"}
+	if _, err := VerberClient(request); err == nil {
+		t.Fatal("VerberClient() accepted a malformed REST config")
 	}
 }
 

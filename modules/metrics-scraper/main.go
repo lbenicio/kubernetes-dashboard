@@ -17,6 +17,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -42,59 +43,89 @@ import (
 func main() {
 	klog.InfoS("Starting Metrics Scraper", "version", environment.Version)
 
-	// This should only be run in-cluster so...
-	config, err := clientcmd.BuildConfigFromFlags("", args.KubeconfigPath())
-	if err != nil {
-		klog.Fatalf("Unable to generate a client config: %s", err)
+	if err := runScraperMain(args.KubeconfigPath(), args.DBFile(), args.MetricResolution(), args.MetricDuration(), args.MetricNamespaces(), make(chan struct{}), http.ListenAndServe); err != nil {
+		klog.Fatalf("Unable to initialize Metrics Scraper: %s", err)
 	}
+}
 
-	klog.Infof("Kubernetes host: %s", config.Host)
-	klog.Infof("Namespace(s): %s", args.MetricNamespaces())
-
-	// Generate the metrics client
-	clientset, err := metricsclient.NewForConfig(config)
+func runScraperMain(
+	kubeconfigPath, databasePath string,
+	metricResolution, metricDuration time.Duration,
+	metricNamespaces []string,
+	quit <-chan struct{},
+	listenAndServe func(string, http.Handler) error,
+) error {
+	clientset, db, err := initializeScraper(kubeconfigPath, databasePath)
 	if err != nil {
-		klog.Fatalf("Unable to generate a clientset: %s", err)
-	}
-
-	// Create the db "connection"
-	db, err := sql.Open("sqlite", args.DBFile())
-	if err != nil {
-		klog.Fatalf("Unable to open Sqlite database: %s", err)
+		return err
 	}
 	defer db.Close()
 
-	// Populate tables
-	err = database.CreateDatabase(db)
-	if err != nil {
-		klog.Fatalf("Unable to initialize database tables: %s", err)
-	}
+	ticker := time.NewTicker(metricResolution)
+	defer ticker.Stop()
+	runScraperService(clientset, db, metricDuration, metricNamespaces, ticker.C, quit, listenAndServe)
+	return nil
+}
+
+func runScraperService(
+	clientset metricsclient.Interface,
+	db *sql.DB,
+	metricDuration time.Duration,
+	metricNamespaces []string,
+	ticks <-chan time.Time,
+	quit <-chan struct{},
+	listenAndServe func(string, http.Handler) error,
+) {
+	klog.Infof("Kubernetes host: %s", clientset.Discovery().RESTClient().Get().URL().Host)
+	klog.Infof("Namespace(s): %s", metricNamespaces)
 
 	go func() {
 		r := mux.NewRouter()
 
 		api.Manager(r, db)
 		// Bind to a port and pass our router in
-		klog.Fatal(http.ListenAndServe(":8000", handlers.CombinedLoggingHandler(os.Stdout, r)))
+		if err := listenAndServe(":8000", handlers.CombinedLoggingHandler(os.Stdout, r)); err != nil {
+			klog.Fatal(err)
+		}
 	}()
 
-	// Start the machine. Scrape every metricResolution
-	ticker := time.NewTicker(args.MetricResolution())
-	quit := make(chan struct{})
+	runScraper(quit, ticks, func() error {
+		return update(clientset, db, metricDuration, metricNamespaces)
+	})
+}
 
+func runScraper(quit <-chan struct{}, ticks <-chan time.Time, scrape func() error) {
 	for {
 		select {
 		case <-quit:
-			ticker.Stop()
 			return
 
-		case <-ticker.C:
-			err = update(clientset, db, args.MetricDuration(), args.MetricNamespaces())
-			if err != nil {
+		case <-ticks:
+			if err := scrape(); err != nil {
 				break
 			}
 		}
 	}
+}
+
+func initializeScraper(kubeconfigPath, databasePath string) (metricsclient.Interface, *sql.DB, error) {
+	config, err := clientcmd.BuildConfigFromFlags("", kubeconfigPath)
+	if err != nil {
+		return nil, nil, fmt.Errorf("unable to generate a client config: %w", err)
+	}
+	clientset, err := metricsclient.NewForConfig(config)
+	if err != nil {
+		return nil, nil, fmt.Errorf("unable to generate a clientset: %w", err)
+	}
+	db, err := sql.Open("sqlite", databasePath)
+	if err != nil {
+		return nil, nil, fmt.Errorf("unable to open SQLite database: %w", err)
+	}
+	if err := database.CreateDatabase(db); err != nil {
+		_ = db.Close()
+		return nil, nil, fmt.Errorf("unable to initialize database tables: %w", err)
+	}
+	return clientset, db, nil
 }
 
 /**

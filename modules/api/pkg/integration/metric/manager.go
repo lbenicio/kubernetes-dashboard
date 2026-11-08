@@ -83,25 +83,27 @@ func (in *metricManager) Enable(id integrationapi.IntegrationID) error {
 
 // EnableWithRetry implements metric manager interface. See MetricManager for more information.
 func (in *metricManager) EnableWithRetry(id integrationapi.IntegrationID, period time.Duration) {
-	go wait.Forever(func() {
-		metricClient, exists := in.clients[id]
-		if !exists {
-			klog.V(5).InfoS("Metric client does not exist", "clientID", id)
-			return
-		}
+	go wait.Forever(func() { in.tryEnable(id, period) }, period*time.Second)
+}
 
-		err := metricClient.HealthCheck()
-		if err != nil {
-			in.active = nil
-			klog.Errorf("Metric client health check failed: %s. Retrying in %d seconds.", err, period)
-			return
-		}
+func (in *metricManager) tryEnable(id integrationapi.IntegrationID, period time.Duration) {
+	metricClient, exists := in.clients[id]
+	if !exists {
+		klog.V(5).InfoS("Metric client does not exist", "clientID", id)
+		return
+	}
 
-		if in.active == nil {
-			klog.V(1).Infof("Successful request to %s", id)
-			in.active = metricClient
-		}
-	}, period*time.Second)
+	err := metricClient.HealthCheck()
+	if err != nil {
+		in.active = nil
+		klog.Errorf("Metric client health check failed: %s. Retrying in %d seconds.", err, period)
+		return
+	}
+
+	if in.active == nil {
+		klog.V(1).Infof("Successful request to %s", id)
+		in.active = metricClient
+	}
 }
 
 // List implements metric manager interface. See MetricManager for more information.

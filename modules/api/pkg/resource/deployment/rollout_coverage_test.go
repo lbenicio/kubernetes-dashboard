@@ -23,13 +23,16 @@
 package deployment
 
 import (
+	"errors"
 	"testing"
 
 	apps "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes/fake"
+	clienttesting "k8s.io/client-go/testing"
 )
 
 func rolloutDeployment(revision string, paused bool) *apps.Deployment {
@@ -142,4 +145,78 @@ func TestRollbackDeploymentRejectsFirstRevisionAndUnknownRevision(t *testing.T) 
 	if _, err := RollbackDeployment(client, &RolloutSpec{Revision: "missing"}, "default", "web"); err == nil {
 		t.Error("RollbackDeployment(unknown revision) error = nil")
 	}
+}
+
+func TestDeploymentRolloutMethodsPropagateClientErrors(t *testing.T) {
+	t.Run("get errors", func(t *testing.T) {
+		client := fake.NewSimpleClientset()
+		if _, err := PauseDeployment(client, "default", "missing"); err == nil {
+			t.Error("PauseDeployment(missing) error = nil")
+		}
+		if _, err := ResumeDeployment(client, "default", "missing"); err == nil {
+			t.Error("ResumeDeployment(missing) error = nil")
+		}
+		if _, err := RestartDeployment(client, "default", "missing"); err == nil {
+			t.Error("RestartDeployment(missing) error = nil")
+		}
+		if _, err := RollbackDeployment(client, &RolloutSpec{Revision: "1"}, "default", "missing"); err == nil {
+			t.Error("RollbackDeployment(missing) error = nil")
+		}
+		if _, err := GetReplicaSetFromDeployment(client, "default", "missing"); err == nil {
+			t.Error("GetReplicaSetFromDeployment(missing) error = nil")
+		}
+	})
+
+	t.Run("update errors", func(t *testing.T) {
+		updateError := errors.New("update rejected")
+		rejectUpdate := func(client *fake.Clientset) {
+			client.PrependReactor("update", "deployments", func(clienttesting.Action) (bool, runtime.Object, error) {
+				return true, nil, updateError
+			})
+		}
+
+		client := fake.NewSimpleClientset(rolloutDeployment("2", false))
+		rejectUpdate(client)
+		if _, err := PauseDeployment(client, "default", "web"); !errors.Is(err, updateError) {
+			t.Errorf("PauseDeployment() error = %v; want update error", err)
+		}
+
+		client = fake.NewSimpleClientset(rolloutDeployment("2", true))
+		rejectUpdate(client)
+		if _, err := ResumeDeployment(client, "default", "web"); !errors.Is(err, updateError) {
+			t.Errorf("ResumeDeployment() error = %v; want update error", err)
+		}
+
+		client = fake.NewSimpleClientset(rolloutDeployment("2", false))
+		rejectUpdate(client)
+		if _, err := RestartDeployment(client, "default", "web"); !errors.Is(err, updateError) {
+			t.Errorf("RestartDeployment() error = %v; want update error", err)
+		}
+
+		client = fake.NewSimpleClientset(rolloutDeployment("2", false), rolloutReplicaSet("1", "web:v1"))
+		rejectUpdate(client)
+		if _, err := RollbackDeployment(client, &RolloutSpec{Revision: "1"}, "default", "web"); !errors.Is(err, updateError) {
+			t.Errorf("RollbackDeployment() error = %v; want update error", err)
+		}
+	})
+
+	t.Run("replica set lookup errors", func(t *testing.T) {
+		invalidSelector := rolloutDeployment("2", false)
+		invalidSelector.Spec.Selector = &metav1.LabelSelector{MatchExpressions: []metav1.LabelSelectorRequirement{{Key: "app", Operator: "INVALID"}}}
+		if _, err := GetReplicaSetFromDeployment(fake.NewSimpleClientset(invalidSelector), "default", "web"); err == nil {
+			t.Error("GetReplicaSetFromDeployment(invalid selector) error = nil")
+		}
+
+		listError := errors.New("replica set list rejected")
+		client := fake.NewSimpleClientset(rolloutDeployment("2", false), rolloutReplicaSet("1", "web:v1"))
+		client.PrependReactor("list", "replicasets", func(clienttesting.Action) (bool, runtime.Object, error) {
+			return true, nil, listError
+		})
+		if _, err := GetReplicaSetFromDeployment(client, "default", "web"); !errors.Is(err, listError) {
+			t.Errorf("GetReplicaSetFromDeployment() error = %v; want list error", err)
+		}
+		if _, err := RollbackDeployment(client, &RolloutSpec{Revision: "1"}, "default", "web"); !errors.Is(err, listError) {
+			t.Errorf("RollbackDeployment() error = %v; want list error", err)
+		}
+	})
 }

@@ -18,6 +18,7 @@ import (
 	"flag"
 	"fmt"
 	"net"
+	"net/http"
 	"strconv"
 
 	"github.com/spf13/pflag"
@@ -92,12 +93,18 @@ func init() {
 		csrf.Ensure()
 	}
 
-	if *argProfiler {
-		initProfiler()
+	initializeOptionalHandlers(*argProfiler, *argPrometheusEnabled, http.ListenAndServe)
+}
+
+type listenAndServeFunc func(string, http.Handler) error
+
+func initializeOptionalHandlers(profilerEnabled, prometheusEnabled bool, listenAndServe listenAndServeFunc) {
+	if profilerEnabled {
+		initProfiler(listenAndServe)
 	}
 
-	if *argPrometheusEnabled {
-		initPrometheus()
+	if prometheusEnabled {
+		initPrometheus(listenAndServe)
 	}
 }
 

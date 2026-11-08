@@ -150,6 +150,29 @@ func TestSettingsManagerReportsConcurrentChangeBeforeSavingPinnedResource(t *tes
 	}
 }
 
+func TestSettingsManagerReportsConcurrentChangeBeforeDeletingPinnedResource(t *testing.T) {
+	client := newSettingsTestClient(t, nil)
+	manager := NewSettingsManager()
+	pinned := &PinnedResource{Kind: "Pod", Name: "web", Namespace: "default", Namespaced: true}
+	if err := manager.SavePinnedResource(client, pinned); err != nil {
+		t.Fatalf("initial SavePinnedResource() error = %v", err)
+	}
+
+	configMap, err := client.CoreV1().ConfigMaps(args.Namespace()).Get(context.Background(), args.SettingsConfigMapName(), metav1.GetOptions{})
+	if err != nil {
+		t.Fatalf("get ConfigMap: %v", err)
+	}
+	configMap.Data[PinnedResourcesKey] = `[]`
+	if _, err := client.CoreV1().ConfigMaps(args.Namespace()).Update(context.Background(), configMap, metav1.UpdateOptions{}); err != nil {
+		t.Fatalf("update ConfigMap: %v", err)
+	}
+
+	err = manager.DeletePinnedResource(client, pinned)
+	if err == nil || err.Error() != ConcurrentSettingsChangeError {
+		t.Fatalf("DeletePinnedResource() concurrent error = %v, want %q", err, ConcurrentSettingsChangeError)
+	}
+}
+
 func TestSettingsManagerHandlesConfigMapLoadErrors(t *testing.T) {
 	client := newSettingsTestClient(t, nil)
 	client.PrependReactor("get", "configmaps", func(_ ktesting.Action) (bool, runtime.Object, error) {
@@ -159,6 +182,20 @@ func TestSettingsManagerHandlesConfigMapLoadErrors(t *testing.T) {
 
 	if got := manager.GetGlobalSettings(client); got.DefaultNamespace == nil || *got.DefaultNamespace != "default" {
 		t.Fatalf("settings after load error = %#v", got)
+	}
+}
+
+func TestSettingsManagerIgnoresMalformedConfigMapValues(t *testing.T) {
+	client := newSettingsTestClient(t, map[string]string{
+		ConfigMapSettingsKey: "{",
+		PinnedResourcesKey:   "{",
+	})
+	manager := NewSettingsManager()
+	if got := manager.GetGlobalSettings(client); got.ItemsPerPage == nil || *got.ItemsPerPage != 10 {
+		t.Fatalf("settings after malformed values = %#v, want defaults", got)
+	}
+	if got := manager.GetPinnedResources(client); len(got) != 0 {
+		t.Fatalf("pinned resources after malformed values = %#v, want empty", got)
 	}
 }
 

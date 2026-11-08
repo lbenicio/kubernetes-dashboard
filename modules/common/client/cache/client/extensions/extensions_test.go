@@ -50,6 +50,12 @@ func TestCachedCustomResourceDefinitionLister(t *testing.T) {
 	}
 }
 
+func TestNewClientRejectsMalformedRESTConfig(t *testing.T) {
+	if _, err := extensionsclient.NewClient(&rest.Config{Host: "http://%"}, nil, common.CachedClientOptions{}); err == nil {
+		t.Fatal("NewClient() accepted a malformed REST config")
+	}
+}
+
 func testRESTConfig() *rest.Config {
 	return &rest.Config{
 		Host: "https://kubernetes.example.test",

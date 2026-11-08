@@ -32,6 +32,7 @@ import (
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	fakediscovery "k8s.io/client-go/discovery/fake"
+	"k8s.io/client-go/rest"
 	clienttesting "k8s.io/client-go/testing"
 
 	"k8s.io/dashboard/api/pkg/resource/common"
@@ -135,5 +136,25 @@ func TestCustomResourceDefinitionHelpersPropagateDiscoveryErrors(t *testing.T) {
 				t.Fatalf("call() error = %v; want %v", err, wantErr)
 			}
 		})
+	}
+}
+
+func TestCustomResourceDefinitionHelpersDelegateV1Requests(t *testing.T) {
+	client := crdClientWithAPIVersion(v1)
+	if _, err := GetCustomResourceDefinitionList(client, dataselect.DefaultDataSelect); err != nil {
+		t.Fatalf("GetCustomResourceDefinitionList() error = %v", err)
+	}
+
+	// Invalid config keeps these dynamic-client delegates offline while checking
+	// that supported-version dispatch reaches the v1 implementations.
+	invalidConfig := &rest.Config{Host: "%"}
+	if _, err := GetCustomResourceDefinitionDetail(client, invalidConfig, "example.test"); err == nil {
+		t.Error("GetCustomResourceDefinitionDetail() accepted an invalid REST config")
+	}
+	if _, err := GetCustomResourceObjectList(client, invalidConfig, &common.NamespaceQuery{}, dataselect.DefaultDataSelect, "examples.test"); err == nil {
+		t.Error("GetCustomResourceObjectList() accepted an invalid REST config")
+	}
+	if _, err := GetCustomResourceObjectDetail(client, &common.NamespaceQuery{}, invalidConfig, "examples.test", "one"); err == nil {
+		t.Error("GetCustomResourceObjectDetail() accepted an invalid REST config")
 	}
 }

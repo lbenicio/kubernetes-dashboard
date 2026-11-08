@@ -37,6 +37,54 @@ import (
 )
 
 func main() {
+	apiHandler, certs := initializeAPI()
+	runAPI(apiHandler, certs, http.DefaultServeMux, handler.CreateAttachHandler("/api/sockjs"), promhttp.Handler(), args.InsecureAddress(), args.Address(), http.ListenAndServe, func(server *http.Server) error {
+		return server.ListenAndServeTLS("", "")
+	})
+
+	select {}
+}
+
+func runAPI(
+	apiHandler http.Handler,
+	certs []tls.Certificate,
+	mux *http.ServeMux,
+	attachHandler, metricsHandler http.Handler,
+	insecureAddress, secureAddress string,
+	listenHTTP func(string, http.Handler) error,
+	listenTLS func(*http.Server) error,
+) {
+	mux.Handle("/", apiHandler)
+	mux.Handle("/api/sockjs/", attachHandler)
+	mux.Handle("/metrics", metricsHandler)
+
+	if len(certs) > 0 {
+		klog.V(1).InfoS("Listening and serving on", "address", secureAddress)
+		server := &http.Server{
+			Addr:    secureAddress,
+			Handler: mux,
+			TLSConfig: &tls.Config{
+				Certificates: certs,
+				MinVersion:   tls.VersionTLS12,
+			},
+		}
+		go func() {
+			if err := listenTLS(server); err != nil {
+				klog.Fatal(err)
+			}
+		}()
+		return
+	}
+
+	klog.V(1).InfoS("Listening and serving on", "address", insecureAddress)
+	go func() {
+		if err := listenHTTP(insecureAddress, mux); err != nil {
+			klog.Fatal(err)
+		}
+	}()
+}
+
+func initializeAPI() (*restful.Container, []tls.Certificate) {
 	klog.InfoS("Starting Kubernetes Dashboard API", "version", environment.Version)
 
 	client.Init(
@@ -47,20 +95,18 @@ func main() {
 		client.WithCaBundle(args.ApiServerCaBundle()),
 	)
 
-	if !args.IsProxyEnabled() {
-		ensureAPIServerConnectionOrDie()
-	} else {
+	runWithProxyMode(args.IsProxyEnabled(), ensureAPIServerConnectionOrDie, func() {
 		klog.Info("Running in proxy mode. InClusterClient connections will be disabled.")
-	}
+	})
 
 	// Init integrations
 	integrationManager := integration.NewIntegrationManager()
 
-	if !args.IsProxyEnabled() {
+	runWithProxyMode(args.IsProxyEnabled(), func() {
 		configureMetricsProvider(integrationManager)
-	} else {
+	}, func() {
 		klog.Info("Skipping metrics configuration. Metrics not available in proxy mode.")
-	}
+	})
 
 	apiHandler, err := handler.CreateHTTPAPIHandler(integrationManager)
 	if err != nil {
@@ -78,36 +124,15 @@ func main() {
 	if err != nil {
 		handleFatalInitServingCertError(err)
 	}
-
-	http.Handle("/", apiHandler)
-	http.Handle("/api/sockjs/", handler.CreateAttachHandler("/api/sockjs"))
-	http.Handle("/metrics", promhttp.Handler())
-
-	if certs != nil {
-		serveTLS(certs)
-	} else {
-		serve()
-	}
-
-	select {}
+	return apiHandler, certs
 }
 
-func serve() {
-	klog.V(1).InfoS("Listening and serving on", "address", args.InsecureAddress())
-	go func() { klog.Fatal(http.ListenAndServe(args.InsecureAddress(), nil)) }()
-}
-
-func serveTLS(certificates []tls.Certificate) {
-	klog.V(1).InfoS("Listening and serving on", "address", args.Address())
-	server := &http.Server{
-		Addr:    args.Address(),
-		Handler: http.DefaultServeMux,
-		TLSConfig: &tls.Config{
-			Certificates: certificates,
-			MinVersion:   tls.VersionTLS12,
-		},
+func runWithProxyMode(proxyEnabled bool, inCluster, proxy func()) {
+	if proxyEnabled {
+		proxy()
+		return
 	}
-	go func() { klog.Fatal(server.ListenAndServeTLS("", "")) }()
+	inCluster()
 }
 
 func ensureAPIServerConnectionOrDie() {

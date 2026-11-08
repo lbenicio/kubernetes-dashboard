@@ -84,6 +84,13 @@ func TestGetPodStatusLifecycleBranches(t *testing.T) {
 			want: "Init: 0/1",
 		},
 		{
+			name: "successfully completed init container does not block initialization",
+			pod: corev1.Pod{Spec: corev1.PodSpec{InitContainers: []corev1.Container{{Name: "init"}}}, Status: corev1.PodStatus{
+				Phase: corev1.PodPending, InitContainerStatuses: []corev1.ContainerStatus{{Name: "init", State: corev1.ContainerState{Terminated: &corev1.ContainerStateTerminated{ExitCode: 0}}}},
+			}},
+			want: string(corev1.PodPending),
+		},
+		{
 			name: "running restartable init container is initialized",
 			pod: corev1.Pod{Spec: corev1.PodSpec{InitContainers: []corev1.Container{{Name: "sidecar", RestartPolicy: &restartAlways}}}, Status: corev1.PodStatus{
 				Phase: corev1.PodPending, InitContainerStatuses: []corev1.ContainerStatus{{Name: "sidecar", Started: &started, State: corev1.ContainerState{Running: &corev1.ContainerStateRunning{}}}},
@@ -188,6 +195,16 @@ func TestGetPodStatusPhase(t *testing.T) {
 	}
 }
 
+func TestPodInitializationSkipsUnrelatedConditions(t *testing.T) {
+	status := corev1.PodStatus{Conditions: []corev1.PodCondition{
+		{Type: corev1.PodReady, Status: corev1.ConditionTrue},
+		{Type: corev1.PodInitialized, Status: corev1.ConditionTrue},
+	}}
+	if !isPodInitializedConditionTrue(&status) {
+		t.Error("isPodInitializedConditionTrue() ignored an initialization condition after an unrelated condition")
+	}
+}
+
 func TestGetStatusCountsPodPhases(t *testing.T) {
 	if status := getStatus(nil, nil); status != (common.ResourceStatus{}) {
 		t.Errorf("getStatus(nil) = %#v", status)
@@ -198,10 +215,11 @@ func TestGetStatusCountsPodPhases(t *testing.T) {
 		}}},
 		{ObjectMeta: metav1.ObjectMeta{UID: apimachinerytypes.UID("failed")}, Status: corev1.PodStatus{Phase: corev1.PodFailed}},
 		{ObjectMeta: metav1.ObjectMeta{UID: apimachinerytypes.UID("succeeded")}, Status: corev1.PodStatus{Phase: corev1.PodSucceeded}},
+		{ObjectMeta: metav1.ObjectMeta{UID: apimachinerytypes.UID("pending")}, Status: corev1.PodStatus{Phase: corev1.PodPending}},
 		{ObjectMeta: metav1.ObjectMeta{UID: apimachinerytypes.UID("terminating"), DeletionTimestamp: ptrToTime(metav1.Now())}, Status: corev1.PodStatus{Phase: corev1.PodRunning}},
 	}}
 	status := getStatus(list, nil)
-	if status.Running != 1 || status.Failed != 1 || status.Succeeded != 1 || status.Terminating != 1 {
+	if status.Running != 1 || status.Failed != 1 || status.Succeeded != 1 || status.Pending != 1 || status.Terminating != 1 {
 		t.Errorf("getStatus() = %#v", status)
 	}
 }

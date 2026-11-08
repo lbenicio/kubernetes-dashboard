@@ -175,6 +175,10 @@ func getPodStatusPhase(pod v1.Pod, warnings []common.Event) v1.PodPhase {
 		return "Terminating"
 	}
 
+	if pod.Status.Phase == v1.PodPending {
+		return v1.PodPending
+	}
+
 	return ""
 }
 

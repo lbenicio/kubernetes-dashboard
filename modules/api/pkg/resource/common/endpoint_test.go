@@ -73,6 +73,16 @@ func TestGetExternalEndpoints(t *testing.T) {
 				&c.service, actual, c.expected)
 		}
 	}
+
+	service := api.Service{Spec: api.ServiceSpec{
+		ExternalIPs: []string{"203.0.113.10"},
+		Ports:       []api.ServicePort{{Port: 8080, Protocol: api.ProtocolTCP}},
+	}}
+	got := GetExternalEndpoints(&service)
+	want := []Endpoint{{Host: "203.0.113.10", Ports: []ServicePort{{Port: 8080, Protocol: api.ProtocolTCP}}}}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("GetExternalEndpoints(external IP) = %#v; want %#v", got, want)
+	}
 }
 
 func TestGetInternalEndpoint(t *testing.T) {

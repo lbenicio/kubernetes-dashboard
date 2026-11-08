@@ -24,6 +24,7 @@ package settings
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -221,10 +222,71 @@ func TestSettingsMutationHandlersSaveAndDelete(t *testing.T) {
 	}
 }
 
+func TestSettingsMutationHandlersReportBindingAndManagerErrors(t *testing.T) {
+	cacheFlag := pflag.Lookup("cache-enabled")
+	previousCache := cacheFlag.Value.String()
+	if err := cacheFlag.Value.Set("false"); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = cacheFlag.Value.Set(previousCache) })
+	dashboardclient.Init(dashboardclient.WithMasterUrl("https://kubernetes.example.test"))
+
+	previousManager := manager
+	defer func() { manager = previousManager }()
+
+	manager = &recordingSettingsManager{}
+	for _, test := range []struct {
+		name    string
+		handler gin.HandlerFunc
+		method  string
+		path    string
+		body    string
+		params  gin.Params
+	}{
+		{name: "invalid settings JSON", handler: handleSettingsGlobalSave, method: http.MethodPut, path: "/settings", body: "{"},
+		{name: "invalid pinned resource JSON", handler: handleSettingsSavePinned, method: http.MethodPut, path: "/settings/pinnedresources", body: "{"},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			response := invokeSettingsMutation(t, test.handler, test.method, test.path, test.body, test.params)
+			if response.Code != http.StatusBadRequest {
+				t.Fatalf("status = %d, want %d: %s", response.Code, http.StatusBadRequest, response.Body.String())
+			}
+		})
+	}
+
+	manager = &recordingSettingsManager{
+		saveSettingsErr: errors.New("settings save rejected"),
+		savePinnedErr:   errors.New("pinned save rejected"),
+		deletePinnedErr: errors.New("pinned delete rejected"),
+	}
+	for _, test := range []struct {
+		name    string
+		handler gin.HandlerFunc
+		method  string
+		path    string
+		body    string
+		params  gin.Params
+	}{
+		{name: "settings manager error", handler: handleSettingsGlobalSave, method: http.MethodPut, path: "/settings", body: `{"itemsPerPage":25}`},
+		{name: "pinned resource manager error", handler: handleSettingsSavePinned, method: http.MethodPut, path: "/settings/pinnedresources", body: `{"kind":"Pod","name":"web"}`},
+		{name: "delete manager error", handler: handleSettingsDeletePinned, method: http.MethodDelete, path: "/settings/pinnedresources/pod/default/web", params: gin.Params{{Key: "kind", Value: "pod"}, {Key: "nameOrNamespace", Value: "default"}, {Key: "name", Value: "web"}}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			response := invokeSettingsMutation(t, test.handler, test.method, test.path, test.body, test.params)
+			if response.Code != http.StatusInternalServerError {
+				t.Fatalf("status = %d, want %d: %s", response.Code, http.StatusInternalServerError, response.Body.String())
+			}
+		})
+	}
+}
+
 type recordingSettingsManager struct {
-	savedSettings *Settings
-	savedPinned   *PinnedResource
-	deletedPinned *PinnedResource
+	savedSettings   *Settings
+	savedPinned     *PinnedResource
+	deletedPinned   *PinnedResource
+	saveSettingsErr error
+	savePinnedErr   error
+	deletePinnedErr error
 }
 
 func (in *recordingSettingsManager) GetGlobalSettings(kubernetes.Interface) *Settings {
@@ -233,7 +295,7 @@ func (in *recordingSettingsManager) GetGlobalSettings(kubernetes.Interface) *Set
 
 func (in *recordingSettingsManager) SaveGlobalSettings(_ kubernetes.Interface, settings *Settings) error {
 	in.savedSettings = settings
-	return nil
+	return in.saveSettingsErr
 }
 
 func (in *recordingSettingsManager) GetPinnedResources(kubernetes.Interface) []PinnedResource {
@@ -242,13 +304,13 @@ func (in *recordingSettingsManager) GetPinnedResources(kubernetes.Interface) []P
 
 func (in *recordingSettingsManager) SavePinnedResource(_ kubernetes.Interface, resource *PinnedResource) error {
 	in.savedPinned = resource
-	return nil
+	return in.savePinnedErr
 }
 
 func (in *recordingSettingsManager) DeletePinnedResource(_ kubernetes.Interface, resource *PinnedResource) error {
 	copy := *resource
 	in.deletedPinned = &copy
-	return nil
+	return in.deletePinnedErr
 }
 
 func invokeSettingsMutation(t *testing.T, handler gin.HandlerFunc, method, path, body string, params gin.Params) *httptest.ResponseRecorder {

@@ -124,6 +124,37 @@ func TestCachedResourceListerPassesGroupAndVersionInAccessReview(t *testing.T) {
 	}
 }
 
+func TestCachedResourceListerReturnsAuthorizationReviewErrors(t *testing.T) {
+	defer cache.Clear[TestResource]()
+	ctx := context.Background()
+	options := []common.Option[TestResource]{
+		common.WithResourceKind[TestResource]("pods"),
+		common.WithToken[TestResource]("cached-auth-review-error"),
+		common.WithNamespace[TestResource]("default"),
+	}
+
+	allow := &authorizationv1fake.FakeAuthorizationV1{Fake: &k8stesting.Fake{}}
+	allow.AddReactor("create", "selfsubjectaccessreviews", func(action k8stesting.Action) (bool, runtime.Object, error) {
+		review := action.(k8stesting.CreateAction).GetObject().(*authorizationapiv1.SelfSubjectAccessReview)
+		review.Status.Allowed = true
+		return true, review, nil
+	})
+	loader := common.NewCachedResourceLister[TestResource](allow, options...)
+	if _, err := loader.List(ctx, &MockLister{returnVal: &TestResource{Items: []string{"cached"}}}, metav1.ListOptions{}); err != nil {
+		t.Fatalf("initial List() error = %v", err)
+	}
+
+	wantErr := fmt.Errorf("authorization review unavailable")
+	denied := &authorizationv1fake.FakeAuthorizationV1{Fake: &k8stesting.Fake{}}
+	denied.AddReactor("create", "selfsubjectaccessreviews", func(k8stesting.Action) (bool, runtime.Object, error) {
+		return true, nil, wantErr
+	})
+	reader := common.NewCachedResourceLister[TestResource](denied, options...)
+	if _, err := reader.List(ctx, &MockLister{returnVal: &TestResource{Items: []string{"must-not-load"}}}, metav1.ListOptions{}); err != wantErr {
+		t.Fatalf("cached List() error = %v, want %v", err, wantErr)
+	}
+}
+
 func TestCachedResourceLister_List(t *testing.T) {
 	ctx := context.Background()
 	auth := &authorizationv1fake.FakeAuthorizationV1{Fake: &k8stesting.Fake{}}

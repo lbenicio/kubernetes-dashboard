@@ -20,13 +20,16 @@
 package logs
 
 import (
+	"errors"
 	"testing"
 
 	apps "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes/fake"
+	clienttesting "k8s.io/client-go/testing"
 
 	dashboardtypes "k8s.io/dashboard/types"
 )
@@ -49,5 +52,16 @@ func TestGetLogSourcesForPodAndController(t *testing.T) {
 	}
 	if _, err := GetLogSources(client, "default", "missing", string(dashboardtypes.ResourceKindPod)); err == nil {
 		t.Fatal("GetLogSources() succeeded for missing pod")
+	}
+	if _, err := GetLogSources(client, "default", "missing", string(dashboardtypes.ResourceKindReplicaSet)); err == nil {
+		t.Fatal("GetLogSources() succeeded for missing controller")
+	}
+
+	failedListClient := fake.NewSimpleClientset(controller)
+	failedListClient.PrependReactor("list", "pods", func(clienttesting.Action) (bool, runtime.Object, error) {
+		return true, nil, errors.New("pod list failed")
+	})
+	if _, err := GetLogSources(failedListClient, "default", controller.Name, string(dashboardtypes.ResourceKindReplicaSet)); err == nil {
+		t.Fatal("GetLogSources() ignored a pod list error for a controller")
 	}
 }

@@ -34,29 +34,67 @@ import (
 )
 
 func main() {
-	klog.InfoS("Starting Kubernetes Dashboard Web", "version", environment.Version)
+	runWebProcess(initializeWebClient, getWebCertificatePaths,
+		func(address, certPath, keyPath string) error {
+			return router.Router().RunTLS(address, certPath, keyPath)
+		},
+		func(address string) error { return router.Router().Run(address) },
+		args.Address(), args.InsecureAddress(), func(initialized bool, err error) {
+			if err != nil {
+				if initialized {
+					klog.Fatalf("Router error: %s", err)
+				}
+				klog.Fatalf("Error while loading dashboard server certificates. Reason: %s", err)
+			}
+		})
+}
 
+func initializeWebClient() {
 	client.Init(
 		client.WithUserAgent(environment.UserAgent()),
 		client.WithKubeconfig(args.KubeconfigPath()),
 	)
+}
 
+func getWebCertificatePaths() (string, string, error) {
 	certCreator := ecdsa.NewECDSACreator(args.KeyFile(), args.CertFile(), elliptic.P256())
 	certManager := certificates.NewCertManager(certCreator, args.DefaultCertDir(), args.AutoGenerateCertificates())
-	certPath, keyPath, err := certManager.GetCertificatePaths()
+	return certManager.GetCertificatePaths()
+}
+
+func runWebProcess(
+	initializeClient func(),
+	certificatePaths func() (string, string, error),
+	serveTLS func(string, string, string) error,
+	serve func(string) error,
+	secureAddress, insecureAddress string,
+	onFatal func(bool, error),
+) {
+	klog.InfoS("Starting Kubernetes Dashboard Web", "version", environment.Version)
+	initialized, err := runWeb(initializeClient, certificatePaths, serveTLS, serve, secureAddress, insecureAddress)
 	if err != nil {
-		klog.Fatalf("Error while loading dashboard server certificates. Reason: %s", err)
+		onFatal(initialized, err)
+	}
+}
+
+func runWeb(
+	initializeClient func(),
+	certificatePaths func() (string, string, error),
+	serveTLS func(string, string, string) error,
+	serve func(string) error,
+	secureAddress, insecureAddress string,
+) (bool, error) {
+	initializeClient()
+	certPath, keyPath, err := certificatePaths()
+	if err != nil {
+		return false, err
 	}
 
 	if len(certPath) != 0 && len(keyPath) != 0 {
-		klog.V(1).InfoS("Listening and serving securely on", "address", args.Address())
-		if err := router.Router().RunTLS(args.Address(), certPath, keyPath); err != nil {
-			klog.Fatalf("Router error: %s", err)
-		}
-	} else {
-		klog.V(1).InfoS("Listening and serving insecurely on", "address", args.InsecureAddress())
-		if err := router.Router().Run(args.InsecureAddress()); err != nil {
-			klog.Fatalf("Router error: %s", err)
-		}
+		klog.V(1).InfoS("Listening and serving securely on", "address", secureAddress)
+		return true, serveTLS(secureAddress, certPath, keyPath)
 	}
+
+	klog.V(1).InfoS("Listening and serving insecurely on", "address", insecureAddress)
+	return true, serve(insecureAddress)
 }

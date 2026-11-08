@@ -159,6 +159,11 @@ func TestReplicationControllerControllerHandlesEmptyTemplate(t *testing.T) {
 	if sources.ContainerNames != nil || sources.InitContainerNames != nil {
 		t.Errorf("empty pod template names = %v and %v; want nil", sources.ContainerNames, sources.InitContainerNames)
 	}
+
+	template := &v1.PodTemplateSpec{Spec: v1.PodSpec{Containers: []v1.Container{{Name: "web"}}}}
+	if got := getReplicationControllerPodSpec(template); got != &template.Spec || len(got.Containers) != 1 || got.Containers[0].Name != "web" {
+		t.Errorf("getReplicationControllerPodSpec(non-empty) = %#v", got)
+	}
 }
 
 func newPod(name string) v1.Pod {

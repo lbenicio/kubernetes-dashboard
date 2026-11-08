@@ -61,6 +61,15 @@ func TestAPILogLevelFallsBackWhenFlagValueCannotBeParsed(t *testing.T) {
 	}
 }
 
+func TestAPILogLevelUsesDefaultWhenFlagIsMissing(t *testing.T) {
+	original := pflag.CommandLine
+	t.Cleanup(func() { pflag.CommandLine = original })
+	pflag.CommandLine = pflag.NewFlagSet("missing-log-level", pflag.ContinueOnError)
+	if got := APILogLevel(); got != LogLevelDefault {
+		t.Fatalf("APILogLevel() without v flag = %v, want default %v", got, LogLevelDefault)
+	}
+}
+
 type invalidMetricFlagValue string
 
 func (in invalidMetricFlagValue) String() string { return string(in) }

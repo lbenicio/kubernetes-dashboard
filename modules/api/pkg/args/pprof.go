@@ -22,13 +22,13 @@ import (
 	"k8s.io/klog/v2"
 )
 
-func initProfiler() {
+func initProfiler(listenAndServe listenAndServeFunc) {
 	klog.V(LogLevelInfo).Info("Initializing profiler")
 
 	mux := http.NewServeMux()
 	mux.HandleFunc(defaultProfilerPath, pprof.Index)
 	go func() {
-		if err := http.ListenAndServe(fmt.Sprintf(":%d", defaultProfilerPort), mux); err != nil {
+		if err := listenAndServe(fmt.Sprintf(":%d", defaultProfilerPort), mux); err != nil {
 			klog.Fatal(err)
 		}
 	}()

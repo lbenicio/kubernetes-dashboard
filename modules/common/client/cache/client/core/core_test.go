@@ -89,6 +89,12 @@ func TestCachedCoreClientListWrappers(t *testing.T) {
 	}
 }
 
+func TestNewClientRejectsMalformedRESTConfig(t *testing.T) {
+	if _, err := coreclient.NewClient(&rest.Config{Host: "http://%"}, nil, coreOptions()); err == nil {
+		t.Fatal("NewClient() accepted a malformed REST config")
+	}
+}
+
 func testRESTConfig() *rest.Config {
 	return &rest.Config{
 		Host: "https://kubernetes.example.test",

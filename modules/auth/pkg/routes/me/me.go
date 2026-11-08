@@ -16,6 +16,7 @@ package login
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -38,6 +39,10 @@ type ServiceAccount struct {
 }
 
 func me(request *http.Request, response http.ResponseWriter) (*types.User, int, error) {
+	return meWithRefresh(request, response, oidc.RefreshSession)
+}
+
+func meWithRefresh(request *http.Request, response http.ResponseWriter, refreshSession func(context.Context, *client.BrowserSession) (bool, error)) (*types.User, int, error) {
 	if args.AnonymousAdminEnabled() {
 		if _, err := request.Cookie("kd-session-0"); err == nil {
 			client.ClearBrowserSessionCookie(response, request)
@@ -58,7 +63,7 @@ func me(request *http.Request, response http.ResponseWriter) (*types.User, int, 
 	}
 
 	if session, err := client.ReadBrowserSession(request); err == nil && session.OIDC {
-		refreshed, refreshErr := oidc.RefreshSession(request.Context(), session)
+		refreshed, refreshErr := refreshSession(request.Context(), session)
 		if refreshErr != nil {
 			client.ClearBrowserSessionCookie(response, request)
 			return nil, http.StatusUnauthorized, errors.NewUnauthorized(errors.MsgLoginUnauthorizedError)

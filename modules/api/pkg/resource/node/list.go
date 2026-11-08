@@ -79,6 +79,7 @@ func toNodeList(client client.Interface, nodes []v1.Node, nonCriticalErrors []er
 		pods, err := getNodePods(client, node)
 		if err != nil {
 			klog.Errorf("Couldn't get pods of %s node: %s\n", node.Name, err)
+			pods = &v1.PodList{}
 		}
 
 		nodeList.Nodes = append(nodeList.Nodes, toNode(node, pods))

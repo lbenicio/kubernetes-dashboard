@@ -21,12 +21,16 @@ package node
 
 import (
 	"context"
+	"errors"
+	"strings"
 	"testing"
 	"time"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes/fake"
+	clienttesting "k8s.io/client-go/testing"
 )
 
 func TestNewDrainHelperDefaultsAndOverrides(t *testing.T) {
@@ -60,6 +64,31 @@ func TestDrainNode(t *testing.T) {
 		client := fake.NewClientset(&corev1.Node{ObjectMeta: metav1.ObjectMeta{Name: "worker"}})
 		if err := DrainNode(client, "worker", nil); err != nil {
 			t.Fatalf("DrainNode() error = %v", err)
+		}
+	})
+}
+
+func TestDrainNodeReportsCordonAndPodListingFailures(t *testing.T) {
+	t.Run("cordon failure", func(t *testing.T) {
+		client := fake.NewClientset(&corev1.Node{ObjectMeta: metav1.ObjectMeta{Name: "worker"}})
+		client.PrependReactor("patch", "nodes", func(clienttesting.Action) (bool, runtime.Object, error) {
+			return true, nil, errors.New("node update failed")
+		})
+		if err := DrainNode(client, "worker", nil); err == nil || !strings.Contains(err.Error(), "error cordoning node") {
+			t.Fatalf("DrainNode() error = %v; want a cordoning error", err)
+		}
+	})
+
+	t.Run("pod listing failure", func(t *testing.T) {
+		client := fake.NewClientset(&corev1.Node{
+			ObjectMeta: metav1.ObjectMeta{Name: "worker"},
+			Spec:       corev1.NodeSpec{Unschedulable: true},
+		})
+		client.PrependReactor("list", "pods", func(clienttesting.Action) (bool, runtime.Object, error) {
+			return true, nil, errors.New("pod list failed")
+		})
+		if err := DrainNode(client, "worker", nil); err == nil || !strings.Contains(err.Error(), "error draining node") {
+			t.Fatalf("DrainNode() error = %v; want a draining error", err)
 		}
 	})
 }

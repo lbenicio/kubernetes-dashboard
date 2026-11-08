@@ -86,6 +86,12 @@ func TestGetSupportedLocales(t *testing.T) {
 	if got := getSupportedLocales(); len(got) != 0 {
 		t.Fatalf("malformed locale config produced tags %v", got)
 	}
+	if err := flag.Value.Set(filepath.Join(t.TempDir(), "missing-locales.json")); err != nil {
+		t.Fatal(err)
+	}
+	if got := getSupportedLocales(); len(got) != 0 {
+		t.Fatalf("missing locale config produced tags %v", got)
+	}
 }
 
 func TestDetermineLocalizedDirSupportsLegacyChineseTags(t *testing.T) {
@@ -154,6 +160,21 @@ func equalTags(left, right []language.Tag) bool {
 func TestLocaleDirFallsBackForUnsupportedLanguage(t *testing.T) {
 	if got, want := getLocaleDir("unsupported-language"), expectedDefaultLocaleDir(); got != want {
 		t.Errorf("getLocaleDir() = %q, want fallback %q", got, want)
+	}
+}
+
+func TestDirExistsTreatsOtherStatErrorsAsExisting(t *testing.T) {
+	parent := filepath.Join(t.TempDir(), "unreadable")
+	if err := os.Mkdir(parent, 0o700); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chmod(parent, 0); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = os.Chmod(parent, 0o700) })
+
+	if !dirExists(filepath.Join(parent, "missing")) {
+		t.Fatal("dirExists() returned false for a non-not-found stat error")
 	}
 }
 

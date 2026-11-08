@@ -43,6 +43,7 @@ func TestArgumentAccessors(t *testing.T) {
 	setAuthFlag(t, "oidc-groups-claim", " memberOf ")
 	setAuthFlag(t, "oidc-picture-claim", " avatar ")
 	setAuthFlag(t, "session-cookie-secure", "false")
+	setAuthFlag(t, "anonymous-admin", "true")
 
 	if Address() != "127.0.0.1:8123" || KubeconfigPath() != "/tmp/dashboard-kubeconfig" {
 		t.Errorf("address/kubeconfig = %q/%q", Address(), KubeconfigPath())
@@ -61,6 +62,9 @@ func TestArgumentAccessors(t *testing.T) {
 	}
 	if OIDCGroupsClaim() != "memberOf" || OIDCPictureClaim() != "avatar" || SessionCookieSecure() {
 		t.Errorf("OIDC claims/session cookie = %q/%q/%t", OIDCGroupsClaim(), OIDCPictureClaim(), SessionCookieSecure())
+	}
+	if !AnonymousAdminEnabled() {
+		t.Error("AnonymousAdminEnabled() = false, want true")
 	}
 }
 

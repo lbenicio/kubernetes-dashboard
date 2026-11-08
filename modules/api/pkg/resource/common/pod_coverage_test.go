@@ -56,4 +56,10 @@ func TestEqualIgnoreHash(t *testing.T) {
 	if EqualIgnoreHash(first, *second) {
 		t.Fatal("EqualIgnoreHash() returned true for templates with different container images")
 	}
+
+	withExtraLabel := first.DeepCopy()
+	withExtraLabel.Labels["team"] = "platform"
+	if EqualIgnoreHash(first, *withExtraLabel) || EqualIgnoreHash(*withExtraLabel, first) {
+		t.Fatal("EqualIgnoreHash() returned true for templates with different labels")
+	}
 }

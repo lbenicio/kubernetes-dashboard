@@ -38,6 +38,9 @@ func TestCustomResourceObjectUnmarshal(t *testing.T) {
 	if err := json.Unmarshal([]byte(`{`), &object); err == nil {
 		t.Fatal("CustomResourceObject.UnmarshalJSON() accepted invalid JSON")
 	}
+	if err := json.Unmarshal([]byte(`{"metadata":5}`), &object); err == nil {
+		t.Fatal("CustomResourceObject.UnmarshalJSON() accepted invalid metadata")
+	}
 }
 
 func TestCustomResourceObjectListUnmarshal(t *testing.T) {
@@ -51,5 +54,8 @@ func TestCustomResourceObjectListUnmarshal(t *testing.T) {
 	}
 	if err := json.Unmarshal([]byte(`{`), &list); err == nil {
 		t.Fatal("CustomResourceObjectList.UnmarshalJSON() accepted invalid JSON")
+	}
+	if err := json.Unmarshal([]byte(`{"items":{}}`), &list); err == nil {
+		t.Fatal("CustomResourceObjectList.UnmarshalJSON() accepted a non-array items value")
 	}
 }

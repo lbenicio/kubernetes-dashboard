@@ -23,6 +23,7 @@
 package v1
 
 import (
+	"errors"
 	"io"
 	"net/http"
 	"strings"
@@ -31,7 +32,9 @@ import (
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	apiextensionsfake "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/fake"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/rest"
+	clienttesting "k8s.io/client-go/testing"
 
 	"k8s.io/dashboard/api/pkg/resource/common"
 	"k8s.io/dashboard/api/pkg/resource/customresourcedefinition/types"
@@ -52,7 +55,10 @@ func servedTestCRD() *apiextensionsv1.CustomResourceDefinition {
 			Names: apiextensionsv1.CustomResourceDefinitionNames{Plural: "widgets", Kind: "Widget"},
 			Versions: []apiextensionsv1.CustomResourceDefinitionVersion{{
 				Name: "v1", Served: true, Storage: true,
-				Subresources: &apiextensionsv1.CustomResourceSubresources{Scale: &apiextensionsv1.CustomResourceSubresourceScale{}},
+				Subresources: &apiextensionsv1.CustomResourceSubresources{
+					Scale:  &apiextensionsv1.CustomResourceSubresourceScale{},
+					Status: &apiextensionsv1.CustomResourceSubresourceStatus{},
+				},
 			}},
 		},
 	}
@@ -118,8 +124,91 @@ func TestGetCustomResourceDefinitionDetailCollectsVersionsConditionsAndObjects(t
 	if len(got.Versions) != 1 || got.Versions[0].Name != "v1" || len(got.Conditions) != 1 || got.Conditions[0].Status != "True" {
 		t.Errorf("detail versions/conditions = %#v / %#v", got.Versions, got.Conditions)
 	}
-	if len(got.Subresources) != 1 || got.Subresources[0] != "Scale" || got.Objects.ListMeta.TotalItems != 0 {
+	if len(got.Subresources) != 2 || got.Subresources[0] != "Scale" || got.Subresources[1] != "Status" || got.Objects.ListMeta.TotalItems != 0 {
 		t.Errorf("detail subresources/objects = %#v / %#v", got.Subresources, got.Objects)
+	}
+}
+
+func TestCustomResourceObjectReadsReturnCRDAndRESTErrors(t *testing.T) {
+	crd := servedTestCRD()
+	client, _, _ := crdObjectTestClients(t, crd, `{}`)
+	wantErr := errors.New("custom resource request failed")
+	client.PrependReactor("get", "customresourcedefinitions", func(clienttesting.Action) (bool, runtime.Object, error) {
+		return true, nil, wantErr
+	})
+	if _, err := GetCustomResourceObjectList(client, nil, common.NewSameNamespaceQuery("default"), dataselect.NoDataSelect, crd.Name); !errors.Is(err, wantErr) {
+		t.Fatalf("GetCustomResourceObjectList() CRD error = %v, want %v", err, wantErr)
+	}
+	if _, err := GetCustomResourceObjectDetail(client, common.NewSameNamespaceQuery("default"), nil, crd.Name, "sample"); !errors.Is(err, wantErr) {
+		t.Fatalf("GetCustomResourceObjectDetail() CRD error = %v, want %v", err, wantErr)
+	}
+
+	for _, test := range []struct {
+		name   string
+		config *rest.Config
+	}{
+		{name: "list REST client configuration", config: &rest.Config{Host: "%"}},
+		{name: "detail REST client configuration", config: &rest.Config{Host: "%"}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			client, _, _ := crdObjectTestClients(t, crd, `{}`)
+			var err error
+			if strings.Contains(test.name, "list") {
+				_, err = GetCustomResourceObjectList(client, test.config, common.NewSameNamespaceQuery("default"), dataselect.NoDataSelect, crd.Name)
+			} else {
+				_, err = GetCustomResourceObjectDetail(client, common.NewSameNamespaceQuery("default"), test.config, crd.Name, "sample")
+			}
+			if err == nil {
+				t.Fatal("custom resource read unexpectedly succeeded with an invalid REST config")
+			}
+		})
+	}
+
+	for _, test := range []struct {
+		name       string
+		statusCode int
+		body       string
+	}{
+		{name: "list HTTP failure", statusCode: http.StatusInternalServerError, body: `{"kind":"Status","status":"Failure","message":"unavailable","code":500}`},
+		{name: "list malformed response", statusCode: http.StatusOK, body: `{`},
+		{name: "detail HTTP failure", statusCode: http.StatusInternalServerError, body: `{"kind":"Status","status":"Failure","message":"unavailable","code":500}`},
+		{name: "detail malformed response", statusCode: http.StatusOK, body: `{`},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			client := apiextensionsfake.NewSimpleClientset(crd)
+			config := &rest.Config{
+				Host: "https://kubernetes.test",
+				Transport: crdTestRoundTripper(func(request *http.Request) (*http.Response, error) {
+					return &http.Response{StatusCode: test.statusCode, Header: http.Header{"Content-Type": []string{"application/json"}}, Body: io.NopCloser(strings.NewReader(test.body)), Request: request}, nil
+				}),
+			}
+			var err error
+			if strings.HasPrefix(test.name, "list") {
+				_, err = GetCustomResourceObjectList(client, config, common.NewSameNamespaceQuery("default"), dataselect.NoDataSelect, crd.Name)
+			} else {
+				_, err = GetCustomResourceObjectDetail(client, common.NewSameNamespaceQuery("default"), config, crd.Name, "sample")
+			}
+			if err == nil {
+				t.Fatal("custom resource read unexpectedly succeeded with an invalid response")
+			}
+		})
+	}
+}
+
+func TestGetCustomResourceDefinitionDetailReturnsCRDAndObjectErrors(t *testing.T) {
+	crd := servedTestCRD()
+	wantErr := errors.New("custom resource definition lookup failed")
+	client, config, _ := crdObjectTestClients(t, crd, `{"apiVersion":"example.test/v1","kind":"WidgetList","items":[]}`)
+	client.PrependReactor("get", "customresourcedefinitions", func(clienttesting.Action) (bool, runtime.Object, error) {
+		return true, nil, wantErr
+	})
+	if _, err := GetCustomResourceDefinitionDetail(client, config, crd.Name); !errors.Is(err, wantErr) {
+		t.Fatalf("GetCustomResourceDefinitionDetail() error = %v; want %v", err, wantErr)
+	}
+
+	client, _, _ = crdObjectTestClients(t, crd, `{}`)
+	if _, err := GetCustomResourceDefinitionDetail(client, &rest.Config{}, crd.Name); err == nil {
+		t.Fatal("GetCustomResourceDefinitionDetail() succeeded when the custom resource REST client failed")
 	}
 }
 

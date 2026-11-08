@@ -113,3 +113,59 @@ func TestDeployAppFromFileRejectsUnknownResourceKind(t *testing.T) {
 		t.Errorf("DeployAppFromFile(unknown kind) = %v, %v", deployed, err)
 	}
 }
+
+func TestDeployAppFromFileReportsMalformedDocumentsDiscoveryAndCreateErrors(t *testing.T) {
+	t.Run("malformed document", func(t *testing.T) {
+		deployed, err := DeployAppFromFile(&rest.Config{}, &AppDeploymentFromFileSpec{Content: "apiVersion: [\nkind: Pod"})
+		if deployed || err == nil {
+			t.Fatalf("DeployAppFromFile(malformed) = %v, %v; want a decode error", deployed, err)
+		}
+	})
+
+	t.Run("malformed group version fails discovery", func(t *testing.T) {
+		config := &rest.Config{
+			Host: "http://kubernetes.test",
+			Transport: deploymentRoundTripper(func(request *http.Request) (*http.Response, error) {
+				return &http.Response{
+					StatusCode: http.StatusNotFound,
+					Header:     http.Header{"Content-Type": []string{"application/json"}},
+					Body:       io.NopCloser(strings.NewReader(`{"kind":"Status","apiVersion":"v1","status":"Failure","code":404}`)),
+					Request:    request,
+				}, nil
+			}),
+		}
+		deployed, err := DeployAppFromFile(config, &AppDeploymentFromFileSpec{Content: "apiVersion: invalid/group/version\nkind: Pod\nmetadata:\n  name: web\n"})
+		if deployed || err == nil {
+			t.Fatalf("DeployAppFromFile(invalid version) = %v, %v; want discovery error", deployed, err)
+		}
+	})
+
+	t.Run("invalid client config fails before discovery", func(t *testing.T) {
+		deployed, err := DeployAppFromFile(&rest.Config{Host: "%"}, &AppDeploymentFromFileSpec{
+			Namespace: "default",
+			Content:   "apiVersion: v1\nkind: Pod\nmetadata:\n  name: web\n",
+		})
+		if deployed || err == nil {
+			t.Fatalf("DeployAppFromFile(invalid config) = %v, %v; want a REST client error", deployed, err)
+		}
+	})
+
+	t.Run("resource creation failure", func(t *testing.T) {
+		config := &rest.Config{
+			Host: "http://kubernetes.test",
+			Transport: deploymentRoundTripper(func(request *http.Request) (*http.Response, error) {
+				statusCode := http.StatusOK
+				body := `{"kind":"APIResourceList","apiVersion":"v1","resources":[{"name":"pods","namespaced":true,"kind":"Pod"}]}`
+				if request.Method == http.MethodPost {
+					statusCode = http.StatusForbidden
+					body = `{"kind":"Status","apiVersion":"v1","status":"Failure","message":"create denied","reason":"Forbidden","code":403}`
+				}
+				return &http.Response{StatusCode: statusCode, Header: http.Header{"Content-Type": []string{"application/json"}}, Body: io.NopCloser(strings.NewReader(body)), Request: request}, nil
+			}),
+		}
+		deployed, err := DeployAppFromFile(config, &AppDeploymentFromFileSpec{Namespace: "default", Content: "apiVersion: v1\nkind: Pod\nmetadata:\n  name: web\n"})
+		if deployed || err == nil || !strings.Contains(err.Error(), "create denied") {
+			t.Fatalf("DeployAppFromFile(create failure) = %v, %v; want a localized forbidden error", deployed, err)
+		}
+	})
+}

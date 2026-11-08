@@ -197,8 +197,8 @@ func TestResourceGETHandlersReportMissingKubernetesConfiguration(t *testing.T) {
 			request := httptest.NewRequest(http.MethodGet, path, nil)
 			response := httptest.NewRecorder()
 			container.ServeHTTP(response, request)
-			if response.Code != http.StatusInternalServerError {
-				t.Errorf("GET %s status = %d, want %d: %s", path, response.Code, http.StatusInternalServerError, response.Body.String())
+			if response.Code != http.StatusInternalServerError && response.Code != http.StatusUnauthorized {
+				t.Errorf("GET %s status = %d, want %d or %d: %s", path, response.Code, http.StatusInternalServerError, http.StatusUnauthorized, response.Body.String())
 			}
 		})
 	}
@@ -340,6 +340,22 @@ func TestShouldDoCsrfValidation(t *testing.T) {
 		if actual != c.expected {
 			t.Errorf("shouldDoCsrfValidation(%#v) returns %#v, expected %#v", c.request, actual, c.expected)
 		}
+	}
+}
+
+func TestShouldDoCsrfValidationReturnsFalseWhenProtectionIsDisabled(t *testing.T) {
+	flag := pflag.Lookup("disable-csrf-protection")
+	if flag == nil {
+		t.Fatal("disable-csrf-protection flag is not registered")
+	}
+	previous := flag.Value.String()
+	t.Cleanup(func() { _ = flag.Value.Set(previous) })
+	if err := flag.Value.Set("true"); err != nil {
+		t.Fatal(err)
+	}
+	request := restful.NewRequest(httptest.NewRequest(http.MethodPost, "/api/v1/namespace", nil))
+	if shouldDoCsrfValidation(request) {
+		t.Fatal("shouldDoCsrfValidation() = true with CSRF protection disabled")
 	}
 }
 

@@ -23,11 +23,14 @@
 package provider
 
 import (
+	"context"
 	"database/sql"
+	"database/sql/driver"
 	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/gorilla/mux"
@@ -100,12 +103,105 @@ func TestMetricQueriesReportDatabaseAndRowErrors(t *testing.T) {
 	if _, err := getNodeMetrics(db, "cpu", ResourceSelector{ResourceName: "bad-time"}); err == nil {
 		t.Fatal("getNodeMetrics() accepted an invalid timestamp")
 	}
+	insertMetric(t, db, `INSERT INTO nodes(uid, name, cpu, memory, time) VALUES (?, ?, ?, ?, ?)`, "node-uid", "bad-value", "1.5", "100", "2026-11-07T00:02:00Z")
+	if _, err := getNodeMetrics(db, "cpu", ResourceSelector{ResourceName: "bad-value"}); err == nil {
+		t.Fatal("getNodeMetrics() accepted a nonnumeric metric value")
+	}
+	insertMetric(t, db, `INSERT INTO pods(uid, name, namespace, container, cpu, memory, time) VALUES (?, ?, ?, ?, ?, ?, ?)`, "pod-uid", "bad-time", "default", "container-a", "25", "100", "invalid-time")
+	if _, err := getPodMetrics(db, "cpu", ResourceSelector{Namespace: "default", ResourceName: "bad-time"}); err == nil {
+		t.Fatal("getPodMetrics() accepted an invalid timestamp")
+	}
+	insertMetric(t, db, `INSERT INTO pods(uid, name, namespace, container, cpu, memory, time) VALUES (?, ?, ?, ?, ?, ?, ?)`, "pod-uid", "bad-value", "default", "container-a", "1.5", "100", "2026-11-07T00:03:00Z")
+	if _, err := getPodMetrics(db, "cpu", ResourceSelector{Namespace: "default", ResourceName: "bad-value"}); err == nil {
+		t.Fatal("getPodMetrics() accepted a nonnumeric metric value")
+	}
 	if err := db.Close(); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := getPodMetrics(db, "cpu", ResourceSelector{}); err == nil {
 		t.Fatal("getPodMetrics() accepted a closed database")
 	}
+}
+
+func TestMetricQueriesReportScanErrorsAndAggregatePodPoints(t *testing.T) {
+	db := newDashboardTestDB(t)
+	insertMetric(t, db, `INSERT INTO nodes(uid, name, cpu, memory, time) VALUES (?, ?, ?, ?, ?)`, "node-uid", "null-cpu", nil, "100", "2026-11-07T00:00:00Z")
+	if _, err := getNodeMetrics(db, "cpu", ResourceSelector{ResourceName: "null-cpu"}); err == nil {
+		t.Fatal("getNodeMetrics() accepted a NULL metric value")
+	}
+	insertMetric(t, db, `INSERT INTO pods(uid, name, namespace, container, cpu, memory, time) VALUES (?, ?, ?, ?, ?, ?, ?)`, "pod-uid", "null-cpu", "default", "container-a", nil, "100", "2026-11-07T00:00:00Z")
+	if _, err := getPodMetrics(db, "cpu", ResourceSelector{Namespace: "default", ResourceName: "null-cpu"}); err == nil {
+		t.Fatal("getPodMetrics() accepted a NULL metric value")
+	}
+
+	insertMetric(t, db, `INSERT INTO pods(uid, name, namespace, container, cpu, memory, time) VALUES (?, ?, ?, ?, ?, ?, ?)`, "pod-uid", "pod-a", "default", "container-a", "10", "100", "2026-11-07T00:00:00Z")
+	insertMetric(t, db, `INSERT INTO pods(uid, name, namespace, container, cpu, memory, time) VALUES (?, ?, ?, ?, ?, ?, ?)`, "pod-uid", "pod-a", "default", "container-a", "15", "100", "2026-11-07T00:01:00Z")
+	metrics, err := getPodMetrics(db, "cpu", ResourceSelector{Namespace: "default", ResourceName: "pod-a"})
+	if err != nil || len(metrics.Items) != 1 || len(metrics.Items[0].MetricPoints) != 2 {
+		t.Fatalf("getPodMetrics() = %#v, %v; want two points for one pod", metrics, err)
+	}
+	if metrics.Items[0].MetricPoints[0].Value != 10 || metrics.Items[0].MetricPoints[1].Value != 15 {
+		t.Errorf("pod metric points = %#v; want values 10 and 15", metrics.Items[0].MetricPoints)
+	}
+}
+
+func TestMetricQueriesReturnIterationErrors(t *testing.T) {
+	db := sql.OpenDB(dashboardRowsErrorConnector{})
+	t.Cleanup(func() { _ = db.Close() })
+	for _, test := range []struct {
+		name string
+		read func() error
+	}{
+		{name: "node metrics", read: func() error {
+			_, err := getNodeMetrics(db, "cpu", ResourceSelector{})
+			return err
+		}},
+		{name: "pod metrics", read: func() error {
+			_, err := getPodMetrics(db, "cpu", ResourceSelector{})
+			return err
+		}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			if err := test.read(); err == nil || !strings.Contains(err.Error(), "row iteration failed") {
+				t.Fatalf("metric query error = %v; want row iteration failure", err)
+			}
+		})
+	}
+}
+
+type dashboardRowsErrorConnector struct{}
+
+func (dashboardRowsErrorConnector) Connect(context.Context) (driver.Conn, error) {
+	return dashboardRowsErrorConn{}, nil
+}
+
+func (dashboardRowsErrorConnector) Driver() driver.Driver { return dashboardRowsErrorDriver{} }
+
+type dashboardRowsErrorDriver struct{}
+
+func (dashboardRowsErrorDriver) Open(string) (driver.Conn, error) {
+	return nil, errors.New("dashboard failure driver requires OpenDB")
+}
+
+type dashboardRowsErrorConn struct{}
+
+func (dashboardRowsErrorConn) Prepare(string) (driver.Stmt, error) {
+	return nil, errors.New("statement preparation is not supported")
+}
+func (dashboardRowsErrorConn) Close() error { return nil }
+func (dashboardRowsErrorConn) Begin() (driver.Tx, error) {
+	return nil, errors.New("transactions are not supported")
+}
+func (dashboardRowsErrorConn) QueryContext(context.Context, string, []driver.NamedValue) (driver.Rows, error) {
+	return dashboardRowsErrorRows{}, nil
+}
+
+type dashboardRowsErrorRows struct{}
+
+func (dashboardRowsErrorRows) Columns() []string { return []string{"value", "name", "uid", "time"} }
+func (dashboardRowsErrorRows) Close() error      { return nil }
+func (dashboardRowsErrorRows) Next([]driver.Value) error {
+	return errors.New("row iteration failed")
 }
 
 func TestDashboardRouterAndHandlers(t *testing.T) {
@@ -132,7 +228,7 @@ func TestDashboardRouterAndHandlers(t *testing.T) {
 
 	recorder := httptest.NewRecorder()
 	router.ServeHTTP(recorder, httptest.NewRequest(http.MethodGet, "/unknown?value=<script>", nil))
-	if recorder.Code != http.StatusOK || recorder.Body.Len() == 0 {
+	if recorder.Code != http.StatusOK || recorder.Body.Len() == 0 || strings.Contains(recorder.Body.String(), "<script>") {
 		t.Fatalf("default route status/body = %d/%q", recorder.Code, recorder.Body.String())
 	}
 
@@ -152,6 +248,39 @@ func TestDashboardRouterAndHandlers(t *testing.T) {
 		if recorder.Code != http.StatusInternalServerError {
 			t.Errorf("GET %s with broken DB status = %d", path, recorder.Code)
 		}
+	}
+}
+
+func TestDashboardHandlersLogDatabaseErrorsWhenResponseWriteFails(t *testing.T) {
+	db, err := sql.Open("sqlite", ":memory:")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+
+	for _, test := range []struct {
+		name    string
+		handler http.HandlerFunc
+		request *http.Request
+	}{
+		{
+			name:    "node metrics",
+			handler: nodeHandler(db),
+			request: mux.SetURLVars(httptest.NewRequest(http.MethodGet, "/nodes/node-a/metrics/cpu/last", nil), map[string]string{"Name": "node-a", "MetricName": "cpu"}),
+		},
+		{
+			name:    "pod metrics",
+			handler: podHandler(db),
+			request: mux.SetURLVars(httptest.NewRequest(http.MethodGet, "/namespaces/default/pod-list/pod-a/metrics/cpu/last", nil), map[string]string{"Namespace": "default", "Name": "pod-a", "MetricName": "cpu"}),
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			writer := &failingResponseWriter{header: make(http.Header)}
+			test.handler(writer, test.request)
+			if !writer.writeCalled {
+				t.Fatal("handler did not attempt to write its database error response")
+			}
+		})
 	}
 }
 

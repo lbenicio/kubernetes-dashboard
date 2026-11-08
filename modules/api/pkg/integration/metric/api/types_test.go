@@ -84,6 +84,14 @@ func TestMetricPromisesDeliverResultsAndSkipFailures(t *testing.T) {
 		t.Fatalf("GetMetrics() with rejected promise = %#v, %v", got, err)
 	}
 
+	nilMetric := NewMetricPromise()
+	nilMetric.Metric <- nil
+	nilMetric.Error <- nil
+	got, err = MetricPromises{nilMetric}.GetMetrics()
+	if err != nil || len(got) != 0 {
+		t.Fatalf("GetMetrics() with nil metric = %#v, %v", got, err)
+	}
+
 	var empty MetricPromises
 	got, err = empty.GetMetrics()
 	if err != nil || len(got) != 0 {

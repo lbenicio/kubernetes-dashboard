@@ -82,6 +82,34 @@ func TestPodCellPropertiesAndSelector(t *testing.T) {
 	}
 }
 
+func TestPodConditionsAndAttachedMetrics(t *testing.T) {
+	probe := metav1.NewTime(time.Date(2026, 11, 7, 12, 0, 0, 0, time.UTC))
+	transition := metav1.NewTime(probe.Add(-time.Minute))
+	pod := corev1.Pod{
+		ObjectMeta: metav1.ObjectMeta{Name: "web", UID: "pod-uid"},
+		Status: corev1.PodStatus{Phase: corev1.PodRunning, Conditions: []corev1.PodCondition{{
+			Type: corev1.PodReady, Status: corev1.ConditionTrue,
+			LastProbeTime: probe, LastTransitionTime: transition,
+			Reason: "ContainersReady", Message: "pod is ready",
+		}}},
+	}
+	conditions := getPodConditions(pod)
+	if len(conditions) != 1 || conditions[0].Type != string(corev1.PodReady) || conditions[0].Status != corev1.ConditionTrue ||
+		!conditions[0].LastProbeTime.Equal(&probe) || !conditions[0].LastTransitionTime.Equal(&transition) ||
+		conditions[0].Reason != "ContainersReady" || conditions[0].Message != "pod is ready" {
+		t.Errorf("getPodConditions() = %#v", conditions)
+	}
+
+	cpu := uint64(250)
+	metrics := &MetricsByPod{MetricsMap: map[apimachinerytypes.UID]PodMetrics{
+		"pod-uid": {CPUUsage: &cpu, CPUUsageHistory: []metricapi.MetricPoint{{Value: cpu}}},
+	}}
+	view := toPod(&pod, metrics, nil)
+	if view.Metrics == nil || view.Metrics.CPUUsage == nil || *view.Metrics.CPUUsage != cpu || len(view.Metrics.CPUUsageHistory) != 1 {
+		t.Errorf("toPod() metrics = %#v; want metrics for pod UID", view.Metrics)
+	}
+}
+
 func TestPodResourceRequestsLimitsAndGPUAllocations(t *testing.T) {
 	pod := &corev1.Pod{Spec: corev1.PodSpec{
 		Containers: []corev1.Container{{Resources: corev1.ResourceRequirements{
@@ -106,6 +134,40 @@ func TestPodResourceRequestsLimitsAndGPUAllocations(t *testing.T) {
 	}
 	if got := ToGPU("vendor.example/gpu-card"); got != UnknownGPU {
 		t.Errorf("ToGPU(unknown gpu) = %q", got)
+	}
+}
+
+func TestPodResourceListAggregation(t *testing.T) {
+	resources := corev1.ResourceList{
+		corev1.ResourceCPU: resource.MustParse("2"),
+	}
+	maxResourceList(resources, corev1.ResourceList{
+		corev1.ResourceCPU:                    resource.MustParse("1"),
+		corev1.ResourceMemory:                 resource.MustParse("64Mi"),
+		corev1.ResourceName("nvidia.com/gpu"): resource.MustParse("1"),
+	})
+	if got := resources[corev1.ResourceCPU]; got.Cmp(resource.MustParse("2")) != 0 {
+		t.Errorf("maxResourceList() lowered CPU from 2 to %s", got.String())
+	}
+	if got := resources[corev1.ResourceMemory]; got.Cmp(resource.MustParse("64Mi")) != 0 {
+		t.Errorf("maxResourceList() memory = %s; want 64Mi", got.String())
+	}
+
+	allocations := toGPUAllocations(corev1.ResourceList{
+		corev1.ResourceName("gpu.intel.com/xe"):        resource.MustParse("1"),
+		corev1.ResourceName("gpu.intel.com/iris"):      resource.MustParse("2"),
+		corev1.ResourceName("vendor.example/gpu"):      resource.MustParse("3"),
+		corev1.ResourceName("example.com/accelerator"): resource.MustParse("4"),
+	})
+	if len(allocations) != 2 {
+		t.Fatalf("toGPUAllocations() returned %#v; want merged Intel and unknown GPU allocations", allocations)
+	}
+	gotByType := make(map[GPU]int64, len(allocations))
+	for _, allocation := range allocations {
+		gotByType[allocation.Type] = allocation.Quantity
+	}
+	if gotByType[IntelGPU] != 3 || gotByType[UnknownGPU] != 3 {
+		t.Errorf("GPU allocation quantities = %#v; want intel=3 and unknown=3", gotByType)
 	}
 }
 

@@ -22,13 +22,13 @@ import (
 	"k8s.io/klog/v2"
 )
 
-func initPrometheus() {
+func initPrometheus(listenAndServe listenAndServeFunc) {
 	klog.V(LogLevelInfo).Info("Initializing prometheus metrics")
 
 	mux := http.NewServeMux()
 	mux.Handle(defaultPrometheusPath, promhttp.Handler())
 	go func() {
-		if err := http.ListenAndServe(fmt.Sprintf(":%d", defaultPrometheusPort), mux); err != nil {
+		if err := listenAndServe(fmt.Sprintf(":%d", defaultPrometheusPort), mux); err != nil {
 			klog.Fatal(err)
 		}
 	}()

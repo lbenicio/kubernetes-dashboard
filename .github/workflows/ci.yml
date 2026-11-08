@@ -245,8 +245,91 @@ jobs:
           mkdir -p .tmp
           kind get kubeconfig --name kubernetes-dashboard-v137 > .tmp/kubeconfig-host
           KUBECONFIG=.tmp/kubeconfig-host kubectl --context kind-kubernetes-dashboard-v137 create serviceaccount dashboard-e2e --namespace default
-          KUBECONFIG=.tmp/kubeconfig-host kubectl --context kind-kubernetes-dashboard-v137 create clusterrole dashboard-e2e-namespace-reader --verb=get,list,watch --resource=namespaces
-          KUBECONFIG=.tmp/kubeconfig-host kubectl --context kind-kubernetes-dashboard-v137 create clusterrolebinding dashboard-e2e-namespace-reader --clusterrole=dashboard-e2e-namespace-reader --serviceaccount=default:dashboard-e2e
+          KUBECONFIG=.tmp/kubeconfig-host kubectl --context kind-kubernetes-dashboard-v137 apply -f - <<'EOF'
+          apiVersion: rbac.authorization.k8s.io/v1
+          kind: ClusterRole
+          metadata:
+            name: dashboard-e2e-reader
+          rules:
+            - apiGroups: [""]
+              resources:
+                - configmaps
+                - endpoints
+                - events
+                - namespaces
+                - nodes
+                - persistentvolumeclaims
+                - persistentvolumes
+                - pods
+                - replicationcontrollers
+                - services
+                - serviceaccounts
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["apps"]
+              resources: ["daemonsets", "deployments", "replicasets", "statefulsets"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["autoscaling"]
+              resources: ["horizontalpodautoscalers"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["batch"]
+              resources: ["cronjobs", "jobs"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["apiextensions.k8s.io"]
+              resources: ["customresourcedefinitions"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["discovery.k8s.io"]
+              resources: ["endpointslices"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["networking.k8s.io"]
+              resources: ["ingressclasses", "ingresses", "networkpolicies"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["policy"]
+              resources: ["poddisruptionbudgets"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["rbac.authorization.k8s.io"]
+              resources: ["clusterrolebindings", "clusterroles", "rolebindings", "roles"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["storage.k8s.io"]
+              resources: ["storageclasses"]
+              verbs: ["get", "list", "watch"]
+          ---
+          apiVersion: rbac.authorization.k8s.io/v1
+          kind: Role
+          metadata:
+            name: dashboard-e2e-secret-reader
+            namespace: default
+          rules:
+            - apiGroups: [""]
+              resources: ["secrets"]
+              verbs: ["get", "list", "watch"]
+          ---
+          apiVersion: rbac.authorization.k8s.io/v1
+          kind: ClusterRoleBinding
+          metadata:
+            name: dashboard-e2e-reader
+          roleRef:
+            apiGroup: rbac.authorization.k8s.io
+            kind: ClusterRole
+            name: dashboard-e2e-reader
+          subjects:
+            - kind: ServiceAccount
+              name: dashboard-e2e
+              namespace: default
+          ---
+          apiVersion: rbac.authorization.k8s.io/v1
+          kind: RoleBinding
+          metadata:
+            name: dashboard-e2e-secret-reader
+            namespace: default
+          roleRef:
+            apiGroup: rbac.authorization.k8s.io
+            kind: Role
+            name: dashboard-e2e-secret-reader
+          subjects:
+            - kind: ServiceAccount
+              name: dashboard-e2e
+              namespace: default
+          EOF
           token="$(KUBECONFIG=.tmp/kubeconfig-host kubectl --context kind-kubernetes-dashboard-v137 create token dashboard-e2e --namespace default --duration=1h)"
           echo "::add-mask::$token"
           echo "CYPRESS_token=$token" >> "$GITHUB_ENV"

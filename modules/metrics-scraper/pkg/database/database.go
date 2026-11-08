@@ -49,6 +49,7 @@ func UpdateDatabase(db *sql.DB, nodeMetrics *v1beta1.NodeMetricsList, podMetrics
 	if err != nil {
 		return err
 	}
+	defer tx.Rollback()
 	stmt, err := tx.Prepare("insert into nodes(uid, name, cpu, memory, storage, time) values(?, ?, ?, ?, ?, datetime('now'))")
 	if err != nil {
 		return err
@@ -98,6 +99,7 @@ func CullDatabase(db *sql.DB, window time.Duration) error {
 	if err != nil {
 		return err
 	}
+	defer tx.Rollback()
 
 	windowStr := fmt.Sprintf("-%.0f seconds", window.Seconds())
 

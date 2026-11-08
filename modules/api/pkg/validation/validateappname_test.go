@@ -15,12 +15,15 @@
 package validation
 
 import (
+	"errors"
+	"strings"
 	"testing"
 
 	api "k8s.io/api/core/v1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes/fake"
+	clienttesting "k8s.io/client-go/testing"
 )
 
 func TestValidateName(t *testing.T) {
@@ -78,5 +81,26 @@ func TestValidateName(t *testing.T) {
 			t.Errorf("Expected %#v validity to be %#v for objects %#v, but was %#v\n",
 				c.spec, c.expected, c.objects, validity)
 		}
+	}
+}
+
+func TestValidateNameReturnsDeploymentAndServiceLookupErrors(t *testing.T) {
+	for _, test := range []struct {
+		name     string
+		resource string
+	}{
+		{name: "deployment lookup", resource: "deployments"},
+		{name: "service lookup", resource: "services"},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			client := fake.NewSimpleClientset()
+			client.PrependReactor("get", test.resource, func(clienttesting.Action) (bool, runtime.Object, error) {
+				return true, nil, errors.New("lookup failed")
+			})
+			validity, err := ValidateAppName(&AppNameValiditySpec{Name: "web", Namespace: "default"}, client)
+			if validity != nil || err == nil || !strings.Contains(err.Error(), "lookup failed") {
+				t.Fatalf("ValidateAppName() = %#v, %v; want lookup error", validity, err)
+			}
+		})
 	}
 }

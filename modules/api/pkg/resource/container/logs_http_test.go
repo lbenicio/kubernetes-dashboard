@@ -32,6 +32,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/kubernetes/fake"
 	"k8s.io/client-go/rest"
 
 	"k8s.io/dashboard/api/pkg/resource/logs"
@@ -127,6 +128,16 @@ func TestGetLogDetailsReturnsLogEndpointErrorAsLogContent(t *testing.T) {
 	}
 	if len(got.LogLines) != 1 || !strings.Contains(got.LogLines[0].Content, "log stream unavailable") {
 		t.Errorf("log lines = %#v; want API error text", got.LogLines)
+	}
+}
+
+func TestPodLogReadersReturnPodLookupErrors(t *testing.T) {
+	client := fake.NewSimpleClientset()
+	if _, err := GetPodContainers(client, "ns", "missing"); err == nil {
+		t.Fatal("GetPodContainers() succeeded for a missing pod")
+	}
+	if _, err := GetLogDetails(client, "ns", "missing", "main", logs.AllSelection, false); err == nil {
+		t.Fatal("GetLogDetails() succeeded for a missing pod")
 	}
 }
 

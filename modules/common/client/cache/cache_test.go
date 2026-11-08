@@ -262,6 +262,136 @@ func TestKeyExchangeMapsErrors(t *testing.T) {
 	}
 }
 
+func TestCacheOperationsReturnTokenExchangeErrors(t *testing.T) {
+	for _, tc := range []struct {
+		name string
+		run  func(Key) error
+	}{
+		{
+			name: "get",
+			run: func(key Key) error {
+				_, _, err := Get[cacheTestValue](key)
+				return err
+			},
+		},
+		{
+			name: "set",
+			run: func(key Key) error {
+				return Set(key, &cacheTestValue{Name: "not cached"})
+			},
+		},
+		{
+			name: "delete",
+			run:  func(key Key) error { return Delete[cacheTestValue](key) },
+		},
+		{
+			name: "synced load",
+			run: func(key Key) error {
+				value, err := SyncedLoad(key, func() (*cacheTestValue, error) {
+					t.Fatal("loader ran after token exchange failed")
+					return nil, nil
+				})
+				if value == nil {
+					t.Fatal("SyncedLoad() returned a nil value on error")
+				}
+				return err
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			withDefaultTransport(t, roundTripFunc(func(*http.Request) (*http.Response, error) {
+				return nil, context.DeadlineExceeded
+			}))
+			setCacheArg(t, "cluster-context-enabled", "true")
+			setCacheArg(t, "token-exchange-endpoint", "http://token.exchange.invalid/login")
+
+			if err := tc.run(NewKey(types.ResourceKindPod, "default", "transport-error-"+tc.name, metav1.ListOptions{})); !stderrors.Is(err, context.DeadlineExceeded) {
+				t.Fatalf("cache operation error = %v, want token exchange transport error", err)
+			}
+		})
+	}
+
+	t.Run("deferred load", func(t *testing.T) {
+		requested := make(chan struct{}, 1)
+		withDefaultTransport(t, roundTripFunc(func(*http.Request) (*http.Response, error) {
+			requested <- struct{}{}
+			return nil, context.DeadlineExceeded
+		}))
+		setCacheArg(t, "cluster-context-enabled", "true")
+		setCacheArg(t, "token-exchange-endpoint", "http://token.exchange.invalid/login")
+		var loaderCalled atomic.Bool
+		DeferredLoad[*cacheTestValue](NewKey(types.ResourceKindPod, "default", "transport-error-deferred", metav1.ListOptions{}), func() (*cacheTestValue, error) {
+			loaderCalled.Store(true)
+			return &cacheTestValue{Name: "unexpected"}, nil
+		})
+
+		select {
+		case <-requested:
+		case <-time.After(time.Second):
+			t.Fatal("DeferredLoad() did not attempt the token exchange")
+		}
+		time.Sleep(10 * time.Millisecond)
+		if loaderCalled.Load() {
+			t.Fatal("DeferredLoad() called loader after token exchange failed")
+		}
+	})
+}
+
+func TestKeyExchangeRejectsUnreadableResponseBody(t *testing.T) {
+	withDefaultTransport(t, roundTripFunc(func(*http.Request) (*http.Response, error) {
+		return &http.Response{
+			Status:     "200 OK",
+			StatusCode: http.StatusOK,
+			Header:     make(http.Header),
+			Body:       errorReadCloser{},
+		}, nil
+	}))
+	setCacheArg(t, "cluster-context-enabled", "true")
+	setCacheArg(t, "token-exchange-endpoint", "http://token.exchange.invalid/login")
+
+	if _, err := NewKey(types.ResourceKindPod, "default", "unreadable-body", metav1.ListOptions{}).SHA(); !stderrors.Is(err, errExchangeBodyRead) {
+		t.Fatalf("Key.SHA() error = %v, want response body read error", err)
+	}
+}
+
+func TestKeyExchangeStillReturnsContextWhenResponseCloseFails(t *testing.T) {
+	withDefaultTransport(t, roundTripFunc(func(*http.Request) (*http.Response, error) {
+		return &http.Response{
+			Status:     "200 OK",
+			StatusCode: http.StatusOK,
+			Header:     make(http.Header),
+			Body:       &closeErrorReadCloser{},
+		}, nil
+	}))
+	setCacheArg(t, "cluster-context-enabled", "true")
+	setCacheArg(t, "token-exchange-endpoint", "http://token.exchange.invalid/login")
+
+	if got, err := NewKey(types.ResourceKindPod, "default", "close-error-body", metav1.ListOptions{}).SHA(); err != nil || got == "" {
+		t.Fatalf("Key.SHA() = %q, %v; want context hash despite close error", got, err)
+	}
+}
+
+var errExchangeBodyRead = stderrors.New("exchange response body read failed")
+
+type errorReadCloser struct{}
+
+func (errorReadCloser) Read([]byte) (int, error) { return 0, errExchangeBodyRead }
+func (errorReadCloser) Close() error             { return nil }
+
+type closeErrorReadCloser struct {
+	read bool
+}
+
+func (in *closeErrorReadCloser) Read(buffer []byte) (int, error) {
+	if in.read {
+		return 0, io.EOF
+	}
+	in.read = true
+	return copy(buffer, "context"), nil
+}
+
+func (closeErrorReadCloser) Close() error { return stderrors.New("close failed") }
+
 type roundTripFunc func(*http.Request) (*http.Response, error)
 
 func (in roundTripFunc) RoundTrip(request *http.Request) (*http.Response, error) {

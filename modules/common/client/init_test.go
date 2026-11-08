@@ -23,10 +23,12 @@
 package client
 
 import (
+	"encoding/base64"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/spf13/pflag"
@@ -79,6 +81,15 @@ func TestConfigBuilderReturnsMalformedKubeconfigErrorWithCABundle(t *testing.T) 
 	}
 }
 
+func TestConfigBuilderReturnsInClusterConfigErrorWhenUnavailable(t *testing.T) {
+	t.Setenv("KUBERNETES_SERVICE_HOST", "")
+	t.Setenv("KUBERNETES_SERVICE_PORT", "")
+
+	if config, err := newConfigBuilder().buildBaseConfig(); err == nil || config != nil {
+		t.Fatalf("buildBaseConfig() = %#v, %v; want an in-cluster config error", config, err)
+	}
+}
+
 func TestInitStoresConfiguredBaseClientConfig(t *testing.T) {
 	previousConfig := baseConfig
 	baseConfig = nil
@@ -90,10 +101,67 @@ func TestInitStoresConfiguredBaseClientConfig(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { _ = clusterContextFlag.Value.Set(previousClusterContext) })
+	anonymousFlag := pflag.Lookup("anonymous-admin")
+	previousAnonymous := anonymousFlag.Value.String()
+	if err := anonymousFlag.Value.Set("true"); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = anonymousFlag.Value.Set(previousAnonymous) })
+	previousSessionKey := append([]byte(nil), sessionKey...)
+	t.Cleanup(func() {
+		sessionKeyMu.Lock()
+		sessionKey = previousSessionKey
+		sessionKeyMu.Unlock()
+	})
+	sessionKeyMu.Lock()
+	sessionKey = nil
+	sessionKeyMu.Unlock()
+	sessionKey := base64.StdEncoding.EncodeToString([]byte(strings.Repeat("s", 32)))
 
-	Init(WithMasterUrl("https://kubernetes.example.test"), WithUserAgent("init-test"))
+	Init(WithMasterUrl("https://kubernetes.example.test"), WithUserAgent("init-test"), WithSessionEncryptionKey(sessionKey))
 	if baseConfig == nil || baseConfig.Host != "https://kubernetes.example.test" || baseConfig.UserAgent != DefaultUserAgent+"/init-test" {
 		t.Fatalf("Init() baseConfig = %#v", baseConfig)
+	}
+	if !HasSessionKey() {
+		t.Fatal("Init() did not configure the supplied browser session key")
+	}
+}
+
+func TestInitReadsSessionKeyFromArgsWhenOptionIsOmitted(t *testing.T) {
+	previousConfig := baseConfig
+	baseConfig = nil
+	t.Cleanup(func() { baseConfig = previousConfig })
+
+	clusterContextFlag := pflag.Lookup("cluster-context-enabled")
+	previousClusterContext := clusterContextFlag.Value.String()
+	if err := clusterContextFlag.Value.Set("false"); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = clusterContextFlag.Value.Set(previousClusterContext) })
+	anonymousFlag := pflag.Lookup("anonymous-admin")
+	previousAnonymous := anonymousFlag.Value.String()
+	if err := anonymousFlag.Value.Set("false"); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = anonymousFlag.Value.Set(previousAnonymous) })
+
+	encodedKey := base64.StdEncoding.EncodeToString([]byte(strings.Repeat("k", 32)))
+	sessionKeyFlag := pflag.Lookup("session-key")
+	previousSessionKeyFlag := sessionKeyFlag.Value.String()
+	if err := sessionKeyFlag.Value.Set(encodedKey); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = sessionKeyFlag.Value.Set(previousSessionKeyFlag) })
+	previousSessionKey := append([]byte(nil), sessionKey...)
+	t.Cleanup(func() {
+		sessionKeyMu.Lock()
+		sessionKey = previousSessionKey
+		sessionKeyMu.Unlock()
+	})
+
+	Init(WithMasterUrl("https://kubernetes.example.test"))
+	if baseConfig == nil || !HasSessionKey() {
+		t.Fatalf("Init() baseConfig=%#v sessionKeyConfigured=%t", baseConfig, HasSessionKey())
 	}
 }
 

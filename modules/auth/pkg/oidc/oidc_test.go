@@ -30,9 +30,11 @@ package oidc
 
 import (
 	"context"
+	cryptorand "crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -43,6 +45,7 @@ import (
 	"testing"
 	"time"
 
+	gooidc "github.com/coreos/go-oidc/v3/oidc"
 	"github.com/spf13/pflag"
 	"golang.org/x/oauth2"
 
@@ -195,6 +198,47 @@ func TestBeginLoginReturnsNotFoundWhenDisabled(t *testing.T) {
 	}
 }
 
+func TestBeginLoginReturnsServerErrorWhenEntropyFails(t *testing.T) {
+	configureOIDCTestSessionKey(t)
+	setManagerForTest(t, testManager("query"))
+	previousReader := cryptorand.Reader
+	t.Cleanup(func() { cryptorand.Reader = previousReader })
+
+	for _, test := range []struct {
+		name   string
+		reader io.Reader
+	}{
+		{name: "state", reader: failingEntropyReader{}},
+		{name: "nonce", reader: &firstReadThenFailEntropyReader{}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			cryptorand.Reader = test.reader
+			response := httptest.NewRecorder()
+			BeginLogin(response, httptest.NewRequest(http.MethodPost, "/api/v1/oidc/login", nil))
+			if response.Code != http.StatusInternalServerError || !strings.Contains(response.Body.String(), "Could not start sign in") {
+				t.Fatalf("BeginLogin() = %d %q", response.Code, response.Body.String())
+			}
+		})
+	}
+}
+
+type failingEntropyReader struct{}
+
+func (failingEntropyReader) Read([]byte) (int, error) { return 0, io.ErrUnexpectedEOF }
+
+type firstReadThenFailEntropyReader struct {
+	read bool
+}
+
+func (in *firstReadThenFailEntropyReader) Read(buffer []byte) (int, error) {
+	if in.read {
+		return 0, io.ErrUnexpectedEOF
+	}
+	in.read = true
+	clear(buffer)
+	return len(buffer), nil
+}
+
 func TestCompleteLoginRejectsInvalidCallbacks(t *testing.T) {
 	configureOIDCTestSessionKey(t)
 	tests := []struct {
@@ -208,6 +252,7 @@ func TestCompleteLoginRejectsInvalidCallbacks(t *testing.T) {
 	}{
 		{name: "provider error", method: http.MethodGet, query: "error=access_denied", state: nil},
 		{name: "missing state cookie", method: http.MethodGet, query: "state=s&code=c"},
+		{name: "unreadable state cookie", method: http.MethodGet, query: "state=s&code=c", cookieData: "not-protected-state"},
 		{name: "wrong state", method: http.MethodGet, query: "state=other&code=c", state: &authorizationState{State: "expected", Nonce: "n", Verifier: "v", ResponseMode: "query", CreatedAt: time.Now()}},
 		{name: "expired state", method: http.MethodGet, query: "state=s&code=c", state: &authorizationState{State: "s", Nonce: "n", Verifier: "v", ResponseMode: "query", CreatedAt: time.Now().Add(-stateLifetime - time.Second)}},
 		{name: "future state", method: http.MethodGet, query: "state=s&code=c", state: &authorizationState{State: "s", Nonce: "n", Verifier: "v", ResponseMode: "query", CreatedAt: time.Now().Add(time.Second)}},
@@ -348,6 +393,15 @@ func TestApplyClaimsUsesFallbacksAndRejectsUnsafePictures(t *testing.T) {
 	}
 	if got := claimString(map[string]json.RawMessage{}, ""); got != "" {
 		t.Fatalf("claimString() accepted an empty claim name: %q", got)
+	}
+}
+
+func TestApplyIDTokenClaimsIgnoresMalformedRawClaims(t *testing.T) {
+	manager := &Manager{groupsClaim: "groups", pictureClaim: "picture"}
+	session := &client.BrowserSession{Name: "Existing", Email: "existing@example.test"}
+	manager.applyIDTokenClaims(session, &gooidc.IDToken{})
+	if session.Name != "Existing" || session.Email != "existing@example.test" {
+		t.Errorf("applyIDTokenClaims() changed the session after malformed claims: %#v", session)
 	}
 }
 
@@ -557,6 +611,88 @@ func TestFetchProviderMetadataRejectsEveryRequiredEndpoint(t *testing.T) {
 	}
 }
 
+func TestFetchProviderMetadataReportsTransportAndProtocolErrors(t *testing.T) {
+	issuer := "https://identity.example.test"
+	validMetadata := map[string]any{
+		"issuer": issuer, "authorization_endpoint": issuer + "/authorize",
+		"token_endpoint": issuer + "/token", "jwks_uri": issuer + "/keys",
+		"response_types_supported": []string{"code"},
+	}
+	metadataJSON := func(value map[string]any) string {
+		t.Helper()
+		body, err := json.Marshal(value)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return string(body)
+	}
+	tests := []struct {
+		name         string
+		issuer       string
+		status       int
+		body         string
+		transportErr error
+		wantError    string
+	}{
+		{name: "invalid discovery URL", issuer: "://invalid", wantError: "missing protocol scheme"},
+		{name: "discovery transport error", issuer: issuer, transportErr: errors.New("identity provider unavailable"), wantError: "identity provider unavailable"},
+		{name: "non-success discovery status", issuer: issuer, status: http.StatusServiceUnavailable, body: `{}`, wantError: "discovery returned HTTP 503"},
+		{name: "malformed discovery JSON", issuer: issuer, status: http.StatusOK, body: "{", wantError: "unexpected EOF"},
+		{name: "issuer mismatch", issuer: issuer, status: http.StatusOK, body: metadataJSON(map[string]any{
+			"issuer": "https://other.example.test", "authorization_endpoint": issuer + "/authorize",
+			"token_endpoint": issuer + "/token", "jwks_uri": issuer + "/keys", "response_types_supported": []string{"code"},
+		}), wantError: "does not exactly match"},
+		{name: "unsafe userinfo endpoint", issuer: issuer, status: http.StatusOK, body: metadataJSON(func() map[string]any {
+			metadata := map[string]any{}
+			for key, value := range validMetadata {
+				metadata[key] = value
+			}
+			metadata["userinfo_endpoint"] = "http://identity.example.test/userinfo"
+			return metadata
+		}()), wantError: "invalid userinfo_endpoint"},
+		{name: "authorization code flow missing", issuer: issuer, status: http.StatusOK, body: metadataJSON(func() map[string]any {
+			metadata := map[string]any{}
+			for key, value := range validMetadata {
+				metadata[key] = value
+			}
+			metadata["response_types_supported"] = []string{"token"}
+			return metadata
+		}()), wantError: "authorization code response type"},
+		{name: "authorization code grant missing", issuer: issuer, status: http.StatusOK, body: metadataJSON(func() map[string]any {
+			metadata := map[string]any{}
+			for key, value := range validMetadata {
+				metadata[key] = value
+			}
+			metadata["grant_types_supported"] = []string{"client_credentials"}
+			return metadata
+		}()), wantError: "authorization_code grant"},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if test.issuer == "://invalid" {
+				if _, err := fetchProviderMetadata(context.Background(), http.DefaultClient, test.issuer); err == nil || !strings.Contains(err.Error(), test.wantError) {
+					t.Fatalf("fetchProviderMetadata() error = %v, want containing %q", err, test.wantError)
+				}
+				return
+			}
+			client := &http.Client{Transport: oidcRoundTripFunc(func(request *http.Request) (*http.Response, error) {
+				if test.transportErr != nil {
+					return nil, test.transportErr
+				}
+				return &http.Response{
+					StatusCode: test.status,
+					Header:     make(http.Header),
+					Body:       io.NopCloser(strings.NewReader(test.body)),
+					Request:    request,
+				}, nil
+			})}
+			if _, err := fetchProviderMetadata(context.Background(), client, test.issuer); err == nil || !strings.Contains(err.Error(), test.wantError) {
+				t.Fatalf("fetchProviderMetadata() error = %v, want containing %q", err, test.wantError)
+			}
+		})
+	}
+}
+
 func TestInitializeRejectsInvalidConfigurationBeforeDiscovery(t *testing.T) {
 	configureOIDCTestSessionKey(t)
 	setManagerForTest(t, nil)
@@ -585,6 +721,11 @@ func TestInitializeRejectsInvalidConfigurationBeforeDiscovery(t *testing.T) {
 		t.Fatalf("Initialize() callback path error = %v", err)
 	}
 
+	setOIDCFlag(t, "oidc-redirect-url", "https://dashboard.example.test/api/v1/oidc/callback")
+	setOIDCFlag(t, "oidc-redirect-url", "http://dashboard.example.test/api/v1/oidc/callback")
+	if err := Initialize(); err == nil || !strings.Contains(err.Error(), "invalid OIDC redirect URL") {
+		t.Fatalf("Initialize() insecure redirect error = %v", err)
+	}
 	setOIDCFlag(t, "oidc-redirect-url", "https://dashboard.example.test/api/v1/oidc/callback")
 	setOIDCFlag(t, "oidc-issuer-url", "http://identity.example.test")
 	if err := Initialize(); err == nil || !strings.Contains(err.Error(), "invalid OIDC issuer URL") {

@@ -61,3 +61,20 @@ func TestGetPodInfo(t *testing.T) {
 		}
 	}
 }
+
+func TestGetPodInfoCountsEachRecognizedPhase(t *testing.T) {
+	info := GetPodInfo(5, nil, []api.Pod{
+		{Status: api.PodStatus{Phase: api.PodRunning}},
+		{Status: api.PodStatus{Phase: api.PodPending}},
+		{Status: api.PodStatus{Phase: api.PodFailed}},
+		{Status: api.PodStatus{Phase: api.PodSucceeded}},
+		{Status: api.PodStatus{Phase: api.PodUnknown}},
+		{Status: api.PodStatus{}},
+	})
+	if info.Current != 5 || info.Desired != nil || info.Running != 1 || info.Pending != 1 || info.Failed != 1 || info.Succeeded != 1 {
+		t.Errorf("GetPodInfo() = %#v; want one pod in each recognized phase", info)
+	}
+	if info.Warnings == nil || len(info.Warnings) != 0 {
+		t.Errorf("GetPodInfo().Warnings = %#v; want an initialized empty slice", info.Warnings)
+	}
+}

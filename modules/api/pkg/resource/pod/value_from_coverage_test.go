@@ -84,6 +84,12 @@ func TestEvalValueFromResourceAndFieldReferences(t *testing.T) {
 			want:   "",
 		},
 		{
+			name:   "malformed api version",
+			source: &corev1.EnvVarSource{FieldRef: &corev1.ObjectFieldSelector{APIVersion: "invalid/group/version", FieldPath: "metadata.name"}},
+			pod:    pod,
+			want:   "",
+		},
+		{
 			name:   "invalid pod field path",
 			source: &corev1.EnvVarSource{FieldRef: &corev1.ObjectFieldSelector{APIVersion: "v1", FieldPath: "spec.unknown"}},
 			pod:    pod,

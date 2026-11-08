@@ -41,6 +41,7 @@ func TestPersistentVolumeCellAndClientList(t *testing.T) {
 		{dataselect.NameProperty, dataselect.StdComparableString("volume-a")},
 		{dataselect.NamespaceProperty, dataselect.StdComparableString("")},
 		{dataselect.CreationTimestampProperty, dataselect.StdComparableTime(created.Time)},
+		{dataselect.StatusProperty, dataselect.StdComparableString(string(corev1.VolumeAvailable))},
 	} {
 		if got := cell.GetProperty(tc.property); got != tc.want {
 			t.Errorf("GetProperty(%s) = %v; want %v", tc.property, got, tc.want)

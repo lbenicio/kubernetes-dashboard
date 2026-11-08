@@ -15,6 +15,7 @@
 package v1
 
 import (
+	"errors"
 	"reflect"
 	"testing"
 
@@ -22,6 +23,8 @@ import (
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/fake"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	ktesting "k8s.io/client-go/testing"
 
 	"k8s.io/dashboard/api/pkg/resource/customresourcedefinition/types"
 	"k8s.io/dashboard/api/pkg/resource/dataselect"
@@ -138,5 +141,34 @@ func TestGetCustomResourceDefinition(t *testing.T) {
 			t.Errorf("GetCustomResourceDefinitionList(client, nil) == \ngot: %#v, \nexpected %#v",
 				actual, c.expected)
 		}
+	}
+}
+
+func TestGetCustomResourceDefinitionListRejectsAPIErrorAndSkipsUnservedDefinitions(t *testing.T) {
+	t.Run("list error", func(t *testing.T) {
+		client := fake.NewSimpleClientset()
+		client.PrependReactor("list", "customresourcedefinitions", func(ktesting.Action) (bool, runtime.Object, error) {
+			return true, nil, errors.New("list failed")
+		})
+		if _, err := GetCustomResourceDefinitionList(client, dataselect.DefaultDataSelect); err == nil {
+			t.Fatal("GetCustomResourceDefinitionList() returned no error after a list failure")
+		}
+	})
+
+	client := fake.NewSimpleClientset(&apiextensionsv1.CustomResourceDefinition{
+		ObjectMeta: metaV1.ObjectMeta{Name: "widgets.example.test"},
+		Spec: apiextensionsv1.CustomResourceDefinitionSpec{
+			Group:    "example.test",
+			Names:    apiextensionsv1.CustomResourceDefinitionNames{Plural: "widgets", Kind: "Widget"},
+			Scope:    apiextensionsv1.ClusterScoped,
+			Versions: []apiextensionsv1.CustomResourceDefinitionVersion{{Name: "v1", Served: false}},
+		},
+	})
+	result, err := GetCustomResourceDefinitionList(client, dataselect.DefaultDataSelect)
+	if err != nil {
+		t.Fatalf("GetCustomResourceDefinitionList() error = %v", err)
+	}
+	if result.ListMeta.TotalItems != 0 || len(result.Items) != 0 {
+		t.Fatalf("unserved CRD result = %#v; want empty", result)
 	}
 }
