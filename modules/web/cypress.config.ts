@@ -17,6 +17,9 @@ import failFast from 'cypress-fail-fast/plugin';
 
 export default defineConfig({
   defaultBrowser: process.env.DASHBOARD_CYPRESS_BROWSER ?? 'chrome',
+  env: {
+    token: process.env.CYPRESS_TOKEN,
+  },
   e2e: {
     baseUrl: 'http://127.0.0.1:8080',
     supportFile: 'cypress/support/index.ts',

@@ -4,7 +4,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,8 +16,6 @@ schema {
   query: Query
   mutation: Mutation
 }
-
-directive @dictionary(subgraph: String) on FIELD_DEFINITION
 
 directive @httpOperation(subgraph: String, path: String, operationSpecificHeaders: [[String]], httpMethod: HTTPMethod, isBinary: Boolean, requestBaseBody: ObjMap, queryParamArgMap: ObjMap, queryStringOptionsByParam: ObjMap, jsonApiFields: Boolean, queryStringOptions: ObjMap) on FIELD_DEFINITION
 
@@ -2907,20 +2905,6 @@ type resourcequota_ResourceQuotaDetail {
   typeMeta: types_TypeMeta!
 }
 
-type query_handleGetNamespaceDetail_resourceQuotaList_items_items_statusList {
-  additionalProperties: [resourcequota_ResourceStatus_entry] @dictionary(subgraph: "api")
-}
-
-type resourcequota_ResourceStatus_entry {
-  key: ID!
-  value: resourcequota_ResourceStatus
-}
-
-type resourcequota_ResourceStatus {
-  hard: String
-  used: String
-}
-
 type networkpolicy_NetworkPolicyList {
   errors: [JSON]!
   items: [networkpolicy_NetworkPolicy]!
@@ -3133,41 +3117,6 @@ type persistentvolume_PersistentVolume {
   typeMeta: types_TypeMeta!
 }
 
-type query_handleGetPersistentVolumeList_items_items_capacity {
-  additionalProperties: [resource_Quantity_entry] @dictionary(subgraph: "api")
-}
-
-type resource_Quantity_entry {
-  key: ID!
-  value: resource_Quantity
-}
-
-type resource_Quantity {
-  Format: String!
-  d: resource_infDecAmount!
-  i: resource_int64Amount!
-  s: String!
-}
-
-type resource_infDecAmount {
-  Dec: inf_Dec!
-}
-
-type inf_Dec {
-  scale: Int!
-  unscaled: big_Int!
-}
-
-type big_Int {
-  abs: [Int]!
-  neg: Boolean!
-}
-
-type resource_int64Amount {
-  scale: Int!
-  value: BigInt!
-}
-
 type persistentvolume_PersistentVolumeDetail {
   accessModes: [String]!
   capacity: ObjMap!
@@ -3181,22 +3130,6 @@ type persistentvolume_PersistentVolumeDetail {
   status: String!
   storageClass: String!
   typeMeta: types_TypeMeta!
-}
-
-type query_handleGetPersistentVolumeDetail_capacity {
-  additionalProperties: [resource_Quantity2_entry] @dictionary(subgraph: "api")
-}
-
-type resource_Quantity2_entry {
-  key: ID!
-  value: resource_Quantity2
-}
-
-type resource_Quantity2 {
-  Format: String!
-  d: resource_infDecAmount!
-  i: resource_int64Amount!
-  s: String!
 }
 
 """
@@ -3775,22 +3708,6 @@ type persistentvolumeclaim_PersistentVolumeClaim {
   volume: String!
 }
 
-type query_handleGetPersistentVolumeClaimList_items_items_capacity {
-  additionalProperties: [resource_Quantity3_entry] @dictionary(subgraph: "api")
-}
-
-type resource_Quantity3_entry {
-  key: ID!
-  value: resource_Quantity3
-}
-
-type resource_Quantity3 {
-  Format: String!
-  d: resource_infDecAmount!
-  i: resource_int64Amount!
-  s: String!
-}
-
 type persistentvolumeclaim_PersistentVolumeClaimDetail {
   accessModes: [String]!
   capacity: ObjMap!
@@ -3799,22 +3716,6 @@ type persistentvolumeclaim_PersistentVolumeClaimDetail {
   storageClass: String!
   typeMeta: types_TypeMeta!
   volume: String!
-}
-
-type query_handleGetPersistentVolumeClaimDetail_capacity {
-  additionalProperties: [resource_Quantity4_entry] @dictionary(subgraph: "api")
-}
-
-type resource_Quantity4_entry {
-  key: ID!
-  value: resource_Quantity4
-}
-
-type resource_Quantity4 {
-  Format: String!
-  d: resource_infDecAmount!
-  i: resource_int64Amount!
-  s: String!
 }
 
 type pod_PodDetail {
@@ -3906,6 +3807,25 @@ type resource_Quantity5 {
   d: resource_infDecAmount!
   i: resource_int64Amount!
   s: String!
+}
+
+type resource_infDecAmount {
+  Dec: inf_Dec!
+}
+
+type inf_Dec {
+  scale: Int!
+  unscaled: big_Int!
+}
+
+type big_Int {
+  abs: [Int]!
+  neg: Boolean!
+}
+
+type resource_int64Amount {
+  scale: Int!
+  value: BigInt!
 }
 
 """SecretKeySelector selects a key of a Secret."""
@@ -4018,7 +3938,13 @@ type v1_ResourceRequirements {
   This field is immutable. It can only be set for containers.
   """
   claims: [v1_ResourceClaim]
+  """
+  Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+  """
   limits: ObjMap!
+  """
+  Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+  """
   requests: ObjMap!
 }
 
@@ -4032,44 +3958,6 @@ type v1_ResourceClaim {
   Request is the name chosen for a request in the referenced claim. If empty, everything from the claim is made available, otherwise only the result of this request.
   """
   request: String
-}
-
-"""
-Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-"""
-type query_handleGetPodDetail_containers_items_resources_limits {
-  additionalProperties: [resource_Quantity6_entry] @dictionary(subgraph: "api")
-}
-
-type resource_Quantity6_entry {
-  key: ID!
-  value: resource_Quantity6
-}
-
-type resource_Quantity6 {
-  Format: String!
-  d: resource_infDecAmount!
-  i: resource_int64Amount!
-  s: String!
-}
-
-"""
-Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-"""
-type query_handleGetPodDetail_containers_items_resources_requests {
-  additionalProperties: [resource_Quantity7_entry] @dictionary(subgraph: "api")
-}
-
-type resource_Quantity7_entry {
-  key: ID!
-  value: resource_Quantity7
-}
-
-type resource_Quantity7 {
-  Format: String!
-  d: resource_infDecAmount!
-  i: resource_int64Amount!
-  s: String!
 }
 
 """
@@ -4186,6 +4074,9 @@ type v1_WindowsSecurityContextOptions {
 ContainerStatus contains details for the current status of this container.
 """
 type v1_ContainerStatus {
+  """
+  AllocatedResources represents the compute resources allocated for this container by the node. Kubelet sets this value to Container.Resources.Requests upon successful pod admission and after successfully admitting desired pod resize.
+  """
   allocatedResources: ObjMap!
   """
   AllocatedResourcesStatus represents the status of various resources allocated for this Pod.
@@ -4227,25 +4118,6 @@ type v1_ContainerStatus {
   user: v1_ContainerUser
   """Status of volume mounts."""
   volumeMounts: [v1_VolumeMountStatus]
-}
-
-"""
-AllocatedResources represents the compute resources allocated for this container by the node. Kubelet sets this value to Container.Resources.Requests upon successful pod admission and after successfully admitting desired pod resize.
-"""
-type query_handleGetPodDetail_containers_items_status_allocatedResources {
-  additionalProperties: [resource_Quantity8_entry] @dictionary(subgraph: "api")
-}
-
-type resource_Quantity8_entry {
-  key: ID!
-  value: resource_Quantity8
-}
-
-type resource_Quantity8 {
-  Format: String!
-  d: resource_infDecAmount!
-  i: resource_int64Amount!
-  s: String!
 }
 
 """
@@ -4773,46 +4645,14 @@ type v1_TypedObjectReference {
 VolumeResourceRequirements describes the storage resource requirements for a volume.
 """
 type v1_VolumeResourceRequirements {
+  """
+  Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+  """
   limits: ObjMap!
+  """
+  Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+  """
   requests: ObjMap!
-}
-
-"""
-Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-"""
-type query_handleGetPodDetail_containers_items_volumeMounts_items_volume_ephemeral_volumeClaimTemplate_spec_resources_limits {
-  additionalProperties: [resource_Quantity9_entry] @dictionary(subgraph: "api")
-}
-
-type resource_Quantity9_entry {
-  key: ID!
-  value: resource_Quantity9
-}
-
-type resource_Quantity9 {
-  Format: String!
-  d: resource_infDecAmount!
-  i: resource_int64Amount!
-  s: String!
-}
-
-"""
-Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-"""
-type query_handleGetPodDetail_containers_items_volumeMounts_items_volume_ephemeral_volumeClaimTemplate_spec_resources_requests {
-  additionalProperties: [resource_Quantity10_entry] @dictionary(subgraph: "api")
-}
-
-type resource_Quantity10_entry {
-  key: ID!
-  value: resource_Quantity10
-}
-
-type resource_Quantity10 {
-  Format: String!
-  d: resource_infDecAmount!
-  i: resource_int64Amount!
-  s: String!
 }
 
 """
@@ -5545,7 +5385,7 @@ type Mutation {
     """Aggregations to be performed for each metric (default: sum)"""
     aggregations: String
     input: deployment_AppDeploymentSpec_Input!
-  ): deployment_AppDeploymentSpec! @httpOperation(subgraph: "api", path: "/api/v1/appdeployment", operationSpecificHeaders: [["Content-Type", "application/json"], ["Accept", "application/json"]], httpMethod: POST, queryParamArgMap: "{\"filterBy\":\"filterBy\",\"sortBy\":\"sortBy\",\"itemsPerPage\":\"itemsPerPage\",\"page\":\"page\",\"metricNames\":\"metricNames\",\"aggregations\":\"aggregations\"}")
+  ): deployment_AppDeploymentSpec @httpOperation(subgraph: "api", path: "/api/v1/appdeployment", operationSpecificHeaders: [["Content-Type", "application/json"], ["Accept", "application/json"]], httpMethod: POST, queryParamArgMap: "{\"filterBy\":\"filterBy\",\"sortBy\":\"sortBy\",\"itemsPerPage\":\"itemsPerPage\",\"page\":\"page\",\"metricNames\":\"metricNames\",\"aggregations\":\"aggregations\"}")
   """checks if provided image is valid"""
   handleImageReferenceValidity(
     """
@@ -5701,7 +5541,7 @@ type Mutation {
     metricNames: String
     """Aggregations to be performed for each metric (default: sum)"""
     aggregations: String
-  ): deployment_RolloutSpec! @httpOperation(subgraph: "api", path: "/api/v1/deployment/{args.namespace}/{args.deployment}/restart", operationSpecificHeaders: [["Content-Type", "application/json"], ["Accept", "application/json"]], httpMethod: PUT, queryParamArgMap: "{\"filterBy\":\"filterBy\",\"sortBy\":\"sortBy\",\"itemsPerPage\":\"itemsPerPage\",\"page\":\"page\",\"metricNames\":\"metricNames\",\"aggregations\":\"aggregations\"}")
+  ): deployment_RolloutSpec @httpOperation(subgraph: "api", path: "/api/v1/deployment/{args.namespace}/{args.deployment}/restart", operationSpecificHeaders: [["Content-Type", "application/json"], ["Accept", "application/json"]], httpMethod: PUT, queryParamArgMap: "{\"filterBy\":\"filterBy\",\"sortBy\":\"sortBy\",\"itemsPerPage\":\"itemsPerPage\",\"page\":\"page\",\"metricNames\":\"metricNames\",\"aggregations\":\"aggregations\"}")
   """resumes the Deployment"""
   handleDeploymentResume(
     """namespace of the Deployment"""
@@ -5744,7 +5584,7 @@ type Mutation {
     """Aggregations to be performed for each metric (default: sum)"""
     aggregations: String
     input: deployment_RolloutSpec_Input!
-  ): deployment_RolloutSpec! @httpOperation(subgraph: "api", path: "/api/v1/deployment/{args.namespace}/{args.deployment}/rollback", operationSpecificHeaders: [["Content-Type", "application/json"], ["Accept", "application/json"]], httpMethod: PUT, queryParamArgMap: "{\"filterBy\":\"filterBy\",\"sortBy\":\"sortBy\",\"itemsPerPage\":\"itemsPerPage\",\"page\":\"page\",\"metricNames\":\"metricNames\",\"aggregations\":\"aggregations\"}")
+  ): deployment_RolloutSpec @httpOperation(subgraph: "api", path: "/api/v1/deployment/{args.namespace}/{args.deployment}/rollback", operationSpecificHeaders: [["Content-Type", "application/json"], ["Accept", "application/json"]], httpMethod: PUT, queryParamArgMap: "{\"filterBy\":\"filterBy\",\"sortBy\":\"sortBy\",\"itemsPerPage\":\"itemsPerPage\",\"page\":\"page\",\"metricNames\":\"metricNames\",\"aggregations\":\"aggregations\"}")
   """create a Namespace"""
   handleCreateNamespace(
     """
@@ -5762,7 +5602,7 @@ type Mutation {
     """Aggregations to be performed for each metric (default: sum)"""
     aggregations: String
     input: namespace_NamespaceSpec_Input!
-  ): namespace_NamespaceSpec! @httpOperation(subgraph: "api", path: "/api/v1/namespace", operationSpecificHeaders: [["Content-Type", "application/json"], ["Accept", "application/json"]], httpMethod: POST, queryParamArgMap: "{\"filterBy\":\"filterBy\",\"sortBy\":\"sortBy\",\"itemsPerPage\":\"itemsPerPage\",\"page\":\"page\",\"metricNames\":\"metricNames\",\"aggregations\":\"aggregations\"}")
+  ): namespace_NamespaceSpec @httpOperation(subgraph: "api", path: "/api/v1/namespace", operationSpecificHeaders: [["Content-Type", "application/json"], ["Accept", "application/json"]], httpMethod: POST, queryParamArgMap: "{\"filterBy\":\"filterBy\",\"sortBy\":\"sortBy\",\"itemsPerPage\":\"itemsPerPage\",\"page\":\"page\",\"metricNames\":\"metricNames\",\"aggregations\":\"aggregations\"}")
   """drains Node"""
   handleNodeDrain(
     """name of the Node"""
