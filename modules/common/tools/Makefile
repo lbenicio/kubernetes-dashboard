@@ -53,7 +53,7 @@ endif
 install-license-eye:
 ifndef LICENSE_EYE_BINARY
 	@echo "[tools] downloading license-eye..."
-	@go install github.com/apache/skywalking-eyes/cmd/license-eye
+	@GOWORK=off go install github.com/apache/skywalking-eyes/cmd/license-eye
 else
 	@echo "[tools] license-eye already exists"
 endif
@@ -62,7 +62,7 @@ endif
 install-air:
 ifndef AIR_BINARY
 	@echo "[tools] downloading air..."
-	@go install github.com/air-verse/air
+	@GOWORK=off go install github.com/air-verse/air
 else
 	@echo "[tools] air already exists"
 endif
@@ -71,7 +71,7 @@ endif
 install-golangci-lint:
 ifndef GOLANGCI_LINT_BINARY
 	@echo "[tools] downloading golangci-lint..."
-	@go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint
+	@GOWORK=off go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint
 else
 	@echo "[tools] golangci-lint already exists"
 endif
@@ -80,7 +80,7 @@ endif
 install-client-gen:
 ifndef CLIENT_GEN_BINARY
 	@echo "[tools] downloading client-gen..."
-	@go install k8s.io/code-generator/cmd/client-gen
+	@GOWORK=off go install k8s.io/code-generator/cmd/client-gen
 else
 	@echo "[tools] client-gen already exists"
 endif
@@ -89,7 +89,7 @@ endif
 install-kind:
 ifndef KIND_BINARY
 	@echo "[tools] downloading kind..."
-	@go install sigs.k8s.io/kind
+	@GOWORK=off go install sigs.k8s.io/kind
 else
 	@echo "[tools] kind already exists"
 endif
