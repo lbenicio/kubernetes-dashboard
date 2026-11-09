@@ -114,7 +114,7 @@
     "eslint-plugin-prettier": "5.5.7",
     "eslint-plugin-rxjs-x": "1.0.6",
     "git-describe": "4.1.1",
-    "graphql": "16.15.0",
+    "graphql": "17.1.0",
     "husky": "9.1.7",
     "jasmine-core": "7.0.2",
     "jasmine-spec-reporter": "7.0.0",
