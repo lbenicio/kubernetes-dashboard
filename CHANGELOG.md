@@ -9,6 +9,33 @@ All notable changes to this project are documented in this file. The format foll
 - Updated the development container's `kubectl` to Kubernetes v1.37.2. The local Kind test cluster remains on the latest node image published by Kind v0.33.0 (Kubernetes v1.37.0).
 - Configured local development and production services to accept IPv4 and IPv6 loopback traffic so `localhost` works with either address family.
 
+## [8.0.0] - 2026-11-08
+
+### Added
+
+- Added OpenID Connect login with authorization-code flow, secure callback and token validation, configurable scopes and group claims, and configurable profile pictures shown in the user menu.
+- Added an optional anonymous-admin mode and retained token login as a fallback when OIDC is configured.
+- Added OIDC setup documentation and translations, and expanded unit coverage across the Go services and Angular frontend to 98.78% overall.
+- Published multi-architecture API, Auth, Web, and Metrics Scraper images with `8.0.0` and `latest` tags to Docker Hub and GHCR under `lbenicio/kubernetes-dashboard-*`.
+
+### Changed
+
+- Upgraded Cypress to 16.2.1, lint-staged to 17.6.0, Stylelint's standard SCSS config to 17, and minimatch to 11.0.2; removed the now-unneeded minimatch patches.
+- Updated Go dependencies, including go-jose and pflag, and refreshed the metrics scraper test dependencies.
+- Split pod status and value evaluation into focused helpers, improved authorization error handling, and expanded edge-case coverage.
+- Updated image release workflows to accept numeric semantic-version tags and install each pinned Go tool with an isolated dependency graph.
+- Enabled BuildKit for local Compose builds and excluded generated web bundles from Docker build contexts.
+- Moved the development guide under `docs/development` and refreshed license and repository metadata.
+
+### Fixed
+
+- Corrected OIDC callback and token-exchange handling, session refresh expiry, and user profile details.
+- Fixed the CI tool installation failure caused by incompatible transitive Go tool dependencies.
+
+### Security
+
+- Patched the minimatch glob-part amplification denial-of-service vulnerability by upgrading to 11.0.2.
+
 ## [7.14.10] - 2026-11-05
 
 ### Added
