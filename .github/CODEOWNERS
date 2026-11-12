@@ -1,0 +1,12 @@
+# Request @lbenicio to review Dependabot dependency updates.
+/.github/workflows/** @lbenicio
+/modules/api/go.mod @lbenicio
+/modules/api/go.sum @lbenicio
+/modules/common/certificates/go.mod @lbenicio
+/modules/common/certificates/go.sum @lbenicio
+/modules/common/tools/go.mod @lbenicio
+/modules/common/tools/go.sum @lbenicio
+/modules/web/go.mod @lbenicio
+/modules/web/go.sum @lbenicio
+/modules/web/package.json @lbenicio
+/modules/web/yarn.lock @lbenicio
