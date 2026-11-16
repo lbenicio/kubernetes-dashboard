@@ -1,0 +1,68 @@
+# Copyright 2017 The Kubernetes Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Dependabot auto-merge
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  enable-auto-merge:
+    name: Enable auto-merge after CI succeeds
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable auto-merge for a successful Dependabot PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+          TESTED_HEAD_SHA: ${{ github.event.workflow_run.pull_requests[0].head.sha }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${PR_NUMBER}" || -z "${TESTED_HEAD_SHA}" ]]; then
+            echo "This successful CI run is not associated with a pull request."
+            exit 0
+          fi
+
+          pr_data="$(gh pr view "${PR_NUMBER}" --json author,baseRefName,headRefOid,isDraft)"
+          author="$(jq -r '.author.login' <<< "${pr_data}")"
+          base_branch="$(jq -r '.baseRefName' <<< "${pr_data}")"
+          current_head="$(jq -r '.headRefOid' <<< "${pr_data}")"
+          is_draft="$(jq -r '.isDraft' <<< "${pr_data}")"
+
+          if [[ "${author}" != "dependabot[bot]" || "${base_branch}" != "main" || "${current_head}" != "${TESTED_HEAD_SHA}" || "${is_draft}" == "true" ]]; then
+            echo "The PR author, base branch, head commit, or draft state no longer matches this CI run."
+            exit 0
+          fi
+
+          mergeable="UNKNOWN"
+          for attempt in {1..12}; do
+            mergeable="$(gh pr view "${PR_NUMBER}" --json mergeable --jq '.mergeable')"
+            [[ "${mergeable}" != "UNKNOWN" ]] && break
+            sleep 5
+          done
+
+          if [[ "${mergeable}" != "MERGEABLE" ]]; then
+            echo "PR #${PR_NUMBER} is not mergeable (${mergeable}); leaving it for manual resolution."
+            exit 0
+          fi
+
+          gh pr merge "${PR_NUMBER}" --auto --squash --match-head-commit "${TESTED_HEAD_SHA}"
