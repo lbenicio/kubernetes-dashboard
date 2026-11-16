@@ -55,7 +55,7 @@
     "@angular/localize": "22.2.5",
     "@angular/material": "22.2.6",
     "@angular/platform-browser": "22.2.5",
-    "@angular/platform-browser-dynamic": "22.2.5",
+    "@angular/platform-browser-dynamic": "22.2.6",
     "@angular/router": "22.2.5",
     "@ngbracket/ngx-layout": "22.0.2",
     "@swimlane/ngx-charts": "25.0.3",
