@@ -131,7 +131,7 @@
     "postcss": "8.5.32",
     "prettier": "3.10.1",
     "run-node": "3.0.0",
-    "sass": "1.108.1",
+    "sass": "1.108.2",
     "sass-loader": "17.1.0",
     "semver": "7.8.6",
     "stylelint": "17.15.0",
