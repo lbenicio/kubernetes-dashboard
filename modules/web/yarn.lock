@@ -204,14 +204,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/animations@npm:22.2.5":
-  version: 22.2.5
-  resolution: "@angular/animations@npm:22.2.5"
+"@angular/animations@npm:22.2.6":
+  version: 22.2.6
+  resolution: "@angular/animations@npm:22.2.6"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/core": 22.2.5
-  checksum: 10c0/8a1b3fc8c75388e629d0c524f7316fc12ed5367842f42f7db6cefe2655e73e1cbad4c9990702f76e2cc67ddb4f5739c4fcefdd457165ca417c840e707dce95cc
+    "@angular/core": 22.2.6
+  checksum: 10c0/7cf4cabdc9d3f0d2cb4ff41d078fe31790f3b3f51219885cb37eb72cb5b16c6c9837d5f3ff40fd2a9b0475bce30007dbf1740d1f15032d0d9e1b2ad9c43a78c0
   languageName: node
   linkType: hard
 
@@ -305,9 +305,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/cdk@npm:22.2.6":
-  version: 22.2.6
-  resolution: "@angular/cdk@npm:22.2.6"
+"@angular/cdk@npm:22.2.7":
+  version: 22.2.7
+  resolution: "@angular/cdk@npm:22.2.7"
   dependencies:
     parse5: "npm:^8.0.0"
     tslib: "npm:^2.3.0"
@@ -317,7 +317,7 @@ __metadata:
     "@angular/forms": ^22.0.0 || ^23.0.0
     "@angular/platform-browser": ^22.0.0 || ^23.0.0
     rxjs: ^6.5.3 || ^7.4.0
-  checksum: 10c0/6b047864bfca07a60c22a0a04cdd9a91ff2f43f20b08ccd882d6b0a8d8040b614b84140f9bb13e2b582cd27720a7fe02cfe8037cb2b6476600b03df7fe5ddf05
+  checksum: 10c0/d5ccf0f4a4bb981633290ee15f103b5ac005cd43a9dacaf776fe4f14f7fbde72f97006ea85ec9bce57d5b7ef24355df205981bf79f3a2aa5adfd5a7a7c85373c
   languageName: node
   linkType: hard
 
@@ -391,13 +391,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/core@npm:22.2.5":
-  version: 22.2.5
-  resolution: "@angular/core@npm:22.2.5"
+"@angular/core@npm:22.2.6":
+  version: 22.2.6
+  resolution: "@angular/core@npm:22.2.6"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/compiler": 22.2.5
+    "@angular/compiler": 22.2.6
     rxjs: ^6.5.3 || ^7.4.0
     zone.js: ~0.15.0 || ~0.16.0
   peerDependenciesMeta:
@@ -405,7 +405,7 @@ __metadata:
       optional: true
     zone.js:
       optional: true
-  checksum: 10c0/267344b3fdab3472d8a144838516e36956d287ec9be06a5ccc4ca7892678c193cf815a81c17468a9bb1253e30b678a988526d5563332a4aa1249585c53e62937
+  checksum: 10c0/5a0199a2b14aff3619f1875b073f88f168a13ba8272761fe57278f5c9085be8a421b40dad99032dfebda0f2bf83c2336c68dd28f0e6afdc00feb37559da8aa8f
   languageName: node
   linkType: hard
 
@@ -450,19 +450,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/material@npm:22.2.6":
-  version: 22.2.6
-  resolution: "@angular/material@npm:22.2.6"
+"@angular/material@npm:22.2.7":
+  version: 22.2.7
+  resolution: "@angular/material@npm:22.2.7"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/cdk": 22.2.6
+    "@angular/cdk": 22.2.7
     "@angular/common": ^22.0.0 || ^23.0.0
     "@angular/core": ^22.0.0 || ^23.0.0
     "@angular/forms": ^22.0.0 || ^23.0.0
     "@angular/platform-browser": ^22.0.0 || ^23.0.0
     rxjs: ^6.5.3 || ^7.4.0
-  checksum: 10c0/cbf025d1c3939d19dc4e8fb868e24bb62634cf4754e3b1290b646b71ae7b5da3cf594123b2d0d001648c04312c8c6a37603c5e572c6b51fcf50167dda99e7593
+  checksum: 10c0/f4229ca90164b0ef1ece2d151ce52fd67ba010f973e66ec3fd4eb7d5aad825fa550ee13919fa2cf6535d4795413167f6ed3b4c5549ce0fa4acde90a611f8d776
   languageName: node
   linkType: hard
 
@@ -11737,19 +11737,19 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "kubernetes-dashboard@workspace:."
   dependencies:
-    "@angular/animations": "npm:22.2.5"
+    "@angular/animations": "npm:22.2.6"
     "@angular/build": "npm:22.2.7"
-    "@angular/cdk": "npm:22.2.6"
+    "@angular/cdk": "npm:22.2.7"
     "@angular/cli": "npm:22.2.7"
     "@angular/common": "npm:22.2.6"
     "@angular/compiler": "npm:22.2.6"
     "@angular/compiler-cli": "npm:22.2.6"
-    "@angular/core": "npm:22.2.5"
+    "@angular/core": "npm:22.2.6"
     "@angular/forms": "npm:22.2.6"
     "@angular/language-service": "npm:22.2.6"
     "@angular/localize": "npm:22.2.6"
-    "@angular/material": "npm:22.2.6"
     "@angular/platform-browser": "npm:22.2.6"
+    "@angular/material": "npm:22.2.7"
     "@angular/platform-browser-dynamic": "npm:22.2.6"
     "@angular/router": "npm:22.2.6"
     "@babel/core": "npm:8.1.2"
@@ -11807,7 +11807,7 @@ __metadata:
     minimatch: "npm:11.0.8"
     minimist: "npm:1.2.8"
     ng-extract-i18n-merge: "npm:3.5.0"
-    ngx-cookie-service: "npm:22.0.0"
+    ngx-cookie-service: "npm:22.2.0"
     ngx-pipes: "npm:3.2.2"
     node-gyp: "npm:13.1.0"
     normalize.css: "npm:8.0.1"
@@ -12705,15 +12705,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ngx-cookie-service@npm:22.0.0":
-  version: 22.0.0
-  resolution: "ngx-cookie-service@npm:22.0.0"
+"ngx-cookie-service@npm:22.2.0":
+  version: 22.2.0
+  resolution: "ngx-cookie-service@npm:22.2.0"
   dependencies:
     tslib: "npm:^2.8.1"
   peerDependencies:
     "@angular/common": ^22.0.0
     "@angular/core": ^22.0.0
-  checksum: 10c0/78da1ca8f45f3fb56ccf0a099bcaf8d361e048b0f36e3b3c785e28bc240e30c86221daf6546b7a597ef8c1a0cb6d37404b46ea81d0cf9793ae3eb3387742dc09
+  checksum: 10c0/f2a0624b761af5e6e1b88ed9b69f0b76737da3ffcd12a186cf84e41cb47a74062c5ae511470ff0ecc215597359f566cf6be665f6aef1b6ebb56383c965bd8e55
   languageName: node
   linkType: hard
 
