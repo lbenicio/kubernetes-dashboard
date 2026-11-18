@@ -480,19 +480,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/platform-browser@npm:22.2.5":
-  version: 22.2.5
-  resolution: "@angular/platform-browser@npm:22.2.5"
+"@angular/platform-browser@npm:22.2.6":
+  version: 22.2.6
+  resolution: "@angular/platform-browser@npm:22.2.6"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/animations": 22.2.5
-    "@angular/common": 22.2.5
-    "@angular/core": 22.2.5
+    "@angular/animations": 22.2.6
+    "@angular/common": 22.2.6
+    "@angular/core": 22.2.6
   peerDependenciesMeta:
     "@angular/animations":
       optional: true
-  checksum: 10c0/fa956408122b94135ea82789b33d1936da06d8828e623b1e23bc9b172a6609a6d6282adbe5ff768ff1823c4349927ea83eef29682d8fc2b7ed41bceaa1598887
+  checksum: 10c0/10f6a9089e9b3d5f52a4f1076b512e1d8ed347570d316cc9a10d93e0fcf4fb754e9671ce534fdc46779de4da51f23f24dbc8c19c2504fac9cd57d561d3ecd1dc
   languageName: node
   linkType: hard
 
@@ -11749,7 +11749,7 @@ __metadata:
     "@angular/language-service": "npm:22.2.6"
     "@angular/localize": "npm:22.2.6"
     "@angular/material": "npm:22.2.6"
-    "@angular/platform-browser": "npm:22.2.5"
+    "@angular/platform-browser": "npm:22.2.6"
     "@angular/platform-browser-dynamic": "npm:22.2.6"
     "@angular/router": "npm:22.2.6"
     "@babel/core": "npm:8.1.2"
