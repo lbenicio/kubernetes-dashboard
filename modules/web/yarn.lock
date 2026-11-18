@@ -496,17 +496,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/router@npm:22.2.5":
-  version: 22.2.5
-  resolution: "@angular/router@npm:22.2.5"
+"@angular/router@npm:22.2.6":
+  version: 22.2.6
+  resolution: "@angular/router@npm:22.2.6"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/common": 22.2.5
-    "@angular/core": 22.2.5
-    "@angular/platform-browser": 22.2.5
+    "@angular/common": 22.2.6
+    "@angular/core": 22.2.6
+    "@angular/platform-browser": 22.2.6
     rxjs: ^6.5.3 || ^7.4.0
-  checksum: 10c0/142a9f8ede0beb8cfacf09eac4a5bf6aac4094bfbb239d65845a75772ae4a7c4ccc6af944b97b308c2cdc83cb093c8e802a4e5729ef94f12ab8f48e52dec8918
+  checksum: 10c0/e905bb023b4f67dbce2130d0b5aa44cd857b009f5077ffdffb44ed552cd51dfbc7f5a6e27912fc744dc7b33d73d472d4470bb7bf60bea6b7193875abdfb1e406
   languageName: node
   linkType: hard
 
@@ -11751,7 +11751,7 @@ __metadata:
     "@angular/material": "npm:22.2.6"
     "@angular/platform-browser": "npm:22.2.5"
     "@angular/platform-browser-dynamic": "npm:22.2.6"
-    "@angular/router": "npm:22.2.5"
+    "@angular/router": "npm:22.2.6"
     "@babel/core": "npm:8.1.2"
     "@babel/preset-env": "npm:8.0.7"
     "@eslint/compat": "npm:2.1.1"
