@@ -53,6 +53,16 @@ func InClusterClient() client.Interface {
 	return inClusterClient
 }
 
+// cacheToken returns the identity used to partition cached resources. In
+// anonymous-admin mode every request uses the Dashboard service account, so
+// requests share a cache partition even though they have no bearer token.
+func cacheToken(request *http.Request) string {
+	if args.AnonymousAdminEnabled() {
+		return "anonymous-admin"
+	}
+	return GetBearerToken(request)
+}
+
 func Client(request *http.Request) (client.Interface, error) {
 	if !isInitialized() {
 		return nil, fmt.Errorf("client package not initialized")
@@ -67,7 +77,7 @@ func Client(request *http.Request) (client.Interface, error) {
 		return cacheclient.New(
 			config,
 			common.CachedClientOptions{
-				Token: GetBearerToken(request),
+				Token: cacheToken(request),
 				RequestGetter: func() *http.Request {
 					return request
 				},
@@ -98,7 +108,7 @@ func APIExtensionsClient(request *http.Request) (apiextensionsclientset.Interfac
 			config,
 			kubeClient.AuthorizationV1(),
 			common.CachedClientOptions{
-				Token: GetBearerToken(request),
+				Token: cacheToken(request),
 				RequestGetter: func() *http.Request {
 					return request
 				},
