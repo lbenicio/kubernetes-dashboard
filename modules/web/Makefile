@@ -104,6 +104,13 @@ schema:
 		localeDir=$(WEB_DIST_ANGULAR_BROWSER_DIRECTORY)/$${language} ; \
 		filename=$$(find $${localeDir} -maxdepth 1 -name 'main*.js' -exec basename {} \;) ; \
 		mv "$${localeDir}/$${filename}" "$${localeDir}/$${language}.$${filename}" ; \
+		for script in "$${localeDir}"/*.js ; do \
+			[ -f "$${script}" ] || continue ; \
+			[ "$${script}" = "$${localeDir}/$${language}.$${filename}" ] && continue ; \
+			DASHBOARD_OLD_MAIN="$${filename}" \
+			DASHBOARD_NEW_MAIN="$${language}.$${filename}" \
+			perl -i -pe 's{\./\Q$$ENV{DASHBOARD_OLD_MAIN}\E}{./$$ENV{DASHBOARD_NEW_MAIN}}g' "$${script}" ; \
+		done ; \
 		perl -i -pe"s/$${filename}/$${language}.$${filename}/" "$${localeDir}/index.html" ; \
 	done ; \
 		cp "$(WEB_DIRECTORY)/i18n/locale_conf.json" "$(WEB_DIST_ANGULAR_BROWSER_DIRECTORY)" ; \
