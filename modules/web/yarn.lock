@@ -456,10 +456,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/language-service@npm:22.2.6":
-  version: 22.2.6
-  resolution: "@angular/language-service@npm:22.2.6"
-  checksum: 10c0/a556e0337a3ff2fedb2cce10aa5f465f9abbcc7d314e29e48483111dcb4cd61a4b61aa089a45238b9428a81d5608cb06d2fe16498807b9473ebe75cb933a72a2
+"@angular/language-service@npm:22.3.0":
+  version: 22.3.0
+  resolution: "@angular/language-service@npm:22.3.0"
+  checksum: 10c0/bd40f82316e93231448ecb808875aeed9d14f0c9b60716c06d1ed81ed2d9d2800dd6df21d3d066ceb8b5d44a3e9b5654c7eea9e8da071d43dc0dbca2caa9ea4c
   languageName: node
   linkType: hard
 
@@ -12034,7 +12034,7 @@ __metadata:
     "@angular/compiler-cli": "npm:22.2.6"
     "@angular/core": "npm:22.3.0"
     "@angular/forms": "npm:22.3.0"
-    "@angular/language-service": "npm:22.2.6"
+    "@angular/language-service": "npm:22.3.0"
     "@angular/localize": "npm:22.2.6"
     "@angular/material": "npm:22.2.7"
     "@angular/platform-browser": "npm:22.2.5"
