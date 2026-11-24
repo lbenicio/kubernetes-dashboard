@@ -413,12 +413,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/compiler@npm:22.2.6":
-  version: 22.2.6
-  resolution: "@angular/compiler@npm:22.2.6"
+"@angular/compiler@npm:22.3.0":
+  version: 22.3.0
+  resolution: "@angular/compiler@npm:22.3.0"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10c0/934ea96814f880ef5e6086deb337680f558e4a4416a7a38aab01a78bb782cf679699d60ba3cc2f6e9d723648393c34abaf2de1749abdad063cad0d42775d6215
+  checksum: 10c0/667045cf8509a2a9f774031c98c59e97242112efe58fc6bc227719f281428fe6b6932ed96b133ea65e6a2038ce19954bb8c25cc22744e2c6ca731f46f68b3f81
   languageName: node
   linkType: hard
 
@@ -12081,7 +12081,7 @@ __metadata:
     "@angular/cdk": "npm:22.3.0"
     "@angular/cli": "npm:22.3.0"
     "@angular/common": "npm:22.3.0"
-    "@angular/compiler": "npm:22.2.6"
+    "@angular/compiler": "npm:22.3.0"
     "@angular/compiler-cli": "npm:22.2.6"
     "@angular/core": "npm:22.3.0"
     "@angular/forms": "npm:22.3.0"
