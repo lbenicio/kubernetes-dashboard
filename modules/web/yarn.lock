@@ -463,21 +463,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/localize@npm:22.2.6":
-  version: 22.2.6
-  resolution: "@angular/localize@npm:22.2.6"
+"@angular/localize@npm:22.3.0":
+  version: 22.3.0
+  resolution: "@angular/localize@npm:22.3.0"
   dependencies:
-    "@babel/core": "npm:8.0.1"
+    "@babel/core": "npm:8.1.0"
     tinyglobby: "npm:^0.2.12"
     yargs: "npm:^18.0.0"
   peerDependencies:
-    "@angular/compiler": 22.2.6
-    "@angular/compiler-cli": 22.2.6
+    "@angular/compiler": 22.3.0
+    "@angular/compiler-cli": 22.3.0
   bin:
     localize-extract: tools/bundles/src/extract/cli.js
     localize-migrate: tools/bundles/src/migrate/cli.js
     localize-translate: tools/bundles/src/translate/cli.js
-  checksum: 10c0/b213e8e216591248b4eb112de834d801749143a3dac7cd521df1e275db4433333e5ddb036502e0935c4ed1931ccb6787bacf87aecaca2e220aa1d0a5da696017
+  checksum: 10c0/5ee1824e289f0a46f686763b5e5fd6f191a77a28429d5db1c575c028a66f70ee9b3927969694ee618b74dd047a1991f131aa3a54a1f74f8df3697109a412cc70
   languageName: node
   linkType: hard
 
@@ -644,6 +644,30 @@ __metadata:
     obug: "npm:^2.1.1"
     verkit: "npm:^0.3.2"
   checksum: 10c0/45f2ac1da658407cc0347540ad9d65613c08b752c256176ddb2bcb5920d2022950b0e3686fef449874ec0f96e55a3356b5f39f88ac90b565a98fd5a86b59b468
+  languageName: node
+  linkType: hard
+
+"@babel/core@npm:8.1.0":
+  version: 8.1.0
+  resolution: "@babel/core@npm:8.1.0"
+  dependencies:
+    "@babel/code-frame": "npm:^8.0.6"
+    "@babel/generator": "npm:^8.1.0"
+    "@babel/helper-compilation-targets": "npm:^8.0.7"
+    "@babel/helpers": "npm:^8.1.0"
+    "@babel/parser": "npm:^8.1.0"
+    "@babel/template": "npm:^8.0.0"
+    "@babel/traverse": "npm:^8.1.0"
+    "@babel/types": "npm:^8.1.0"
+    "@types/gensync": "npm:^1.0.5"
+    convert-source-map: "npm:^2.0.0"
+    empathic: "npm:^2.0.1"
+    gensync: "npm:^1.0.0-beta.2"
+    import-meta-resolve: "npm:^4.2.0"
+    json5: "npm:^2.2.3"
+    obug: "npm:^3.0.0"
+    verkit: "npm:^0.5.0"
+  checksum: 10c0/f69e3e07942c35f5772dc8815c94c98a7fa70b35b992ca457b86154ad27fe7f4ac0235c832e59726cde39bed3d8694160841fb00129331f32ea190b601b4ca28
   languageName: node
   linkType: hard
 
@@ -979,6 +1003,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/helper-string-parser@npm:^8.1.3":
+  version: 8.1.3
+  resolution: "@babel/helper-string-parser@npm:8.1.3"
+  checksum: 10c0/65f76583e868fdcba08aa93b3ccaf0c63ec9b72b0a3d33844ae25a4bb76282d0c954686386e999b27446297e2371e0cbc20ef7472d8fcc36dc0992d3230f12d5
+  languageName: node
+  linkType: hard
+
 "@babel/helper-validator-identifier@npm:^7.22.20":
   version: 7.22.20
   resolution: "@babel/helper-validator-identifier@npm:7.22.20"
@@ -1042,6 +1073,16 @@ __metadata:
     "@babel/template": "npm:^8.0.0"
     "@babel/types": "npm:^8.1.0"
   checksum: 10c0/f6e38b2619d93654d6cc37b528704b94a08677561eb24ea9c066440efd5a76c4b6b61eda4b1f6f39d1fe5178493435d050ec6f91841bd02e38692d7213390d69
+  languageName: node
+  linkType: hard
+
+"@babel/helpers@npm:^8.1.0":
+  version: 8.1.3
+  resolution: "@babel/helpers@npm:8.1.3"
+  dependencies:
+    "@babel/template": "npm:^8.1.2"
+    "@babel/types": "npm:^8.1.3"
+  checksum: 10c0/17a5c7c248f51dcd8ac72d27821e1ee98d11764a433030229afe00a5885f2fe6e22d6c3a7831b34d1cf32bc0be6fe1b623e90bb66c9359a5d854f0e286a930d4
   languageName: node
   linkType: hard
 
@@ -2173,6 +2214,16 @@ __metadata:
     "@babel/helper-string-parser": "npm:^8.1.2"
     "@babel/helper-validator-identifier": "npm:^8.0.6"
   checksum: 10c0/67e1bc97bfff2aa75cca07da2b58747caca7142b4d357c8c268bfe796ad2778fffb5f0016d466839adb43c86ed339c58226ef62b38e1edd7c705f8059e326472
+  languageName: node
+  linkType: hard
+
+"@babel/types@npm:^8.1.3":
+  version: 8.1.3
+  resolution: "@babel/types@npm:8.1.3"
+  dependencies:
+    "@babel/helper-string-parser": "npm:^8.1.3"
+    "@babel/helper-validator-identifier": "npm:^8.0.6"
+  checksum: 10c0/2473410675394e43c968183488d87f422d51024ec9e813fb2752b4e40cac5c4e70ef00ddc27e6a59e033d5e48cc87f24ff5c15bf94bfd940476814568bb18548
   languageName: node
   linkType: hard
 
@@ -12035,7 +12086,7 @@ __metadata:
     "@angular/core": "npm:22.3.0"
     "@angular/forms": "npm:22.3.0"
     "@angular/language-service": "npm:22.3.0"
-    "@angular/localize": "npm:22.2.6"
+    "@angular/localize": "npm:22.3.0"
     "@angular/material": "npm:22.2.7"
     "@angular/platform-browser": "npm:22.2.5"
     "@angular/platform-browser-dynamic": "npm:22.2.6"
