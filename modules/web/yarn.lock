@@ -235,14 +235,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/animations@npm:22.2.6":
-  version: 22.2.6
-  resolution: "@angular/animations@npm:22.2.6"
+"@angular/animations@npm:22.3.0":
+  version: 22.3.0
+  resolution: "@angular/animations@npm:22.3.0"
   dependencies:
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/core": 22.2.6
-  checksum: 10c0/7cf4cabdc9d3f0d2cb4ff41d078fe31790f3b3f51219885cb37eb72cb5b16c6c9837d5f3ff40fd2a9b0475bce30007dbf1740d1f15032d0d9e1b2ad9c43a78c0
+    "@angular/core": 22.3.0
+  checksum: 10c0/3546da4270fc704413c44812974c0d03428086d80b34dc121bc7b631827fba911e589404865bc7a1f400e90783834045d44edb784d410b1fab66c98cfaf29a92
   languageName: node
   linkType: hard
 
@@ -12076,7 +12076,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "kubernetes-dashboard@workspace:."
   dependencies:
-    "@angular/animations": "npm:22.2.6"
+    "@angular/animations": "npm:22.3.0"
     "@angular/build": "npm:22.2.7"
     "@angular/cdk": "npm:22.3.0"
     "@angular/cli": "npm:22.3.0"
