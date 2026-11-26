@@ -58,7 +58,7 @@
     "@angular/platform-browser-dynamic": "22.3.0",
     "@angular/router": "22.3.0",
     "@ngbracket/ngx-layout": "22.0.2",
-    "@swimlane/ngx-charts": "25.0.3",
+    "@swimlane/ngx-charts": "25.0.4",
     "@xterm/addon-fit": "0.11.0",
     "@xterm/xterm": "6.0.0",
     "ace-builds": "1.45.2",
