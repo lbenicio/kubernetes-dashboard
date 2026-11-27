@@ -9702,9 +9702,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-rxjs-x@npm:1.0.6":
-  version: 1.0.6
-  resolution: "eslint-plugin-rxjs-x@npm:1.0.6"
+"eslint-plugin-rxjs-x@npm:1.0.7":
+  version: 1.0.7
+  resolution: "eslint-plugin-rxjs-x@npm:1.0.7"
   dependencies:
     "@typescript-eslint/utils": "npm:^8.58.0"
     decamelize: "npm:^6.0.1"
@@ -9719,7 +9719,7 @@ __metadata:
   peerDependenciesMeta:
     rxjs:
       optional: true
-  checksum: 10c0/c44909b07e2050c19d48da2c75883db73f607083205c12631c8d1fb644f164ff567c7eed604ea58838fd2f5b3a96fe72041f8f73ee0aaa71f77797cefbfb89bb
+  checksum: 10c0/af2d71be3600df3c2d0850d0f1da3698de1103d8d342b351b98c3b374c0b4fb612c2f0140e50acef0053ab426fc9e0c0dc232a58e79cf5b211f286b4bddee5ad
   languageName: node
   linkType: hard
 
@@ -12224,7 +12224,7 @@ __metadata:
     eslint-config-prettier: "npm:10.1.8"
     eslint-plugin-n: "npm:18.5.0"
     eslint-plugin-prettier: "npm:5.5.7"
-    eslint-plugin-rxjs-x: "npm:1.0.6"
+    eslint-plugin-rxjs-x: "npm:1.0.7"
     git-describe: "npm:4.1.1"
     graphql: "npm:17.1.0"
     husky: "npm:9.1.7"
